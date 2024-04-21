@@ -1,16 +1,14 @@
 package org.grupo11.services.Business;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class Business {
     public String name;
     private List<Branch> branches;
 
-    public Business(String name, Optional<List<Branch>> branches) {
+    public Business(String name, List<Branch> branches) {
         this.name = name;
-        this.branches = branches.orElse(new ArrayList<Branch>());
+        this.branches = branches;
     }
 
     public void addBranch(Branch branch) {

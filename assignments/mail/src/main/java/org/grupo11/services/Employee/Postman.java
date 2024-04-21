@@ -1,5 +1,6 @@
 package org.grupo11.services.Employee;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ public class Postman extends Employee {
 
     public Postman(String name, String address, String phoneNumber) {
         super(name, address, phoneNumber);
+        this.shippings = new ArrayList<Shipping>();
     };
 
     public void finishCurrentShip() {

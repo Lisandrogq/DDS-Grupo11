@@ -1,5 +1,7 @@
 package org.grupo11.main;
 
+import java.util.ArrayList;
+
 import org.grupo11.services.Client;
 import org.grupo11.services.Business.Branch;
 import org.grupo11.services.Business.Business;
@@ -13,10 +15,10 @@ import org.grupo11.services.Shipping.Track;
  * around with it.
  */
 public class App {
-    Business correo;
+    private Business correo;
 
     public void Start() {
-        this.correo = new Business("Correo argentino", null);
+        this.correo = new Business("Correo argentino", new ArrayList<>());
         Branch branch = new Branch("larrazabal", "Mataderos");
         correo.addBranch(branch);
         Postman postman = new Postman("Javier", "Gaona y cuenca", "+54 11-3212-4023");
@@ -29,6 +31,10 @@ public class App {
         Track track = new Track(Track.ShippingState.PENDING, new Stop("", "", 213, 321), postman);
         Shipping shipping = new Shipping(sender, receiver, price, track);
         branch.addShipping(shipping);
+    }
+
+    public Business getCorreo() {
+        return correo;
     }
 
     // here we would add function to print out the info
