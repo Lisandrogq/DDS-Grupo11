@@ -15,7 +15,7 @@ import org.grupo11.services.Shipping.Track;
 public class App {
     Business correo;
 
-    public void Start(String[] args) {
+    public void Start() {
         this.correo = new Business("Correo argentino", null);
         Branch branch = new Branch("larrazabal", "Mataderos");
         correo.addBranch(branch);
@@ -32,5 +32,4 @@ public class App {
     }
 
     // here we would add function to print out the info
-    // ...
 }
