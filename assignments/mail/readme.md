@@ -8,7 +8,7 @@ Exercise number 13, correo.
 
 ### How to run
 
-1. Clone the project: `git clone `
+1. Clone the project: `git clone https://github.com/Lisandrogq/DDS-Grupo11/tree/main`
 2. cd into this folder
 3. Give permissions: `chmod +x ./run.sh`
 4. Run it!: `./run.sh`
