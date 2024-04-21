@@ -10,8 +10,7 @@ Exercise number 13, correo.
 
 1. Clone the project: `git clone `
 2. cd into this folder
-3. **Install**: `mvn install`
-4. **Compile**: `mvn compile`
-5. **Run the interactive java shell**: `mvn com.github.johnpoth:jshell-maven-plugin:1.3:run`
+3. Give permissions: `chmod +x ./run.sh`
+4. Run it!: `./run.sh`
 
 PS: make sure you have [maven](https://maven.apache.org/) and java 17 (at lest) installed.
