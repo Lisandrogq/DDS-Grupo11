@@ -26,5 +26,13 @@ public class Tramo {
     public int getarrivedAt(){
         return arrivedAt;
     }
-
+    public Stop getOrigin() {
+        return origin;
+    }
+    public Stop getDestination() {
+        return destination;
+    }
+    public Postman getPostman() {
+        return postman;
+    }
 }

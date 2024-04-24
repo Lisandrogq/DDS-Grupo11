@@ -1,15 +1,10 @@
 package org.grupo11.services.Shipping;
 
-public class Stop {
+public interface Stop {
 
-    public Stop() {
-    
-    }
 
     // // Getters
-    // public String getAddress() {
-    //     return address;
-    // }
+    public String getAddress();
 
     // public String getCity() {
     //     return city;

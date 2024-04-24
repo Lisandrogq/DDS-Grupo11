@@ -41,10 +41,12 @@ public class App {
         postman2.addShipping(shipping);
 
         // COMO FUNCIONARIA EL SISTEMA:
+        printBusinessInfo();
         postman1.updateCurrentShip();
         postman1.startShip();
         postman1.finishCurrentShip();
         
+        printBusinessInfo();
         postman2.updateCurrentShip();
         postman2.startShip();
         postman2.finishCurrentShip();
@@ -59,11 +61,13 @@ public class App {
 
     public void printBusinessInfo() {
         for (Branch branch : this.correo.getAllBranches()) {
-            for (Employee postman : branch.getEmployees()) {
-                System.out.println("Postman: " + postman.getName());
-                for (Shipping shipping : branch.getShippings()) {
-                    System.out.println("Shipping: " + shipping.getSender().getName() + " to "
-                            + shipping.getReceiver().getName() + " price: " + shipping.getPrice());
+            for (Shipping shipping : branch.getShippings()) {
+                System.out.println("Shipping: " + shipping.getTrackingCode());
+                for (Tramo tramo : shipping.getTrack().getTramos()) {
+                    System.out.println("Tramo: ");
+                    System.out.println("Origen: " + tramo.getOrigin().getAddress());
+                    System.out.println("Destino: " + tramo.getDestination().getAddress());
+                    System.out.println("Postman: " + tramo.getPostman().getAddress());
 
                 }
             }
