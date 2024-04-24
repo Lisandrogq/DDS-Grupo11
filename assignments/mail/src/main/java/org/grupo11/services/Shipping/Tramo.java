@@ -15,10 +15,10 @@ public class Tramo {
         this.postman = postman;
     }
     public void departure(){
-        //poner fecha actual
+        this.departuredAt=1;
     }
     public void arrive(){
-        //poner fecha actual
+        this.arrivedAt=1;
     }
     public int getDeparturedAt(){
         return departuredAt;

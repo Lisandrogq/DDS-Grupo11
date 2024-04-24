@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.grupo11.services.Client;
 import org.grupo11.services.Business.Branch;
 import org.grupo11.services.Business.Business;
+import org.grupo11.services.Employee.Employee;
 import org.grupo11.services.Employee.Postman;
 import org.grupo11.services.Shipping.Shipping;
 import org.grupo11.services.Shipping.Track;
@@ -56,4 +57,16 @@ public class App {
 
     // here we would add function to print out the info
 
+    public void printBusinessInfo() {
+        for (Branch branch : this.correo.getAllBranches()) {
+            for (Employee postman : branch.getEmployees()) {
+                System.out.println("Postman: " + postman.getName());
+                for (Shipping shipping : branch.getShippings()) {
+                    System.out.println("Shipping: " + shipping.getSender().getName() + " to "
+                            + shipping.getReceiver().getName() + " price: " + shipping.getPrice());
+
+                }
+            }
+        }
+    }
 }

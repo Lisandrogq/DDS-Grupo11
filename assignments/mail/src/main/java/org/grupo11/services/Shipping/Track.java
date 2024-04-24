@@ -36,12 +36,12 @@ public class Track {
     }
 
     public Tramo nextTramo() {
-        Tramo actualTramo = tramos.stream().filter((tramo->tramo.getDeparturedAt()==0 && tramo.getarrivedAt()==0)).findFirst().orElse(null);
-        return actualTramo;
+       Tramo nextTramo = tramos.stream().filter((tramo->tramo.getDeparturedAt()==0)).findFirst().orElse(null);
+        return nextTramo;
     }
     public Tramo actualTramo() {
-        Tramo nextTramo = tramos.stream().filter((tramo->tramo.getDeparturedAt()!=0 && tramo.getarrivedAt()==0)).findFirst().orElse(null);
-        return nextTramo;
+        Tramo actualTramo = tramos.stream().filter((tramo->tramo.getDeparturedAt()!=0)).findFirst().orElse(null);
+        return actualTramo;
     }
     public void departureNextTramo() {
         Tramo nextTramo = nextTramo();
