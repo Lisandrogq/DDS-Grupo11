@@ -15,14 +15,14 @@ public class Track {
     private ShippingState state;
     // don't quite understand the stops type
     // should they be a branch themselves or an arbitrary place??
-    private List<Stop> stops;
-    private Stop destiny;
+    private List<Tramo> tramos;
+    //private Stop destiny; el destino ya esta en Shipping
     private Postman postman;
 
-    public Track(ShippingState state, Stop destiny, Postman postman) {
+    public Track(ShippingState state,List<Tramo> tramos, Postman postman) {
         this.state = state;
-        this.destiny = destiny;
         this.postman = postman;
+        this.tramos= tramos;
     }
 
     // Getters
@@ -30,20 +30,16 @@ public class Track {
         return state;
     }
 
-    public List<Stop> getStops() {
-        return stops;
-    }
-
-    public Stop getDestiny() {
-        return destiny;
+    public List<Tramo> getTramos() {
+        return tramos;
     }
 
     public Postman getPostman() {
         return postman;
     }
 
-    public void addStop(Stop stop) {
-        stops.add(stop);
+    public void addTramos(Tramo stop) {
+        tramos.add(stop);
     }
 
     public void setState(ShippingState state) {

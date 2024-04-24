@@ -5,9 +5,10 @@ import java.util.List;
 
 import org.grupo11.services.Employee.Employee;
 import org.grupo11.services.Shipping.Shipping;
+import org.grupo11.services.Shipping.Stop;
 import org.grupo11.utils.Crypto;
 
-public class Branch {
+public class Branch  extends Stop{
     private int id;
     private String address;
     private String locality;

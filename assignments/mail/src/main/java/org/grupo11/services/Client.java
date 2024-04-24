@@ -1,6 +1,8 @@
 package org.grupo11.services;
 
-public class Client {
+import org.grupo11.services.Shipping.Stop;
+
+public class Client extends Stop {
     private String name;
     private String address;
     private String locality;
