@@ -38,5 +38,10 @@ public class Shipping {
     public Track getTrack() {
         return track;
     }
-
+    public void departure(){
+        this.track.departureNextTramo();
+    }
+    public void arrive(){
+        this.track.arriveTramo();
+    }
 }

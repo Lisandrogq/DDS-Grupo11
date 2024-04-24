@@ -8,20 +8,24 @@ import org.grupo11.services.Shipping.Shipping;
 
 public class Postman extends Employee {
     private List<Shipping> shippings;
-    private Optional<Shipping> currentShip;
+    private Shipping currentShip;
 
     public Postman(String name, String address, String phoneNumber) {
         super(name, address, phoneNumber);
         this.shippings = new ArrayList<Shipping>();
     };
 
-    public void finishCurrentShip() {
-        currentShip.ifPresent(this::addShipping);
-        this.updateCurrentShip(null);
+   
+    public void updateCurrentShip(){
+        //todo: el orden de los envíos debería estar determinado de antemano y simplemente agarraría el siguiente en la lista
+        currentShip = this.shippings.get(0);//demo
     }
-
-    public void updateCurrentShip(Optional<Shipping> shipping) {
-        currentShip = shipping;
+    public void startShip() {
+        currentShip.departure();
+    }
+    public void finishCurrentShip() {
+        currentShip.arrive();
+        currentShip = null;
     }
 
     public void addShipping(Shipping shipping) {
@@ -33,7 +37,7 @@ public class Postman extends Employee {
         return shippings;
     }
 
-    public Optional<Shipping> getCurrentShip() {
+    public Shipping getCurrentShip() {
         return currentShip;
     }
 }

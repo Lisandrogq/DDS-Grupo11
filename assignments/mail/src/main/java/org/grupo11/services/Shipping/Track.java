@@ -1,6 +1,7 @@
 package org.grupo11.services.Shipping;
 
 import java.util.List;
+import java.util.stream.Collector;
 
 public class Track {
     public static enum ShippingState {
@@ -14,12 +15,11 @@ public class Track {
     // don't quite understand the stops type
     // should they be a branch themselves or an arbitrary place??
     private List<Tramo> tramos;
-    //private Stop destiny; el destino ya esta en Shipping
+    // private Stop destiny; el destino ya esta en Shipping
 
-
-    public Track(ShippingState state,List<Tramo> tramos) {
+    public Track(ShippingState state, List<Tramo> tramos) {
         this.state = state;
-        this.tramos= tramos;
+        this.tramos = tramos;
     }
 
     // Getters
@@ -35,4 +35,25 @@ public class Track {
         tramos.add(stop);
     }
 
+    public Tramo nextTramo() {
+        Tramo actualTramo = tramos.stream().filter((tramo->tramo.getDeparturedAt()==0 && tramo.getarrivedAt()==0)).findFirst().orElse(null);
+        return actualTramo;
+    }
+    public Tramo actualTramo() {
+        Tramo nextTramo = tramos.stream().filter((tramo->tramo.getDeparturedAt()!=0 && tramo.getarrivedAt()==0)).findFirst().orElse(null);
+        return nextTramo;
+    }
+    public void departureNextTramo() {
+        Tramo nextTramo = nextTramo();
+        nextTramo.departure();
+        this.state = ShippingState.IN_TRANSIT;
+    }
+
+    public void arriveTramo() {
+        Tramo actualTramo= this.actualTramo(); //esto podría ser un atributo directamente
+        actualTramo.arrive();
+        if (this.nextTramo() == null) {
+            this.state = ShippingState.DELIVERED;
+        }
+    }
 }

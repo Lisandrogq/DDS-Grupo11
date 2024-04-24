@@ -69,4 +69,15 @@ public class Branch  extends Stop{
     public void removeEmployee(Employee employee) {
         employees.remove(employee);
     }
+
+    // //logistic
+    // public void startDeparture(int trackingCode){//esta funcion se utiliza para iniciar o reiniciar(si tiene varias stops) el viaje.
+    //     Shipping shipping = getShippingByTrackingCode(trackingCode);
+    //     shipping.departure();
+    // }
+    // public void startArrival(int trackingCode){//esta funcion se utiliza para finalizar un tramo(puede ser el tramo final o no)
+    //     Shipping shipping = getShippingByTrackingCode(trackingCode);
+    //     shipping.arrive();
+    // }
+
 }
