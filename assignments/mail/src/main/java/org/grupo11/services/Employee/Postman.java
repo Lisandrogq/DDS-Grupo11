@@ -2,14 +2,13 @@ package org.grupo11.services.Employee;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.grupo11.services.Shipping.Shipping;
 
 public class Postman extends Employee {
     private List<Shipping> shippings;
     private Shipping currentShip;
-
+    private int nextShippingIndex=0;
     public Postman(String name, String address, String phoneNumber) {
         super(name, address, phoneNumber);
         this.shippings = new ArrayList<Shipping>();
@@ -17,8 +16,8 @@ public class Postman extends Employee {
 
    
     public void updateCurrentShip(){
-        //todo: el orden de los envíos debería estar determinado de antemano y simplemente agarraría el siguiente en la lista
-        currentShip = this.shippings.get(0);//demo
+        currentShip = this.shippings.get(nextShippingIndex);
+        nextShippingIndex+=1;
     }
     public void startShip() {
         currentShip.departure();

@@ -30,6 +30,9 @@ public class Track {
     public List<Tramo> getTramos() {
         return tramos;
     }
+    public Tramo getLastTramo() {
+        return tramos.get(tramos.size()-1);
+    }
 
     public void addTramos(Tramo stop) {
         tramos.add(stop);

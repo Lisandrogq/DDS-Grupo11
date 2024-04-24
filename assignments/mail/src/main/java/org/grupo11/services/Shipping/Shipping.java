@@ -1,6 +1,7 @@
 package org.grupo11.services.Shipping;
 
 import org.grupo11.services.Client;
+import org.grupo11.services.Employee.Postman;
 import org.grupo11.utils.Crypto;
 
 public class Shipping {
@@ -43,5 +44,8 @@ public class Shipping {
     }
     public void arrive(){
         this.track.arriveTramo();
+    }
+    public Postman getLastPostman(){
+        return this.track.getLastTramo().getPostman();
     }
 }

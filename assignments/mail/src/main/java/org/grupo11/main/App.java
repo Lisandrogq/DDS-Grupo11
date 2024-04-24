@@ -28,28 +28,49 @@ public class App {
         branch.addEmployee(postman2);
         // add a shipping
         Client sender = new Client("Albert", "Juan.b Justo y carrasco", "Monte castro", 12345);
-        Client receiver = new Client("Tomas", "Juan.b Justo y carrasco", "Monte castro", 12345);
+        Client receiver = new Client("Tomas", "La Casa Del receiver", "Monte castro", 12345);
+        Client receiver2 = new Client("Tomas", "La Casa Del receiver2", "Monte castro", 12345);
         float price = 10000;
-        Track track = new Track(Track.ShippingState.PENDING, new ArrayList<Tramo>());
-        Shipping shipping = new Shipping(sender, receiver, price, track);
-        Tramo tramo1 = new Tramo(sender, branch, postman1);
-        Tramo tramo2 = new Tramo(branch, receiver, postman2);
-        shipping.getTrack().addTramos(tramo1);
-        shipping.getTrack().addTramos(tramo2);
-        branch.addShipping(shipping);
-        postman1.addShipping(shipping);
-        postman2.addShipping(shipping);
+        Track track1 = new Track(Track.ShippingState.PENDING, new ArrayList<Tramo>());
+        Track track2 = new Track(Track.ShippingState.PENDING, new ArrayList<Tramo>());
+        Shipping shipping1 = new Shipping(sender, receiver, price, track1);
+        Shipping shipping2 = new Shipping(sender, receiver, price, track2); 
+
+        Tramo tramo1A = new Tramo(sender, branch, postman1);
+        Tramo tramo1B = new Tramo(branch, receiver, postman2);
+        shipping1.getTrack().addTramos(tramo1A);
+        shipping1.getTrack().addTramos(tramo1B);
+
+        Tramo tramo2A = new Tramo(sender,receiver2, postman1);
+        shipping2.getTrack().addTramos(tramo2A);
+
+        branch.addShipping(shipping1);
+        branch.addShipping(shipping2);
+
+        postman1.addShipping(shipping1);
+        postman2.addShipping(shipping1);
+        postman1.addShipping(shipping2);
 
         // COMO FUNCIONARIA EL SISTEMA:
-        printBusinessInfo();
+        //shipping1
         postman1.updateCurrentShip();
         postman1.startShip();
         postman1.finishCurrentShip();
-        
-        printBusinessInfo();
+
+        //shipping2
+        postman1.updateCurrentShip();
+        postman1.startShip();
+        postman1.finishCurrentShip();
+        System.out.println("Shipping1 entregado por: " + shipping1.getLastPostman().getName());
+
+        //shipping1
         postman2.updateCurrentShip();
         postman2.startShip();
         postman2.finishCurrentShip();
+        System.out.println("Shipping2 entregado por: " + shipping2.getLastPostman().getName());
+
+        System.out.println("__________________________");
+        printBusinessInfo();
 
     }
 
@@ -65,9 +86,9 @@ public class App {
                 System.out.println("Shipping: " + shipping.getTrackingCode());
                 for (Tramo tramo : shipping.getTrack().getTramos()) {
                     System.out.println("Tramo: ");
-                    System.out.println("Origen: " + tramo.getOrigin().getAddress());
-                    System.out.println("Destino: " + tramo.getDestination().getAddress());
-                    System.out.println("Postman: " + tramo.getPostman().getAddress());
+                    System.out.println("    Origen: " + tramo.getOrigin().getAddress());
+                    System.out.println("    Destino: " + tramo.getDestination().getAddress());
+                    System.out.println("    Postman: " + tramo.getPostman().getName());
 
                 }
             }
