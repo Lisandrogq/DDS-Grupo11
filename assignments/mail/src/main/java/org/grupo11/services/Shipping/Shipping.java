@@ -16,7 +16,6 @@ public class Shipping {
         this.price = price;
         this.trackingCode = Crypto.generateRandomCode(6);
         this.track = track;
-        track.getPostman().addShipping(this);
     }
 
     // Getters
