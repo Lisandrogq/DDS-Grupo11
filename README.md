@@ -2,11 +2,12 @@
 
 Repo TPs y TP anual Grupo11
 
-- González Quiroga, Lisandro  209.009-0
-- Rabey Fischer, María Sofía  209.152-5
-- Romero, Nicolás Esteban     208.816-2
-- Nicolau, Marcos Sebastián   209.629-8
-- Valmadre Amoia,Valentina    208.161-1
+### Integrantes:
+- González Quiroga, Lisandro &nbsp;&nbsp; 209.009-0
+- Rabey Fischer, María Sofía &nbsp;&nbsp;&nbsp;&nbsp; 209.152-5
+- Romero, Nicolás Esteban &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 208.816-2
+- Nicolau, Marcos Sebastián &nbsp;&nbsp;&nbsp;&nbsp; 209.629-8
+- Valmadre Amoia,Valentina &nbsp;&nbsp;&nbsp;&nbsp; 208.161-1
 
 ## Useful links
 
