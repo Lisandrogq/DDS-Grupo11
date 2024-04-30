@@ -1,11 +1,12 @@
 package org.grupo11.Services;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.*;
+import java.util.stream.Collectors;
 
 public class PasswordValidator {
 
@@ -22,15 +23,17 @@ public class PasswordValidator {
     // password is in the file
 
     private static boolean IsKnownPassword(String pw) {
-        String filePath = "src/main/resources/rockyou.txt";
+        InputStream inputStream = ClassLoader.getSystemResourceAsStream("rockyou.txt");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
         try {
-            List<String> rockyou = Files.readAllLines(Paths.get(filePath));
+
+            List<String> rockyou = reader.lines().collect(Collectors.toList());
             return !rockyou.contains(pw);
-        } catch (IOException error) {
-            error.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
-        return false;
 
     }
 
