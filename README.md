@@ -4,13 +4,13 @@ Repo TPs y TP anual Grupo11
 
 ### Integrantes:
 
-| Nombre          | Apellido         | Legajo    |
-| --------------- | ---------------- | --------- |
-| Lisandro        | González Quiroga | 209.009-0 |
-| María Sofía     | Rabey Fischer    | 209.152-5 |
-| Nicolás Esteban | Romero           | 208.816-2 |
-| Valentina       | Valmadre Amoia   | 208.161-1 |
-| Nicolau         | Marcos Sebastián | 209.629-8 |
+| Nombre           | Apellido         | Legajo    |
+| ---------------  | ---------------- | --------- |
+| Lisandro         | González Quiroga | 209.009-0 |
+| María Sofía      | Rabey Fischer    | 209.152-5 |
+| Nicolás Esteban  | Romero           | 208.816-2 |
+| Valentina        | Valmadre Amoia   | 208.161-1 |
+| Marcos Sebastián | Nicolau          | 209.629-8 |
 
 ## Useful links
 
