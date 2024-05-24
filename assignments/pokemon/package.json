@@ -1,0 +1,21 @@
+{
+	"name": "pokemon",
+	"version": "1.0.0",
+	"description": "pokemon got a catch em all",
+	"main": "./dist/index.js",
+	"types": "./dist/src/index.d.ts",
+	"scripts": {
+		"start": "npm run build && node dist/src/index.js",
+		"build": "tsc",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "grupo11",
+	"license": "ISC",
+	"dependencies": {
+		"inquirer": "^8.0.0"
+	},
+	"devDependencies": {
+		"@types/inquirer": "^8.0.0",
+		"typescript": "^5.4.5"
+	}
+}
