@@ -53,7 +53,7 @@ public class PasswordValidator {
         return Pattern.compile("[^a-zA-Z0-9]").matcher(pw).find();
     }
 
-    public static Result IsValidPassword(String pw) {
+    public static Result ValidatePassword(String pw) {
         Result result = new Result();
 
         if (!HasMinimumLength(pw))
