@@ -30,7 +30,6 @@ public class TemperatureMonitor {
     }
 
     public void OnDangerousTemp() {
-        // Method implementation for handling dangerous temperature
-    }
 
+    }
 }
