@@ -12,3 +12,4 @@
 - [ ] ejercicio Puertos
 - [x] ejercicio pokemon api
 - [x] test de password validator (quizá habría que agregar mas casos, pero la base esta)
+- [ ] Requerimientos No Funcionales y Atributos de Calidad
