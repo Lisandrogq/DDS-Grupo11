@@ -1,4 +1,4 @@
-package org.grupo11.Services;
+package org.grupo11.Utils;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -27,7 +27,6 @@ public class PasswordValidator {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
         try {
-
             List<String> rockyou = reader.lines().collect(Collectors.toList());
             return !rockyou.contains(pw);
         } catch (Exception e) {

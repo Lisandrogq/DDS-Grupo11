@@ -3,6 +3,8 @@ package org.grupo11.Services;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import org.grupo11.Utils.PasswordValidator;
+
 /**
  * As far as I understand, we should not be writing unit tests that directly
  * test private methods. What we must be testing is the public contract that the
