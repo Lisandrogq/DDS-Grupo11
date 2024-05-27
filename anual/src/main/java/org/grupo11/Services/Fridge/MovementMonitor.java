@@ -22,7 +22,7 @@ public class MovementMonitor {
 
     public void onMovementDetected() {
         // here we would add the system alert
-        // i think for now, i log is enough
+        // i think for now, a log is enough
         System.out.println("Unusual movement detected.");
     }
 }

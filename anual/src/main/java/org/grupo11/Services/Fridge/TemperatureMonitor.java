@@ -30,6 +30,7 @@ public class TemperatureMonitor {
     }
 
     public void onDangerousTemp() {
-
+        // here we would add the system alert
+        System.out.println("Unusual temperature detected.");
     }
 }
