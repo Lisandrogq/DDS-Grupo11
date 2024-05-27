@@ -1,8 +1,10 @@
 package org.grupo11.Services.Fridge;
 
 import org.grupo11.Services.Meal;
+import org.grupo11.Utils.Crypto;
 
 public class Fridge {
+    private int id;
     private boolean isActive;
     private float lon;
     private float lat;
@@ -16,6 +18,7 @@ public class Fridge {
 
     public Fridge(float lon, float lat, String address, String name, int capacity, int commissioningDate, Meal[] meals,
             TemperatureMonitor temp, MovementMonitor mov) {
+        this.id = Crypto.getRandomId(6);
         this.lon = lon;
         this.lat = lat;
         this.address = address;
@@ -27,8 +30,8 @@ public class Fridge {
         this.mov = mov;
     }
 
-    public boolean isIsActive() {
-        return this.isActive;
+    public int getId() {
+        return id;
     }
 
     public boolean getIsActive() {

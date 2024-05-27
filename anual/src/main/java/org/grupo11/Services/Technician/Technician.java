@@ -4,15 +4,15 @@ public class Technician {
     private String name;
     private String surname;
     private TechnicianType type;
-    private String dni;
+    private int DNI;
     private String cuil;
     private String areasOfWork;
 
-    public Technician(String name, String surname, TechnicianType type, String dni, String cuil, String areasOfWork) {
+    public Technician(String name, String surname, TechnicianType type, int DNI, String cuil, String areasOfWork) {
         this.name = name;
         this.surname = surname;
         this.type = type;
-        this.dni = dni;
+        this.DNI = DNI;
         this.cuil = cuil;
         this.areasOfWork = areasOfWork;
     }
@@ -41,12 +41,12 @@ public class Technician {
         this.type = type;
     }
 
-    public String getDni() {
-        return this.dni;
+    public int getDNI() {
+        return this.DNI;
     }
 
-    public void setDni(String dni) {
-        this.dni = dni;
+    public void setDNI(int dni) {
+        this.DNI = dni;
     }
 
     public String getCuil() {

@@ -6,15 +6,15 @@ public class PersonInNeed {
     private int birth;
     private int createdAt;
     private String address = null;
-    private int identification;
+    private int DNI;
     private int childCount;
     private Card card;
 
-    public PersonInNeed(int birth, int createdAt, String address, int identification, int childCount, Card card) {
+    public PersonInNeed(int birth, int createdAt, String address, int DNI, int childCount, Card card) {
         this.birth = birth;
         this.createdAt = createdAt;
         this.address = address;
-        this.identification = identification;
+        this.DNI = DNI;
         this.childCount = childCount;
         this.card = card;
     }
@@ -43,12 +43,12 @@ public class PersonInNeed {
         this.address = address;
     }
 
-    public int getIdentification() {
-        return this.identification;
+    public int getDNI() {
+        return this.DNI;
     }
 
-    public void setIdentification(int identification) {
-        this.identification = identification;
+    public void setDNI(int identification) {
+        this.DNI = identification;
     }
 
     public int getChildCount() {
