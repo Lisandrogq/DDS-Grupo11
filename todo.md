@@ -7,7 +7,8 @@
 - [x] integrar los modelos en una clase app para permitir interactuar con los mismos
 - [x] implementación carga masiva
 - [x] implementación mapa (indagar sobre la implementación, me parece muy temprano hacerla ya... para mi es en el boceto por lo que ya lo tendríamos hecho)
-- [ ] refactorear timestamps en unix por Date object, en lugar de estar parseando? 
+- [ ] refactorear timestamps en unix por Date object, en lugar de estar parseando?
+- [ ] redactar bien las justificaciones del excel
 
 ### questions
 - [ ] ask how the point system works: when should they be calculated and which coefficient should be used? For example, say a contributor contributes in some form, should we assign the points right at that time with the coefficients at that time; or when the user wants to buy smth with his points we get all his contributions and calculate it with the coefficients at that time and subtracting the already used ones.
