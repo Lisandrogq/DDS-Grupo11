@@ -7,7 +7,7 @@ import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.PersonInNeed.PersonInNeed;
 import org.grupo11.Utils.Crypto;
-import org.grupo11.Utils.Date;
+import org.grupo11.Utils.DateUtils;
 
 public class Card {
     private int id;
@@ -22,7 +22,8 @@ public class Card {
     }
 
     public boolean canUseCard() {
-        long todaysUsages = usages.stream().filter(usage -> Date.isSameDay(usage.getUsedAt(), Date.now())).count();
+        long todaysUsages = usages.stream().filter(usage -> DateUtils.isSameDay(usage.getUsedAt(), DateUtils.now()))
+                .count();
         if (todaysUsages >= getMaxDailyUse())
             return false;
         return true;
@@ -34,7 +35,7 @@ public class Card {
 
     public void useCard(Fridge fridge) {
         if (this.canUseCard())
-            usages.add(new CardUsage(fridge, Date.now()));
+            usages.add(new CardUsage(fridge, DateUtils.now()));
     }
 
     // getters and setters
