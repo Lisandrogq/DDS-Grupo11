@@ -4,9 +4,9 @@
 - [ ] diagrama de clases
 - [x] bocetos
 - [x] implementación modelos
-- [ ] integrar los modelos en una clase app para permitir interactuar con los mismos
-- [ ] implementación carga masiva
-- [ ] implementación mapa (indagar sobre la implementación, me parece muy temprano hacerla ya... para mi es en el boceto por lo que ya lo tendríamos hecho)
+- [x] integrar los modelos en una clase app para permitir interactuar con los mismos
+- [x] implementación carga masiva
+- [x] implementación mapa (indagar sobre la implementación, me parece muy temprano hacerla ya... para mi es en el boceto por lo que ya lo tendríamos hecho)
 - [ ] refactorear timestamps en unix por Date object, en lugar de estar parseando? 
 
 ### questions
