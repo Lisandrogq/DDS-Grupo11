@@ -1,7 +1,7 @@
 package org.grupo11.Services.Contributions;
 
-import org.grupo11.Services.PersonInNeed;
 import org.grupo11.Services.Contributor.Contributor;
+import org.grupo11.Services.PersonInNeed.PersonInNeed;
 
 public class PersonRegistration extends Contribution {
     PersonInNeed person;
