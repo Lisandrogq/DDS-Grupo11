@@ -1,11 +1,7 @@
 package org.grupo11.Services.Rewards;
 
 import org.grupo11.Services.Contributions.Contribution;
-import org.grupo11.Services.Contributions.FridgeAdmin;
-import org.grupo11.Services.Contributions.MealDistribution;
-import org.grupo11.Services.Contributions.MealDonation;
 import org.grupo11.Services.Contributions.MoneyDonation;
-import org.grupo11.Services.Contributions.PersonRegistration;
 import org.grupo11.Services.Contributor.Contributor;
 
 public class RewardPointsCalculator {
@@ -55,25 +51,32 @@ public class RewardPointsCalculator {
         RewardPointsCalculator.moneyDonationCoef = moneyDonationCoef;
     }
 
+    private static double calculateMoneyDonationPoints(MoneyDonation moneyDonation) {
+        return moneyDonation.getAmount() * moneyDonationCoef;
+    }
+
+    public static double getContributionPoints(Contribution contribution) {
+        switch (contribution.getContributionType()) {
+            case MEAL_DISTRIBUTION:
+                return mealDistributionCoef;
+            case FRIDGE_ADMINISTRATION:
+                return fridgeAdminCoef;
+            case MEAL_DONATION:
+                return mealDonationCoef;
+            case PERSON_REGISTRATION:
+                return personRegistrationCoef;
+            case MONEY_DONATION:
+                return calculateMoneyDonationPoints((MoneyDonation) contribution);
+            default:
+                return 0;
+        }
+    }
+
     public static double getContributorPoints(Contributor contributor) {
         double totalPoints = 0.0;
 
         for (Contribution contribution : contributor.getContributions()) {
-            double contributionPoints = 0.0;
-
-            if (contribution instanceof MealDistribution) {
-                contributionPoints = mealDistributionCoef;
-            } else if (contribution instanceof FridgeAdmin) {
-                contributionPoints = fridgeAdminCoef;
-            } else if (contribution instanceof MealDonation) {
-                contributionPoints = mealDonationCoef;
-            } else if (contribution instanceof PersonRegistration) {
-                contributionPoints = personRegistrationCoef;
-            } else if (contribution instanceof MoneyDonation) {
-                MoneyDonation moneyDonation = (MoneyDonation) contribution;
-                contributionPoints = moneyDonation.getAmount() * moneyDonationCoef;
-            }
-            totalPoints += contributionPoints;
+            totalPoints += getContributionPoints(contribution);
         }
 
         return totalPoints;

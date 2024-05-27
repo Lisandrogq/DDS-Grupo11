@@ -6,13 +6,16 @@ import java.util.List;
 import org.grupo11.Services.Contact.Contact;
 import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributions.ContributionType;
+import org.grupo11.Services.Rewards.Reward;
 
 public class Contributor {
     private String name;
     private List<Contact> contacts;
     private List<ContributionType> possibleContributions;
     private List<Contribution> contributions;
+    private List<Reward> rewards;
     private String address = null;
+    private double points;
 
     public Contributor(List<ContributionType> possibleContributions) {
         this.contacts = new ArrayList<>();
@@ -41,6 +44,10 @@ public class Contributor {
 
     public void addPossibleContribution(ContributionType type) {
         possibleContributions.add(type);
+    }
+
+    public void addReward(Reward reward) {
+        rewards.add(reward);
     }
 
     // getters and settters
@@ -83,4 +90,21 @@ public class Contributor {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    public List<Reward> getRewards() {
+        return this.rewards;
+    }
+
+    public void setRewards(List<Reward> rewards) {
+        this.rewards = rewards;
+    }
+
+    public double getPoints() {
+        return this.points;
+    }
+
+    public void setPoints(double points) {
+        this.points = points;
+    }
+
 }
