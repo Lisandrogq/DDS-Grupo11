@@ -1,14 +1,4 @@
-package org.grupo11.Services;
-
-enum TechnicianType {
-}
-
-enum AreasOfWork {
-    CABA,
-    ZonaNorte,
-    ZonaSur,
-    ZonaOeste,
-}
+package org.grupo11.Services.Technician;
 
 public class Technician {
     String name;
