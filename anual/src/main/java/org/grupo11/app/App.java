@@ -1,6 +1,7 @@
 package org.grupo11.app;
 
 import org.grupo11.Utils.PasswordValidator;
+import org.grupo11.Services.DataImporter;
 import org.grupo11.Services.Card.CardManager;
 import org.grupo11.Services.Contributions.ContributionsManager;
 import org.grupo11.Services.Contributor.ContributorsManager;
@@ -10,27 +11,26 @@ import org.grupo11.Services.Rewards.RewardSystem;
 import org.grupo11.Services.Technician.TechnicianManager;
 
 public class App {
-
-    private ContributorsManager contributorManager;
+    private ContributorsManager contributorsManager;
     private ContributionsManager contributionsManager;
     private FridgesManager fridgesManager;
-    private PersonInNeedManager personInNeedManager;
+    private PersonInNeedManager personsInNeedManager;
     private TechnicianManager technicianManager;
-    private CardManager cardManager;
+    private CardManager cardsManager;
     private RewardSystem rewardSystem;
 
     public App() {
-        contributorManager = new ContributorsManager();
+        contributorsManager = new ContributorsManager();
         contributionsManager = new ContributionsManager();
         fridgesManager = new FridgesManager();
-        personInNeedManager = new PersonInNeedManager();
+        personsInNeedManager = new PersonInNeedManager();
         technicianManager = new TechnicianManager();
-        cardManager = new CardManager();
+        cardsManager = new CardManager();
         rewardSystem = new RewardSystem();
     }
 
-    public ContributorsManager getContributorManager() {
-        return contributorManager;
+    public ContributorsManager getContributorsManager() {
+        return contributorsManager;
     }
 
     public ContributionsManager getContributionsManager() {
@@ -41,16 +41,16 @@ public class App {
         return fridgesManager;
     }
 
-    public PersonInNeedManager getPersonInNeedManager() {
-        return personInNeedManager;
+    public PersonInNeedManager getPersonsInNeedManager() {
+        return personsInNeedManager;
     }
 
     public TechnicianManager getTechnicianManager() {
         return technicianManager;
     }
 
-    public CardManager getCardManager() {
-        return cardManager;
+    public CardManager getCardsManager() {
+        return cardsManager;
     }
 
     public RewardSystem getRewardSystem() {
@@ -64,5 +64,9 @@ public class App {
             return;
         }
         System.out.println("Password is valid");
+    }
+
+    public void bulkContributionsImport(String cvsFileName) {
+        new DataImporter(contributionsManager, contributorsManager).loadContributors(cvsFileName);
     }
 }
