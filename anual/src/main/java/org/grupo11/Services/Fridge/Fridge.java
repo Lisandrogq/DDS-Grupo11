@@ -6,8 +6,8 @@ import org.grupo11.Utils.Crypto;
 public class Fridge {
     private int id;
     private boolean isActive;
-    private float lon;
-    private float lat;
+    private double lon;
+    private double lat;
     private String address;
     private String name;
     private int capacity;
@@ -16,7 +16,8 @@ public class Fridge {
     private TemperatureMonitor temp;
     private MovementMonitor mov;
 
-    public Fridge(float lon, float lat, String address, String name, int capacity, int commissioningDate, Meal[] meals,
+    public Fridge(double lon, double lat, String address, String name, int capacity, int commissioningDate,
+            Meal[] meals,
             TemperatureMonitor temp, MovementMonitor mov) {
         this.id = Crypto.getRandomId(6);
         this.lon = lon;
@@ -42,19 +43,19 @@ public class Fridge {
         this.isActive = isActive;
     }
 
-    public float getLon() {
+    public double getLon() {
         return this.lon;
     }
 
-    public void setLon(float lon) {
+    public void setLon(double lon) {
         this.lon = lon;
     }
 
-    public float getLat() {
+    public double getLat() {
         return this.lat;
     }
 
-    public void setLat(float lat) {
+    public void setLat(double lat) {
         this.lat = lat;
     }
 
@@ -112,5 +113,9 @@ public class Fridge {
 
     public void setMov(MovementMonitor mov) {
         this.mov = mov;
+    }
+
+    public String getMapLocation() {
+        return FridgeMapper.getSingleFridgeMapLocation(this);
     }
 }

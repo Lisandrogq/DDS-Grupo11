@@ -7,9 +7,9 @@ import org.grupo11.Utils.Fetcher;
 import org.grupo11.Utils.JSON;
 
 public class FridgeAllocator {
-    private String baseUrl = "https://665264aa813d78e6d6d56912.mockapi.io/api/v1/fridge-location";
+    private static String baseUrl = "https://665264aa813d78e6d6d56912.mockapi.io/api/v1/fridge-location";
 
-    public List<FridgeAlLocatorRes.Location> getFridgeLocations(float lon, float lat, int radius) {
+    public static List<FridgeAlLocatorRes.Location> getFridgeGoodLocations(float lon, float lat, int radius) {
         try {
             String url = baseUrl + "?lon=" + lon + "&lat=" + lat + "&radius=" + radius;
             String json = Fetcher

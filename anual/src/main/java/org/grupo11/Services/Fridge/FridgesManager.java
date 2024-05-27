@@ -5,9 +5,11 @@ import java.util.List;
 
 public class FridgesManager {
     private List<Fridge> fridges;
+    private FridgeAllocator fridgeAllocator;
 
     public FridgesManager() {
         this.fridges = new ArrayList<>();
+        this.fridgeAllocator = new FridgeAllocator();
     }
 
     public void add(Fridge fridge) {
@@ -33,5 +35,13 @@ public class FridgesManager {
             }
         }
         return null;
+    }
+
+    public String getFridgesMap() {
+        return FridgeMapper.getFridgesMapLocations(fridges);
+    }
+
+    public FridgeAllocator getFridgeAllocator() {
+        return this.fridgeAllocator;
     }
 }
