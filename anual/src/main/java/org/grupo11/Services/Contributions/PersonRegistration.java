@@ -4,7 +4,7 @@ import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.PersonInNeed.PersonInNeed;
 
 public class PersonRegistration extends Contribution {
-    PersonInNeed person;
+    private PersonInNeed person;
 
     public PersonRegistration(PersonInNeed person) {
         this.person = person;
@@ -12,10 +12,19 @@ public class PersonRegistration extends Contribution {
 
     @Override
     protected boolean validate(Contributor contributor) {
-        return (super.validate(contributor) && contributor.address != null);
+        return (super.validate(contributor) && contributor.getAddress() != null);
     }
 
     public ContributionType getContributionType() {
         return ContributionType.PERSON_REGISTRATION;
     }
+
+    public PersonInNeed getPerson() {
+        return this.person;
+    }
+
+    public void setPerson(PersonInNeed person) {
+        this.person = person;
+    }
+
 }

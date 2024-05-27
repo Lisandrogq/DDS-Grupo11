@@ -1,7 +1,7 @@
 package org.grupo11.Services.Contributions;
 
 public class MoneyDonation extends Contribution {
-    int amount;
+    private int amount;
 
     public MoneyDonation(int amount) {
         this.amount = amount;
@@ -10,4 +10,13 @@ public class MoneyDonation extends Contribution {
     public ContributionType getContributionType() {
         return ContributionType.MONEY_DONATION;
     }
+
+    public int getAmount() {
+        return this.amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
 }

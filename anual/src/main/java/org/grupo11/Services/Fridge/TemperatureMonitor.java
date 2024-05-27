@@ -13,23 +13,23 @@ public class TemperatureMonitor {
         this.lastTemp = lastTemp;
     }
 
-    public void SetMinTemp(int minTemp) {
+    public void setMinTemp(int minTemp) {
         this.minTemp = minTemp;
     }
 
-    public void SetMaxTemp(int maxTemp) {
+    public void setMaxTemp(int maxTemp) {
         this.maxTemp = maxTemp;
     }
 
-    public Contributor GetLastTemp() {
+    public Contributor getLastTemp() {
         return lastTemp;
     }
 
-    public void SetLastTemp(Contributor lastTemp) {
+    public void setLastTemp(Contributor lastTemp) {
         this.lastTemp = lastTemp;
     }
 
-    public void OnDangerousTemp() {
+    public void onDangerousTemp() {
 
     }
 }

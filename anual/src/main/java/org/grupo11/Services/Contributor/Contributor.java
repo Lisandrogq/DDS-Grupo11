@@ -8,11 +8,11 @@ import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributions.ContributionType;
 
 public class Contributor {
-    String name;
-    public List<Contact> contacts;
-    public List<ContributionType> possibleContributions;
-    public List<Contribution> contributions;
-    public String address = null;
+    private String name;
+    private List<Contact> contacts;
+    private List<ContributionType> possibleContributions;
+    private List<Contribution> contributions;
+    private String address = null;
 
     public Contributor(List<ContributionType> possibleContributions) {
         this.contacts = new ArrayList<>();
@@ -41,5 +41,46 @@ public class Contributor {
 
     public void addPossibleContribution(ContributionType type) {
         possibleContributions.add(type);
+    }
+
+    // getters and settters
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Contact> getContacts() {
+        return this.contacts;
+    }
+
+    public void setContacts(List<Contact> contacts) {
+        this.contacts = contacts;
+    }
+
+    public List<ContributionType> getPossibleContributions() {
+        return this.possibleContributions;
+    }
+
+    public void setPossibleContributions(List<ContributionType> possibleContributions) {
+        this.possibleContributions = possibleContributions;
+    }
+
+    public List<Contribution> getContributions() {
+        return this.contributions;
+    }
+
+    public void setContributions(List<Contribution> contributions) {
+        this.contributions = contributions;
+    }
+
+    public String getAddress() {
+        return this.address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

@@ -10,11 +10,10 @@ import org.grupo11.Utils.Crypto;
 import org.grupo11.Utils.Date;
 
 public class Card {
-    int id;
-    PersonInNeed owner;
-    List<CardUsage> usages;
-    int maxDailyUse;
-    Contributor givenBy;
+    private int id;
+    private PersonInNeed owner;
+    private List<CardUsage> usages;
+    private Contributor givenBy;
 
     public Card(PersonInNeed owner, Contributor givenBy) {
         id = Crypto.getRandomId(11);
@@ -23,18 +22,53 @@ public class Card {
     }
 
     public boolean canUseCard() {
-        long todaysUsages = usages.stream().filter(usage -> Date.isSameDay(usage.usedAt, Date.now())).count();
+        long todaysUsages = usages.stream().filter(usage -> Date.isSameDay(usage.getUsedAt(), Date.now())).count();
         if (todaysUsages >= getMaxDailyUse())
             return false;
         return true;
     }
 
     public int getMaxDailyUse() {
-        return owner.childCount * 2 + 4;
+        return owner.getChildCount() * 2 + 4;
     }
 
     public void useCard(Fridge fridge) {
         if (this.canUseCard())
             usages.add(new CardUsage(fridge, Date.now()));
     }
+
+    // getters and setters
+
+    public int getId() {
+        return this.id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public PersonInNeed getOwner() {
+        return this.owner;
+    }
+
+    public void setOwner(PersonInNeed owner) {
+        this.owner = owner;
+    }
+
+    public List<CardUsage> getUsages() {
+        return this.usages;
+    }
+
+    public void setUsages(List<CardUsage> usages) {
+        this.usages = usages;
+    }
+
+    public Contributor getGivenBy() {
+        return this.givenBy;
+    }
+
+    public void setGivenBy(Contributor givenBy) {
+        this.givenBy = givenBy;
+    }
+
 }

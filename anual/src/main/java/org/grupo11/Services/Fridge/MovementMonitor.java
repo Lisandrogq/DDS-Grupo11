@@ -9,7 +9,7 @@ public class MovementMonitor {
 
     public void activate() {
         this.active = true;
-        OnMovementDetected();
+        onMovementDetected();
     }
 
     public void deactivate() {
@@ -20,7 +20,7 @@ public class MovementMonitor {
         return active;
     }
 
-    public void OnMovementDetected() {
+    public void onMovementDetected() {
         // here we would add the system alert
         // i think for now, i log is enough
         System.out.println("Unusual movement detected.");

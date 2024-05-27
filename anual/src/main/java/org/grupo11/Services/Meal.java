@@ -24,4 +24,36 @@ public class Meal {
         this.calories = calories;
         this.weight = weight;
     }
+
+    public String getType() {
+        return type;
+    }
+
+    public int getExpirationDate() {
+        return expirationDate;
+    }
+
+    public Contributor getContributor() {
+        return contributor;
+    }
+
+    public int getDonationDate() {
+        return donationDate;
+    }
+
+    public Fridge getFridge() {
+        return fridge;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public Integer getCalories() {
+        return calories;
+    }
+
+    public Integer getWeight() {
+        return weight;
+    }
 }
