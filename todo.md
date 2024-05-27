@@ -14,7 +14,8 @@
 - [ ] what the hell does this actually mean? ![image](https://github.com/Lisandrogq/DDS-Grupo11/assets/76252340/cb3268c3-5dc1-4b9d-b9f9-742198ccd73d)
 - [ ] ask if using managers is advisable
 - [ ] I am not quite sure bout the fridge sensors implementation: like what do they do and when are they triggered??
-- [ ] Can there be businesses in the csv files?? for now, I've assumed they can't, or rules have changed and businesses can get a DNI? 
+- [ ] Can there be businesses in the csv files?? for now, I've assumed they can't, or rules have changed and businesses can get a DNI?
+- [ ] son la entrega de tarjetas y el registro de personas la misma colaboracion? intuyo que si, pero la consigna esta tan rara que me agarra la duda...
  
 ## general
 - [ ] ejercicio Puertos
