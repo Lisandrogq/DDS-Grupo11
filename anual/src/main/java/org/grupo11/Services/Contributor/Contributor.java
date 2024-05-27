@@ -17,13 +17,7 @@ public class Contributor {
     private String address = null;
     private double points;
 
-    public Contributor(List<ContributionType> possibleContributions) {
-        this.contacts = new ArrayList<>();
-        this.possibleContributions = new ArrayList<ContributionType>(possibleContributions);
-        this.contributions = new ArrayList<>();
-    }
-
-    public Contributor(String address, List<ContributionType> possibleContributions) {
+    public Contributor(String name, String address, List<ContributionType> possibleContributions) {
         this.address = address;
         this.contacts = new ArrayList<>();
         this.possibleContributions = new ArrayList<ContributionType>(possibleContributions);
@@ -65,6 +59,10 @@ public class Contributor {
 
     public void setContacts(List<Contact> contacts) {
         this.contacts = contacts;
+    }
+
+    public void addContact(Contact contact) {
+        this.contacts.add(contact);
     }
 
     public List<ContributionType> getPossibleContributions() {

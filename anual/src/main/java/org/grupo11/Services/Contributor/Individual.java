@@ -1,29 +1,20 @@
 package org.grupo11.Services.Contributor;
 
-import java.util.List;
-
-import org.grupo11.Services.Contributions.ContributionType;
+import org.grupo11.enums.DocumentType;
 
 public class Individual extends Contributor {
-    private String name;
     private String surname;
     private String birth;
+    private int document;
+    private DocumentType documentType;
 
-    public Individual(List<ContributionType> possibleContributions) {
-        super(possibleContributions);
-
-    }
-
-    public Individual(String address, List<ContributionType> possibleContributions) {
-        super(address, possibleContributions);
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public Individual(String name, String surname, String address, String birth, int document,
+            DocumentType documentType) {
+        super(name, address, null);
+        this.surname = surname;
+        this.birth = birth;
+        this.document = document;
+        this.documentType = documentType;
     }
 
     public String getSurname() {
@@ -40,6 +31,22 @@ public class Individual extends Contributor {
 
     public void setBirth(String birth) {
         this.birth = birth;
+    }
+
+    public int getDocument() {
+        return this.document;
+    }
+
+    public void setDocument(int document) {
+        this.document = document;
+    }
+
+    public DocumentType getDocumentType() {
+        return this.documentType;
+    }
+
+    public void setDocumentType(DocumentType documentType) {
+        this.documentType = documentType;
     }
 
 }

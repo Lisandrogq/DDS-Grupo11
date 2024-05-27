@@ -6,25 +6,14 @@ import org.grupo11.Services.Contributions.ContributionType;
 import org.grupo11.Services.Contributor.Contributor;
 
 public class LegalEntity extends Contributor {
-    private String businessName;
     private LegalEntityType type;
     private LegalEntityCategory category;
 
-    public LegalEntity(List<ContributionType> possibleContributions) {
-        super(possibleContributions);
-
-    }
-
-    public LegalEntity(String address, List<ContributionType> possibleContributions) {
-        super(address, possibleContributions);
-    }
-
-    public String getBusinessName() {
-        return this.businessName;
-    }
-
-    public void setBusinessName(String businessName) {
-        this.businessName = businessName;
+    public LegalEntity(String businessName, String address, LegalEntityType type, LegalEntityCategory category,
+            List<ContributionType> possibleContributions) {
+        super(businessName, address, possibleContributions);
+        this.type = type;
+        this.category = category;
     }
 
     public LegalEntityType getType() {

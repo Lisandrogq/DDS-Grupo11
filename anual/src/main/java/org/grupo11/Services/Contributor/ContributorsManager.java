@@ -27,6 +27,15 @@ public class ContributorsManager {
         return null;
     }
 
+    public Individual getIndividualByDocument(int document) {
+        for (Contributor contributor : contributors) {
+            if (contributor instanceof Individual) {
+                return ((Individual) contributor).getDocument() == document ? (Individual) contributor : null;
+            }
+        }
+        return null;
+    }
+
     public List<Contributor> getContributors() {
         return this.contributors;
     }
