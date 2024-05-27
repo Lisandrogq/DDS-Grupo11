@@ -5,7 +5,8 @@ import org.grupo11.Services.Meal;
 public class MealDonation extends Contribution {
     private Meal meal;
 
-    public MealDonation(Meal meal) {
+    public MealDonation(Meal meal, long date) {
+        super(date);
         this.meal = meal;
     }
 

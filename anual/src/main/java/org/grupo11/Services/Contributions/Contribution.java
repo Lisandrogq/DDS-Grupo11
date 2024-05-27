@@ -6,9 +6,12 @@ import org.grupo11.Utils.Crypto;
 
 public abstract class Contribution {
     private int id;
+    protected long date;
+    protected Contributor contributor;
 
-    public Contribution() {
+    public Contribution(long date) {
         id = Crypto.getRandomId(6);
+        this.date = date;
     }
 
     /**
@@ -16,6 +19,7 @@ public abstract class Contribution {
      */
     public boolean contribute(Contributor contributor) {
         if (this.validate(contributor)) {
+            this.contributor = contributor;
             contributor.addContribution(this);
             RewardSystem.assignPoints(contributor, this);
             return true;
@@ -33,4 +37,25 @@ public abstract class Contribution {
     public int getId() {
         return id;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public long getDate() {
+        return this.date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
+    }
+
+    public Contributor getContributor() {
+        return this.contributor;
+    }
+
+    public void setContributor(Contributor contributor) {
+        this.contributor = contributor;
+    }
+
 }

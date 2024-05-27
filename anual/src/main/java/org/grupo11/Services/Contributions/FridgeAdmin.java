@@ -7,7 +7,8 @@ public class FridgeAdmin extends Contribution {
     private LegalEntity business;
     private Fridge fridge;
 
-    public FridgeAdmin(LegalEntity business, Fridge fridge) {
+    public FridgeAdmin(LegalEntity business, Fridge fridge, long date) {
+        super(date);
         this.business = business;
         this.fridge = fridge;
     }

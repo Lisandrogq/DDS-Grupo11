@@ -5,7 +5,8 @@ import org.grupo11.Services.Rewards.Reward;
 public class RewardContribution extends Contribution {
     private Reward reward;
 
-    public RewardContribution(Reward reward) {
+    public RewardContribution(Reward reward, long date) {
+        super(date);
         this.reward = reward;
     }
 

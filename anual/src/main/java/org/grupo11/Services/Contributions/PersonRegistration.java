@@ -6,7 +6,8 @@ import org.grupo11.Services.PersonInNeed.PersonInNeed;
 public class PersonRegistration extends Contribution {
     private PersonInNeed person;
 
-    public PersonRegistration(PersonInNeed person) {
+    public PersonRegistration(PersonInNeed person, long date) {
+        super(date);
         this.person = person;
     }
 

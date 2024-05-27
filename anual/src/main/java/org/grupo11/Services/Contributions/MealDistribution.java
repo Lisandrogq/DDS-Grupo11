@@ -9,17 +9,17 @@ public class MealDistribution extends Contribution {
     private int quantity;
     private String reason;
     private Meal meal;
-    private int distributionDate;
 
     // Constructor
-    public MealDistribution(Fridge originFridge, Fridge destinyFridge, int quantity, String reason, Meal meal,
-            int distributionDate) {
+    public MealDistribution(Fridge originFridge, Fridge destinyFridge, int quantity,
+            String reason, Meal meal,
+            long distributionDate) {
+        super(distributionDate);
         this.originFridge = originFridge;
         this.destinyFridge = destinyFridge;
         this.quantity = quantity;
         this.reason = reason;
         this.meal = meal;
-        this.distributionDate = distributionDate;
     }
 
     public ContributionType getContributionType() {
@@ -64,13 +64,5 @@ public class MealDistribution extends Contribution {
 
     public void setMeal(Meal meal) {
         this.meal = meal;
-    }
-
-    public int getDistributionDate() {
-        return this.distributionDate;
-    }
-
-    public void setDistributionDate(int distributionDate) {
-        this.distributionDate = distributionDate;
     }
 }
