@@ -29,9 +29,8 @@ public class ContributorsManager {
 
     public Individual getIndividualByDocument(int document) {
         for (Contributor contributor : contributors) {
-            if (contributor instanceof Individual) {
-                return ((Individual) contributor).getDocument() == document ? (Individual) contributor : null;
-            }
+            if (contributor instanceof Individual && ((Individual) contributor).getDocument() == document)
+                return (Individual) contributor;
         }
         return null;
     }

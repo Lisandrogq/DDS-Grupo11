@@ -27,12 +27,10 @@ public class DataImporter {
     }
 
     public void loadContributors(String fileName) {
-        // Define the callback as a lambda expression
         Consumer<List<String>> onRead = fields -> {
             try {
                 processFields(fields);
             } catch (ParseException | IllegalArgumentException | IndexOutOfBoundsException e) {
-                // Handle exceptions
                 e.printStackTrace();
             }
         };
@@ -40,7 +38,6 @@ public class DataImporter {
     }
 
     private void processFields(List<String> fields) throws ParseException {
-        // Parse fields
         DocumentType documentType = DocumentType.valueOf(fields.get(0));
         int document = Integer.parseInt(fields.get(1));
         String name = fields.get(2);
@@ -56,8 +53,8 @@ public class DataImporter {
     private void createContribution(DocumentType documentType, int document, String name, String surname,
             String mail, long contributionDate, String contributionType, int quantity) {
 
-        // Add contribution if valid
         Individual contributor = contributorManager.getIndividualByDocument(document);
+        // Add contributor if it does not exists
         if (contributor == null) {
             contributor = new Individual(name, surname, null, null, document, documentType);
             contributorManager.add(contributor);
@@ -79,7 +76,9 @@ public class DataImporter {
                 contribution = new PersonRegistration(null, contributionDate);
                 break;
         }
-        if (contribution != null)
+        if (contribution != null) {
             contributor.addContribution(contribution);
+            contributionsManager.add(contribution);
+        }
     }
 }
