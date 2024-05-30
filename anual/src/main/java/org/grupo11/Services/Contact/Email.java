@@ -1,7 +1,7 @@
 package org.grupo11.Services.Contact;
 
 public class Email extends Contact {
-    String mail;
+    private String mail;
 
     public Email(String mail) {
         this.mail = mail;
@@ -10,4 +10,13 @@ public class Email extends Contact {
     public void SendNotification() {
         // todo later
     }
+
+    public String getMail() {
+        return this.mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
 }
