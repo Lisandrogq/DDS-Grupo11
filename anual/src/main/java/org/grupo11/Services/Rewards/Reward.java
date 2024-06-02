@@ -7,6 +7,7 @@ public class Reward {
     private String name;
     private String imageUrl;
     private float neededPoints;
+    private int quantity;
     private RewardCategory category;
 
     public Reward(String name, float neededPoints, String imageUrl, RewardCategory category) {
@@ -57,4 +58,11 @@ public class Reward {
         this.category = category;
     }
 
+    public int getQuantity() {
+        return this.quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 }

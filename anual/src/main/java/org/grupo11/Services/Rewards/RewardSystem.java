@@ -31,11 +31,15 @@ public class RewardSystem {
      */
     public boolean buyReward(Contributor contributor, int rewardId) {
         Reward reward = getRewardById(rewardId);
+        int quantity = reward.getQuantity();
+        if (quantity <= 0)
+            return false;
         if (reward != null && contributor.getPoints() >= reward.getNeededPoints()) {
             // Deduct points from contributor
             double remainingPoints = contributor.getPoints() - reward.getNeededPoints();
             contributor.setPoints(remainingPoints);
             contributor.addReward(reward);
+            reward.setQuantity(quantity - 1);
             return true;
         }
 
