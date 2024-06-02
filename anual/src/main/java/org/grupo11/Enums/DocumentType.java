@@ -1,4 +1,4 @@
-package org.grupo11.enums;
+package org.grupo11.Enums;
 
 public enum DocumentType {
     LC,

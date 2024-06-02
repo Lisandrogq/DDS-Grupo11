@@ -6,9 +6,9 @@ public class Technician {
     private TechnicianType type;
     private int DNI;
     private String cuil;
-    private String areasOfWork;
+    private AreasOfWork areasOfWork;
 
-    public Technician(String name, String surname, TechnicianType type, int DNI, String cuil, String areasOfWork) {
+    public Technician(String name, String surname, TechnicianType type, int DNI, String cuil, AreasOfWork areasOfWork) {
         this.name = name;
         this.surname = surname;
         this.type = type;
@@ -57,11 +57,11 @@ public class Technician {
         this.cuil = cuil;
     }
 
-    public String getAreasOfWork() {
+    public AreasOfWork getAreasOfWork() {
         return this.areasOfWork;
     }
 
-    public void setAreasOfWork(String areasOfWork) {
+    public void setAreasOfWork(AreasOfWork areasOfWork) {
         this.areasOfWork = areasOfWork;
     }
 
