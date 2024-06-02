@@ -7,21 +7,20 @@
 - [x] integrar los modelos en una clase app para permitir interactuar con los mismos
 - [x] implementación carga masiva
 - [x] implementación mapa (indagar sobre la implementación, me parece muy temprano hacerla ya... para mi es en el boceto por lo que ya lo tendríamos hecho)
-- [ ] refactorear timestamps en unix por Date object, en lugar de estar parseando?
-- [ ] redactar bien las justificaciones del excel
-- [ ] add singleton logic to manager classes and reward system
-- [ ] add reward quantity logic
+- [x] redactar bien las justificaciones del excel
 - [ ] add sensor manager code
 - [ ] add singleton to classes
+- [ ] add reward quantity logic
 - [ ] add validation to the neecesary fields to the csv loading
+- [ ] refactorear timestamps en unix por Date object, en lugar de estar parseando?
 
 ### questions
-- [ ] ask how the point system works: when should they be calculated and which coefficient should be used? For example, say a contributor contributes in some form, should we assign the points right at that time with the coefficients at that time; or when the user wants to buy smth with his points we get all his contributions and calculate it with the coefficients at that time and subtracting the already used ones.
-- [ ] what the hell does this actually mean? ![image](https://github.com/Lisandrogq/DDS-Grupo11/assets/76252340/cb3268c3-5dc1-4b9d-b9f9-742198ccd73d)
-- [ ] ask if using managers is advisable
-- [ ] I am not quite sure bout the fridge sensors implementation: like what do they do and when are they triggered??
-- [ ] Can there be businesses in the csv files?? for now, I've assumed they can't, or rules have changed and businesses can get a DNI?
-- [ ] son la entrega de tarjetas y el registro de personas la misma colaboracion? intuyo que si, pero la consigna esta tan rara que me agarra la duda...
+- [x] ask how the point system works: when should they be calculated and which coefficient should be used? For example, say a contributor contributes in some form, should we assign the points right at that time with the coefficients at that time; or when the user wants to buy smth with his points we get all his contributions and calculate it with the coefficients at that time and subtracting the already used ones.
+- [x] what the hell does this actually mean? ![image](https://github.com/Lisandrogq/DDS-Grupo11/assets/76252340/cb3268c3-5dc1-4b9d-b9f9-742198ccd73d)
+- [x] ask if using managers is advisable
+- [x] I am not quite sure bout the fridge sensors implementation: like what do they do and when are they triggered??
+- [x] Can there be businesses in the csv files?? for now, I've assumed they can't, or rules have changed and businesses can get a DNI?
+- [x] son la entrega de tarjetas y el registro de personas la misma colaboracion? intuyo que si, pero la consigna esta tan rara que me agarra la duda...
  
 ## general
 - [ ] ejercicio Puertos
