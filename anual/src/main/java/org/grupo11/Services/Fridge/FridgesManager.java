@@ -6,10 +6,18 @@ import java.util.List;
 public class FridgesManager {
     private List<Fridge> fridges;
     private FridgeAllocator fridgeAllocator;
+    private static FridgesManager instance = null;
 
-    public FridgesManager() {
+    private FridgesManager() {
         this.fridges = new ArrayList<>();
         this.fridgeAllocator = new FridgeAllocator();
+    }
+
+    public static synchronized FridgesManager getInstance() {
+        if (instance == null)
+            instance = new FridgesManager();
+
+        return instance;
     }
 
     public void add(Fridge fridge) {

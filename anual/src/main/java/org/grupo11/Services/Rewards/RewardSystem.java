@@ -8,9 +8,17 @@ import org.grupo11.Services.Contributor.Contributor;
 
 public class RewardSystem {
     private List<Reward> rewards;
+    private static RewardSystem instance;
 
-    public RewardSystem() {
+    private RewardSystem() {
         this.rewards = new ArrayList<>();
+    }
+
+    public static synchronized RewardSystem getInstance() {
+        if (instance == null)
+            instance = new RewardSystem();
+
+        return instance;
     }
 
     public List<Reward> getRewards() {

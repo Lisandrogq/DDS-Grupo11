@@ -5,9 +5,17 @@ import java.util.List;
 
 public class ContributionsManager {
     private List<Contribution> contributions;
+    private static ContributionsManager instance = null;
 
-    public ContributionsManager() {
+    private ContributionsManager() {
         this.contributions = new ArrayList<>();
+    }
+
+    public static synchronized ContributionsManager getInstance() {
+        if (instance == null)
+            instance = new ContributionsManager();
+
+        return instance;
     }
 
     public void add(Contribution contribution) {

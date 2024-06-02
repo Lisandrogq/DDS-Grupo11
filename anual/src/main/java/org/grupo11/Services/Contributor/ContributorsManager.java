@@ -4,10 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ContributorsManager {
+    private static ContributorsManager instance = null;
     private List<Contributor> contributors;
 
-    public ContributorsManager() {
+    private ContributorsManager() {
         this.contributors = new ArrayList<>();
+    }
+
+    public static synchronized ContributorsManager getInstance() {
+        if (instance == null)
+            instance = new ContributorsManager();
+
+        return instance;
     }
 
     public void add(Contributor contributor) {

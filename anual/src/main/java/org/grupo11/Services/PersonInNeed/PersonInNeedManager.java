@@ -5,9 +5,17 @@ import java.util.List;
 
 public class PersonInNeedManager {
     private List<PersonInNeed> personsInNeed;
+    private static PersonInNeedManager instance = null;
 
-    public PersonInNeedManager() {
+    private PersonInNeedManager() {
         this.personsInNeed = new ArrayList<>();
+    }
+
+    public static synchronized PersonInNeedManager getInstance() {
+        if (instance == null)
+            instance = new PersonInNeedManager();
+
+        return instance;
     }
 
     public List<PersonInNeed> getPersonsInNeed() {
