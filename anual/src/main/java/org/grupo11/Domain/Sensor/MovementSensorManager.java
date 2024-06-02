@@ -8,7 +8,6 @@ public abstract class MovementSensorManager extends SensorManager<Boolean> {
     public MovementSensorManager(Fridge fridge) {
         super(fridge, 60);
         this.isMoving = false;
-
     }
 
     public Boolean isIsMoving() {
