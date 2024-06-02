@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.grupo11.Enums.DocumentType;
 import org.grupo11.Services.Contact.Email;
 import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributions.ContributionsManager;
@@ -15,7 +16,13 @@ import org.grupo11.Services.Contributor.ContributorsManager;
 import org.grupo11.Services.Contributor.Individual;
 import org.grupo11.Utils.CSVReader;
 import org.grupo11.Utils.DateUtils;
-import org.grupo11.enums.DocumentType;
+
+enum ContributionTypeField {
+    DINERO,
+    DONACION_VIANDAS,
+    REDISTRIBUCION_VIANDAS,
+    ENTREGA_TARJETAS,
+}
 
 public class DataImporter {
     ContributionsManager contributionsManager;
@@ -37,23 +44,34 @@ public class DataImporter {
         CSVReader.read(fileName, onRead);
     }
 
+    /**
+     * process each field of the csv, mapping them to the expected value type. In
+     * case one does not match, then we catch the exception and simply return.
+     * So, this would be doing the actual fields data type fields.
+     */
     private void processFields(List<String> fields) throws ParseException {
-        DocumentType documentType = DocumentType.valueOf(fields.get(0));
-        int document = Integer.parseInt(fields.get(1));
-        String name = fields.get(2);
-        String surname = fields.get(3);
-        String mail = fields.get(5);
-        long contributionDate = DateUtils.parseDateString(fields.get(4));
-        String contributionType = fields.get(6);
-        int quantity = Integer.parseInt(fields.get(7));
+        try {
+            DocumentType documentType = DocumentType.valueOf(fields.get(0));
+            int document = Integer.parseInt(fields.get(1));
+            String name = fields.get(2);
+            String surname = fields.get(3);
+            String mail = fields.get(5);
+            long contributionDate = DateUtils.parseDateString(fields.get(4));
+            ContributionTypeField contributionType = ContributionTypeField.valueOf(fields.get(6));
+            int quantity = Integer.parseInt(fields.get(7));
 
-        createContribution(documentType, document, name, surname, mail, contributionDate, contributionType, quantity);
+            createContribution(documentType, document, name, surname, mail, contributionDate, contributionType,
+                    quantity);
+        } catch (Exception e) {
+            return;
+        }
     }
 
     private void createContribution(DocumentType documentType, int document, String name, String surname,
-            String mail, long contributionDate, String contributionType, int quantity) {
+            String mail, long contributionDate, ContributionTypeField contributionType, int quantity) {
 
         Individual contributor = contributorManager.getIndividualByDocument(document);
+
         // Add contributor if it does not exists
         if (contributor == null) {
             contributor = new Individual(name, surname, null, null, document, documentType);
@@ -62,20 +80,22 @@ public class DataImporter {
         }
 
         Contribution contribution = null;
+
         switch (contributionType) {
-            case "DINERO":
+            case DINERO:
                 contribution = new MoneyDonation(quantity, contributionDate);
                 break;
-            case "DONACION_VIANDAS":
+            case DONACION_VIANDAS:
                 contribution = new MealDonation(null, contributionDate);
                 break;
-            case "REDISTRIBUCION_VIANDAS":
+            case REDISTRIBUCION_VIANDAS:
                 contribution = new MealDistribution(null, null, quantity, null, null, contributionDate);
                 break;
-            case "ENTREGA_TARJETAS":
+            case ENTREGA_TARJETAS:
                 contribution = new PersonRegistration(null, contributionDate);
                 break;
         }
+
         if (contribution != null) {
             contributor.addContribution(contribution);
             contributionsManager.add(contribution);
