@@ -1,6 +1,6 @@
 package org.grupo11.Services.Contributor;
 
-import org.grupo11.enums.DocumentType;
+import org.grupo11.Enums.DocumentType;
 
 public class Individual extends Contributor {
     private String surname;

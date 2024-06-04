@@ -5,9 +5,17 @@ import java.util.List;
 
 public class TechnicianManager {
     private List<Technician> technicians;
+    private static TechnicianManager instance = null;
 
-    public TechnicianManager() {
+    private TechnicianManager() {
         this.technicians = new ArrayList<>();
+    }
+
+    public static synchronized TechnicianManager getInstance() {
+        if (instance == null)
+            instance = new TechnicianManager();
+
+        return instance;
     }
 
     public void add(Technician technician) {

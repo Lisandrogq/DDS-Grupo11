@@ -5,9 +5,17 @@ import java.util.List;
 
 public class CardManager {
     private List<Card> cards;
+    private static CardManager instance = null;
 
-    public CardManager() {
+    private CardManager() {
         this.cards = new ArrayList<>();
+    }
+
+    public static synchronized CardManager getInstance() {
+        if (instance == null)
+            instance = new CardManager();
+
+        return instance;
     }
 
     public void add(Card card) {

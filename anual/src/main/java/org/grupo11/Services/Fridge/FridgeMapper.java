@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class FridgeMapper {
-    private static String baseUrl = "https://665264aa813d78e6d6d56912.mockapi.io/api/v1/fridge-location";
+    private static String baseUrl = "https://www.google.com/maps/dir/?api=1";
 
     public static String getSingleFridgeMapLocation(Fridge fridge) {
         return baseUrl + "&waypoints=" + getLonLatSyntax(fridge.getLat(), fridge.getLon());

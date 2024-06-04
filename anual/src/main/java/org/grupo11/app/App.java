@@ -20,13 +20,13 @@ public class App {
     private RewardSystem rewardSystem;
 
     public App() {
-        contributorsManager = new ContributorsManager();
-        contributionsManager = new ContributionsManager();
-        fridgesManager = new FridgesManager();
-        personsInNeedManager = new PersonInNeedManager();
-        technicianManager = new TechnicianManager();
-        cardsManager = new CardManager();
-        rewardSystem = new RewardSystem();
+        contributorsManager = ContributorsManager.getInstance();
+        contributionsManager = ContributionsManager.getInstance();
+        fridgesManager = FridgesManager.getInstance();
+        personsInNeedManager = PersonInNeedManager.getInstance();
+        technicianManager = TechnicianManager.getInstance();
+        cardsManager = CardManager.getInstance();
+        rewardSystem = RewardSystem.getInstance();
     }
 
     public ContributorsManager getContributorsManager() {

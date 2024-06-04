@@ -1,5 +1,7 @@
 package org.grupo11.Services.Fridge;
 
+import org.grupo11.Domain.Sensor.MovementSensorManager;
+import org.grupo11.Domain.Sensor.TemperatureSensorManager;
 import org.grupo11.Services.Meal;
 import org.grupo11.Utils.Crypto;
 
@@ -13,12 +15,12 @@ public class Fridge {
     private int capacity;
     private int commissioningDate;
     private Meal[] meals;
-    private TemperatureMonitor temp;
-    private MovementMonitor mov;
+    private TemperatureSensorManager tempManager;
+    private MovementSensorManager movManager;
 
     public Fridge(double lon, double lat, String address, String name, int capacity, int commissioningDate,
             Meal[] meals,
-            TemperatureMonitor temp, MovementMonitor mov) {
+            TemperatureSensorManager tempManager, MovementSensorManager movManager) {
         this.id = Crypto.getRandomId(6);
         this.lon = lon;
         this.lat = lat;
@@ -27,8 +29,8 @@ public class Fridge {
         this.capacity = capacity;
         this.commissioningDate = commissioningDate;
         this.meals = meals;
-        this.temp = temp;
-        this.mov = mov;
+        this.tempManager = tempManager;
+        this.movManager = movManager;
     }
 
     public int getId() {
@@ -99,20 +101,20 @@ public class Fridge {
         this.meals = meals;
     }
 
-    public TemperatureMonitor getTemp() {
-        return this.temp;
+    public TemperatureSensorManager getTempManager() {
+        return this.tempManager;
     }
 
-    public void setTemp(TemperatureMonitor temp) {
-        this.temp = temp;
+    public void setTemp(TemperatureSensorManager temp) {
+        this.tempManager = temp;
     }
 
-    public MovementMonitor getMov() {
-        return this.mov;
+    public MovementSensorManager getMovManager() {
+        return this.movManager;
     }
 
-    public void setMov(MovementMonitor mov) {
-        this.mov = mov;
+    public void setMov(MovementSensorManager mov) {
+        this.movManager = mov;
     }
 
     public String getMapLocation() {
