@@ -19,4 +19,4 @@ anual assignment.
 
 The scripts loads the App class. See the available methods in [here](./src/main/java/org/grupo11/app/App.java).
 
-PS: make sure you have [maven](https://maven.apache.org/) and java 17 (at lest) installed.
+PS: make sure you have [maven](https://maven.apache.org/) and java 17 (at least) installed.
