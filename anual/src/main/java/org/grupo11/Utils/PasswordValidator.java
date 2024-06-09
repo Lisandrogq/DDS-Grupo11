@@ -22,7 +22,7 @@ public class PasswordValidator {
     // This function reads a file with the 100000 worst passwords and checks if the
     // password is in the file
 
-    private static boolean IsKnownPassword(String pw) {
+    public static boolean IsKnownPassword(String pw) {
         InputStream inputStream = ClassLoader.getSystemResourceAsStream("rockyou.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
@@ -36,19 +36,19 @@ public class PasswordValidator {
 
     }
 
-    private static boolean HasMinimumLength(String pw) {
+    public static boolean HasMinimumLength(String pw) {
         return pw.length() >= 12;
     }
 
-    private static boolean HasUppercaseLetter(String pw) {
+    public static boolean HasUppercaseLetter(String pw) {
         return Pattern.compile("[A-Z]").matcher(pw).find();
     }
 
-    private static boolean HasNumber(String pw) {
+    public static boolean HasNumber(String pw) {
         return Pattern.compile("\\d").matcher(pw).find();
     }
 
-    private static boolean HasSpecialSymbol(String pw) {
+    public static boolean HasSpecialSymbol(String pw) {
         return Pattern.compile("[^a-zA-Z0-9]").matcher(pw).find();
     }
 

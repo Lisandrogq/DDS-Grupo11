@@ -14,7 +14,6 @@ import org.grupo11.Utils.PasswordValidator;
  * https://www.artima.com/articles/testing-private-methods-with-junit-and-suiterunner
  */
 public class PasswordValidatorTest {
-
     @Test
     public void ValidatePassword_shouldNotBeValid() {
         PasswordValidator.Result result = PasswordValidator.ValidatePassword("hola1234");
@@ -27,4 +26,53 @@ public class PasswordValidatorTest {
         assertTrue(result.valid);
     }
 
+    @Test
+    public void HasMinimumLength_shouldReturnTrue() {
+        assertTrue(PasswordValidator.HasMinimumLength("ValidPassword1!"));
+    }
+
+    @Test
+    public void HasMinimumLength_shouldReturnFalse() {
+        assertFalse(PasswordValidator.HasMinimumLength("Short1!"));
+    }
+
+    @Test
+    public void HasUppercaseLetter_shouldReturnTrue() {
+        assertTrue(PasswordValidator.HasUppercaseLetter("ValidPassword1!"));
+    }
+
+    @Test
+    public void HasUppercaseLetter_shouldReturnFalse() {
+        assertFalse(PasswordValidator.HasUppercaseLetter("validpassword1!"));
+    }
+
+    @Test
+    public void HasNumber_shouldReturnTrue() {
+        assertTrue(PasswordValidator.HasNumber("ValidPassword1!"));
+    }
+
+    @Test
+    public void HasNumber_shouldReturnFalse() {
+        assertFalse(PasswordValidator.HasNumber("ValidPassword!"));
+    }
+
+    @Test
+    public void HasSpecialSymbol_shouldReturnTrue() {
+        assertTrue(PasswordValidator.HasSpecialSymbol("ValidPassword1!"));
+    }
+
+    @Test
+    public void HasSpecialSymbol_shouldReturnFalse() {
+        assertFalse(PasswordValidator.HasSpecialSymbol("ValidPassword1"));
+    }
+
+    @Test
+    public void IsKnownPassword_shouldReturnFalseForKnownPassword() {
+        assertFalse(PasswordValidator.IsKnownPassword("123456"));
+    }
+
+     @Test
+    public void IsKnownPassword_shouldReturnTrueForKnownPassword() {
+        assertTrue(PasswordValidator.IsKnownPassword("passrodsklowewq..ewq?382910"));
+    }
 }
