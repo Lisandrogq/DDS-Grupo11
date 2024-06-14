@@ -97,7 +97,7 @@ public class DataImporter {
         }
 
         if (contribution != null) {
-            contributor.addContribution(contribution);
+            contribution.contribute(contributor);//esta funcion agrega los puntos correspondientes
             contributionsManager.add(contribution);
         }
     }
