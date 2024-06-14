@@ -17,9 +17,9 @@
 - [ ] Clase tarjeta: ¿por qué se agrega? ¿no hace referencia a algo físico?
 - [ ] Método colaborar: hace referencia a algo muy físico. "contribución.contribuir" es medio raro debería ser algo como agegar contribución, un set
 - [ ] Person in need y técnico: es polémico que esté separado de persona...
-- [ ] Sensores: está extraño en el diagrama, puede que sea muy complejo pero puede que esté bien igual :) #revisar y justificar. ¿Por qué están los temp ma xy min en el sensor y no en la heladera? sacar last temp del sensor
+- [ ] Sensores: está extraño en el diagrama, puede que sea muy complejo pero puede que esté bien igual :) #revisar y justificar. ¿Por qué están los temp max y min en el sensor y no en la heladera? sacar last temp del sensor
 - [ ] Heladera: en vez de tener dos sensor managers, implementar una colección de sensor managers
-- [ ] Mail: importante, probar hacer envío de mail -> sendgrid
+- [ ] Mail: importante, probar hacer envío de mail → sendgrid
 - [ ] Mantener actualizado el diagrama de CdU
 - [ ] Figma: habrá más roles en el sistema, tendrá que haber más bocetos
 - [ ] RewardSystem: poner los coeficientes en las contribuciones (precalculado). patrón strategy?
