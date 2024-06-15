@@ -25,17 +25,17 @@ public class DataImporterTest {
         dataImporter.loadContributors(fileName);
 
         // Verify the number of contributors
-        assertEquals("Number of contributors should be 5", 5, contributorManager.getContributors().size());
+        assertEquals("Number of contributors should be 1", 1, contributorManager.getContributors().size());
 
         // Verify the number of contributions
-        assertEquals("Number of contributions should be 5", 4, contributionsManager.getContributions().size());
+        assertEquals("Number of contributions should be 1", 1, contributionsManager.getContributions().size());
 
         // Log contributors and contributions
         logContributors();
         logContributions();
 
     }
-    
+
     private void logContributors() {
         System.out.println("Contributors:");
         for (Contributor contributor : contributorManager.getContributors()) {

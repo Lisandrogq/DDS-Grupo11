@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.grupo11.Enums.DocumentType;
-import org.grupo11.Services.Contact.Email;
+import org.grupo11.Services.Contact.EmailContact;
 import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributions.ContributionsManager;
 import org.grupo11.Services.Contributions.MealDistribution;
@@ -77,8 +77,8 @@ public class DataImporter {
         if (contributor == null) {
             contributor = new Individual(name, surname, null, null, document, documentType);
             contributorManager.add(contributor);
-            contributor.addContact(new Email(mail));
-            //todo send mail sendgrid
+            contributor.addContact(new EmailContact(mail));
+            contributor.getContacts().get(0).SendNotification("new account created", "we've created a new account for you");
         }
 
         Contribution contribution = null;

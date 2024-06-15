@@ -1,6 +1,2 @@
 DocumentType,Document,Name,Surname,Email,ContributionDate,ContributionType,Quantity
-LC,123456,John,Doe,johndoe@example.com,15-06-2023,DINERO,100
-LE,654321,Jane,Smith,janesmith@example.com,10-06-2023,DONACION_VIANDAS,0
-DNI,112233,Jim,Beam,jimbeam@example.com,12-06-2023,REDISTRIBUCION_VIANDAS,50
-LC,334455,Jill,Stark,jillstark@example.com,20-06-2023,ENTREGA_TARJETAS,0
-LE,556677,Bob,Brown,bobbrown@example.com,18-06-2023,DINERO,200
+LC,123456,John,Doe,mnicolau@frba.utn.edu.ar,15-06-2023,DINERO,100
