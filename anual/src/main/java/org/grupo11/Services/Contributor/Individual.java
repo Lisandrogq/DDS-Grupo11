@@ -1,5 +1,7 @@
 package org.grupo11.Services.Contributor;
 
+import java.util.ArrayList;
+
 import org.grupo11.Enums.DocumentType;
 
 public class Individual extends Contributor {
@@ -10,7 +12,7 @@ public class Individual extends Contributor {
 
     public Individual(String name, String surname, String address, String birth, int document,
             DocumentType documentType) {
-        super(name, address, null);
+        super(name, address, new ArrayList<>());
         this.surname = surname;
         this.birth = birth;
         this.document = document;
@@ -48,5 +50,4 @@ public class Individual extends Contributor {
     public void setDocumentType(DocumentType documentType) {
         this.documentType = documentType;
     }
-
 }

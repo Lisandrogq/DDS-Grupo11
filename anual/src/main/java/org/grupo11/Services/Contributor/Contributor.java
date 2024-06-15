@@ -8,7 +8,7 @@ import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributions.ContributionType;
 import org.grupo11.Services.Rewards.Reward;
 
-public class Contributor {
+public class Contributor  {
     private String name;
     private List<Contact> contacts;
     private List<ContributionType> possibleContributions;
@@ -18,6 +18,7 @@ public class Contributor {
     private double points;
 
     public Contributor(String name, String address, List<ContributionType> possibleContributions) {
+        this.name = name;
         this.address = address;
         this.contacts = new ArrayList<>();
         this.possibleContributions = new ArrayList<ContributionType>(possibleContributions);

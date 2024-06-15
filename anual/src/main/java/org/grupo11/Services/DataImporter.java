@@ -55,14 +55,15 @@ public class DataImporter {
             int document = Integer.parseInt(fields.get(1));
             String name = fields.get(2);
             String surname = fields.get(3);
-            String mail = fields.get(5);
-            long contributionDate = DateUtils.parseDateString(fields.get(4));
+            String mail = fields.get(4);
+            long contributionDate = DateUtils.parseDateString(fields.get(5));
             ContributionTypeField contributionType = ContributionTypeField.valueOf(fields.get(6));
             int quantity = Integer.parseInt(fields.get(7));
-
+          
             createContribution(documentType, document, name, surname, mail, contributionDate, contributionType,
                     quantity);
         } catch (Exception e) {
+            e.printStackTrace();
             return;
         }
     }
@@ -77,6 +78,7 @@ public class DataImporter {
             contributor = new Individual(name, surname, null, null, document, documentType);
             contributorManager.add(contributor);
             contributor.addContact(new Email(mail));
+            //todo send mail sendgrid
         }
 
         Contribution contribution = null;
@@ -97,8 +99,8 @@ public class DataImporter {
         }
 
         if (contribution != null) {
-            contribution.contribute(contributor);//esta funcion agrega los puntos correspondientes
-            contributionsManager.add(contribution);
+            if(contribution.contribute(contributor))
+                contributionsManager.add(contribution);
         }
     }
 }
