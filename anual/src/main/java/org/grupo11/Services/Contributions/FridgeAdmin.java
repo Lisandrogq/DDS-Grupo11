@@ -32,5 +32,10 @@ public class FridgeAdmin extends Contribution {
     public void setFridge(Fridge fridge) {
         this.fridge = fridge;
     }
+    
+    @Override
+    public double getRewardPoints() {
+        return 2.0;
+    }
 
 }

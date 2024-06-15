@@ -11,6 +11,13 @@
   <dependencies>
 
     <dependency>
+      <groupId>com.sendgrid</groupId>
+      <artifactId>sendgrid-java</artifactId>
+      <version>4.10.2</version>
+    </dependency>
+
+
+    <dependency>
       <groupId>com.opencsv</groupId>
       <artifactId>opencsv</artifactId>
       <version>5.9</version>

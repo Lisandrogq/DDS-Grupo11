@@ -22,4 +22,9 @@ public class RewardContribution extends Contribution {
         this.reward = reward;
     }
 
+    @Override
+    public double getRewardPoints() {
+        return 0;
+    }
+
 }

@@ -30,7 +30,7 @@ public class RewardSystem {
     }
 
     public static void assignPoints(Contributor contributor, Contribution contribution) {
-        contributor.setPoints(contributor.getPoints() + RewardPointsCalculator.getContributionPoints(contribution));
+        contributor.setPoints(contributor.getPoints() + contribution.getRewardPoints());
     }
 
     /**

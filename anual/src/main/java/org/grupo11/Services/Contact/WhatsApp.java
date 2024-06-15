@@ -7,7 +7,7 @@ public class WhatsApp extends Contact {
         this.number = number;
     }
 
-    public void SendNotification() {
+    public void SendNotification(String subject, String message) {
         // todo later
     }
 

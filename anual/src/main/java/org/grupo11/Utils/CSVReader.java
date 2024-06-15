@@ -17,6 +17,9 @@ public class CSVReader {
             com.opencsv.CSVReader reader = new com.opencsv.CSVReader(new InputStreamReader(inputStream));
             String[] line;
 
+             // Skip the header line
+            reader.readNext();
+
             while ((line = reader.readNext()) != null) {
                 List<String> fields = Arrays.asList(line);
                 onRead.accept(fields);

@@ -28,4 +28,9 @@ public class PersonRegistration extends Contribution {
         this.person = person;
     }
 
+    @Override
+    public double getRewardPoints() {
+        return 1.2;
+    }
+
 }

@@ -21,4 +21,11 @@ public class MealDonation extends Contribution {
     public void setMeal(Meal meal) {
         this.meal = meal;
     }
+
+    @Override
+    public double getRewardPoints() {
+        return 1.0;
+    }
+
+
 }
