@@ -65,4 +65,9 @@ public class MealDistribution extends Contribution {
     public void setMeal(Meal meal) {
         this.meal = meal;
     }
+
+    @Override
+    public double getRewardPoints() {
+        return 1.5;
+    }
 }
