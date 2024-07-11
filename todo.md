@@ -27,7 +27,7 @@
 - [ ] DataImporter: deberían ser muchas más clases
 - [X] Paquete behavior: ta raro
 - [ ] API: módulo separado del código (otro proyecto), diagrama de clases aparte, agregar casos de prueba
-- [ ] CSV: hacer el archivo CSV y un archivo diciendo cómo cargar el CSV, diagrama de clases aparte, agregar casos de prueba
+- [X] CSV: hacer el archivo CSV y un archivo diciendo cómo cargar el CSV, diagrama de clases aparte, agregar casos de prueba
  
 ## General
 - [x] Ejercicio Puertos
