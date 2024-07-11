@@ -11,13 +11,11 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
-
 public class DataImporterTest {
     private ContributionsManager contributionsManager = ContributionsManager.getInstance();
-    private ContributorsManager contributorManager  = ContributorsManager.getInstance();
+    private ContributorsManager contributorManager = ContributorsManager.getInstance();
     private DataImporter dataImporter;
 
-  
     @Test
     public void testLoadContributors() {
         dataImporter = new DataImporter(contributionsManager, contributorManager);
@@ -25,10 +23,10 @@ public class DataImporterTest {
         dataImporter.loadContributors(fileName);
 
         // Verify the number of contributors
-        assertEquals("Number of contributors should be 1", 1, contributorManager.getContributors().size());
+        assertEquals("Number of contributors should be 2", 2, contributorManager.getContributors().size());
 
         // Verify the number of contributions
-        assertEquals("Number of contributions should be 1", 1, contributionsManager.getContributions().size());
+        assertEquals("Number of contributions should be 2", 2, contributionsManager.getContributions().size());
 
         // Log contributors and contributions
         logContributors();
@@ -53,7 +51,6 @@ public class DataImporterTest {
             }
         }
     }
-
 
     private void logContributions() {
         System.out.println("Contributions:");
