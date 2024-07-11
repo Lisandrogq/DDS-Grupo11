@@ -14,12 +14,16 @@ anual assignment.
 
 1. Clone the project: `git clone https://github.com/Lisandrogq/DDS-Grupo11/tree/main`
 2. cd into this folder: `cd anual`
-3. Give permissions: `chmod +x ./run.sh`
-4. Run it!: `./run.sh`
+3. Create a `.env` [here](./src/main/resources/) and the following fields:
+    - SENDGRID_API_KEY=<YOUR_KEY_HERE>
+    - COMPANY_MAIL=<YOUR_COMPANY_MAIL_HERE>
+4. Give permissions: `chmod +x ./run.sh`
+5. Run it!: `./run.sh`
 
 The scripts loads the App class. See the available methods in [here](./src/main/java/org/grupo11/app/App.java).
 
 PS: make sure you have [maven](https://maven.apache.org/) and java 17 (at least) installed.
 
-### Docs 
+### Docs
+
 -   [Instructivos para importar data](./docs/csv_import.md)
