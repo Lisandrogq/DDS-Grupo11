@@ -33,6 +33,7 @@ public abstract class Contribution {
     };
 
     public abstract ContributionType getContributionType();
+    public abstract double getRewardPoints();
 
     public int getId() {
         return id;

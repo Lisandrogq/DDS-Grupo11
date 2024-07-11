@@ -2,6 +2,7 @@ package org.grupo11.Services.Contributions;
 
 public class MoneyDonation extends Contribution {
     private int amount;
+    private double rewardCoef = 1.0;
 
     public MoneyDonation(int amount, long date) {
         super(date);
@@ -18,6 +19,11 @@ public class MoneyDonation extends Contribution {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    @Override
+    public double getRewardPoints() {
+        return amount * rewardCoef;
     }
 
 }
