@@ -99,8 +99,7 @@ public class DataImporter {
         }
 
         if (contribution != null) {
-            if(contribution.contribute(contributor))
-                contributionsManager.add(contribution);
+            contributorManager.addContributionToContributor(contributor, contribution);
         }
     }
 }

@@ -12,7 +12,7 @@ public class PersonRegistration extends Contribution {
     }
 
     @Override
-    protected boolean validate(Contributor contributor) {
+    public boolean validate(Contributor contributor) {
         return (super.validate(contributor) && contributor.getAddress() != null);
     }
 

@@ -14,20 +14,10 @@ public abstract class Contribution {
         this.date = date;
     }
 
-    /**
-     * @return false in case validation fails
-     */
-    public boolean contribute(Contributor contributor) {
-        if (this.validate(contributor)) {
-            this.contributor = contributor;
-            contributor.addContribution(this);
-            RewardSystem.assignPoints(contributor, this);
-            return true;
-        }
-        return false;
-    }
+   
 
-    protected boolean validate(Contributor contributor) {
+
+    public boolean validate(Contributor contributor) {
         contributor.canContributeIn(this.getContributionType());
         return true;
     };
