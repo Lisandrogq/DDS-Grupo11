@@ -23,11 +23,11 @@
 - [ ] Mantener actualizado el diagrama de CdU
 - [ ] Figma: habrá más roles en el sistema, tendrá que haber más bocetos
 - [X] RewardSystem: poner los coeficientes en las contribuciones (precalculado). patrón strategy?
-- [ ] Rewards: agregarles a los contribuidores sus rewards
+- [X] Rewards: agregarles a los contribuidores sus rewards
 - [ ] DataImporter: deberían ser muchas más clases
 - [X] Paquete behavior: ta raro
 - [ ] API: módulo separado del código (otro proyecto), diagrama de clases aparte, agregar casos de prueba
-- [X] CSV: hacer el archivo CSV y un archivo diciendo cómo cargar el CSV, diagrama de clases aparte, agregar casos de prueba
+- [ ] CSV: hacer el archivo CSV y un archivo diciendo cómo cargar el CSV, diagrama de clases aparte, agregar casos de prueba
  
 ## General
 - [x] Ejercicio Puertos
