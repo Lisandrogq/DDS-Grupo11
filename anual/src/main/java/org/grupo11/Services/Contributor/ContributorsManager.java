@@ -8,10 +8,9 @@ import org.grupo11.Services.Contributions.ContributionsManager;
 import org.grupo11.Services.Rewards.RewardSystem;
 
 public class ContributorsManager {
-    private static ContributorsManager instance = null;
     private List<Contributor> contributors;
-    ContributionsManager contributionsManager;
-
+    private static ContributorsManager instance = null;
+    ContributionsManager contributionsManager = ContributionsManager.getInstance();
 
     private ContributorsManager() {
         this.contributors = new ArrayList<>();
