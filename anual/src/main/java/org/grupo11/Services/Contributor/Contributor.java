@@ -24,11 +24,6 @@ public class Contributor  {
         this.possibleContributions = new ArrayList<ContributionType>(possibleContributions);
         this.contributions = new ArrayList<>();
     }
-
-    public void contribute(Contribution contribution) {
-        contribution.contribute(this);
-    }
-
     public void addContribution(Contribution contribution) {
         contributions.add(contribution);
     }

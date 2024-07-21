@@ -3,9 +3,14 @@ package org.grupo11.Services.Contributor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.grupo11.Services.Contributions.Contribution;
+import org.grupo11.Services.Contributions.ContributionsManager;
+import org.grupo11.Services.Rewards.RewardSystem;
+
 public class ContributorsManager {
-    private static ContributorsManager instance = null;
     private List<Contributor> contributors;
+    private static ContributorsManager instance = null;
+    ContributionsManager contributionsManager = ContributionsManager.getInstance();
 
     private ContributorsManager() {
         this.contributors = new ArrayList<>();
@@ -43,6 +48,14 @@ public class ContributorsManager {
         return null;
     }
 
+    public void addContributionToContributor(Contributor contributor,Contribution contribution){
+        if (contribution.validate(contributor)) {
+            contribution.setContributor(contributor);
+            contributor.addContribution(contribution);
+            RewardSystem.assignPoints(contributor, contribution);
+            contributionsManager.add(contribution);
+        }
+    }
     public List<Contributor> getContributors() {
         return this.contributors;
     }
