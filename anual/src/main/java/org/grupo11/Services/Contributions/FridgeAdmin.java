@@ -2,6 +2,7 @@ package org.grupo11.Services.Contributions;
 
 import org.grupo11.Services.Contributor.LegalEntity.LegalEntity;
 import org.grupo11.Services.Fridge.Fridge;
+import org.grupo11.Services.Fridge.FridgesManager;
 
 public class FridgeAdmin extends Contribution {
     private LegalEntity business;
@@ -11,6 +12,8 @@ public class FridgeAdmin extends Contribution {
         super(date);
         this.business = business;
         this.fridge = fridge;
+        FridgesManager manager = FridgesManager.getInstance();
+        manager.add(fridge);
     }
 
     public ContributionType getContributionType() {
