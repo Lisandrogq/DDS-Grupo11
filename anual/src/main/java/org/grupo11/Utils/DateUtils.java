@@ -26,4 +26,8 @@ public class DateUtils {
         return date.getTime();
     }
 
+    public static long getCurrentTimeInMs() {
+        return System.currentTimeMillis();
+    }
+
 }

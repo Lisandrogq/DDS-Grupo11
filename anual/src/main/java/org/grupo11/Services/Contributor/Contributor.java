@@ -8,7 +8,7 @@ import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributions.ContributionType;
 import org.grupo11.Services.Rewards.Reward;
 
-public class Contributor  {
+public class Contributor {
     private String name;
     private List<Contact> contacts;
     private List<ContributionType> possibleContributions;
@@ -16,6 +16,7 @@ public class Contributor  {
     private List<Reward> rewards;
     private String address = null;
     private double points;
+    private ContributorCard card = null;
 
     public Contributor(String name, String address, List<ContributionType> possibleContributions) {
         this.name = name;
@@ -24,6 +25,7 @@ public class Contributor  {
         this.possibleContributions = new ArrayList<ContributionType>(possibleContributions);
         this.contributions = new ArrayList<>();
     }
+
     public void addContribution(Contribution contribution) {
         contributions.add(contribution);
     }
@@ -101,4 +103,11 @@ public class Contributor  {
         this.points = points;
     }
 
+    public ContributorCard getCard() {
+        return this.card;
+    }
+
+    public void setCard(ContributorCard card) {
+        this.card = card;
+    }
 }

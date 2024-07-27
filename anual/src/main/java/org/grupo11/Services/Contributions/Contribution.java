@@ -1,7 +1,6 @@
 package org.grupo11.Services.Contributions;
 
 import org.grupo11.Services.Contributor.Contributor;
-import org.grupo11.Services.Rewards.RewardSystem;
 import org.grupo11.Utils.Crypto;
 
 public abstract class Contribution {
@@ -14,15 +13,16 @@ public abstract class Contribution {
         this.date = date;
     }
 
-   
-
-
     public boolean validate(Contributor contributor) {
         contributor.canContributeIn(this.getContributionType());
         return true;
     };
 
+    public void afterContribution() {
+    }
+
     public abstract ContributionType getContributionType();
+
     public abstract double getRewardPoints();
 
     public int getId() {

@@ -1,7 +1,10 @@
 package org.grupo11.Services.Contributions;
 
 import org.grupo11.Services.Meal;
+import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Fridge;
+import org.grupo11.Services.Fridge.FridgeOpenLogEntry;
+import org.grupo11.Utils.DateUtils;
 
 public class MealDistribution extends Contribution {
     private Fridge originFridge;
@@ -20,6 +23,21 @@ public class MealDistribution extends Contribution {
         this.quantity = quantity;
         this.reason = reason;
         this.meal = meal;
+    }
+
+    @Override
+    public boolean validate(Contributor contributor) {
+        return (super.validate(contributor) &&
+                this.originFridge.hasPermission(contributor)
+                && this.destinyFridge.hasPermission(contributor));
+    }
+
+    @Override
+    public void afterContribution() {
+        this.originFridge
+                .addOpenEntry(new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(), this.contributor.getCard()));
+        this.destinyFridge
+                .addOpenEntry(new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(), this.contributor.getCard()));
     }
 
     public ContributionType getContributionType() {

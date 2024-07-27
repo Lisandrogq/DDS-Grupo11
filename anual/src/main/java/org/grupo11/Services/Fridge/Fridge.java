@@ -1,8 +1,12 @@
 package org.grupo11.Services.Fridge;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.grupo11.Domain.Sensor.MovementSensorManager;
 import org.grupo11.Domain.Sensor.TemperatureSensorManager;
 import org.grupo11.Services.Meal;
+import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Utils.Crypto;
 
 public class Fridge {
@@ -17,6 +21,8 @@ public class Fridge {
     private Meal[] meals;
     private TemperatureSensorManager tempManager;
     private MovementSensorManager movManager;
+    private List<FridgeSolicitude> openSolicitudes;
+    private List<FridgeOpenLogEntry> openedHistory;
 
     public Fridge(double lon, double lat, String address, String name, int capacity, int commissioningDate,
             Meal[] meals,
@@ -31,6 +37,8 @@ public class Fridge {
         this.meals = meals;
         this.tempManager = tempManager;
         this.movManager = movManager;
+        this.openSolicitudes = new ArrayList<FridgeSolicitude>();
+        this.openedHistory = new ArrayList<FridgeOpenLogEntry>();
     }
 
     public int getId() {
@@ -120,4 +128,34 @@ public class Fridge {
     public String getMapLocation() {
         return FridgeMapper.getSingleFridgeMapLocation(this);
     }
+
+    public List<FridgeSolicitude> getOpenSolicitudes() {
+        return this.openSolicitudes;
+    }
+
+    public void addSolicitudes(FridgeSolicitude openSolicitude) {
+        openSolicitudes.add(openSolicitude);
+    }
+
+    public List<FridgeOpenLogEntry> getOpenedHistory() {
+        return this.openedHistory;
+    }
+
+    public void addOpenEntry(FridgeOpenLogEntry entry) {
+        openedHistory.add(entry);
+    }
+
+    public boolean hasPermission(Contributor contributor) {
+        for (FridgeSolicitude solicitude : openSolicitudes) {
+            if (solicitude.getIssuedBy().getId() == contributor.getCard().getId() && !solicitude.hasBeenUsed()) {
+                if (solicitude.isValid()) {
+                    solicitude.markAsUsed();
+                    return true;
+                }
+                ;
+            }
+        }
+        return false;
+    }
+
 }
