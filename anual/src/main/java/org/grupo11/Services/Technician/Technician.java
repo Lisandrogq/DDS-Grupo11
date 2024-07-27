@@ -1,20 +1,32 @@
 package org.grupo11.Services.Technician;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.grupo11.Enums.Provinces;
+import org.grupo11.Services.Contact.Contact;
+
 public class Technician {
     private String name;
     private String surname;
     private TechnicianType type;
     private int DNI;
     private String cuil;
-    private AreasOfWork areasOfWork;
+    private Provinces areasOfWork;
+    private List<TechnicianVisit> visits;
+    private Contact contact;
 
-    public Technician(String name, String surname, TechnicianType type, int DNI, String cuil, AreasOfWork areasOfWork) {
+    public Technician(String name, String surname, TechnicianType type, int DNI, String cuil,
+            Provinces areasOfWork,
+            Contact contact) {
         this.name = name;
         this.surname = surname;
         this.type = type;
         this.DNI = DNI;
         this.cuil = cuil;
         this.areasOfWork = areasOfWork;
+        this.contact = contact;
+        this.visits = new ArrayList<>();
     }
 
     public String getName() {
@@ -57,12 +69,27 @@ public class Technician {
         this.cuil = cuil;
     }
 
-    public AreasOfWork getAreasOfWork() {
+    public Provinces getAreasOfWork() {
         return this.areasOfWork;
     }
 
-    public void setAreasOfWork(AreasOfWork areasOfWork) {
+    public void setAreasOfWork(Provinces areasOfWork) {
         this.areasOfWork = areasOfWork;
     }
 
+    public List<TechnicianVisit> getVisits() {
+        return this.visits;
+    }
+
+    public void addVisit(TechnicianVisit visit) {
+        this.visits.add(visit);
+    }
+
+    public Contact getContact() {
+        return this.contact;
+    }
+
+    public void setContact(Contact contact) {
+        this.contact = contact;
+    }
 }

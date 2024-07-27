@@ -6,9 +6,13 @@ import java.util.List;
 import org.grupo11.Services.Contact.Contact;
 import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributions.ContributionType;
+import org.grupo11.Services.Fridge.Fridge;
+import org.grupo11.Services.Fridge.FridgeNotifications;
+import org.grupo11.Services.Fridge.Subscription;
+import org.grupo11.Services.Fridge.Incident.Incident;
 import org.grupo11.Services.Rewards.Reward;
 
-public class Contributor  {
+public class Contributor {
     private String name;
     private List<Contact> contacts;
     private List<ContributionType> possibleContributions;
@@ -16,6 +20,8 @@ public class Contributor  {
     private List<Reward> rewards;
     private String address = null;
     private double points;
+    private ContributorCard card = null;
+    private List<Subscription> fridgeSubscriptions;
 
     public Contributor(String name, String address, List<ContributionType> possibleContributions) {
         this.name = name;
@@ -23,7 +29,9 @@ public class Contributor  {
         this.contacts = new ArrayList<>();
         this.possibleContributions = new ArrayList<ContributionType>(possibleContributions);
         this.contributions = new ArrayList<>();
+        this.fridgeSubscriptions = new ArrayList<>();
     }
+
     public void addContribution(Contribution contribution) {
         contributions.add(contribution);
     }
@@ -40,7 +48,20 @@ public class Contributor  {
         rewards.add(reward);
     }
 
-    // getters and settters
+    public void reportIncident(Fridge fridge, Incident incident) {
+        fridge.addIncident(incident);
+    }
+
+    public void subscribeToFridge(Fridge fridge, FridgeNotifications type) {
+        fridge.addNotificationSubscription(new Subscription(this, type));
+    }
+
+    public void unsubscribeFromFridge(Fridge fridge, Subscription subscription) {
+        fridge.removeNotificationSubscription(subscription);
+        this.fridgeSubscriptions.remove(subscription);
+    }
+
+    // getters and setters
     public String getName() {
         return this.name;
     }
@@ -101,4 +122,11 @@ public class Contributor  {
         this.points = points;
     }
 
+    public ContributorCard getCard() {
+        return this.card;
+    }
+
+    public void setCard(ContributorCard card) {
+        this.card = card;
+    }
 }

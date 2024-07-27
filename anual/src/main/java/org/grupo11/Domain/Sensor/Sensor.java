@@ -19,4 +19,5 @@ public class Sensor<T> {
     public void setPrevData(T prev_data) {
         this.prevData = prev_data;
     }
+
 }

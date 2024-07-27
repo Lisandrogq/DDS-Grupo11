@@ -1,8 +1,14 @@
 package org.grupo11.Services.Fridge;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.grupo11.Domain.Sensor.MovementSensorManager;
 import org.grupo11.Domain.Sensor.TemperatureSensorManager;
+import org.grupo11.Enums.Provinces;
 import org.grupo11.Services.Meal;
+import org.grupo11.Services.Contributor.Contributor;
+import org.grupo11.Services.Fridge.Incident.Incident;
 import org.grupo11.Utils.Crypto;
 
 public class Fridge {
@@ -10,16 +16,22 @@ public class Fridge {
     private boolean isActive;
     private double lon;
     private double lat;
+    private Provinces area;
     private String address;
     private String name;
     private int capacity;
     private int commissioningDate;
-    private Meal[] meals;
+    private List<Meal> meals;
     private TemperatureSensorManager tempManager;
     private MovementSensorManager movManager;
+    private List<FridgeSolicitude> openSolicitudes;
+    private List<FridgeOpenLogEntry> openedHistory;
+    private List<Incident> incidents;
+    protected List<Subscription> notificationSubscriptions;
+    private List<FridgeNotification> notificationsSent;
 
     public Fridge(double lon, double lat, String address, String name, int capacity, int commissioningDate,
-            Meal[] meals,
+            List<Meal> meals,
             TemperatureSensorManager tempManager, MovementSensorManager movManager) {
         this.id = Crypto.getRandomId(6);
         this.lon = lon;
@@ -31,6 +43,8 @@ public class Fridge {
         this.meals = meals;
         this.tempManager = tempManager;
         this.movManager = movManager;
+        this.openSolicitudes = new ArrayList<FridgeSolicitude>();
+        this.openedHistory = new ArrayList<FridgeOpenLogEntry>();
     }
 
     public int getId() {
@@ -59,6 +73,14 @@ public class Fridge {
 
     public void setLat(double lat) {
         this.lat = lat;
+    }
+
+    public Provinces getArea() {
+        return this.area;
+    }
+
+    public void setArea(Provinces area) {
+        this.area = area;
     }
 
     public String getAddress() {
@@ -93,12 +115,27 @@ public class Fridge {
         this.commissioningDate = commissioningDate;
     }
 
-    public Meal[] getMeals() {
+    public List<Meal> getMeals() {
         return this.meals;
     }
 
-    public void setMeals(Meal[] meals) {
-        this.meals = meals;
+    public void addMeal(Meal meal) {
+        this.meals.add(meal);
+        // if the fridge is 90 percent full, send a notification
+        if (meals.size() >= this.capacity * 0.9)
+            this.sendFridgeNotifications(
+                    new FridgeNotification(FridgeNotifications.NearFullInventory, "Fridge almost full",
+                            "Fridge has low inventory with " + meals.size() + " meals"));
+    }
+
+    public void removeMeal(Meal meal) {
+        this.meals.remove(meal);
+        // if the fridge is 25 percent full, send a notification
+        if (meals.size() >= this.capacity * 0.25)
+            this.sendFridgeNotifications(
+                    new FridgeNotification(FridgeNotifications.NearFullInventory, "Fridge almost full",
+                            "Fridge has low inventory with " + meals.size() + " meals"));
+
     }
 
     public TemperatureSensorManager getTempManager() {
@@ -119,5 +156,66 @@ public class Fridge {
 
     public String getMapLocation() {
         return FridgeMapper.getSingleFridgeMapLocation(this);
+    }
+
+    public List<FridgeSolicitude> getOpenSolicitudes() {
+        return this.openSolicitudes;
+    }
+
+    public void addSolicitudes(FridgeSolicitude openSolicitude) {
+        openSolicitudes.add(openSolicitude);
+    }
+
+    public List<FridgeOpenLogEntry> getOpenedHistory() {
+        return this.openedHistory;
+    }
+
+    public void addOpenEntry(FridgeOpenLogEntry entry) {
+        openedHistory.add(entry);
+    }
+
+    public boolean hasPermission(Contributor contributor) {
+        for (FridgeSolicitude solicitude : openSolicitudes) {
+            if (solicitude.getIssuedBy().getId() == contributor.getCard().getId() && !solicitude.hasBeenUsed()) {
+                if (solicitude.isValid()) {
+                    solicitude.markAsUsed();
+                    return true;
+                }
+                ;
+            }
+        }
+        return false;
+    }
+
+    public List<Incident> getIncidents() {
+        return this.incidents;
+    }
+
+    public void addIncident(Incident incident) {
+        this.incidents.add(incident);
+    }
+
+    public List<Subscription> getNotificationSubscription() {
+        return this.notificationSubscriptions;
+    }
+
+    public void addNotificationSubscription(Subscription subscription) {
+        this.notificationSubscriptions.add(subscription);
+    }
+
+    public void removeNotificationSubscription(Subscription subscription) {
+        this.notificationSubscriptions.remove(subscription);
+    }
+
+    public void sendFridgeNotifications(FridgeNotification fridgeNotification) {
+        for (Subscription subscription : this.notificationSubscriptions) {
+            if (subscription.getType() == fridgeNotification.getType()) {
+
+                subscription.getContributor().getContacts().forEach(value -> {
+                    this.notificationsSent.add(fridgeNotification);
+                    value.SendNotification(fridgeNotification.getSubject(), fridgeNotification.getMessage());
+                });
+            }
+        }
     }
 }

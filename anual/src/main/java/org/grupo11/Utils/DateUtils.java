@@ -26,4 +26,13 @@ public class DateUtils {
         return date.getTime();
     }
 
+    public static long getCurrentTimeInMs() {
+        return System.currentTimeMillis();
+    }
+
+    public static long getAWeekAgoFrom(long currentTimeMs) {
+        long oneWeekMs = 7L * 24 * 60 * 60 * 1000;
+        return currentTimeMs - oneWeekMs;
+    }
+
 }

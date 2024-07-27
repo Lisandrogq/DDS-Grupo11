@@ -48,14 +48,16 @@ public class ContributorsManager {
         return null;
     }
 
-    public void addContributionToContributor(Contributor contributor,Contribution contribution){
+    public void addContributionToContributor(Contributor contributor, Contribution contribution) {
         if (contribution.validate(contributor)) {
             contribution.setContributor(contributor);
             contributor.addContribution(contribution);
+            contribution.afterContribution();
             RewardSystem.assignPoints(contributor, contribution);
             contributionsManager.add(contribution);
         }
     }
+
     public List<Contributor> getContributors() {
         return this.contributors;
     }
