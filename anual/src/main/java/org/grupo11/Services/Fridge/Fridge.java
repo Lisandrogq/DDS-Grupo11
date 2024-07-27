@@ -5,8 +5,10 @@ import java.util.List;
 
 import org.grupo11.Domain.Sensor.MovementSensorManager;
 import org.grupo11.Domain.Sensor.TemperatureSensorManager;
+import org.grupo11.Enums.Provinces;
 import org.grupo11.Services.Meal;
 import org.grupo11.Services.Contributor.Contributor;
+import org.grupo11.Services.Fridge.Incident.Incident;
 import org.grupo11.Utils.Crypto;
 
 public class Fridge {
@@ -14,6 +16,7 @@ public class Fridge {
     private boolean isActive;
     private double lon;
     private double lat;
+    private Provinces area;
     private String address;
     private String name;
     private int capacity;
@@ -23,6 +26,7 @@ public class Fridge {
     private MovementSensorManager movManager;
     private List<FridgeSolicitude> openSolicitudes;
     private List<FridgeOpenLogEntry> openedHistory;
+    private List<Incident> incidents;
 
     public Fridge(double lon, double lat, String address, String name, int capacity, int commissioningDate,
             Meal[] meals,
@@ -67,6 +71,14 @@ public class Fridge {
 
     public void setLat(double lat) {
         this.lat = lat;
+    }
+
+    public Provinces getArea() {
+        return this.area;
+    }
+
+    public void setArea(Provinces area) {
+        this.area = area;
     }
 
     public String getAddress() {
@@ -158,4 +170,11 @@ public class Fridge {
         return false;
     }
 
+    public List<Incident> getIncidents() {
+        return this.incidents;
+    }
+
+    public void addIncident(Incident incident) {
+        this.incidents.add(incident);
+    }
 }

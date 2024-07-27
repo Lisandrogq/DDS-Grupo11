@@ -6,6 +6,8 @@ import java.util.List;
 import org.grupo11.Services.Contact.Contact;
 import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributions.ContributionType;
+import org.grupo11.Services.Fridge.Fridge;
+import org.grupo11.Services.Fridge.Incident.Incident;
 import org.grupo11.Services.Rewards.Reward;
 
 public class Contributor {
@@ -40,6 +42,10 @@ public class Contributor {
 
     public void addReward(Reward reward) {
         rewards.add(reward);
+    }
+
+    public void reportyIncident(Fridge fridge, Incident incident) {
+        fridge.addIncident(incident);
     }
 
     // getters and settters

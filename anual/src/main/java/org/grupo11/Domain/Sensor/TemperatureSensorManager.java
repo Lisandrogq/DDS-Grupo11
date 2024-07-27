@@ -3,6 +3,12 @@ package org.grupo11.Domain.Sensor;
 import java.util.List;
 
 import org.grupo11.Services.Fridge.Fridge;
+import org.grupo11.Services.Fridge.Incident.Alert;
+import org.grupo11.Services.Fridge.Incident.AlertType;
+import org.grupo11.Services.Technician.Technician;
+import org.grupo11.Services.Technician.TechnicianManager;
+import org.grupo11.Services.Technician.TechnicianType;
+import org.grupo11.Utils.DateUtils;
 
 public class TemperatureSensorManager extends SensorManager<Double> {
     private double minTemp;
@@ -55,8 +61,14 @@ public class TemperatureSensorManager extends SensorManager<Double> {
 
     @Override
     public void fireAlert() {
-        // maybe send an email here...
-        System.out.println("fridge temperature is out of bounds!");
+        fridge.addIncident(new Alert(AlertType.TemperatureAlert, DateUtils.getCurrentTimeInMs()));
+        // send a message to all the technicians so one responds
+        for (Technician technician : TechnicianManager.getInstance().getTechnicians()) {
+            if (technician.getAreasOfWork() == fridge.getArea() && technician.getType() == TechnicianType.ELECTRICIAN) {
+                technician.getContact().SendNotification("WE NEED YOU",
+                        "We need you to fix a fridge");
+            }
+        }
     }
 
     @Override

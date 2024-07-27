@@ -45,7 +45,7 @@ public abstract class SensorManager<T> {
     }
 
     public void removeSensor(Sensor<T> sensor) {
-        sensors.add(sensor);
+        sensors.remove(sensor);
     }
 
     public abstract void checkSensors();
