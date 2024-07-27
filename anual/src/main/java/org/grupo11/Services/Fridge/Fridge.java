@@ -21,15 +21,17 @@ public class Fridge {
     private String name;
     private int capacity;
     private int commissioningDate;
-    private Meal[] meals;
+    private List<Meal> meals;
     private TemperatureSensorManager tempManager;
     private MovementSensorManager movManager;
     private List<FridgeSolicitude> openSolicitudes;
     private List<FridgeOpenLogEntry> openedHistory;
     private List<Incident> incidents;
+    protected List<Subscription> notificationSubscriptions;
+    private List<FridgeNotification> notificationsSent;
 
     public Fridge(double lon, double lat, String address, String name, int capacity, int commissioningDate,
-            Meal[] meals,
+            List<Meal> meals,
             TemperatureSensorManager tempManager, MovementSensorManager movManager) {
         this.id = Crypto.getRandomId(6);
         this.lon = lon;
@@ -113,12 +115,28 @@ public class Fridge {
         this.commissioningDate = commissioningDate;
     }
 
-    public Meal[] getMeals() {
+    public List<Meal> getMeals() {
         return this.meals;
     }
 
-    public void setMeals(Meal[] meals) {
-        this.meals = meals;
+    public void addMeal(Meal meal) {
+        this.meals.add(meal);
+        // if the fridge is 90 percent full, send a notification
+        if (meals.size() >= this.capacity * 0.9)
+            this.sendFridgeNotifications(
+                    new FridgeNotification(FridgeNotifications.NearFullInventory, "Fridge almost full",
+                            "Fridge has low inventory with " + meals.size() + " meals"));
+    }
+
+    public void removeMeal(Meal meal) {
+        this.meals.remove(meal);
+        // if the fridge is 25 percent full, send a notification
+        if (meals.size() >= this.capacity * 0.25)
+
+            this.sendFridgeNotifications(
+                    new FridgeNotification(FridgeNotifications.NearFullInventory, "Fridge almost full",
+                            "Fridge has low inventory with " + meals.size() + " meals"));
+
     }
 
     public TemperatureSensorManager getTempManager() {
@@ -176,5 +194,29 @@ public class Fridge {
 
     public void addIncident(Incident incident) {
         this.incidents.add(incident);
+    }
+
+    public List<Subscription> getNotificationSubscription() {
+        return this.notificationSubscriptions;
+    }
+
+    public void addNotificationSubscription(Subscription subscription) {
+        this.notificationSubscriptions.add(subscription);
+    }
+
+    public void removeNotificationSubscription(Subscription subscription) {
+        this.notificationSubscriptions.remove(subscription);
+    }
+
+    public void sendFridgeNotifications(FridgeNotification fridgeNotification) {
+        for (Subscription subscription : this.notificationSubscriptions) {
+            if (subscription.getType() == fridgeNotification.getType()) {
+
+                subscription.getContributor().getContacts().forEach(value -> {
+                    this.notificationsSent.add(fridgeNotification);
+                    value.SendNotification(fridgeNotification.getSubject(), fridgeNotification.getMessage());
+                });
+            }
+        }
     }
 }

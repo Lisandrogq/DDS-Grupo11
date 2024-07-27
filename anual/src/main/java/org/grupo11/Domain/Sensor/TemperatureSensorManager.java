@@ -3,6 +3,8 @@ package org.grupo11.Domain.Sensor;
 import java.util.List;
 
 import org.grupo11.Services.Fridge.Fridge;
+import org.grupo11.Services.Fridge.FridgeNotification;
+import org.grupo11.Services.Fridge.FridgeNotifications;
 import org.grupo11.Services.Fridge.Incident.Alert;
 import org.grupo11.Services.Fridge.Incident.AlertType;
 import org.grupo11.Services.Technician.Technician;
@@ -69,6 +71,10 @@ public class TemperatureSensorManager extends SensorManager<Double> {
                         "We need you to fix a fridge");
             }
         }
+        // send a message to the subscribers
+        fridge.sendFridgeNotifications(
+                new FridgeNotification(FridgeNotifications.Malfunction, "Fridge is malfunctioning",
+                        "The fridge temperature is failing, meals should be redistributed in brevity."));
     }
 
     @Override
