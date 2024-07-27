@@ -132,7 +132,6 @@ public class Fridge {
         this.meals.remove(meal);
         // if the fridge is 25 percent full, send a notification
         if (meals.size() >= this.capacity * 0.25)
-
             this.sendFridgeNotifications(
                     new FridgeNotification(FridgeNotifications.NearFullInventory, "Fridge almost full",
                             "Fridge has low inventory with " + meals.size() + " meals"));
