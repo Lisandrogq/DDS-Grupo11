@@ -1,17 +1,18 @@
-package org.grupo11.Services.Contributor;
+package org.grupo11.Services.ActivityRegistry;
 
 import java.util.List;
 
 import org.grupo11.Services.Fridge.FridgeSolicitude;
+import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Utils.DateUtils;
 
-public class ContributorCard {
+public class ContributorRegistry extends ActivityRegistry {
     private int id;
     private Contributor owner;
     private List<FridgeSolicitude> permissions;
 
-    public ContributorCard(int id, Contributor owner, List<FridgeSolicitude> permissions) {
+    public ContributorRegistry(int id, Contributor owner, List<FridgeSolicitude> permissions) {
         this.id = id;
         this.owner = owner;
         this.permissions = permissions;

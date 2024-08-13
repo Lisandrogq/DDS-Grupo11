@@ -24,6 +24,9 @@ public class PersonRegistration extends Contribution {
     public PersonInNeed getPerson() {
         return this.person;
     }
+    public Contributor getGivenBy() {
+        return this.givenBy;
+    }
 
     public void setPerson(PersonInNeed person) {
         this.person = person;

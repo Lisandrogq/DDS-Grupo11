@@ -1,12 +1,12 @@
 package org.grupo11.Services.Fridge;
 
-import org.grupo11.Services.Contributor.ContributorCard;
+import org.grupo11.Services.ActivityRegistry.ActivityRegistry;
 
 public class FridgeOpenLogEntry {
     public long openedAt;
-    public ContributorCard openedBy;//PRINCIPALMENTE SE DEBEN ACEPTAR TARJETAS DE PINs, capaz tambien de Contributors
+    public ActivityRegistry openedBy;//PRINCIPALMENTE SE DEBEN ACEPTAR TARJETAS DE PINs, capaz tambien de Contributors
 
-    public FridgeOpenLogEntry(long openedAt, ContributorCard openedBy) {
+    public FridgeOpenLogEntry(long openedAt, ActivityRegistry openedBy) {
         this.openedAt = openedAt;
         this.openedBy = openedBy;
     }

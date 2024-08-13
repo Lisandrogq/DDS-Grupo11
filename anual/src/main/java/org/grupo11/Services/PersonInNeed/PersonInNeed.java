@@ -1,6 +1,6 @@
 package org.grupo11.Services.PersonInNeed;
 
-import org.grupo11.Services.Card.Card;
+import org.grupo11.Services.ActivityRegistry.PINRegistry;
 
 public class PersonInNeed {
     private int birth;
@@ -8,15 +8,15 @@ public class PersonInNeed {
     private String address = null;
     private int DNI;
     private int childCount;
-    private Card card;
+    private PINRegistry PINRegistry;
 
-    public PersonInNeed(int birth, int createdAt, String address, int DNI, int childCount, Card card) {
+    public PersonInNeed(int birth, int createdAt, String address, int DNI, int childCount, PINRegistry PINRegistry) {
         this.birth = birth;
         this.createdAt = createdAt;
         this.address = address;
         this.DNI = DNI;
         this.childCount = childCount;
-        this.card = card;
+        this.PINRegistry = PINRegistry;
     }
 
     public int getBirth() {
@@ -59,12 +59,12 @@ public class PersonInNeed {
         this.childCount = childCount;
     }
 
-    public Card getCard() {
-        return this.card;
+    public PINRegistry getCard() {
+        return this.PINRegistry;
     }
 
-    public void setCard(Card card) {
-        this.card = card;
+    public void setCard(PINRegistry card) {
+        this.PINRegistry = card;
     }
 
 }

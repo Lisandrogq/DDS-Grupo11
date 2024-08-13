@@ -3,6 +3,7 @@ package org.grupo11.Services.Contributor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.grupo11.Services.ActivityRegistry.ContributorRegistry;
 import org.grupo11.Services.Contact.Contact;
 import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributions.ContributionType;
@@ -20,7 +21,7 @@ public class Contributor {
     private List<Reward> rewards;
     private String address = null;
     private double points;
-    private ContributorCard card = null;
+    private ContributorRegistry contributorRegistry = null;
     private List<Subscription> fridgeSubscriptions;
 
     public Contributor(String name, String address, List<ContributionType> possibleContributions) {
@@ -122,11 +123,11 @@ public class Contributor {
         this.points = points;
     }
 
-    public ContributorCard getCard() {
-        return this.card;
+    public ContributorRegistry getCard() {
+        return this.contributorRegistry;
     }
 
-    public void setCard(ContributorCard card) {
-        this.card = card;
+    public void setCard(ContributorRegistry contributorRegistry) {
+        this.contributorRegistry = contributorRegistry;
     }
 }

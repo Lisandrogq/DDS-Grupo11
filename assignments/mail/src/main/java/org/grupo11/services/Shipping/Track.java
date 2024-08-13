@@ -1,7 +1,6 @@
 package org.grupo11.services.Shipping;
 
 import java.util.List;
-import java.util.stream.Collector;
 
 public class Track {
     public static enum ShippingState {

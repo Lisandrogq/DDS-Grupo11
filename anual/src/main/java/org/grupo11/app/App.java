@@ -2,7 +2,7 @@ package org.grupo11.app;
 
 import org.grupo11.Utils.PasswordValidator;
 import org.grupo11.Services.DataImporter;
-import org.grupo11.Services.Card.CardManager;
+import org.grupo11.Services.ActivityRegistry.CardManager;
 import org.grupo11.Services.Contributions.ContributionsManager;
 import org.grupo11.Services.Contributor.ContributorsManager;
 import org.grupo11.Services.Fridge.FridgesManager;

@@ -1,4 +1,4 @@
-package org.grupo11.Services.Card;
+package org.grupo11.Services.ActivityRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,13 +9,13 @@ import org.grupo11.Services.PersonInNeed.PersonInNeed;
 import org.grupo11.Utils.Crypto;
 import org.grupo11.Utils.DateUtils;
 
-public class Card {
+public abstract class PINRegistry extends ActivityRegistry {
     private int id;
     private PersonInNeed owner;
     private List<CardUsage> usages;
     private Contributor givenBy;
 
-    public Card(PersonInNeed owner, Contributor givenBy) {
+    public PINRegistry(PersonInNeed owner, Contributor givenBy) {
         id = Crypto.getRandomId(11);
         this.usages = new ArrayList<>();
         this.givenBy = givenBy;

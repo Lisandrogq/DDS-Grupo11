@@ -1,16 +1,16 @@
 package org.grupo11.Services.Fridge;
 
 import org.grupo11.Constants;
-import org.grupo11.Services.Contributor.ContributorCard;
+import org.grupo11.Services.ActivityRegistry.ContributorRegistry;
 import org.grupo11.Utils.DateUtils;
 
 public class FridgeSolicitude {
-    private ContributorCard issuedBy;
+    private ContributorRegistry issuedBy;
     private Fridge fridge;
     private long issuedAt;
     private boolean alreadyUsed;
 
-    public FridgeSolicitude(ContributorCard issuedBy, long issuedAt, Fridge fridge) {
+    public FridgeSolicitude(ContributorRegistry issuedBy, long issuedAt, Fridge fridge) {
         this.fridge = fridge;
         this.issuedAt = issuedAt;
         this.issuedBy = issuedBy;
@@ -28,7 +28,7 @@ public class FridgeSolicitude {
         return timeDifference <= threeHoursInMillis;
     }
 
-    public ContributorCard getIssuedBy() {
+    public ContributorRegistry getIssuedBy() {
         return this.issuedBy;
     }
 

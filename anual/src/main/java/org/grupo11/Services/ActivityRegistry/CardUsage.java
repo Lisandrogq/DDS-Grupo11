@@ -1,4 +1,4 @@
-package org.grupo11.Services.Card;
+package org.grupo11.Services.ActivityRegistry;
 
 import org.grupo11.Services.Fridge.Fridge;
 
