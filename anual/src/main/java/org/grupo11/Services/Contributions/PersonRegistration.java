@@ -5,10 +5,11 @@ import org.grupo11.Services.PersonInNeed.PersonInNeed;
 
 public class PersonRegistration extends Contribution {
     private PersonInNeed person;
-
-    public PersonRegistration(PersonInNeed person, long date) {
+    private Contributor givenBy;
+    public PersonRegistration(PersonInNeed person, long date, Contributor givenBy) {
         super(date);
         this.person = person;
+        this.givenBy = givenBy;
     }
 
     @Override

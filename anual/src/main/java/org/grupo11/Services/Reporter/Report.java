@@ -4,6 +4,7 @@ public class Report {
     private long createdAt;
     private float failuresPerFridge;
     private float mealsInOutPerFridge;
+    private float mealsOutPerFridge;
     private float mealsPerCollaborator;
 
     public Report(long createdAt, float failuresPerFridge, float mealsInOutPerFridge,

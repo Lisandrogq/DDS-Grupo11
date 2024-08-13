@@ -94,7 +94,7 @@ public class DataImporter {
                 contribution = new MealDistribution(null, null, quantity, null, null, contributionDate);
                 break;
             case ENTREGA_TARJETAS:
-                contribution = new PersonRegistration(null, contributionDate);
+                contribution = new PersonRegistration(null, contributionDate,contributor);
                 break;
         }
 
