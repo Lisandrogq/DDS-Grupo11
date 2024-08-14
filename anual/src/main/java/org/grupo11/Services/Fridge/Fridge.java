@@ -28,7 +28,7 @@ public class Fridge {
     private List<FridgeOpenLogEntry> openedHistory;
     private List<Incident> incidents = new ArrayList<Incident>();
     protected List<Subscription> notificationSubscriptions = new ArrayList<Subscription>();
-    private List<FridgeNotification> notificationsSent;
+    private List<FridgeNotification> notificationsSent = new ArrayList<FridgeNotification>();;
 
     public Fridge(double lon, double lat, String address, String name, int capacity, int commissioningDate,
             List<Meal> meals,

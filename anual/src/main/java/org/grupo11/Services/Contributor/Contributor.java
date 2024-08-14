@@ -15,7 +15,7 @@ import org.grupo11.Services.Rewards.Reward;
 
 public class Contributor {
     private String name;
-    private List<Contact> contacts;
+    private List<Contact> contacts = new ArrayList<Contact>();;
     private List<ContributionType> possibleContributions;
     private List<Contribution> contributions;
     private List<Reward> rewards;
@@ -27,7 +27,6 @@ public class Contributor {
     public Contributor(String name, String address, List<ContributionType> possibleContributions) {
         this.name = name;
         this.address = address;
-        this.contacts = new ArrayList<>();
         this.possibleContributions = new ArrayList<ContributionType>(possibleContributions);
         this.contributions = new ArrayList<>();
         this.fridgeSubscriptions = new ArrayList<>();
