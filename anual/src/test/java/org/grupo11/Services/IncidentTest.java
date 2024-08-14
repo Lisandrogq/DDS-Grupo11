@@ -3,7 +3,6 @@ package org.grupo11.Services;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.grupo11.Config.Env;
 import org.grupo11.Domain.Sensor.MovementSensorManager;
 import org.grupo11.Domain.Sensor.Sensor;
 import org.grupo11.Domain.Sensor.TemperatureSensorManager;
@@ -13,7 +12,6 @@ import org.grupo11.Services.Contact.EmailContact;
 import org.grupo11.Services.Contributions.ContributionType;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Fridge;
-import org.grupo11.Services.Fridge.FridgeMapper;
 import org.grupo11.Services.Fridge.FridgeNotifications;
 import org.grupo11.Services.Technician.Technician;
 import org.grupo11.Services.Technician.TechnicianManager;
@@ -24,7 +22,6 @@ import org.junit.Before;
 
 public class IncidentTest {
 
-    private List<Fridge> fridges;
     Sensor<Double> sensor1 = new Sensor<Double>();
     Fridge fridge = null;
     TemperatureSensorManager tempManager = null;

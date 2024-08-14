@@ -35,7 +35,7 @@ public class Contributor {
     public void addContribution(Contribution contribution) {
         contributions.add(contribution);
     }
-
+    
     public boolean canContributeIn(ContributionType contribution) {
         return possibleContributions.contains(contribution);
     }
@@ -122,11 +122,11 @@ public class Contributor {
         this.points = points;
     }
 
-    public ContributorRegistry getCard() {
+    public ContributorRegistry getContributorRegistry() {
         return this.contributorRegistry;
     }
 
-    public void setCard(ContributorRegistry contributorRegistry) {
+    public void setContributorRegistry(ContributorRegistry contributorRegistry) {
         this.contributorRegistry = contributorRegistry;
     }
 }

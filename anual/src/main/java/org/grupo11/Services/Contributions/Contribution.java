@@ -14,8 +14,7 @@ public abstract class Contribution {
     }
 
     public boolean validate(Contributor contributor) {
-        contributor.canContributeIn(this.getContributionType());
-        return true;
+    return contributor.canContributeIn(this.getContributionType());
     };
 
     public void afterContribution() {

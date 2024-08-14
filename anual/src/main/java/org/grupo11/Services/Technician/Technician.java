@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.grupo11.Enums.Provinces;
 import org.grupo11.Services.Contact.Contact;
-import org.grupo11.Services.Fridge.Incident.Alert;
 
 public class Technician {
     private String name;

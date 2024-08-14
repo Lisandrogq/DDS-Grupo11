@@ -183,7 +183,7 @@ public class Fridge {
 
     public boolean hasPermission(Contributor contributor) {
         for (FridgeSolicitude solicitude : openSolicitudes) {
-            if (solicitude.getIssuedBy().getId() == contributor.getCard().getId() && !solicitude.hasBeenUsed()) {
+            if (solicitude.getIssuedBy().getId() == contributor.getContributorRegistry().getId() && !solicitude.hasBeenUsed()) {
                 if (solicitude.isValid()) {
                     solicitude.markAsUsed();
                     return true;

@@ -21,11 +21,17 @@ public class MealDonation extends Contribution {
     @Override
     public void afterContribution() {
         this.meal.getFridge()
-                .addOpenEntry(new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(), this.contributor.getCard()));
+                .addOpenEntry(new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(), this.contributor.getContributorRegistry()));
     }
 
     public ContributionType getContributionType() {
         return ContributionType.MEAL_DONATION;
+    }
+
+    @Override
+    public void setContributor(Contributor contributor) {
+        super.setContributor(contributor);
+        meal.setContributor(contributor);
     }
 
     public Meal getMeal() {

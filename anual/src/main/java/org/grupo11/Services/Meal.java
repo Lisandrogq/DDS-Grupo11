@@ -13,14 +13,13 @@ public class Meal {
     private Integer calories;
     private Integer weight;
 
-    public Meal(String type, int expirationDate, Contributor contributor, int donationDate, Fridge fridge,
+    public Meal(String type, int expirationDate,  int donationDate, Fridge fridge,
             String state, Integer calories, Integer weight) {
         this.type = type;
         this.expirationDate = expirationDate;
-        this.contributor = contributor;
         this.donationDate = donationDate;
-        this.fridge = fridge;
         this.state = state;
+        this.fridge = fridge;
         this.calories = calories;
         this.weight = weight;
     }
@@ -40,7 +39,12 @@ public class Meal {
     public int getDonationDate() {
         return donationDate;
     }
-
+    public void setFridge( Fridge fridge) {
+        this.fridge= fridge;
+    }
+    public void setContributor( Contributor contributor) {
+        this.contributor= contributor;
+    }
     public Fridge getFridge() {
         return fridge;
     }
