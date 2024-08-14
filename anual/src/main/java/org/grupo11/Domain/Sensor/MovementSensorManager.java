@@ -10,11 +10,11 @@ import org.grupo11.Services.Technician.TechnicianManager;
 import org.grupo11.Services.Technician.TechnicianType;
 import org.grupo11.Utils.DateUtils;
 
-public abstract class MovementSensorManager extends SensorManager<Boolean> {
+public class MovementSensorManager extends SensorManager<Boolean> {
     private Boolean isMoving;
 
     public MovementSensorManager(Fridge fridge) {
-        super(fridge, 60);
+        super(fridge, 7);
         this.isMoving = false;
     }
 

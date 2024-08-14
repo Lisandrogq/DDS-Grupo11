@@ -26,8 +26,8 @@ public class Fridge {
     private MovementSensorManager movManager;
     private List<FridgeSolicitude> openSolicitudes;
     private List<FridgeOpenLogEntry> openedHistory;
-    private List<Incident> incidents;
-    protected List<Subscription> notificationSubscriptions;
+    private List<Incident> incidents = new ArrayList<Incident>();
+    protected List<Subscription> notificationSubscriptions = new ArrayList<Subscription>();
     private List<FridgeNotification> notificationsSent;
 
     public Fridge(double lon, double lat, String address, String name, int capacity, int commissioningDate,
@@ -47,6 +47,13 @@ public class Fridge {
         this.openedHistory = new ArrayList<FridgeOpenLogEntry>();
     }
 
+    public void setTempManager(TemperatureSensorManager tempManager) {
+        this.tempManager = tempManager;
+
+    }
+    public void setMovManager(MovementSensorManager movManager) {
+        this.movManager = movManager;
+    }
     public int getId() {
         return id;
     }
