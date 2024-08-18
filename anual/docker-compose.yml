@@ -24,6 +24,9 @@ services:
     rabbit-mq:
         image: bitnami/rabbitmq:latest
         restart: always
+        environment:
+            - RABBITMQ_USERNAME=fridgebridge
+            - RABBITMQ_PASSWORD=fridgebridge
         ports:
             - 15672:15672
             - 5672:5672

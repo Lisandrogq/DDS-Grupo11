@@ -20,8 +20,8 @@ public class Rabbit {
     public void connect() {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
-        factory.setUsername("guest");
-        factory.setPassword("guest");
+        factory.setUsername("fridgebridge");
+        factory.setPassword("fridgebridge");
         factory.setPort(5672);
         try {
             Connection connection = factory.newConnection();
