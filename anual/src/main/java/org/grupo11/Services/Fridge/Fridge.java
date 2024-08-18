@@ -26,9 +26,9 @@ public class Fridge {
     private MovementSensorManager movManager;
     private List<FridgeSolicitude> openSolicitudes;
     private List<FridgeOpenLogEntry> openedHistory;
-    private List<Incident> incidents;
-    protected List<Subscription> notificationSubscriptions;
-    private List<FridgeNotification> notificationsSent;
+    private List<Incident> incidents = new ArrayList<Incident>();
+    protected List<Subscription> notificationSubscriptions = new ArrayList<Subscription>();
+    private List<FridgeNotification> notificationsSent = new ArrayList<FridgeNotification>();;
 
     public Fridge(double lon, double lat, String address, String name, int capacity, int commissioningDate,
             List<Meal> meals,
@@ -47,6 +47,13 @@ public class Fridge {
         this.openedHistory = new ArrayList<FridgeOpenLogEntry>();
     }
 
+    public void setTempManager(TemperatureSensorManager tempManager) {
+        this.tempManager = tempManager;
+
+    }
+    public void setMovManager(MovementSensorManager movManager) {
+        this.movManager = movManager;
+    }
     public int getId() {
         return id;
     }
@@ -176,7 +183,7 @@ public class Fridge {
 
     public boolean hasPermission(Contributor contributor) {
         for (FridgeSolicitude solicitude : openSolicitudes) {
-            if (solicitude.getIssuedBy().getId() == contributor.getCard().getId() && !solicitude.hasBeenUsed()) {
+            if (solicitude.getIssuedBy().getId() == contributor.getContributorRegistry().getId() && !solicitude.hasBeenUsed()) {
                 if (solicitude.isValid()) {
                     solicitude.markAsUsed();
                     return true;

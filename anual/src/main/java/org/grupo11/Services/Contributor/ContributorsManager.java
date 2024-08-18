@@ -48,14 +48,16 @@ public class ContributorsManager {
         return null;
     }
 
-    public void addContributionToContributor(Contributor contributor, Contribution contribution) {
+    public Boolean addContributionToContributor(Contributor contributor, Contribution contribution) {
         if (contribution.validate(contributor)) {
             contribution.setContributor(contributor);
             contributor.addContribution(contribution);
-            contribution.afterContribution();
+            contribution.afterContribution();//quesestoxd
             RewardSystem.assignPoints(contributor, contribution);
             contributionsManager.add(contribution);
+            return true;
         }
+        return false;
     }
 
     public List<Contributor> getContributors() {

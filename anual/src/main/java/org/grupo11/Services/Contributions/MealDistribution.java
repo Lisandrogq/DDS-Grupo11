@@ -35,9 +35,9 @@ public class MealDistribution extends Contribution {
     @Override
     public void afterContribution() {
         this.originFridge
-                .addOpenEntry(new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(), this.contributor.getCard()));
+                .addOpenEntry(new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(), this.contributor.getContributorRegistry()));
         this.destinyFridge
-                .addOpenEntry(new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(), this.contributor.getCard()));
+                .addOpenEntry(new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(), this.contributor.getContributorRegistry()));
     }
 
     public ContributionType getContributionType() {

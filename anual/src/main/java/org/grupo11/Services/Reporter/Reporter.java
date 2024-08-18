@@ -56,7 +56,7 @@ public class Reporter {
 
     }
 
-    public float getMealsInOutFridgeStatistic() {
+    public float getMealsInOutFridgeStatistic() { //CREO QUE EL REPORTE TIENE QUE SER INDIVIDUAL POR CADA HELADERA, NO UN PROMEDIO
         int totalMeals = FridgesManager.getInstance().getFridges().stream()
                 .mapToInt(fridge -> fridge.getMeals().size())
                 .sum();

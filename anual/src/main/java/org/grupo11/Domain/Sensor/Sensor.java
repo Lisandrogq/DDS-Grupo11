@@ -2,7 +2,7 @@ package org.grupo11.Domain.Sensor;
 
 public class Sensor<T> {
     private T data;
-    private T prevData;
+    private T prevData;//cual era el sentido de esto??
 
     public T getData() {
         return this.data;

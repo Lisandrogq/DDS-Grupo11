@@ -2,7 +2,7 @@ package org.grupo11.app;
 
 import org.grupo11.Utils.PasswordValidator;
 import org.grupo11.Services.DataImporter;
-import org.grupo11.Services.Card.CardManager;
+import org.grupo11.Services.ActivityRegistry.RegistryManager;
 import org.grupo11.Services.Contributions.ContributionsManager;
 import org.grupo11.Services.Contributor.ContributorsManager;
 import org.grupo11.Services.Fridge.FridgesManager;
@@ -16,7 +16,7 @@ public class App {
     private FridgesManager fridgesManager;
     private PersonInNeedManager personsInNeedManager;
     private TechnicianManager technicianManager;
-    private CardManager cardsManager;
+    private RegistryManager cardsManager;
     private RewardSystem rewardSystem;
 
     public App() {
@@ -25,7 +25,7 @@ public class App {
         fridgesManager = FridgesManager.getInstance();
         personsInNeedManager = PersonInNeedManager.getInstance();
         technicianManager = TechnicianManager.getInstance();
-        cardsManager = CardManager.getInstance();
+        cardsManager = RegistryManager.getInstance();
         rewardSystem = RewardSystem.getInstance();
     }
 
@@ -49,7 +49,7 @@ public class App {
         return technicianManager;
     }
 
-    public CardManager getCardsManager() {
+    public RegistryManager getCardsManager() {
         return cardsManager;
     }
 
