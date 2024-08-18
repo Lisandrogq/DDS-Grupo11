@@ -112,11 +112,9 @@ public class IncidentTest {
         fridge.getTempManager().setMaxTemp(34);
         sensor1.setData(35.0);
         tempManager.checkSensors();
-      
-        
+
         assertEquals("fridge should have registered an incident", 1.0, fridge.getIncidents().size(), 0.1);
     }
-
 
     @Test
     public void testOnlyMalFunctionSubscribersGetAlerted() {

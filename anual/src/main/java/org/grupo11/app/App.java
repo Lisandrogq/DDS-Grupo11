@@ -1,6 +1,7 @@
 package org.grupo11.app;
 
 import org.grupo11.Utils.PasswordValidator;
+import org.grupo11.Rabbit;
 import org.grupo11.Services.DataImporter;
 import org.grupo11.Services.ActivityRegistry.RegistryManager;
 import org.grupo11.Services.Contributions.ContributionsManager;
@@ -27,6 +28,7 @@ public class App {
         technicianManager = TechnicianManager.getInstance();
         cardsManager = RegistryManager.getInstance();
         rewardSystem = RewardSystem.getInstance();
+        Rabbit.getInstance().connect();
     }
 
     public ContributorsManager getContributorsManager() {
