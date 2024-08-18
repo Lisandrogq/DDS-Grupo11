@@ -24,6 +24,14 @@ public abstract class SensorManager<T> {
         scheduler.scheduleAtFixedRate(task, checkSensorsEvery, checkSensorsEvery, TimeUnit.SECONDS);
     }
 
+    public Sensor<T> getSensorById(int id) {
+        for (Sensor<T> sensor : sensors) {
+            if (sensor.getId() == id) {
+                return sensor;
+            }
+        }
+        return null;
+    }
     public List<Sensor<T>> getSensors() {
         return this.sensors;
     }
@@ -47,7 +55,7 @@ public abstract class SensorManager<T> {
     public void removeSensor(Sensor<T> sensor) {
         sensors.remove(sensor);
     }
-
+    
     public abstract void checkSensors();
 
     public abstract void fireAlert();
