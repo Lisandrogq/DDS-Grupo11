@@ -23,6 +23,7 @@ public class Rabbit {
         factory.setUsername("fridgebridge");
         factory.setPassword("fridgebridge");
         factory.setPort(5672);
+
         try {
             Connection connection = factory.newConnection();
             channel = connection.createChannel();
@@ -37,7 +38,7 @@ public class Rabbit {
 
     public void setup_consumers(Channel channel) {
         try {
-            channel.basicConsume("System alerts", true, (tag, message) -> Controller.handleAlert(tag, message),
+            channel.basicConsume("System alerts", true, (tag, message) -> Controller.handleTempUpdate(tag, message),
                     consumerTag -> {
                     });
 
