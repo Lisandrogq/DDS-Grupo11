@@ -22,11 +22,11 @@ services:
     #     ports:
     #         - 8080:8080
     rabbit-mq:
-        image: bitnami/rabbitmq:latest
+        image: rabbitmq:latest
         restart: always
         environment:
-            - RABBITMQ_USERNAME=fridgebridge
-            - RABBITMQ_PASSWORD=fridgebridge
+            - RABBITMQ_DEFAULT_USER=fridgebridge
+            - RABBITMQ_DEFAULT_PASS=fridgebridge
         ports:
             - 15672:15672
             - 5672:5672
