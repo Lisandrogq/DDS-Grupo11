@@ -1,25 +1,47 @@
-.fondo-rojo {
-    background-color: #DC143C !important;
+.container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
 }
 
-.formulario{
-    
-    background-color: rgb(235, 229, 229);
-    border-radius: 1cm;
-    border: 1px solid rgb(214, 208, 208);
-    padding: 1em;
+
+.background {
+    background-color: #ffffff !important;
+}
+
+.formulario {
+    background-color: #ffffff;
+    border-radius: 0.1cm;
+    padding: 4em 2.5em;
+    box-shadow: 0 0 0.5cm #aaaaaa70;
+    color: #aaaaaa;
+}
+
+.cuadrado {
+    margin: 10%;
 }
 
 .inputs {
     background-color: rgb(255, 255, 255); 
     border: 1px solid #aaaaaa;
     border-radius: 5px;
+    margin-top: 10px;
+    height: 50px;
+}
+.botonSU {
+    margin-top: 10px;
+    background-color:#ffffff !important;
+    color: #136C91 !important;
+
 }
 
-#CP {
-    background-color: #DC143C !important;
+.botonLI {
+    margin-top: 10px;
+    background-color:#136C91 !important; 
 }
 
-#HOLA {
-    color:#dedede;
+.Login {
+    color:#136C91;
 }
