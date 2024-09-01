@@ -1,0 +1,25 @@
+.fondo-rojo {
+    background-color: #DC143C !important;
+}
+
+.formulario{
+    
+    background-color: rgb(235, 229, 229);
+    border-radius: 1cm;
+    border: 1px solid rgb(214, 208, 208);
+    padding: 1em;
+}
+
+.inputs {
+    background-color: rgb(255, 255, 255); 
+    border: 1px solid #aaaaaa;
+    border-radius: 5px;
+}
+
+#CP {
+    background-color: #DC143C !important;
+}
+
+#HOLA {
+    color:#dedede;
+}
