@@ -2,6 +2,7 @@ package org.grupo11.Domain.Sensor;
 
 import java.util.List;
 
+import org.grupo11.Rabbit;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgeNotification;
 import org.grupo11.Services.Fridge.FridgeNotifications;
@@ -75,6 +76,12 @@ public class TemperatureSensorManager extends SensorManager<Double> {
         fridge.sendFridgeNotifications(
                 new FridgeNotification(FridgeNotifications.Malfunction, "Fridge is malfunctioning",
                         "The fridge temperature is failing, meals should be redistributed in brevity."));
+
+        org.grupo11.Rabbit rabbit = Rabbit.getInstance();
+        // rabbit.send("System alerts", "",
+        // "{ \"op\": \"set_temp\" \"data\": { \"fridge_id\": " + fridge.getId() + ",
+        // \"sensor_id\": "
+        // + sensor.getId() + ", \"temp\": 321432 } }");
     }
 
     @Override

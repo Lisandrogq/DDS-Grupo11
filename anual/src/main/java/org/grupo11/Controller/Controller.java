@@ -23,8 +23,7 @@ public class Controller {
 
     public static void handleTempUpdate(String consumerTag, Delivery message) throws IOException {
         try {
-            String json = message.getBody().toString();
-            System.out.println(json);
+            String json = new String(message.getBody(), "UTF-8");
             FridgeTempDTO dto = JSON.parse(json, new TypeReference<FridgeTempDTO>() {
             });
             Fridge fridge = FridgesManager.getInstance().getById(dto.fridge_id);
