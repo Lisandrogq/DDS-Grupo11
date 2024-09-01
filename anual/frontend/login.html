@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio de Sesión</title>
-    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="forms.css">
     <script src="login.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -15,12 +15,12 @@
     <div class="container-fluid">
 
         <div class="container">
-            <div class="col-11 cuadrado">
+            <div class="cuadrado">
 
                 <form action="" class="formulario row">
-                    <h2 class="Login">
+                    <h3 class="Title">
                         Log in
-                    </h2>
+                    </h3>
                     <div class="w-100"></div>
                     <p>Log into your account</p>
 
@@ -29,9 +29,10 @@
                     <input type="password" id="contrasena" name="contrasena" required placeholder="Your password..."
                         class=" col-12 inputs">
 
-                    <button class="botonSU col-6 btn btn-light " onclick="actualizarConNombre()">Sign up</button>
-
-                    <button class="botonLI col-6 btn btn-primary section-button" onclick="actualizarConNombre()">Log in</button>
+                    <div class="d-flex w-100 gap" style="margin-top: 20px;">
+                        <button class="botonSU1 col-6 btn btn-light" onclick="validar()">Sign up</button>
+                        <button class="botonLI1 col-6 btn btn-primary section-button" onclick="validar()">Log in</button>
+                    </div>
                 </form>
             </div>
         </div>

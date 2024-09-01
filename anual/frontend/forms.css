@@ -1,3 +1,7 @@
+.Title {
+    color:#136C91;
+}
+
 .container {
     display: flex;
     flex-direction: row;
@@ -16,6 +20,7 @@
     padding: 4em 2.5em;
     box-shadow: 0 0 0.5cm #aaaaaa70;
     color: #aaaaaa;
+    max-width: 700px;
 }
 
 .cuadrado {
@@ -28,20 +33,38 @@
     border-radius: 5px;
     margin-top: 10px;
     height: 50px;
+    padding: 0px 15px;
 }
 
-.botonLI {
-    margin-top: 10px;
+.gap {
+    gap : 10px;
+}
+
+.botonSU1 {
     background-color:#ffffff !important;
     color: #136C91 !important;
 
 }
 
-.botonSU {
-    margin-top: 10px;
+.botonLI1 {
     background-color:#136C91 !important; 
 }
 
-.Signup {
-    color:#136C91;
+.botonLI2 {
+    background-color:#ffffff !important;
+    color: #136C91 !important;
+}
+
+.botonSU2 {
+    background-color:#136C91 !important; 
+}
+
+.whoareyou {
+    background-color: #136C91;
+    color: #ffffff;
+}
+
+.desplegables {
+    background-color:#ffffff;
+    color: #aaaaaa;
 }
