@@ -18,6 +18,10 @@ body {
     background-color: #ffffff !important;
 }
 
+.cuadrado {
+    margin: 10%;
+}
+
 .formulario {
     background-color: #ffffff;
     border-radius: 0.1cm;
@@ -27,9 +31,6 @@ body {
     max-width: 700px;
 }
 
-.cuadrado {
-    margin: 10%;
-}
 
 .inputs {
     background-color: rgb(255, 255, 255); 
@@ -53,6 +54,37 @@ body {
 .boton1 {
     background-color:#136C91 !important;
     color: #ffffff; 
+}
+
+.botonLI1 {
+    background-color:#136C91 !important; 
+}
+
+.botonLI2 {
+    background-color:#ffffff !important;
+    color: #136C91 !important;
+}
+
+.slogan{
+    font-family: "Gowun Batang", serif;
+    color: #ffffff;
+}
+.botonInicio{
+    box-shadow: 0 0 30px 5px #000000a2;
+    background-color:#4A90A4 !important; 
+    border-color:#4A90A4 !important; 
+    border-radius: 15px !important;
+}
+.textoBoton{
+    color: #add6ff;
+}
+.botonSU2 {
+    background-color:#136C91 !important; 
+}
+
+.whoareyou {
+    background-color: #136C91;
+    color: #ffffff;
 }
 
 .desplegables {

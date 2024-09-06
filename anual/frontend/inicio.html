@@ -9,27 +9,41 @@
     <script src="login.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
-<body class="background">
-    <div class="container-fluid">
+<body
+    style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+    <div class="w-100">
+        <div class="row align-items-center d-flex w-100">
+            <div class="col-md-7" style="text-align: center;">
+                <div class="col-12">
+                    <img height="400px" width="400px" src="imagenes/LogoOriginal.png" alt="Logo">
+                </div>
+                <h1 class="slogan col-12">Fride Bridge</h1>
+                <h2 class="slogan col-12">Fighting hunger, feeding hope</h2>
 
-            <div class="cuadrado">
-
-                    <div class="d-flex w-100 gap" style="margin-top: 20px;">
-                        <img src="imagenes/Logo.png" alt="Logo">                    
-                        <button class="boton1 col-4 btn btn-primary section-button" onclick="validar()">Join as a collaborator</button>                        
-                        <button class="boton1 col-4 btn btn-primary section-button" onclick="validar()">Find your nearest fridge</button>
-                    </div>
-                    
+            </div>
+            <div class="col-md-5 ">
+                <div class="row align-items-center">
+                    <button class="botonInicio btn btn-primary col-6"
+                        style="height: 150px; padding: 15px; margin-top: 20px; margin-inline: auto;">
+                        <h3 class="textoBoton">Join as a
+                            collaborator</h3>
+                    </button>
                     <div class="w-100"></div>
-                    <h1 class="Title">
-                        Fridge Bridge
-                    </h1>
-                    <div class="w-100"></div>
-                    <p>Fighting hunger, Feeding hope</p>
-
-
+                    <button class="botonInicio btn btn-primary col-6"
+                        style="height: 150px; padding: 15px; margin: 20px; margin-inline: auto;">
+                        <h3 class="textoBoton">Find your
+                            nearest fridge</h3>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
     integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
