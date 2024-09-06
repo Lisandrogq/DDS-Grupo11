@@ -62,13 +62,12 @@ body {
 }
 .botonInicio{
     box-shadow: 0 0 30px 5px #000000a2;
-    color: #003366;
     background-color:#4A90A4 !important; 
     border-color:#4A90A4 !important; 
     border-radius: 15px !important;
 }
 .textoBoton{
-    color: #FFFFFF;
+    color: #add6ff;
 }
 .botonSU2 {
     background-color:#136C91 !important; 
