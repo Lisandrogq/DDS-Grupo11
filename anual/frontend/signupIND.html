@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro</title>
+    <title>Registro Individuo</title>
     <link rel="stylesheet" href="forms.css">
     <script src="forms.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
@@ -26,10 +26,27 @@
                     <div class="w-100"></div>
 
                     <div class="d-flex justify-content-between w-100 gap">
+                    <input type="text" id="mail" name="mail" required placeholder="Your email..." class="inputs" style="width: 70%;">
+
+                    <select required value="Who are you?" class="boton1 inputs" style="width: 30%;">
+                        <option selected disabled hidden>Register as</option>
+                        <option value='Contributor' class="desplegables">Contributor</option>
+                        <option value='Technician' class="desplegables">Technician</option>
+                    </select>
+                    </div>
+
+                    <input type="password" id="contrasena" name="contrasena" required placeholder="Your password..."
+                        class=" col-12 inputs">
+                    <input type="password" id="contrasenaConfirmada" name="contrasena" required placeholder="Your password again..."
+                        class=" col-12 inputs">
+                    <input type="text" id="nombreYApellido" name="nombreYApellido" required placeholder="Your full name..."
+                        class=" col-12 inputs">
+                    <input type="text" id="fechaDeNacimiento" name="fechaDeNacimiento" required placeholder="Your birthdate..."
+                        class=" col-12 inputs">
 
                     <div class="d-flex w-100 gap" style="margin-top: 20px;">
-                    <button class="boton1 col-6 btn btn-primary section-button" onclick="validar()">Sign up as Legal Entity</button>
-                    <button class="boton1 col-6 btn btn-primary section-button" onclick="validar()">Sign up as Individual</button>
+                    <button class="boton1 col-6 btn btn-primary section-button" onclick="validar()">Accept</button>
+                    <button class="boton2 col-6 btn btn-light" onclick="validar()">Cancel</button>
                     </div>
                 </form>
             </div>
