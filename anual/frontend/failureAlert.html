@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Distribución de Viandas</title>
+    <title>Reportar falla</title>
     <link rel="stylesheet" href="forms.css">
     <script src="forms.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
@@ -19,48 +19,25 @@
 
                 <form action="" class="formulario row">
                     <h3 class="Title">
-                        Meal Distribution
+                        Report Failure
                     </h3>
-                    <div class="w-100">
-                    <p>Contribute distributing a meal</p>
-                </div>
-                <div>
-                    <span style="color: #136C91;" class="clickable-text" onclick="agregarInput()">Agregar comida</span> <b>|</b>
-                    <span  style="color: #136C91" class="clickable-text" onclick="eliminarInput()">Eliminar comida</span>
-                </div>
-                    <div id="input-placeholder" style="width: 100%;">
-                        <input type="text" id="meal" name="meal" required placeholder="ID of meal to distribute..."
-                            class="col-12 inputs">
-                    </div>
+                    <div class="w-100"></div>
+                    <p>Report a fridge's malfunction</p>
 
-                   
-                    <input type="text" id="reason" name="reason" required placeholder="Reason for relocation..."
-                        class="col-12 inputs">
-                    
                     <div class="d-flex justify-content-between w-100 gap">
-                        <select required value="fridge" class="boton1 inputs" style="width: 100%;">
-                            <option selected disabled hidden>Choose origin fridge</option>
+                        <input type="text" id="date" name="date" required placeholder="Date..."
+                        class="w-100 inputs required">
+                        </select>
+                            <select required value="fridge" class="boton1 inputs" style="width: 100%;">
+                            <option selected disabled hidden>Select the malfunctioning fridge</option>
                             <option value='Heladera 1' class="desplegables">Heladera 1</option> <!-- sujeto a cambios-->
                             <option value='Heladera 2' class="desplegables">Heladera 2</option>
                             <option value='Heladera 3' class="desplegables">Heladera 3</option>
                             <option value='Heladera 4' class="desplegables">Heladera 4</option>
                         </select>
-
-                        <select required value="fridge" class="boton1 inputs" style="width: 100%;">
-                            <option selected disabled hidden>Choose destiny fridge</option>
-                            <option value='Heladera 1' class="desplegables">Heladera 1</option> <!-- sujeto a cambios-->
-                            <option value='Heladera 2' class="desplegables">Heladera 2</option>
-                            <option value='Heladera 3' class="desplegables">Heladera 3</option>
-                            <option value='Heladera 4' class="desplegables">Heladera 4</option>
-                        </select>
-                        
                     </div>
-                    <div class="d-flex justify-content-between w-100 gap">
-                        <input type="text" id="dateOfDistribution" name="dateOfDistribution" required placeholder="Date of distribution..."
-                        class="w-100 inputs">
-                    <!--<input type="text" id="weight" name="weight" required placeholder="Weight..."
-                        class="w-100 inputs"> -->
-                    </div>
+                    <input type="text" id="description" name="description" required placeholder="Failure description..."
+                        class="col-12 inputs required">
 
                     <div class="d-flex w-100 gap" style="margin-top: 20px;">
                         <button type="submit" class="boton1 col-6 btn btn-primary section-button" onclick="validar()">Submit</button>
