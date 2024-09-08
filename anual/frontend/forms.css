@@ -36,6 +36,16 @@ body {
 	padding: 0px 15px;
 }
 
+.bloqueDeTexto {
+	text-align: center;
+	background-color: rgb(230, 223, 223);
+	border-radius: 5px;
+	padding: 12.5px 12.5px;
+	margin-top: 10px;
+	height: 50px;
+	color: #2d3031d3;
+}
+
 .gap {
 	gap: 10px;
 }
