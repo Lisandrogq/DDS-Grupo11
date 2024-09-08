@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <title>Modal</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Launch demo modal
+    </button>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 w-100" id="exampleModalLabel" style="color:#187ba5;">Medrano Fridge</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1" style="margin-bottom: 10px;">Description:</label>
+                        <textarea placeholder="What happened?" class="form-control" id="exampleFormControlTextarea1" rows="3" style="background-color: #e9f0f3;"></textarea>
+                      </div>
+
+                </div>
+                <div class="modal-footer" style="display: flex;justify-content: space-around;">
+                    <button type="button" class="footer btn btn-light" data-bs-dismiss="modal" style="color: #187ba5;">Cancelar</button>
+                    <button type="button" class=" footer btn btn-primary">Reportar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -117,7 +117,16 @@ p {
 .my-card {
 	background-color: var(--white);
 	border-radius: 8px;
-	padding: 30px 40px;
 	box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+	padding: 30px 40px;
 	overflow: auto;
+}
+.my-card-item {
+	cursor: pointer;
+	background-color: transparent;
+	transition: background-color 0.2s;
+}
+
+.my-card-item:hover {
+	background-color: rgb(224, 224, 224);
 }
