@@ -1,126 +1,208 @@
 <!DOCTYPE html>
 <html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>FridgeBridge</title>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+			integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+			crossorigin="anonymous"
+		/>
+		<link rel="stylesheet" href="../../css/base.css" />
+		<link rel="stylesheet" href="../../css/home.css" />
 
-<head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>FridgeBridge</title>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
-		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
-	<link rel="stylesheet" href="../css/base.css" />
-	<link rel="stylesheet" href="../css/home.css" />
+		<link rel="stylesheet" href="../xd.css" />
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+	</head>
 
-	<link rel="stylesheet" href="../xd.css">
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</head>
+	<body>
+		<div class="fullscreen">
+			<div
+				class="d-flex flex-column w-100"
+				style="max-width: 1280px; margin: auto; gap: 50px; padding: 50px"
+			>
+				<div class="d-flex flex-row justify-content-between align-items-center w-100">
+					<div class="d-flex flex-column gap-3">
+						<h4>Hello alberto 👋</h4>
+						<p>We hope you have a nice day!</p>
+					</div>
+					<div class="d-flex flex-row align-items-center" style="gap: 30px">
+						<div class="position-relative alerts-container">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 24 24"
+								fill="currentColor"
+								class="size-6"
+								style="height: 30px; color: var(--gray)"
+							>
+								<path
+									fill-rule="evenodd"
+									d="M5.25 9a6.75 6.75 0 0 1 13.5 0v.75c0 2.123.8 4.057 2.118 5.52a.75.75 0 0 1-.297 1.206c-1.544.57-3.16.99-4.831 1.243a3.75 3.75 0 1 1-7.48 0 24.585 24.585 0 0 1-4.831-1.244.75.75 0 0 1-.298-1.205A8.217 8.217 0 0 0 5.25 9.75V9Zm4.502 8.9a2.25 2.25 0 1 0 4.496 0 25.057 25.057 0 0 1-4.496 0Z"
+									clip-rule="evenodd"
+								/>
+							</svg>
 
-<body>
-	<div class="fullscreen">
-		<div class="d-flex flex-column w-100" style="max-width: 1280px; margin: auto; gap: 50px; padding: 50px">
-			<div class="d-flex flex-row justify-content-between align-items-center w-100">
-				<div class="d-flex flex-column gap-3">
-					<h4>Hello alberto 👋</h4>
-					<p>We hope you have a nice day!</p>
+							<div class="my-card d-flex flex-column alerts">
+								<div class="d-flex flex-row align-items-center" style="gap: 30px">
+									<h4>🚨</h4>
+									<div>
+										<h5>Temperature</h5>
+										<p>The medrano fridge temperature is higher than usual!</p>
+									</div>
+								</div>
+								<div class="d-flex flex-row align-items-center" style="gap: 30px">
+									<h4>🚨</h4>
+									<div>
+										<h5>Temperature</h5>
+										<p>The medrano fridge temperature is higher than usual!</p>
+									</div>
+								</div>
+								<div class="d-flex flex-row align-items-center" style="gap: 30px">
+									<h4>🚨</h4>
+									<div>
+										<h5>Temperature</h5>
+										<p>The medrano fridge temperature is higher than usual!</p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<button class="btn-primary">Contribute</button>
+					</div>
 				</div>
-				<div class="d-flex flex-row align-items-center" style="gap: 30px">
-					<div class="position-relative alerts-container">
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6"
-							style="height: 30px; color: var(--gray)">
-							<path fill-rule="evenodd"
-								d="M5.25 9a6.75 6.75 0 0 1 13.5 0v.75c0 2.123.8 4.057 2.118 5.52a.75.75 0 0 1-.297 1.206c-1.544.57-3.16.99-4.831 1.243a3.75 3.75 0 1 1-7.48 0 24.585 24.585 0 0 1-4.831-1.244.75.75 0 0 1-.298-1.205A8.217 8.217 0 0 0 5.25 9.75V9Zm4.502 8.9a2.25 2.25 0 1 0 4.496 0 25.057 25.057 0 0 1-4.496 0Z"
-								clip-rule="evenodd" />
-						</svg>
 
-						<div class="my-card d-flex flex-column alerts">
-							<div class="d-flex flex-row align-items-center" style="gap: 30px">
-								<h4>🚨</h4>
-								<div>
-									<h5>Temperature</h5>
-									<p>The medrano fridge temperature is higher than usual!</p>
+				<div
+					class="modal fade"
+					id="reportModal"
+					tabindex="-1"
+					aria-labelledby="exampleModalLabel"
+					aria-hidden="true"
+				>
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5
+									class="modal-title fs-5 w-100"
+									id="exampleModalLabel"
+									style="color: #187ba5"
+								>
+									Medrano Fridge
+								</h5>
+								<button
+									type="button"
+									class="close-btn"
+									data-bs-dismiss="modal"
+									aria-label="Close"
+								>
+									Close
+								</button>
+							</div>
+							<div class="modal-body">
+								<div class="form-group">
+									<label
+										for="exampleFormControlTextarea1"
+										style="margin-bottom: 10px"
+										>Description:</label
+									>
+									<textarea
+										placeholder="What happened?"
+										class="form-control"
+										id="exampleFormControlTextarea1"
+										rows="3"
+										style="background-color: #e9f0f3"
+									></textarea>
 								</div>
 							</div>
-							<div class="d-flex flex-row align-items-center" style="gap: 30px">
-								<h4>🚨</h4>
-								<div>
-									<h5>Temperature</h5>
-									<p>The medrano fridge temperature is higher than usual!</p>
-								</div>
-							</div>
-							<div class="d-flex flex-row align-items-center" style="gap: 30px">
-								<h4>🚨</h4>
-								<div>
-									<h5>Temperature</h5>
-									<p>The medrano fridge temperature is higher than usual!</p>
-								</div>
+							<div
+								class="modal-footer"
+								style="display: flex; justify-content: space-around"
+							>
+								<button
+									data-bs-toggle="modal"
+									data-bs-target="#profileModal"
+									type="button"
+									class="footer btn btn-light"
+									data-bs-dismiss="modal"
+									style="color: #187ba5"
+								>
+									Cancelar
+								</button>
+								<button type="button" class="footer btn btn-primary">
+									Reportar
+								</button>
 							</div>
 						</div>
 					</div>
-					<button class="btn-primary">Contribute</button>
 				</div>
-			</div>
 
+				<div
+					class="modal fade"
+					id="profileModal"
+					tabindex="-1"
+					aria-labelledby="exampleModalLabel"
+					aria-hidden="true"
+				>
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5
+									class="modal-title fs-5 w-100"
+									id="exampleModalLabel"
+									style="color: #187ba5"
+								>
+									Medrano Fridge
+								</h5>
+								<button
+									type="button"
+									class="close-btn"
+									data-bs-dismiss="modal"
+									aria-label="Close"
+								>
+									Close
+								</button>
+							</div>
+							<div class="modal-body">
+								<form class="row" style="padding-inline: 20px">
+									<div class="d-flex justify-content-between w-100 gap">
+										<p class="bloqueDeTexto w-100">Meals 🍲: 40</p>
+										<p class="bloqueDeTexto w-100">Temperature 🌡️: 4°</p>
+									</div>
+									<div class="d-flex justify-content-between w-100 gap">
+										<p class="bloqueDeTexto w-100">Reserved ✋: 40</p>
+										<p class="bloqueDeTexto w-100">State 🤞: Active</p>
+									</div>
 
-			<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-				<div class="modal-dialog modal-dialog-centered">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title fs-5 w-100" id="exampleModalLabel" style="color:#187ba5;">Medrano Fridge</h5>
-							<button type="button" class="close-btn" data-bs-dismiss="modal" aria-label="Close">Close</button>
-						</div>
-						<div class="modal-body">
-							<div class="form-group">
-								<label for="exampleFormControlTextarea1" style="margin-bottom: 10px;">Description:</label>
-								<textarea placeholder="What happened?" class="form-control" id="exampleFormControlTextarea1" rows="3" style="background-color: #e9f0f3;"></textarea>
-							  </div>
-		
-						</div>
-						<div class="modal-footer" style="display: flex;justify-content: space-around;">
-							<button data-bs-toggle="modal" data-bs-target="#profileModal" type="button" class="footer btn btn-light" data-bs-dismiss="modal" style="color: #187ba5;">Cancelar</button>
-							<button type="button" class=" footer btn btn-primary">Reportar</button>
+									<div class="d-flex w-100 gap" style="margin-top: 20px">
+										<button
+											type="submit"
+											class="boton1 w-100 btn btn-primary section-button inputs"
+											onclick="validar()"
+										>
+											Suscribe
+										</button>
+									</div>
+								</form>
+							</div>
+							<div
+								class="modal-footer"
+								style="display: flex; justify-content: space-around"
+							>
+								<button
+									data-bs-toggle="modal"
+									data-bs-target="#reportModal"
+									type="button"
+									class="boton1 footer btn btn-primary"
+								>
+									Report failure
+								</button>
+								<button type="button" class="boton1 footer btn btn-primary">
+									View report
+								</button>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-
-
-
-			<div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-				aria-hidden="true">
-				<div class="modal-dialog modal-dialog-centered">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title fs-5 w-100" id="exampleModalLabel" style="color:#187ba5;">
-								Medrano Fridge</h5>
-							<button type="button" class="close-btn" data-bs-dismiss="modal" aria-label="Close">Close</button>
-						</div>
-						<div class="modal-body">
-							<form class="row" style="padding-inline: 20px;">
-
-								
-								<div class="d-flex justify-content-between w-100 gap">
-									<p class="bloqueDeTexto w-100">Meals 🍲: 40</p>
-									<p class="bloqueDeTexto w-100">Temperature 🌡️: 4°</p>
-								</div>
-								<div class="d-flex justify-content-between w-100 gap">
-									<p class="bloqueDeTexto w-100">Reserved ✋: 40</p>
-									<p class="bloqueDeTexto w-100">State 🤞: Active</p>
-								</div>
-								
-								<div class="d-flex w-100 gap" style="margin-top: 20px;">
-									<button type="submit" class="boton1 w-100 btn btn-primary section-button inputs"
-										onclick="validar()">Suscribe</button>
-								</div>
-							</form>
-
-						</div>
-						<div class="modal-footer" style="display: flex;justify-content: space-around;">
-							<button data-bs-toggle="modal" data-bs-target="#reportModal" type="button" class=" boton1 footer btn btn-primary">Report failure</button>
-							<button type="button" class=" boton1 footer btn btn-primary">View report</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			
 
 				<div class="d-flex flex-column w-100" style="gap: 100px">
 					<div class="d-flex flex-row w-100 flex-wrap" style="gap: 50px">
@@ -129,15 +211,24 @@
 								<h4>Your recent donations</h4>
 								<p>A history list of all your donations</p>
 							</div>
-							<div class="my-card d-flex flex-column" style="gap: 30px; height: 350px">
-								<div class="d-flex align-items-center my-card-item" style="gap: 30px">
+							<div
+								class="my-card d-flex flex-column"
+								style="gap: 30px; height: 350px"
+							>
+								<div
+									class="d-flex align-items-center my-card-item"
+									style="gap: 30px"
+								>
 									<h4>🥘</h4>
 									<div>
 										<h5>Food</h5>
 										<p>You have donated “musaka”</p>
 									</div>
 								</div>
-								<div class="d-flex align-items-center my-card-item" style="gap: 30px">
+								<div
+									class="d-flex align-items-center my-card-item"
+									style="gap: 30px"
+								>
 									<h4>👨</h4>
 									<div>
 										<h5>Registered person</h5>
@@ -153,9 +244,16 @@
 								<h4>We need your help</h4>
 								<p>Here is the state of the current fridges</p>
 							</div>
-							<div class="my-card d-flex flex-column" style="gap: 30px; height: 350px">
-								<div data-bs-toggle="modal" data-bs-target="#profileModal"
-									class="d-flex align-items-center my-card-item" style="gap: 30px">
+							<div
+								class="my-card d-flex flex-column"
+								style="gap: 30px; height: 350px"
+							>
+								<div
+									data-bs-toggle="modal"
+									data-bs-target="#profileModal"
+									class="d-flex align-items-center my-card-item"
+									style="gap: 30px"
+								>
 									<h4>🚽</h4>
 									<div class="w-100">
 										<h5>Medrano fridge</h5>
@@ -165,7 +263,10 @@
 										</div>
 									</div>
 								</div>
-								<div class="d-flex align-items-center my-card-item" style="gap: 30px">
+								<div
+									class="d-flex align-items-center my-card-item"
+									style="gap: 30px"
+								>
 									<h4>🚽</h4>
 									<div class="w-100">
 										<h5>Lugano fridge</h5>
@@ -175,7 +276,10 @@
 										</div>
 									</div>
 								</div>
-								<div class="d-flex align-items-center my-card-item" style="gap: 30px">
+								<div
+									class="d-flex align-items-center my-card-item"
+									style="gap: 30px"
+								>
 									<h4>🚽</h4>
 									<div class="w-100">
 										<h5>Villa crespo fridge</h5>
@@ -211,6 +315,5 @@
 				</div>
 			</div>
 		</div>
-</body>
-
+	</body>
 </html>
