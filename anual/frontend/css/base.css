@@ -1,0 +1,123 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap");
+
+html {
+	--bg: #f9fbff;
+	--accent-100: #136c91;
+	--accent-100-hover: #187ba5;
+	--accent-200: #788ec8;
+	--text-100: #2e2836;
+	--text-200: #726a7d;
+}
+
+body {
+	font-family: "Inter" !important;
+	font-weight: 700;
+	background-color: var(--bg);
+	color: var(--text-100);
+}
+
+.fullscreen {
+	height: 100vh;
+	width: 100vw;
+}
+
+h1 {
+	font-size: 60px;
+	font-weight: 700;
+	line-height: 72px;
+	margin: 0;
+}
+
+h2 {
+	font-size: 48px;
+	font-weight: 700;
+	line-height: 58px;
+	margin: 0;
+}
+
+h3 {
+	font-size: 40px;
+	font-weight: 700;
+	line-height: 48px;
+	margin: 0;
+}
+
+h4 {
+	font-size: 28px;
+	font-weight: 700;
+	line-height: 38px;
+	margin: 0;
+}
+
+h5 {
+	font-size: 20px;
+	font-weight: 700;
+	line-height: 32px;
+	margin: 0;
+}
+
+p {
+	font-size: 14px;
+	line-height: 22px;
+	font-weight: 400;
+	color: var(--text-200);
+	margin: 0;
+}
+
+.small {
+	font-size: 12px;
+	line-height: 22px;
+	font-weight: 400;
+}
+
+.bold {
+	font-weight: 700;
+}
+
+.text-100 {
+	color: var(--text-100);
+}
+
+.text-200 {
+	color: var(--text-200);
+}
+
+.accent-100 {
+	color: var(--accent-100);
+}
+
+.accent-200 {
+	color: var(--accent-200);
+}
+
+.bg-accent-100 {
+	background-color: var(--accent-100);
+}
+
+.bg-accent-200 {
+	background-color: var(--accent-200);
+}
+
+.btn-primary {
+	border: none;
+	background-color: var(--accent-100);
+	color: var(--white);
+	border-radius: 8px;
+	font-size: 16px;
+	font-weight: 700;
+	padding: 10px 50px;
+	cursor: pointer;
+	transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+	background-color: var(--accent-100-hover);
+}
+
+.my-card {
+	background-color: var(--white);
+	border-radius: 8px;
+	padding: 30px 40px;
+	box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+	overflow: auto;
+}
