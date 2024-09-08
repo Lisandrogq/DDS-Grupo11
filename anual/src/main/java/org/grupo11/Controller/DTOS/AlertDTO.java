@@ -8,9 +8,4 @@ public class AlertDTO {
     public long detectedAt;
     public int fridge_id;
 
-    public AlertDTO(int fridge_id,AlertType type, long detectedAt) {
-      this.type = type;
-      this.detectedAt= detectedAt;
-      this.fridge_id = fridge_id;
-    }
 }

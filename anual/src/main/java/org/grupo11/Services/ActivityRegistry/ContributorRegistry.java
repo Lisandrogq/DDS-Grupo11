@@ -18,10 +18,11 @@ public class ContributorRegistry extends ActivityRegistry {
         this.permissions = permissions;
     }
 
-    public void registerPermission(Fridge fridge) {
+    public FridgeSolicitude  registerPermission(Fridge fridge) {
         FridgeSolicitude solicitude = new FridgeSolicitude(this, DateUtils.getCurrentTimeInMs(), fridge);
         permissions.add(solicitude);
         fridge.addSolicitudes(solicitude);
+        return solicitude;
     }
 
     public int getId() {

@@ -28,8 +28,8 @@ public class MealDistribution extends Contribution {
     @Override
     public boolean validate(Contributor contributor) {
         return (super.validate(contributor) &&
-                this.originFridge.hasPermission(contributor)
-                && this.destinyFridge.hasPermission(contributor));
+                this.originFridge.hasPermission(contributor.getContributorRegistry().getId())
+                && this.destinyFridge.hasPermission(contributor.getContributorRegistry().getId()));
     }
 
     @Override

@@ -27,8 +27,9 @@ public class Rabbit {
         try {
             Connection connection = factory.newConnection();
             channel = connection.createChannel();
-            channel.queueDeclare("Fridges", false, false, false, null);
-            channel.queueDeclare("System alerts", true, false, false, null);
+            channel.queueDeclare("System Alerts", false, false, false, null);
+            channel.queueDeclare("Temp Updates", true, false, false, null);
+            channel.queueDeclare("Opening Checks", true, false, false, null);
 
             setup_consumers(channel);
         } catch (Exception e) {
@@ -38,13 +39,18 @@ public class Rabbit {
 
     public void setup_consumers(Channel channel) {
         try {
-            channel.basicConsume("System alerts", true, (tag, message) -> Controller.handleTempUpdate(tag, message),
+            channel.basicConsume("Temp Updates", true, (tag, message) -> Controller.handle_temp_update(tag, message),
                     consumerTag -> {
                     });
 
-            channel.basicConsume("Fridges", true, (tag, message) -> Controller.fridges(tag, message),
+            channel.basicConsume("System Alerts", true, (tag, message) -> Controller.handle_alert(tag, message),
                     consumerTag -> {
                     });
+            channel.basicConsume("Opening Checks", true,
+                    (tag, message) -> Controller.handle_opening_request(tag, message),
+                    consumerTag -> {
+                    });
+
         } catch (Exception e) {
             System.err.println("could not connect consume queues");
         }

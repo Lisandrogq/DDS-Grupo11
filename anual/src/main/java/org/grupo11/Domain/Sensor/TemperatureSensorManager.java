@@ -64,7 +64,7 @@ public class TemperatureSensorManager extends SensorManager<Double> {
 
     @Override
     public void fireAlert() {
-        fridge.addIncident(new Alert(AlertType.TemperatureAlert, DateUtils.getCurrentTimeInMs()));
+        fridge.addIncident(new Alert(AlertType.TEMPERATUREALERT, DateUtils.getCurrentTimeInMs()));
         // send a message to all the technicians so one responds
         for (Technician technician : TechnicianManager.getInstance().getTechnicians()) {
             if (technician.getAreasOfWork() == fridge.getArea() && technician.getType() == TechnicianType.ELECTRICIAN) {
