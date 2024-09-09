@@ -30,6 +30,7 @@ input {
 	border-radius: 6px;
 	height: 50px;
 	padding: 10px 20px;
+	width: 100%;
 }
 
 select {
