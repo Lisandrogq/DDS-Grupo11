@@ -71,138 +71,6 @@
 					</div>
 				</div>
 
-				<div
-					class="modal fade"
-					id="reportModal"
-					tabindex="-1"
-					aria-labelledby="exampleModalLabel"
-					aria-hidden="true"
-				>
-					<div class="modal-dialog modal-dialog-centered">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5
-									class="modal-title fs-5 w-100"
-									id="exampleModalLabel"
-									style="color: #187ba5"
-								>
-									Medrano Fridge
-								</h5>
-								<button
-									type="button"
-									class="close-btn"
-									data-bs-dismiss="modal"
-									aria-label="Close"
-								>
-									Close
-								</button>
-							</div>
-							<div class="modal-body">
-								<div class="form-group">
-									<label
-										for="exampleFormControlTextarea1"
-										style="margin-bottom: 10px"
-										>Description:</label
-									>
-									<textarea
-										placeholder="What happened?"
-										class="form-control"
-										id="exampleFormControlTextarea1"
-										rows="3"
-										style="background-color: #e9f0f3"
-									></textarea>
-								</div>
-							</div>
-							<div
-								class="modal-footer"
-								style="display: flex; justify-content: space-around"
-							>
-								<button
-									data-bs-toggle="modal"
-									data-bs-target="#profileModal"
-									type="button"
-									class="footer btn btn-light"
-									data-bs-dismiss="modal"
-									style="color: #187ba5"
-								>
-									Cancelar
-								</button>
-								<button type="button" class="footer btn btn-primary">
-									Reportar
-								</button>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div
-					class="modal fade"
-					id="profileModal"
-					tabindex="-1"
-					aria-labelledby="exampleModalLabel"
-					aria-hidden="true"
-				>
-					<div class="modal-dialog modal-dialog-centered">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5
-									class="modal-title fs-5 w-100"
-									id="exampleModalLabel"
-									style="color: #187ba5"
-								>
-									Medrano Fridge
-								</h5>
-								<button
-									type="button"
-									class="close-btn"
-									data-bs-dismiss="modal"
-									aria-label="Close"
-								>
-									Close
-								</button>
-							</div>
-							<div class="modal-body">
-								<form class="row" style="padding-inline: 20px">
-									<div class="d-flex justify-content-between w-100 gap">
-										<p class="bloqueDeTexto w-100">Meals 🍲: 40</p>
-										<p class="bloqueDeTexto w-100">Temperature 🌡️: 4°</p>
-									</div>
-									<div class="d-flex justify-content-between w-100 gap">
-										<p class="bloqueDeTexto w-100">Reserved ✋: 40</p>
-										<p class="bloqueDeTexto w-100">State 🤞: Active</p>
-									</div>
-
-									<div class="d-flex w-100 gap" style="margin-top: 20px">
-										<button
-											type="submit"
-											class="boton1 w-100 btn btn-primary section-button inputs"
-											onclick="validar()"
-										>
-											Suscribe
-										</button>
-									</div>
-								</form>
-							</div>
-							<div
-								class="modal-footer"
-								style="display: flex; justify-content: space-around"
-							>
-								<button
-									data-bs-toggle="modal"
-									data-bs-target="#reportModal"
-									type="button"
-									class="boton1 footer btn btn-primary"
-								>
-									Report failure
-								</button>
-								<button type="button" class="boton1 footer btn btn-primary">
-									View report
-								</button>
-							</div>
-						</div>
-					</div>
-				</div>
-
 				<div class="d-flex flex-column w-100" style="gap: 100px">
 					<div class="d-flex flex-row w-100 flex-wrap" style="gap: 50px">
 						<div class="d-flex flex-column flex-grow-1" style="min-width: 300px">
@@ -216,6 +84,12 @@
 							>
 								<div
 									class="d-flex align-items-center my-card-item"
+									id="fridge"
+									data-fridge-name="Medrano"
+									data-fridge-temp="3"
+									data-fridge-reserved="40"
+									data-fridge-state="Active"
+									data-fridge-meals="120"
 									style="gap: 30px"
 								>
 									<h4>🥘</h4>
@@ -248,10 +122,14 @@
 								style="gap: 30px; height: 350px"
 							>
 								<div
-									data-bs-toggle="modal"
-									data-bs-target="#profileModal"
 									class="d-flex align-items-center my-card-item"
 									style="gap: 30px"
+									id="fridge"
+									data-fridge-name="Medrano"
+									data-fridge-temp="3"
+									data-fridge-reserved="40"
+									data-fridge-state="Active"
+									data-fridge-meals="120"
 								>
 									<h4>🚽</h4>
 									<div class="w-100">
@@ -265,6 +143,12 @@
 								<div
 									class="d-flex align-items-center my-card-item"
 									style="gap: 30px"
+									id="fridge"
+									data-fridge-name="Lugano"
+									data-fridge-temp="3"
+									data-fridge-reserved="40"
+									data-fridge-state="Danger"
+									data-fridge-meals="-40"
 								>
 									<h4>🚽</h4>
 									<div class="w-100">
@@ -315,6 +199,7 @@
 			</div>
 		</div>
 	</body>
+
 	<div class="modal" id="modal">
 		<div class="my-card d-flex flex-column justify-content-center" style="width: 650px">
 			<p class="small accent-100 align-self-end btn" id="modal-close">close</p>

@@ -7,6 +7,8 @@ html {
 	--accent-200: #788ec8;
 	--text-100: #2e2836;
 	--text-200: #726a7d;
+	--paragraph: 14px;
+	--small: 12px;
 }
 
 body {
@@ -57,7 +59,7 @@ h5 {
 }
 
 p {
-	font-size: 14px;
+	font-size: var(--paragraph);
 	line-height: 22px;
 	font-weight: 400;
 	color: var(--text-200);
@@ -65,7 +67,7 @@ p {
 }
 
 .small {
-	font-size: 12px;
+	font-size: var(--small);
 	line-height: 22px;
 	font-weight: 400;
 }

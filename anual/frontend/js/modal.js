@@ -21,6 +21,47 @@ const closeModal = () => {
 };
 
 /**
+ * ===================================== Fridge Modal Logic =====================================
+ */
+const fridgeModal = (name, meals, temp, reserved, state) => `
+<div class="d-flex flex-column" style="gap: 40px;">
+	<div>
+		<h5 class="accent-100 mb-2">${name} fridge</h5>
+		<div class="d-flex w-100 justify-content-between align-items-center">
+			<p>Contribute donating a meal</p>
+			<button class="btn-primary" style="padding: 10px; font-size: var(--paragraph)">Subscribe</button>
+		</div>
+	</div>
+
+	<div class="d-flex flex-row justify-content-center align-items-center w-100 flex-wrap"> 
+		<h5 class="w-50" style="font-weight: 400;">Meals 🍲: <span class="bold">${meals}</span></h5>
+		<h5 class="w-50" style="font-weight: 400;">Reserved ✋: <span class="bold">${reserved}</span><h5>
+		<h5 class="w-50" style="font-weight: 400;">Temperature 🌡️:<span class="bold"> ${temp}</span><h5>
+		<h5 class="w-50" style="font-weight: 400;">State 🤞: <span class="bold">${state}</span><h5>
+	</div>	
+	
+	<div class="d-flex w-100" style="gap: 10px;">
+		<button class="btn-primary w-100">Report failure</button>
+		<button class="btn-primary w-100">View report</button>
+	</div>
+</div>
+`;
+
+const setupFridgeListeners = () => {
+	const fridges = document.querySelectorAll("#fridge");
+	fridges.forEach((fridge) => {
+		const name = fridge.getAttribute("data-fridge-name");
+		const meals = fridge.getAttribute("data-fridge-meals");
+		const temp = fridge.getAttribute("data-fridge-temp");
+		const reserved = fridge.getAttribute("data-fridge-reserved");
+		const state = fridge.getAttribute("data-fridge-state");
+		fridge.onclick = () => openModal(fridgeModal(name, meals, temp, reserved, state));
+	});
+};
+
+setupFridgeListeners();
+
+/**
  * ===================================== CONTRIBUTIONS MODAL LOGIC =====================================
  */
 
@@ -54,7 +95,7 @@ const contributeModal = `<div class="d-flex flex-column" style="gap: 40px">
 	</div>`;
 
 // sets up the btn on click listener to open its respective modal by taking the data-attr tag.
-const setupListeners = () => {
+const setupListenersContributionsListeners = () => {
 	const btns = document.querySelectorAll("#contribution-form-btn");
 	btns.forEach((btn) => {
 		const modalDataAttr = btn.getAttribute("data-attr");
@@ -65,7 +106,7 @@ const setupListeners = () => {
 const contributeBtn = document.querySelector("#contribute-btn");
 contributeBtn.onclick = () => {
 	openModal(contributeModal);
-	setupListeners();
+	setupFridgeListeners();
 };
 
 /**
