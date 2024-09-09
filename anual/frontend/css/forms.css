@@ -41,56 +41,6 @@ select {
 	color: var(--white);
 }
 
-.bloqueDeTexto {
-	text-align: center;
-	background-color: rgb(230, 223, 223);
-	border-radius: 5px;
-	padding: 12.5px 12.5px;
-	margin-top: 10px;
-	height: 50px;
-	color: #2d3031d3;
-}
-
-.boton2 {
-	background-color: #ffffff !important;
-	color: #136c91 !important;
-}
-
-.boton1 {
-	background-color: #136c91 !important;
-	color: #ffffff;
-}
-
-.botonLI1 {
-	background-color: #136c91 !important;
-}
-
-.botonLI2 {
-	background-color: #ffffff !important;
-	color: #136c91 !important;
-}
-
-.slogan {
-	font-family: "Gowun Batang", serif;
-	color: #ffffff;
-}
-
-.botonInicio {
-	box-shadow: 0 0 30px 5px #000000a2;
-	background-color: #4a90a4 !important;
-	border-color: #4a90a4 !important;
-	border-radius: 15px !important;
-}
-
-.textoBoton {
-	color: #add6ff;
-}
-
-.botonSU2 {
-	background-color: #136c91 !important;
-}
-
-.whoareyou {
-	background-color: #136c91;
-	color: #ffffff;
+.gap {
+	gap: 10px;
 }

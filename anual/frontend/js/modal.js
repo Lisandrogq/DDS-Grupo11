@@ -106,7 +106,7 @@ const setupListenersContributionsListeners = () => {
 const contributeBtn = document.querySelector("#contribute-btn");
 contributeBtn.onclick = () => {
 	openModal(contributeModal);
-	setupFridgeListeners();
+	setupListenersContributionsListeners();
 };
 
 /**
