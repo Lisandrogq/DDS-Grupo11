@@ -128,9 +128,10 @@ function mealDonation() {
 					required
 					placeholder="Type of food..."
 				/>
+				<p>Expiration date</p>	
 				<div class="d-flex justify-content-between w-100 gap">
 					<input
-						type="text"
+						type="date"
 						id="expirationDate"
 						name="expirationDate"
 						required
@@ -219,8 +220,9 @@ function mealDistribution() {
 					
 				</div>
 
+				<p>Date of distribution</p>	
 				<div class="d-flex justify-content-between w-100 gap">
-					<input type="text" id="dateOfDistribution" name="dateOfDistribution" required placeholder="Date of distribution..."
+					<input type="date" id="dateOfDistribution" name="dateOfDistribution" required placeholder="Date of distribution..."
 					class="w-100 inputs">
 				</div>
 
@@ -301,8 +303,9 @@ function personRegistration() {
 					required
 					placeholder="Full name..."
 				/>
+				<p>Birthdate</p>
 				<input
-					type="text"
+					type="date"
 					id="fechaDeNacimiento"
 					name="fechaDeNacimiento"
 					required
@@ -316,7 +319,7 @@ function personRegistration() {
 					placeholder="Card ID..."
 				/>
 				<input
-					type="text"
+					type="number"
 					id="childrenInCharge"
 					name="childrenInCharge"
 					required
