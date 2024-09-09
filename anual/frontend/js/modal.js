@@ -27,6 +27,11 @@ const closeModal = () => {
 // maps donation to their modal
 const modalMapper = {
 	"meal-donation": mealDonation(),
+	"meal-distribution": mealDistribution(),
+	"fridge-administration": fridgeAdministration(),
+	"money-donation": moneyDonation(),
+	"person-registration": personRegistration(),
+	"reward-collab": rewardCollab(),
 };
 
 // base button component
@@ -142,10 +147,223 @@ function mealDistribution() {
 	return `
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
-				<h5 class="accent-100 mb-2">Meal Donation</h5>
-				<p>Contribute donating a meal</p>
+				<h5 class="accent-100 mb-2">Meal distribution</h5>
+				<p>Contribute distributing a meal</p>
 			</div>
-			
-			
+			<form action="" class="form">
+				<div>
+					<span style="color: #136C91;" class="clickable-text" onclick="agregarInput()">Add meal</span> <b>|</b>
+					<span  style="color: #136C91" class="clickable-text" onclick="eliminarInput()">Delete meal</span>
+				</div>
+				<input type="text" id="meal" name="meal" required placeholder="ID of meal to distribute...">
+				
+				<input type="text" id="reason" name="reason" required placeholder="Reason for relocation...">
+				
+				<div class="d-flex justify-content-between w-100 gap">
+					<select required value="fridge" class="boton1 inputs" style="width: 100%;">
+						<option selected disabled hidden>Choose origin fridge</option>
+						<option value='Heladera 1' class="desplegables">Heladera 1</option> <!-- sujeto a cambios-->
+						<option value='Heladera 2' class="desplegables">Heladera 2</option>
+						<option value='Heladera 3' class="desplegables">Heladera 3</option>
+						<option value='Heladera 4' class="desplegables">Heladera 4</option>
+					</select>
+
+					<select required value="fridge" class="boton1 inputs" style="width: 100%;">
+						<option selected disabled hidden>Choose destiny fridge</option>
+						<option value='Heladera 1' class="desplegables">Heladera 1</option> <!-- sujeto a cambios-->
+						<option value='Heladera 2' class="desplegables">Heladera 2</option>
+						<option value='Heladera 3' class="desplegables">Heladera 3</option>
+						<option value='Heladera 4' class="desplegables">Heladera 4</option>
+					</select>
+					
+				</div>
+
+				<div class="d-flex justify-content-between w-100 gap">
+					<input type="text" id="dateOfDistribution" name="dateOfDistribution" required placeholder="Date of distribution..."
+					class="w-100 inputs">
+				</div>
+
+				<div class="form-btns-container">
+					<button type="reset" class="btn-text w-100" id="modal-close">Cancel</button>
+					<button type="submit" class="btn-primary w-100">Submit</button>
+				</div>
+			</form>
 		<div>`;
+}
+
+function fridgeAdministration() {
+	return `
+		<div class="d-flex flex-column" style="gap: 40px;">
+			<div>
+				<h5 class="accent-100 mb-2">Meal distribution</h5>
+				<p>Contribute distributing a meal</p>
+			</div>
+		<div>`;
+}
+
+function moneyDonation() {
+	return `
+		<div class="d-flex flex-column" style="gap: 40px;">
+			<div>
+				<h5 class="accent-100 mb-2">Money Donation</h5>
+				<p>Contribute donating money</p>
+			</div>
+
+			 <form action="" class="form">
+				<input type="text" id="amount" name="amount" required placeholder="Amount to donate..." />
+				<input type="text" id="cardID" name="cardID" required placeholder="Your card ID..." />
+				<input type="password" id="cvv" name="cvv" required placeholder="Your card verification value..." />
+
+				<div class="form-btns-container">
+					<button type="reset" class="btn-text w-100" id="modal-close">Cancel</button>
+					<button type="submit" class="btn-primary w-100">Submit</button>
+				</div>
+			</form>
+		<div>
+	`;
+}
+
+function personRegistration() {
+	return `
+		<div class="d-flex flex-column" style="gap: 40px;">
+			<div>
+				<h5 class="accent-100 mb-2">Register Person in Need</h5>
+				<p>Create an account for a person in need</p>
+			</div>
+
+			<form action="" class="form">
+				<input
+					type="text"
+					id="username"
+					name="username"
+					required
+					placeholder="Username..."
+				/>
+				<input
+					type="password"
+					id="contrasena"
+					name="contrasena"
+					required
+					placeholder="Password..."
+				/>
+				<input
+					type="password"
+					id="contrasenaConfirmada"
+					name="contrasena"
+					required
+					placeholder="Password again..."
+				/>
+				<input
+					type="text"
+					id="nombreYApellido"
+					name="nombreYApellido"
+					required
+					placeholder="Full name..."
+				/>
+				<input
+					type="text"
+					id="fechaDeNacimiento"
+					name="fechaDeNacimiento"
+					required
+					placeholder="Birthdate..."
+				/>
+				<input
+					type="text"
+					id="idtarjeta"
+					name="idtarjeta"
+					required
+					placeholder="Card ID..."
+				/>
+				<input
+					type="text"
+					id="childrenInCharge"
+					name="childrenInCharge"
+					required
+					placeholder="Number of children in charge..."
+				/>
+
+				<div class="form-btns-container">
+					<button type="reset" class="btn-text w-100" id="modal-close">
+						Cancel
+					</button>
+					<button type="submit" class="btn-primary w-100">
+						Accept
+					</button>
+				</div>
+			</form>
+		<div>
+	`;
+}
+
+function rewardCollab() {
+	return `
+		<div class="d-flex flex-column" style="gap: 40px;">
+			<div>
+				<h5 class="accent-100 mb-2">Reward collaboration</h5>
+				<p>Contribute offreing a new reward</p>
+			</div>
+
+			<form action="" class="form">
+				<input
+					type="text"
+					id="name"
+					name="name"
+					required
+					placeholder="Reward name..."
+				/>
+				<input
+					type="text"
+					id="description"
+					name="description"
+					required
+					placeholder="Reward description..."
+				/>
+				<div class="d-flex justify-content-between w-100 gap">
+					<input
+						type="text"
+						id="points"
+						name="points"
+						required
+						placeholder="Points needed..."
+					/>
+
+					<select
+						required
+						value="category"
+					>
+						<option selected disabled hidden>
+							Choose a category of reward
+						</option>
+						<option value="Technology">Technology</option>
+						<!-- sujeto a cambios-->
+						<option value="Cooking">Cooking</option>
+						<option value="Home">Home</option>
+					</select>
+				</div>
+
+				<p>Add a reward picture</p>
+				<input
+					type="file"
+					id="picture"
+					name="picture"
+					accept=".png"
+				/>
+				<div class="form-btns-container">
+					<button
+						type="reset"
+						class="btn-text w-100"
+						id="modal-close"
+					>
+						Cancel
+					</button>
+					<button
+						type="submit"
+						class="btn-primary w-100"
+					>
+						Submit
+					</button>
+				</div>
+			</form>
+		<div>
+	`;
 }
