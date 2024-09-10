@@ -10,15 +10,20 @@ const setModalContent = (children) => {
 	setupModalClosers();
 };
 
-const openModal = (children) => {
+const openModal = (children, afterMount) => {
 	modal.classList.add("modal-active");
 	setModalContent(children);
+	afterMount && afterMount();
 };
 
 const closeModal = () => {
 	modal.classList.remove("modal-active");
 	setModalContent("");
 };
+
+document.addEventListener("keyup", (e) => {
+	if (e.key == "Escape") closeModal();
+});
 
 /**
  * ===================================== Fridge Modal Logic =====================================
@@ -41,8 +46,8 @@ const fridgeModal = (name, meals, temp, reserved, state) => `
 	</div>	
 	
 	<div class="d-flex w-100" style="gap: 10px;">
-		<button class="btn-primary w-100">Report failure</button>
-		<button class="btn-primary w-100">View report</button>
+		<button id="fridge-report-failure" class="btn-primary w-100">Report failure</button>
+		<button id="fridge-view-report" class="btn-primary w-100">View report</button>
 	</div>
 </div>
 `;
@@ -55,7 +60,13 @@ const setupFridgeListeners = () => {
 		const temp = fridge.getAttribute("data-fridge-temp");
 		const reserved = fridge.getAttribute("data-fridge-reserved");
 		const state = fridge.getAttribute("data-fridge-state");
-		fridge.onclick = () => openModal(fridgeModal(name, meals, temp, reserved, state));
+		fridge.onclick = () => {
+			openModal(fridgeModal(name, meals, temp, reserved, state), () => {
+				// setup listener in report failure to open te modal
+				const failureBtn = document.querySelector("#fridge-report-failure");
+				failureBtn.onclick = () => setModalContent(failureAlert());
+			});
+		};
 	});
 };
 
@@ -69,7 +80,7 @@ setupFridgeListeners();
 const modalMapper = {
 	"meal-donation": mealDonation(),
 	"meal-distribution": mealDistribution(),
-	"fridge-administration": fridgeAdministration(),
+	"fridge-admin": fridgeAdministration(),
 	"money-donation": moneyDonation(),
 	"person-registration": personRegistration(),
 	"reward-collab": rewardCollab(),
@@ -410,5 +421,49 @@ function rewardCollab() {
 				</div>
 			</form>
 		<div>
+	`;
+}
+
+function failureAlert() {
+	return `
+		<div class="d-flex flex-column" style="gap: 40px;">
+			<div>
+				<h5 class="accent-100 mb-2">Report Failure</h5>
+				<p>Report a fridge's malfunction</p>
+			</div>
+			<form action="" class="form">
+				<select required value="fridge" class="boton1 inputs" style="width: 100%">
+					<option selected disabled hidden>What happened?</option>
+					<option value="low meal" class="desplegables">Low on meal</option>
+					<option value="people" class="desplegables">
+						Too many people
+					</option>
+				</select>
+				<textarea
+					type="textarea"
+					cols="10"
+					rows="10"
+					id="description"
+					name="description"
+					required
+					placeholder="Description..."
+				></textarea>
+				<div class="form-btns-container">
+					<button
+						type="reset"
+						class="btn-text w-100"
+						id="modal-close"
+					>
+						Cancel
+					</button>
+					<button
+						type="submit"
+						class="btn-primary w-100"
+					>
+						Submit
+					</button>
+				</div>
+			</form>
+		</div>
 	`;
 }
