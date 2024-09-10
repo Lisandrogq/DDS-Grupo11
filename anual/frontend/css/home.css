@@ -1,3 +1,7 @@
+body {
+	overflow: hidden;
+}
+
 .alerts {
 	position: absolute;
 	gap: 30px;

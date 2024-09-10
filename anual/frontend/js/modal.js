@@ -323,6 +323,7 @@ function personRegistration() {
 					id="childrenInCharge"
 					name="childrenInCharge"
 					required
+					min=0
 					placeholder="Number of children in charge..."
 				/>
 
@@ -344,7 +345,7 @@ function rewardCollab() {
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
 				<h5 class="accent-100 mb-2">Reward collaboration</h5>
-				<p>Contribute offreing a new reward</p>
+				<p>Contribute offering a new reward</p>
 			</div>
 
 			<form action="" class="form">

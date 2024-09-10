@@ -41,6 +41,15 @@ select {
 	color: var(--white);
 }
 
+option {
+	background-color: var(--white);
+	transition: background-color 0.2s;
+}
+
+option:hover {
+	background-color: #dbdbdb;
+}
+
 .gap {
 	gap: 10px;
 }

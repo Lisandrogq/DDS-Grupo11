@@ -17,12 +17,15 @@
 	</head>
 
 	<body>
-		<div class="fullscreen">
+		<div class="fullscreen overflow-auto" style="max-height: 100vh">
 			<div
 				class="d-flex flex-column w-100"
-				style="max-width: 1280px; margin: auto; gap: 50px; padding: 50px"
+				style="max-width: 1280px; margin: auto; gap: 30px; padding: 50px"
 			>
-				<div class="d-flex flex-row justify-content-between align-items-center w-100">
+				<div
+					class="d-flex flex-row justify-content-between align-items-center w-100"
+					style="margin-bottom: 20px"
+				>
 					<div class="d-flex flex-column gap-3">
 						<h4>Hello alberto 👋</h4>
 						<p>We hope you have a nice day!</p>
@@ -198,64 +201,55 @@
 				</div>
 
 				<div class="d-flex flex-column w-100" style="gap: 100px"></div>
-					<div class="d-flex flex-row w-100 flex-wrap" style="gap: 50px">
-						<div class="d-flex flex-column flex-grow-1" style="min-width: 300px">
-							<div class="mb-3">
-								<h4>Rewards 🎁</h4>
-								<p>Here are some rewards for your hard work!</p>
+				<div class="d-flex flex-row w-100 flex-wrap" style="gap: 50px">
+					<div class="d-flex flex-column flex-grow-1" style="min-width: 300px">
+						<div class="mb-3">
+							<h4>Rewards 🎁</h4>
+							<p>Here are some rewards for your hard work!</p>
+						</div>
+
+						<div class="my-card d-flex flex-column" style="gap: 30px; height: 350px">
+							<div class="d-flex w-100 justify-content-between">
+								<p>Your points:</p>
+								<p class="points">200</p>
 							</div>
-							
-							<div
-								class="my-card d-flex flex-column"
-								style="gap: 30px; height: 350px"
-							>
-								<div class="d-flex w-100 justify-content-between">
-									<p>Your points:</p>
-									<p class="points">200</p>
+							<div class="d-flex align-items-center my-card-item" style="gap: 30px">
+								<h4>🍴</h4>
+								<div>
+									<h5>Cooking</h5>
+									<p>You can exchange your points for useful cooking supplies</p>
 								</div>
-								<div
-									class="d-flex align-items-center my-card-item"
-									style="gap: 30px"
-								>
-									<h4>🍴</h4>
-									<div>
-										<h5>Cooking</h5>
-										<p>You can exchange your points for useful cooking supplies</p>
-									</div>
+							</div>
+							<div class="d-flex align-items-center my-card-item" style="gap: 30px">
+								<h4>🛋️</h4>
+								<div>
+									<h5>Home</h5>
+									<p>You can exchange your points for nice home supplies</p>
 								</div>
-								<div
-									class="d-flex align-items-center my-card-item"
-									style="gap: 30px"
-								>
-									<h4>🛋️</h4>
-									<div>
-										<h5>Home</h5>
-										<p>
-											You can exchange your points for nice home supplies
-										</p>
-									</div>
-								</div>
-								<div
-									class="d-flex align-items-center my-card-item"
-									style="gap: 30px"
-								>
-									<h4>🎮</h4>
-									<div>
-										<h5>Technology</h5>
-										<p>You can exchange your points for trendy technological devices</p>
-									</div>
+							</div>
+							<div class="d-flex align-items-center my-card-item" style="gap: 30px">
+								<h4>🎮</h4>
+								<div>
+									<h5>Technology</h5>
+									<p>
+										You can exchange your points for trendy technological
+										devices
+									</p>
 								</div>
 							</div>
 						</div>
 					</div>
-
+				</div>
 			</div>
 		</div>
 	</body>
 
 	<div class="modal" id="modal">
-		<div class="my-card d-flex flex-column justify-content-center" style="width: 650px">
-			<p class="small accent-100 align-self-end btn" id="modal-close">close</p>
+		<div
+			class="my-card d-flex flex-column justify-content-center overflow-auto"
+			style="width: 650px; max-height: 100%"
+		>
+			<p class="small accent-100 align-self-end btn" id="modal-close">X</p>
 			<div class="my-modal-content" id="modal-content"></div>
 		</div>
 	</div>
