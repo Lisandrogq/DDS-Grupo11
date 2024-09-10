@@ -183,3 +183,26 @@ p {
 	max-height: 100%;
 	overflow: auto;
 }
+
+table {
+	width: 100%;
+}
+
+table,
+tr,
+th,
+td {
+	border-collapse: collapse;
+	border: 1px solid;
+	border-color: darkgray;
+	text-align: center;
+}
+
+th {
+	padding: 5px;
+}
+
+td {
+	font-weight: 400;
+	padding: 10px;
+}
