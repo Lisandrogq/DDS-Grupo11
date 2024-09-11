@@ -23,6 +23,22 @@ body {
 	width: 100vw;
 }
 
+.slogan {
+	color: var(--accent-100);
+	font-size: 60px;
+	font-weight: 700;
+	line-height: 72px;
+	margin: 0;
+}
+
+.subtitle {
+	font-family: 'Gowun Batang', serif;
+	font-size: 48px;
+	font-weight: 700;
+	line-height: 58px;
+	margin: 0;
+}
+
 h1 {
 	font-size: 60px;
 	font-weight: 700;
