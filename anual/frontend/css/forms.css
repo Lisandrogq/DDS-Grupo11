@@ -48,7 +48,7 @@ select {
 option {
 	background-color: var(--white);
 	transition: background-color 0.2s;
-	color: var(--text-200);
+	color: #3a3939;  
 }
 
 option:hover {
