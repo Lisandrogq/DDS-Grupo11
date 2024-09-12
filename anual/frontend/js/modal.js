@@ -7,8 +7,8 @@ const setupModalClosers = () => {
 
 const setModalContent = (children) => {
 	modalContent.innerHTML = children;
-	if(document.getElementById("mapeablexd")!=null){
-		valen_mogolica()
+	if(document.getElementById("has_map")!=null){
+		setup_mapper()
 	}
 	setupModalClosers();
 };
@@ -28,19 +28,20 @@ document.addEventListener("keyup", (e) => {
 	if (e.key == "Escape") closeModal();
 });
 
-function valen_mogolica() {
-	var map = L.map('map').setView([51.505, -0.09], 13);
+function setup_mapper() {
+	var map = L.map('map').setView([-34.5978833,-58.4199385], 13);
 	L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 		maxZoom: 19,
 		attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 	}).addTo(map);
+	 L.marker([-34.5978833,-58.4199385]).addTo(map);
 }
 
 /**
  * ===================================== Fridge Modal Logic =====================================
  */
 const fridgeModal = (name, meals, temp, reserved, state) => `
-<div class="d-flex flex-column" style="gap: 40px;">
+<div id="has_map"class="d-flex flex-column" style="gap: 40px;">
 	<div>
 		<h5 class="accent-100 mb-2">${name} fridge</h5>
 		<div class="d-flex w-100 justify-content-between align-items-center">
@@ -56,6 +57,8 @@ const fridgeModal = (name, meals, temp, reserved, state) => `
 		<h5 class="w-50" style="font-weight: 400;">State 🤞: <span class="bold">${state}</span><h5>
 	</div>	
 	
+	<div id="map" style="height: 300px;"></div>
+
 	<div class="d-flex w-100" style="gap: 10px;">
 		<button id="fridge-report-failure" class="btn-primary w-100">Report failure</button>
 		<button id="fridge-view-report" class="btn-primary w-100">View report</button>
@@ -213,7 +216,7 @@ function mealDonation() {
 
 function mealDistribution() {
 	return `
-		<div id="mapeablexd" class="d-flex flex-column" style="gap: 40px;">
+		<div  class="d-flex flex-column" style="gap: 40px;">
 			<div>
 				<h5 class="accent-100 mb-2">Meal distribution</h5>
 				<p>Contribute distributing a meal</p>
@@ -264,10 +267,12 @@ function mealDistribution() {
 
 function fridgeAdministration() {
 	return `
-		<div class="d-flex flex-column" style="gap: 40px;">
+		<div id="has_map" class="d-flex flex-column" style="gap: 40px;">
 			<div>
 				<h5 class="accent-100 mb-2">Fridge Administration</h5>
 				<p>Contribute administrating a fridge</p>
+		<div id="map" style="height: 500px;"></div>
+
 			</div>
 		<div>`;
 }
