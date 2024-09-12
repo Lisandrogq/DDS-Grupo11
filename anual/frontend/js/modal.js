@@ -253,8 +253,8 @@ function fridgeAdministration() {
 	return `
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
-				<h5 class="accent-100 mb-2">Meal distribution</h5>
-				<p>Contribute distributing a meal</p>
+				<h5 class="accent-100 mb-2">Fridge Administration</h5>
+				<p>Contribute administrating a fridge</p>
 			</div>
 		<div>`;
 }
@@ -480,7 +480,7 @@ function fridgeReport() {
 				<p>Report history for this fridge</p>
 			</div>
 			<div>
-				<p class="bold text-200" style="margin-bottom: 10px">Failures history</p>
+				<p class="bold text-200" style="margin-bottom: 10px">Meal history</p>
 				<table>
 					<tr>
 						<th>ID</th>
