@@ -1,0 +1,91 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap");
+
+:root {
+	--landing-bg: #dcf1fc;
+	--nav-link-color: #84d2f8;
+	--hero-bg: #b3e1f8;
+	--hero-desc: #f1f1f1;
+}
+
+body {
+	background-color: var(--landing-bg);
+}
+
+section {
+	width: 100%;
+	max-width: 1600px;
+	margin-block: 30px;
+	margin-inline: 20px;
+}
+
+nav {
+	margin-top: 10px;
+}
+
+/* h1,
+h2,
+h3,
+h4,
+h5 {
+	font-family: "Montserrat", sans-serif !important;
+}
+
+p {
+	font-family: "Inter" !important;
+} */
+
+.nav-link {
+	font-weight: 400;
+	color: var(--nav-link-color);
+	transition: opacity 0.2s;
+}
+
+.nav-link:hover {
+	color: var(--nav-link-color);
+	opacity: 0.8;
+}
+
+.hero-bg {
+	background-color: var(--hero-bg);
+	height: 100vh;
+	width: 1120px;
+	position: absolute;
+	z-index: -1;
+	left: 0;
+}
+
+.hero-title {
+	font-size: 128px;
+	line-height: 182px;
+}
+
+.hero-desc {
+	color: var(--hero-desc);
+}
+
+.hero-btn-left,
+.hero-btn-right {
+	width: 500px;
+	height: 108px;
+	text-align: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.hero-btn-left {
+	background-color: #c9e9f9;
+}
+
+.hero-btn-left:hover {
+	background-color: #d7ebf5;
+}
+
+.hero-img {
+	height: 880px;
+	bottom: 0;
+	left: 1120px;
+	z-index: -1;
+	position: absolute;
+}
