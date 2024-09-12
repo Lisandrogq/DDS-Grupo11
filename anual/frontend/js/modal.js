@@ -7,6 +7,9 @@ const setupModalClosers = () => {
 
 const setModalContent = (children) => {
 	modalContent.innerHTML = children;
+	if(document.getElementById("mapeablexd")!=null){
+		valen_mogolica()
+	}
 	setupModalClosers();
 };
 
@@ -24,6 +27,14 @@ const closeModal = () => {
 document.addEventListener("keyup", (e) => {
 	if (e.key == "Escape") closeModal();
 });
+
+function valen_mogolica() {
+	var map = L.map('map').setView([51.505, -0.09], 13);
+	L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		maxZoom: 19,
+		attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+	}).addTo(map);
+}
 
 /**
  * ===================================== Fridge Modal Logic =====================================
@@ -202,7 +213,7 @@ function mealDonation() {
 
 function mealDistribution() {
 	return `
-		<div class="d-flex flex-column" style="gap: 40px;">
+		<div id="mapeablexd" class="d-flex flex-column" style="gap: 40px;">
 			<div>
 				<h5 class="accent-100 mb-2">Meal distribution</h5>
 				<p>Contribute distributing a meal</p>
@@ -246,6 +257,8 @@ function mealDistribution() {
 					<button type="submit" class="btn-primary w-100">Submit</button>
 				</div>
 			</form>
+
+		
 		<div>`;
 }
 
