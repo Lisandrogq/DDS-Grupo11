@@ -8,7 +8,7 @@ const setupModalClosers = () => {
 const setModalContent = (children) => {
 	modalContent.innerHTML = children;
 	if(document.getElementById("has_map")!=null){
-		setup_mapper()
+		setup_map()
 	}
 	setupModalClosers();
 };
@@ -28,7 +28,21 @@ document.addEventListener("keyup", (e) => {
 	if (e.key == "Escape") closeModal();
 });
 
-function setup_mapper() {
+function agregarInput() {
+	let div = document.createElement("div");
+	div.classList.add("input");
+	div.innerHTML =
+		' <input type="text" id="meal" name="meal" required placeholder="ID of meal to distribute..."class="col-12 inputs">';
+	document.getElementById("input-placeholder").appendChild(div);
+}
+
+function eliminarInput() {
+	var inputs = document.getElementById("input-placeholder").querySelectorAll(".input");
+	inputs[inputs.length - 1].remove();
+}
+
+
+function setup_map() {
 	var map = L.map('map').setView([-34.5978833,-58.4199385], 13);
 	L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 		maxZoom: 19,
@@ -223,11 +237,12 @@ function mealDistribution() {
 			</div>
 			<form action="" class="form">
 				<div>
-					<span style="color: #136C91;" class="clickable-text" onclick="agregarInput()">Add meal</span> <b>|</b>
+					<span id="btnCrearInput" style="color: #136C91;" class="clickable-text" onclick="agregarInput()">Add meal</span> <b>|</b>
 					<span  style="color: #136C91" class="clickable-text" onclick="eliminarInput()">Delete meal</span>
 				</div>
-				<input type="text" id="meal" name="meal" required placeholder="ID of meal to distribute...">
-				
+				<div id="input-placeholder"> 
+				<input type="text" id="meal" name="meal" required placeholder="ID of meal to distribute..."class="col-12 inputs">
+				</div>
 				<input type="text" id="reason" name="reason" required placeholder="Reason for relocation...">
 				
 				<div class="d-flex justify-content-between w-100 gap">
