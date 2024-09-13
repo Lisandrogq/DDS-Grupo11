@@ -8,16 +8,15 @@ import org.grupo11.Utils.SendGrid;
 
 public class EmailContact extends Contact {
     private String mail;
-        private List<String>notifications = new ArrayList<String>();
+    private List<String> notifications = new ArrayList<String>();
 
     public EmailContact(String mail) {
         this.mail = mail;
     }
 
     public void SendNotification(String subject, String message) {
-
         System.out.println(Env.getCompanyMail());
-        SendGrid.SendMail(Env.getCompanyMail(), mail, subject, message);
+        // SendGrid.SendMail(Env.getCompanyMail(), mail, subject, message);
         notifications.add(message);
     }
 
@@ -28,7 +27,6 @@ public class EmailContact extends Contact {
     public List<String> getNotifications() {
         return this.notifications;
     }
-    
 
     public void setMail(String mail) {
         this.mail = mail;

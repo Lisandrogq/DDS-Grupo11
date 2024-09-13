@@ -1,0 +1,32 @@
+# volumes:
+#     postgres_data:
+
+name: fridge-bridge
+services:
+    # postgres:
+    #     image: postgres
+    #     restart: always
+    #     environment:
+    #         - POSTGRES_USER=postgres
+    #         - POSTGRES_PASSWORD=postgres
+    #         - PGDATA=/var/lib/postgresql/data/pgdata
+    #     volumes:
+    #         - postgres_data:/var/lib/postgresql/data
+    #     ports:
+    #         - 5432:5432
+    # adminer:
+    #     image: adminer
+    #     restart: always
+    #     depends_on:
+    #         - postgres
+    #     ports:
+    #         - 8080:8080
+    rabbit-mq:
+        image: rabbitmq:latest
+        restart: always
+        environment:
+            - RABBITMQ_DEFAULT_USER=fridgebridge
+            - RABBITMQ_DEFAULT_PASS=fridgebridge
+        ports:
+            - 15672:15672
+            - 5672:5672

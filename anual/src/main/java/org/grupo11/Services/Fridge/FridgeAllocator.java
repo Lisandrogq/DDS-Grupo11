@@ -8,7 +8,6 @@ import org.grupo11.Utils.JSON;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
-
 public class FridgeAllocator {
     private static String baseUrl = "https://665264aa813d78e6d6d56912.mockapi.io/api/v1/fridge-locations";
 
@@ -21,7 +20,8 @@ public class FridgeAllocator {
                     .get(url)
                     .body()
                     .string();
-            List<FridgeAllocatorRes> res = JSON.parse(json, new TypeReference<List<FridgeAllocatorRes>>(){});
+            List<FridgeAllocatorRes> res = JSON.parse(json, new TypeReference<List<FridgeAllocatorRes>>() {
+            });
             return res.get(0).locations;
         } catch (Exception e) {
             e.printStackTrace();

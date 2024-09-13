@@ -15,7 +15,7 @@ public class MealDonation extends Contribution {
 
     @Override
     public boolean validate(Contributor contributor) {
-        return (super.validate(contributor) && this.meal.getFridge().hasPermission(contributor));
+        return (super.validate(contributor) && this.meal.getFridge().hasPermission(contributor.getContributorRegistry().getId()));
     }
 
     @Override

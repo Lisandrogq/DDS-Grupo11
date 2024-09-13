@@ -181,9 +181,9 @@ public class Fridge {
         openedHistory.add(entry);
     }
 
-    public boolean hasPermission(Contributor contributor) {
+    public boolean hasPermission(int registryId) {
         for (FridgeSolicitude solicitude : openSolicitudes) {
-            if (solicitude.getIssuedBy().getId() == contributor.getContributorRegistry().getId() && !solicitude.hasBeenUsed()) {
+            if (solicitude.getIssuedBy().getId() == registryId && !solicitude.hasBeenUsed()) {
                 if (solicitude.isValid()) {
                     solicitude.markAsUsed();
                     return true;
