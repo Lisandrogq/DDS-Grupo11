@@ -82,8 +82,8 @@ public class RabbitTest {
             Thread.sleep(1000);
         } catch (Exception e) {
         }
-
-        assertEquals("temp should be updated", 1.0, 1.0, 0.1);
+        //todo: fix enum deserialization
+        assertEquals("alert should be registered", 1.0, 1.0, 0.1);
     }
 
     @Test

@@ -87,6 +87,16 @@ public class IncidentTest {
         assertEquals("temp should be the average of the 4 sensors", 36.5, tempManager.getLastTemp(), 0.1);
     }
 
+    
+    @Test
+    public void AlertIsGenerated() {
+        fridge.getTempManager().setMaxTemp(34);
+        sensor1.setData(35.0);
+        tempManager.checkSensors();
+        EmailContact contact1 = (EmailContact) technician1.getContact();
+        assertEquals("alert should be generated", fridge.getIncidents().size(), 1.0, 0.1);
+    }
+
     @Test
     public void TechnicianIsAlerted() {
         fridge.getTempManager().setMaxTemp(34);
@@ -112,7 +122,6 @@ public class IncidentTest {
         fridge.getTempManager().setMaxTemp(34);
         sensor1.setData(35.0);
         tempManager.checkSensors();
-
         assertEquals("fridge should have registered an incident", 1.0, fridge.getIncidents().size(), 0.1);
     }
 
