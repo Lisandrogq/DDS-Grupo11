@@ -133,9 +133,5 @@ public class Contributor {
         this.contributorRegistry = contributorRegistry;
     }
 
-    public void addContributionToContributorForced(Contribution contribution) {
-        this.addContribution(contribution);
-        RewardSystem.assignPoints(this, contribution);
-        contributionsManager.add(contribution);
-    }
+
 }
