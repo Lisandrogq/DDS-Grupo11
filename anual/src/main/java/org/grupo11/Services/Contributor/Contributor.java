@@ -12,6 +12,8 @@ import org.grupo11.Services.Fridge.FridgeNotifications;
 import org.grupo11.Services.Fridge.Subscription;
 import org.grupo11.Services.Fridge.Incident.Incident;
 import org.grupo11.Services.Rewards.Reward;
+import org.grupo11.Services.Rewards.RewardSystem;
+import org.grupo11.Services.Contributions.ContributionsManager;
 
 public class Contributor {
     private String name;
@@ -23,6 +25,7 @@ public class Contributor {
     private double points;
     private ContributorRegistry contributorRegistry = null;
     private List<Subscription> fridgeSubscriptions;
+    ContributionsManager contributionsManager = ContributionsManager.getInstance();
 
     public Contributor(String name, String address, List<ContributionType> possibleContributions) {
         this.name = name;
@@ -35,7 +38,7 @@ public class Contributor {
     public void addContribution(Contribution contribution) {
         contributions.add(contribution);
     }
-    
+
     public boolean canContributeIn(ContributionType contribution) {
         return possibleContributions.contains(contribution);
     }
@@ -128,5 +131,11 @@ public class Contributor {
 
     public void setContributorRegistry(ContributorRegistry contributorRegistry) {
         this.contributorRegistry = contributorRegistry;
+    }
+
+    public void addContributionToContributorForced(Contribution contribution) {
+        this.addContribution(contribution);
+        RewardSystem.assignPoints(this, contribution);
+        contributionsManager.add(contribution);
     }
 }

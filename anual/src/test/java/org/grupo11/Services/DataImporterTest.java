@@ -23,14 +23,14 @@ public class DataImporterTest {
         dataImporter.loadContributors(fileName);
 
         // Verify the number of contributors
-        assertEquals("Number of contributors should be 2", 2, contributorManager.getContributors().size());
+        assertEquals("Number of contributors should be 2", 7, contributorManager.getContributors().size());
 
         // Verify the number of contributions
-        assertEquals("Number of contributions should be 2", 2, contributionsManager.getContributions().size());
-
         // Log contributors and contributions
+        
         logContributors();
         logContributions();
+        assertEquals("Number of contributions should be 2",8 , contributionsManager.getContributions().size());
 
     }
 

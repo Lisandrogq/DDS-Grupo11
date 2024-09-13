@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import org.grupo11.Enums.DocumentType;
 import org.grupo11.Services.Contact.EmailContact;
 import org.grupo11.Services.Contributions.Contribution;
+import org.grupo11.Services.Contributions.ContributionType;
 import org.grupo11.Services.Contributions.ContributionsManager;
 import org.grupo11.Services.Contributions.MealDistribution;
 import org.grupo11.Services.Contributions.MealDonation;
@@ -86,20 +87,30 @@ public class DataImporter {
         switch (contributionType) {
             case DINERO:
                 contribution = new MoneyDonation(quantity, contributionDate);
+                contributor.addPossibleContribution(ContributionType.MONEY_DONATION);
+        contributorManager.addContributionToContributor(contributor, contribution);
+
                 break;
             case DONACION_VIANDAS:
                 contribution = new MealDonation(null, contributionDate);
+                contributor.addPossibleContribution(ContributionType.MEAL_DONATION);
+                contributor.addContributionToContributorForced(contribution);
                 break;
             case REDISTRIBUCION_VIANDAS:
                 contribution = new MealDistribution(null, null, quantity, null, null, contributionDate);
+                contributor.addPossibleContribution(ContributionType.MEAL_DISTRIBUTION);
+                contributor.addContributionToContributorForced(contribution);
+
                 break;
             case ENTREGA_TARJETAS:
                 contribution = new PersonRegistration(null, contributionDate,contributor);
+                contributor.addPossibleContribution(ContributionType.PERSON_REGISTRATION);
+        contributorManager.addContributionToContributor(contributor, contribution);
+
                 break;
         }
-
         if (contribution != null) {
-            contributorManager.addContributionToContributor(contributor, contribution);
+            
         }
     }
 }

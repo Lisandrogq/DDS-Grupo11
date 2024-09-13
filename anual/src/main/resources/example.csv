@@ -1,3 +1,9 @@
 DocumentType,Document,Name,Surname,Email,ContributionDate,ContributionType,Quantity
 LC,13456,Sofia,Doe,mrabeyfischer@frba.utn.edu.ar,15-06-2023,DINERO,100
+LC,13456,Sofia,Doe,mrabeyfischer@frba.utn.edu.ar,15-06-2023,DINERO,100
 LC,123456,Valentina,Doe,vvalmadreamoia@gmail.com,15-06-2023,DINERO,100
+DNI,65432,Carlos,Rodriguez,carlos.rod@example.com,20-07-2023,DONACION_VIANDAS,50
+LC,98765,Lucia,Gomez,lucia.gomez@example.com,05-08-2023,REDISTRIBUCION_VIANDAS,30
+DNI,54321,Maria,Lopez,maria.lopez@example.com,10-09-2023,ENTREGA_TARJETAS,10
+LC,45678,Juan,Perez,juan.perez@example.com,12-09-2023,DINERO,150
+DNI,87654,Ana,Martinez,ana.martinez@example.com,18-09-2023,DONACION_VIANDAS,25
