@@ -6,9 +6,11 @@ import org.grupo11.Services.Contributions.ContributionsManager;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Contributor.ContributorsManager;
 import org.grupo11.Services.Contributor.Individual;
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DataImporterTest {
@@ -16,10 +18,33 @@ public class DataImporterTest {
     private ContributorsManager contributorManager = ContributorsManager.getInstance();
     private DataImporter dataImporter;
 
+    @Before
+    public void setUp() {//sino se pone re nervioso al correr ambos test de una
+        contributionsManager.setContributions(new ArrayList<>());
+        contributorManager.setContributors(new ArrayList<>());
+    }
+
     @Test
-    public void testLoadContributors() {
+    public void test_load_contributors() {
         dataImporter = new DataImporter(contributionsManager, contributorManager);
         String fileName = "example.csv";
+        dataImporter.loadContributors(fileName);
+
+        // Verify the number of contributors
+        assertEquals("Number of contributors should be 2", 17, contributorManager.getContributors().size());
+
+        // Verify the number of contributions
+        // Log contributors and contributions
+        
+        logContributors();
+        logContributions();
+        assertEquals("Number of contributions should be 2",17, contributionsManager.getContributions().size());
+    }
+
+    @Test
+    public void test_load_contributors_with_duplicate_contributors() {
+        dataImporter = new DataImporter(contributionsManager, contributorManager);
+        String fileName = "has_duplicates.csv";
         dataImporter.loadContributors(fileName);
 
         // Verify the number of contributors
@@ -31,8 +56,10 @@ public class DataImporterTest {
         logContributors();
         logContributions();
         assertEquals("Number of contributions should be 2",8 , contributionsManager.getContributions().size());
-
     }
+
+
+
 
     private void logContributors() {
         System.out.println("Contributors:");
