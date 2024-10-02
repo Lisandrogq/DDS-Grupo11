@@ -7,7 +7,7 @@
 - [ ] render basic files
 - [ ] move frontend into main
 - [ ] create routes for each view
-- [ ] update frontend links to point to server
+- [ ] update frontend links to point to server: that would include the anchor tags and the assets, css, js.
 - [ ] finally pass dynamic data to the html, using a template engine preferably Thymeleaf 
 
 ## Entrega 6
