@@ -18,5 +18,8 @@
 - [ ] save on db the current data
 
 ### Correcciones
+
 - [ ] Reportes - No tenemos cantidad de fallas POR heladera, está todo sobre una clase (usar STRATEGY)
 - [ ] Técnico - modularizar, API que diga quién está más cerca según algún criterio 
+- [ ] Lower font-size for small devices
+- [ ] Module and bundle with webpack
