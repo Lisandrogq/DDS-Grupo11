@@ -13,7 +13,6 @@ Repo TPs y TP anual Grupo11
 | Nicolás Esteban  | Romero           | 208.816-2 |
 | Valentina        | Valmadre Amoia   | 208.161-1 |
 | Marcos Sebastián | Nicolau          | 209.629-8 |
-| Mariano Sebastian| Lamaison         | 203.757-9 |
 
 ## Useful links
 -   [TO-DO](./todo.md)
