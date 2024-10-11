@@ -1,0 +1,26 @@
+body {
+	overflow: hidden;
+}
+
+.alerts {
+	position: absolute;
+	gap: 30px;
+	width: 320px;
+	max-height: 300px;
+	padding: 20px;
+	right: 0;
+	opacity: 0;
+	z-index: -1;
+	transition: all 0.2s;
+}
+
+.alerts-container:hover > .alerts {
+	opacity: 1;
+	z-index: 1;
+}
+
+.points {
+	color: #136c91;
+	font-size: large;
+	font-weight: bold;
+}
