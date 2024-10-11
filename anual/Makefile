@@ -8,9 +8,14 @@ help:
 
 compile: ## Compiles the project
 	mvn package -DskipTests
-	mvn compile
 
 start: ## Start the java server
 	mvn exec:java -Dexec.mainClass="org.grupo11.app.App"
 
 start_and_compile: compile start ## Starts and compiles the java server
+
+clean: ## Cleans mvn, useful when mvn is weird
+	mvn clean install -DskipTests
+
+test: ## Mvn test
+	mvn test
