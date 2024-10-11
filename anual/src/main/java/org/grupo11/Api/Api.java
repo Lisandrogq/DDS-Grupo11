@@ -2,8 +2,9 @@ package org.grupo11.Api;
 
 import org.grupo11.Utils.DateUtils;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.function.Consumer;
 import io.javalin.Javalin;
 import io.javalin.config.JavalinConfig;
@@ -31,18 +32,48 @@ public class Api {
 
         };
         api = Javalin.create(config);
+        setupMiddlewares();
         setupRoutes();
         this.port = port;
     }
 
-    void setupRoutes() {
-        api.get("/", ctx -> ctx.result("Server running!"));
+    void setupMiddlewares() {
 
-        api.get("/home", ctx -> {
-            Map<String, Object> model = new HashMap<>();
-            model.put("firstName", "John");
-            model.put("lastName", "Doe");
-            ctx.render("templates/home.html", model);
+    }
+
+    void setupRoutes() {
+        api.get("/", ctx -> {
+            ctx.render("templates/landing.html");
+        });
+
+        api.get("/register/{filename}", ctx -> {
+            try {
+                String filename = ctx.pathParam("filename");
+                Path filePath = Paths.get("src/main/resources/templates/register/", filename + ".html");
+
+                if (Files.exists(filePath)) {
+                    ctx.render("templates/static/register/" + filename + ".html");
+                } else {
+                    ctx.status(404);
+                }
+            } catch (Exception e) {
+                ctx.status(500);
+            }
+        });
+
+        api.get("/dash/{filename}", ctx -> {
+            try {
+                String filename = ctx.pathParam("filename");
+                Path filePath = Paths.get("src/main/resources/templates/dash/", filename + ".html");
+
+                if (Files.exists(filePath)) {
+                    ctx.render("templates/dash/" + filename + ".html");
+                } else {
+                    ctx.status(404);
+                }
+            } catch (Exception e) {
+                ctx.status(500);
+            }
         });
     }
 
