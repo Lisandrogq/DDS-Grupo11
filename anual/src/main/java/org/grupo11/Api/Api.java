@@ -2,9 +2,6 @@ package org.grupo11.Api;
 
 import org.grupo11.Utils.DateUtils;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.function.Consumer;
 import io.javalin.Javalin;
 import io.javalin.config.JavalinConfig;
@@ -20,7 +17,7 @@ public class Api {
             cfg.http.generateEtags = true;
             cfg.requestLogger
                     .http((ctx, executionTimeMs) -> System.out
-                            .println("Received http message \nfrom: " + ctx.ip() + "\nbody: " + ctx.body() + "\nat: " +
+                            .println("Received http message \nfrom: " + ctx.ip() + "\npath: " + ctx.path() + "\nat: " +
                                     DateUtils.now()));
             cfg.events.serverStarted(() -> System.out.println("Server started"));
             cfg.fileRenderer(new JavalinFreemarker());
@@ -33,48 +30,12 @@ public class Api {
         };
         api = Javalin.create(config);
         setupMiddlewares();
-        setupRoutes();
+        Router.setup(api);
         this.port = port;
     }
 
     void setupMiddlewares() {
 
-    }
-
-    void setupRoutes() {
-        api.get("/", ctx -> {
-            ctx.render("templates/landing.html");
-        });
-
-        api.get("/register/{filename}", ctx -> {
-            try {
-                String filename = ctx.pathParam("filename");
-                Path filePath = Paths.get("src/main/resources/templates/register/", filename + ".html");
-
-                if (Files.exists(filePath)) {
-                    ctx.render("templates/static/register/" + filename + ".html");
-                } else {
-                    ctx.status(404);
-                }
-            } catch (Exception e) {
-                ctx.status(500);
-            }
-        });
-
-        api.get("/dash/{filename}", ctx -> {
-            try {
-                String filename = ctx.pathParam("filename");
-                Path filePath = Paths.get("src/main/resources/templates/dash/", filename + ".html");
-
-                if (Files.exists(filePath)) {
-                    ctx.render("templates/dash/" + filename + ".html");
-                } else {
-                    ctx.status(404);
-                }
-            } catch (Exception e) {
-                ctx.status(500);
-            }
-        });
     }
 
     public void start() {
