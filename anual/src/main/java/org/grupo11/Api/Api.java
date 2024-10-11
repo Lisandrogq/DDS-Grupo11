@@ -17,7 +17,8 @@ public class Api {
             cfg.http.generateEtags = true;
             cfg.requestLogger
                     .http((ctx, executionTimeMs) -> System.out
-                            .println("Received http message \nfrom: " + ctx.ip() + "\npath: " + ctx.path() + "\nat: " +
+                            .println("Received http message \nfrom: " + ctx.ip() + "\nmethod:" + ctx.method()
+                                    + "\npath: " + ctx.path() + "\nat: " +
                                     DateUtils.now()));
             cfg.events.serverStarted(() -> System.out.println("Server started"));
             cfg.fileRenderer(new JavalinFreemarker());

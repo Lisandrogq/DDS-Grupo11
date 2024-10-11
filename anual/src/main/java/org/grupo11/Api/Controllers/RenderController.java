@@ -22,6 +22,8 @@ public class RenderController {
         }
     }
 
+    // TODO(marcos): here we should check if the user is authenticated
+    // otherwise redirect to login
     public static void renderDashboardPages(Context ctx) {
         try {
             String filename = ctx.pathParam("filename");
