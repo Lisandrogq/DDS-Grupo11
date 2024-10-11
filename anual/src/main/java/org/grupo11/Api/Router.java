@@ -1,5 +1,7 @@
 package org.grupo11.Api;
 
+import org.grupo11.Api.Controllers.AlertsController;
+import org.grupo11.Api.Controllers.ContributionsController;
 import org.grupo11.Api.Controllers.RenderController;
 import org.grupo11.Api.Controllers.UserController;
 
@@ -9,6 +11,8 @@ public class Router {
     public static void setup(Javalin api) {
         clientRoutes(api);
         userRoutes(api);
+        contributionRoutes(api);
+        alertRoutes(api);
     }
 
     static void clientRoutes(Javalin api) {
@@ -24,4 +28,15 @@ public class Router {
         api.post("/user/", UserController::handleUserSignup);
     }
 
+    static void contributionRoutes(Javalin api) {
+        api.post("/contribution/meal", ContributionsController::handleMealContribution);
+        api.post("/contribution/meal/distribution", ContributionsController::handleMealDistributionContribution);
+        api.post("/contribution/money", ContributionsController::handleMoneyContribution);
+        api.post("/contribution/registration", ContributionsController::handlePersonRegistrationContribution);
+        api.post("/contribution/reward", ContributionsController::handleRewardContribution);
+    }
+
+    static void alertRoutes(Javalin api) {
+        api.post("/alerts/failure", AlertsController::handleFailureAlert);
+    }
 }
