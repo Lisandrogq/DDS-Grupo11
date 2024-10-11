@@ -1,4 +1,4 @@
-package org.grupo11.Api;
+package org.grupo11.Api.Controllers;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -6,9 +6,8 @@ import java.nio.file.Paths;
 
 import io.javalin.http.Context;
 
-public class Controllers {
-
-    static void renderRegisterPages(Context ctx) {
+public class RenderController {
+    public static void renderRegisterPages(Context ctx) {
         try {
             String filename = ctx.pathParam("filename");
             Path filePath = Paths.get("src/main/resources/templates/register/", filename + ".html");
@@ -23,7 +22,7 @@ public class Controllers {
         }
     }
 
-    static void renderDashboardPages(Context ctx) {
+    public static void renderDashboardPages(Context ctx) {
         try {
             String filename = ctx.pathParam("filename");
             Path filePath = Paths.get("src/main/resources/templates/dash/", filename + ".html");
@@ -37,5 +36,4 @@ public class Controllers {
             ctx.status(500);
         }
     }
-
 }
