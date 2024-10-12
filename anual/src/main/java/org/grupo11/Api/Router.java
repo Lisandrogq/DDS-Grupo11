@@ -20,7 +20,7 @@ public class Router {
             ctx.render("templates/landing.html");
         });
         api.get("/register/{filename}", RenderController::renderRegisterPages);
-        api.get("/dash/{filename}", RenderController::renderDashboardPages);
+        api.get("/dash/home", RenderController::renderDashboardPage);
     }
 
     static void userRoutes(Javalin api) {
