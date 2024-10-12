@@ -38,7 +38,7 @@
 					style="margin-bottom: 20px"
 				>
 					<div class="d-flex flex-column gap-3">
-						<h4>Hello alberto 👋</h4>
+						<h4>Hello ${user.name} 👋</h4>
 						<p>We hope you have a nice day!</p>
 					</div>
 					<div class="d-flex flex-row align-items-center" style="gap: 30px">
@@ -58,27 +58,15 @@
 							</svg>
 
 							<div class="my-card d-flex flex-column alerts">
-								<div class="d-flex flex-row align-items-center" style="gap: 30px">
-									<h4>🚨</h4>
-									<div>
-										<h6>Temperature</h6>
-										<p>The medrano fridge temperature is higher than usual!</p>
+								<#list temperatures as tmp> 
+									<div class="d-flex flex-row align-items-center" style="gap: 30px">
+										<h4>🚨</h4>
+										<div>
+											<h6>Temperature</h6>
+											<p>The ${tmp.fridge} fridge temperature is higher than usual!</p>
+										</div>
 									</div>
-								</div>
-								<div class="d-flex flex-row align-items-center" style="gap: 30px">
-									<h4>🚨</h4>
-									<div>
-										<h6>Temperature</h6>
-										<p>The medrano fridge temperature is higher than usual!</p>
-									</div>
-								</div>
-								<div class="d-flex flex-row align-items-center" style="gap: 30px">
-									<h4>🚨</h4>
-									<div>
-										<h6>Temperature</h6>
-										<p>The medrano fridge temperature is higher than usual!</p>
-									</div>
-								</div>
+								</#list>
 							</div>
 						</div>
 						<button class="btn-primary" id="contribute-btn">Contribute</button>
@@ -96,34 +84,24 @@
 								class="my-card d-flex flex-column"
 								style="gap: 30px; height: 350px"
 							>
-								<div
-									class="d-flex align-items-center my-card-item"
-									id="fridge"
-									data-fridge-name="Medrano"
-									data-fridge-temp="3"
-									data-fridge-reserved="40"
-									data-fridge-state="Active"
-									data-fridge-meals="120"
-									style="gap: 30px"
-								>
-									<h4>🥘</h4>
-									<div>
-										<h6>Food</h6>
-										<p>You have donated “musaka”</p>
+								<#list donations as donation> 
+									<div
+										class="d-flex align-items-center my-card-item"
+										id="fridge"
+										data-fridge-name=${donation.fridge.name}
+										data-fridge-temp=${donation.fridge.temp}
+										data-fridge-reserved=${donation.fridge.reserved}
+										data-fridge-state=${donation.fridge.state}
+										data-fridge-meals=${donation.fridge.meals}
+										style="gap: 30px"
+									>
+										<h4>${donation.emoji}</h4>
+										<div>
+											<h6>${donation.type}</h6>
+											<p>${donation.desc}"</p>
+										</div>
 									</div>
-								</div>
-								<div
-									class="d-flex align-items-center my-card-item"
-									style="gap: 30px"
-								>
-									<h4>👨</h4>
-									<div>
-										<h6>Registered person</h6>
-										<p>
-											You have registered “valentina” as part of our community
-										</p>
-									</div>
-								</div>
+								</#list>
 							</div>
 						</div>
 						<div class="d-flex flex-column flex-grow-1" style="min-width: 300px">
@@ -135,77 +113,33 @@
 								class="my-card d-flex flex-column"
 								style="gap: 30px; height: 350px"
 							>
-								<div
-									class="d-flex align-items-center my-card-item"
-									style="gap: 30px"
-									id="fridge"
-									data-fridge-name="Medrano"
-									data-fridge-temp="3"
-									data-fridge-reserved="40"
-									data-fridge-state="Active"
-									data-fridge-meals="120"
-								>
-									<h4>🧊</h4>
-									<div class="w-100">
-										<h6>Medrano fridge</h6>
-										<div class="d-flex w-100 justify-content-between">
-											<p>Medrano fridge needs food</p>
-											<p class="small bold text-danger">Urgent</p>
+								<#list fridges as fridge> 
+									<div
+										class="d-flex align-items-center my-card-item"
+										style="gap: 30px"
+										id="fridge"
+										data-fridge-name=${fridge.name}
+										data-fridge-temp=${fridge.temp}
+										data-fridge-reserved=${fridge.reserved}
+										data-fridge-state=${fridge.state}
+										data-fridge-meals=${fridge.meals}
+									>
+										<h4>🧊</h4>
+										<div class="w-100">
+											<h6>${fridge.name} fridge</h6>
+											<div class="d-flex w-100 justify-content-between">
+												<p>${fridge.food_status_desc}</p>
+												<#if fridge.meal_urgency == "High">
+													<p class="small bold text-danger">${fridge.meal_urgency} urgency</p>
+												<#elseif fridge.meal_urgency == "Medium">
+													<p class="small bold text-warning">${fridge.meal_urgency} urgency</p>
+												<#else>
+													<p class="small bold text-success">${fridge.meal_urgency} urgency</p>
+												</#if>
+											</div>
 										</div>
 									</div>
-								</div>
-								<div
-									class="d-flex align-items-center my-card-item"
-									style="gap: 30px"
-									id="fridge"
-									data-fridge-name="Lugano"
-									data-fridge-temp="3"
-									data-fridge-reserved="40"
-									data-fridge-state="Danger"
-									data-fridge-meals="-40"
-								>
-									<h4>🧊</h4>
-									<div class="w-100">
-										<h6>Lugano fridge</h6>
-										<div class="d-flex w-100 justify-content-between">
-											<p>Lugano fridge needs food</p>
-											<p class="small bold text-warning">Medium urgency</p>
-										</div>
-									</div>
-								</div>
-								<div
-									class="d-flex align-items-center my-card-item"
-									style="gap: 30px"
-								>
-									<h4>🧊</h4>
-									<div class="w-100">
-										<h6>Villa crespo fridge</h6>
-										<div class="d-flex w-100 justify-content-between">
-											<p>Villa crespo fridge needs food</p>
-											<p class="small bold text-success">Low urgency</p>
-										</div>
-									</div>
-								</div>
-								<div class="d-flex align-items-center" style="gap: 30px">
-									<h4>🧊</h4>
-									<div class="w-100">
-										<h6>Villa crespo fridge</h6>
-										<div class="d-flex w-100 justify-content-between">
-											<p>Villa crespo fridge needs food</p>
-											<p class="small bold text-success">Low urgency</p>
-										</div>
-									</div>
-								</div>
-								<div class="d-flex align-items-center" style="gap: 30px">
-									<h4>🧊</h4>
-									<div class="w-100">
-										<h6>Villa crespo fridge</h6>
-										<div class="d-flex w-100 justify-content-between">
-											<p>Villa crespo fridge needs food</p>
-											<p class="small bold text-success">Low urgency</p>
-										</div>
-									</div>
-								</div>
+								</#list>
 							</div>
 						</div>
 					</div>
@@ -219,35 +153,21 @@
 							<p>Here are some rewards for your hard work!</p>
 						</div>
 
+						
 						<div class="my-card d-flex flex-column" style="gap: 30px; height: 350px">
 							<div class="d-flex w-100 justify-content-between">
 								<p>Your points:</p>
-								<p class="points">200</p>
+								<p class="points">${user.points}</p>
 							</div>
-							<div class="d-flex align-items-center my-card-item" style="gap: 30px">
-								<h4>🍴</h4>
-								<div>
-									<h6>Cooking</h6>
-									<p>You can exchange your points for useful cooking supplies</p>
+							<#list rewards as reward> 
+								<div class="d-flex align-items-center my-card-item" style="gap: 30px">
+									<h4>${reward.emoji}</h4>
+										<div>
+											<h6>${reward.category}</h6>
+											<p>${reward.description}</p>
+										</div>
 								</div>
-							</div>
-							<div class="d-flex align-items-center my-card-item" style="gap: 30px">
-								<h4>🛋️</h4>
-								<div>
-									<h6>Home</h6>
-									<p>You can exchange your points for nice home supplies</p>
-								</div>
-							</div>
-							<div class="d-flex align-items-center my-card-item" style="gap: 30px">
-								<h4>🎮</h4>
-								<div>
-									<h6>Technology</h6>
-									<p>
-										You can exchange your points for trendy technological
-										devices
-									</p>
-								</div>
-							</div>
+							</#list>
 						</div>
 					</div>
 				</div>
