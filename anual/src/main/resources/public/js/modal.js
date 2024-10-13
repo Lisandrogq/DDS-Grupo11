@@ -7,8 +7,8 @@ const setupModalClosers = () => {
 
 const setModalContent = (children) => {
 	modalContent.innerHTML = children;
-	if(document.getElementById("has_map")!=null){
-		setup_map()
+	if (document.getElementById("has_map") != null) {
+		setup_map();
 	}
 	setupModalClosers();
 };
@@ -41,14 +41,13 @@ function eliminarInput() {
 	inputs[inputs.length - 1].remove();
 }
 
-
 function setup_map() {
-	var map = L.map('map').setView([-34.5978833,-58.4199385], 13);
-	L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	var map = L.map("map").setView([-34.5978833, -58.4199385], 13);
+	L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
 		maxZoom: 19,
-		attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+		attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 	}).addTo(map);
-	 L.marker([-34.5978833,-58.4199385]).addTo(map);
+	L.marker([-34.5978833, -58.4199385]).addTo(map);
 }
 
 /**
@@ -163,7 +162,7 @@ function mealDonation() {
 				<p>Contribute donating a meal</p>
 			</div>
 			
-			<form action="" class="form">
+			<form method="POST" action="/contribution/meal" class="form">
 				<input
 					type="text"
 					id="type"
@@ -235,7 +234,7 @@ function mealDistribution() {
 				<h5 class="accent-100 mb-2">Meal distribution</h5>
 				<p>Contribute distributing a meal</p>
 			</div>
-			<form action="" class="form">
+			<form method="POST" action="/contribution/meal/distrubution" class="form">
 				<div>
 					<span id="btnCrearInput" style="color: #136C91;" class="clickable-text" onclick="agregarInput()">Add meal</span> <b>|</b>
 					<span  style="color: #136C91" class="clickable-text" onclick="eliminarInput()">Delete meal</span>
@@ -300,7 +299,7 @@ function moneyDonation() {
 				<p>Contribute donating money</p>
 			</div>
 
-			 <form action="" class="form">
+			 <form method="POST" action="/contribution/money" class="form">
 				<input type="text" id="amount" name="amount" required placeholder="Amount to donate..." />
 				<input type="text" id="cardID" name="cardID" required placeholder="Your card ID..." />
 				<input type="password" id="cvv" name="cvv" required placeholder="Your card verification value..." />
@@ -322,7 +321,7 @@ function personRegistration() {
 				<p>Create an account for a person in need</p>
 			</div>
 
-			<form action="" class="form">
+			<form method="POST" action="/contribution/registration" class="form">
 				<input
 					type="text"
 					id="username"
@@ -396,7 +395,7 @@ function rewardCollab() {
 				<p>Contribute offering a new reward</p>
 			</div>
 
-			<form action="" class="form">
+			<form method="POST" action="/contribution/reward" class="form">
 				<input
 					type="text"
 					id="name"
@@ -468,7 +467,7 @@ function failureAlert() {
 				<h5 class="accent-100 mb-2">Report Failure</h5>
 				<p>Report a fridge's malfunction</p>
 			</div>
-			<form action="" class="form">
+			<form method="POST" action="/alerts/failure" class="form">
 				<select required value="fridge" class="boton1 inputs" style="width: 100%">
 					<option selected disabled hidden>What happened?</option>
 					<option value="low meal" class="desplegables">Low on meal</option>

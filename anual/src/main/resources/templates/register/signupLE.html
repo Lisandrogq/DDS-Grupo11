@@ -4,15 +4,15 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>FridgeBridge</title>
-		<script src="forms.js"></script>
+		<script src="/public/js/forms.js"></script>
 		<link
 			rel="stylesheet"
 			href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
 			integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 			crossorigin="anonymous"
 		/>
-		<link rel="stylesheet" href="../../css/base.css" />
-		<link rel="stylesheet" href="../../css/forms.css" />
+		<link rel="stylesheet" href="/public/css/base.css" />
+		<link rel="stylesheet" href="/public/css/forms.css" />
 	</head>
 
 	<body class="fullscreen d-flex align-items-center">
@@ -21,7 +21,7 @@
 				<h5 class="accent-100 mb-2">Sign up</h5>
 				<p>Create your account and join us!</p>
 			</div>
-			<form action="" class="form">
+			<form method="POST" action="/user/legal-entity" class="form">
 				<input
 					type="text"
 					id="mail"

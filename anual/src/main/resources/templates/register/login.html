@@ -10,9 +10,9 @@
 			integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 			crossorigin="anonymous"
 		/>
-		<link rel="stylesheet" href="../../css/base.css" />
-		<link rel="stylesheet" href="../../css/forms.css" />
-		<script src="../../js/forms.js"></script>
+		<link rel="stylesheet" href="/public/css/base.css" />
+		<link rel="stylesheet" href="/public/css/forms.css" />
+		<script src="/public/js/forms.js"></script>
 	</head>
 
 	<body class="fullscreen d-flex align-items-center">
@@ -22,7 +22,7 @@
 				<p>Log into your account</p>
 			</div>
 
-			<form action="../collaborator-dash/home.html" class="form">
+			<form method="POST" action="/user/login" class="form">
 				<input
 					type="text"
 					id="mail"
@@ -42,7 +42,7 @@
 				/>
 
 				<div class="form-btns-container">
-					<a href="../registration/signup.html" class="btn-text w-100">Sign up</a>
+					<a href="/register/signup" class="btn-text w-100">Sign up</a>
 					<button type="submit" class="btn-primary w-100">Log in</button>
 				</div>
 			</form>

@@ -2,6 +2,7 @@ package org.grupo11.app;
 
 import org.grupo11.Utils.PasswordValidator;
 import org.grupo11.Rabbit;
+import org.grupo11.Api.Api;
 import org.grupo11.Services.DataImporter;
 import org.grupo11.Services.ActivityRegistry.RegistryManager;
 import org.grupo11.Services.Contributions.ContributionsManager;
@@ -20,15 +21,17 @@ public class App {
     private RegistryManager cardsManager;
     private RewardSystem rewardSystem;
 
-    public App() {
-        contributorsManager = ContributorsManager.getInstance();
-        contributionsManager = ContributionsManager.getInstance();
-        fridgesManager = FridgesManager.getInstance();
-        personsInNeedManager = PersonInNeedManager.getInstance();
-        technicianManager = TechnicianManager.getInstance();
-        cardsManager = RegistryManager.getInstance();
-        rewardSystem = RewardSystem.getInstance();
+    public static void main(String[] args) {
+        // contributorsManager = ContributorsManager.getInstance();
+        // contributionsManager = ContributionsManager.getInstance();
+        // fridgesManager = FridgesManager.getInstance();
+        // personsInNeedManager = PersonInNeedManager.getInstance();
+        // technicianManager = TechnicianManager.getInstance();
+        // cardsManager = RegistryManager.getInstance();
+        // rewardSystem = RewardSystem.getInstance();
         Rabbit.getInstance().connect();
+        Api api = new Api(8000);
+        api.start();
     }
 
     public ContributorsManager getContributorsManager() {
