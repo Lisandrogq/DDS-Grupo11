@@ -20,7 +20,7 @@ public class Api {
                             .println("Received http message \nfrom: " + ctx.ip() + "\nmethod:" + ctx.method()
                                     + "\npath: " + ctx.path() + "\nat: " +
                                     DateUtils.now()));
-            cfg.events.serverStarted(() -> System.out.println("Server started"));
+            cfg.events.serverStarted(() -> System.out.println("Server started, listening at http://localhost:" + port));
             cfg.fileRenderer(new JavalinFreemarker());
             cfg.staticFiles.add(staticFiles -> {
                 staticFiles.hostedPath = "/public";
