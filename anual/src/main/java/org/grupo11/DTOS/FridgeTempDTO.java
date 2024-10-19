@@ -1,4 +1,4 @@
-package org.grupo11.Controller.DTOS;
+package org.grupo11.DTOS;
 
 public class FridgeTempDTO {
     public int fridge_id;

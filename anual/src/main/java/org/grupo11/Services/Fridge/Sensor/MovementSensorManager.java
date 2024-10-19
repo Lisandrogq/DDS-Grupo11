@@ -1,4 +1,4 @@
-package org.grupo11.Domain.Sensor;
+package org.grupo11.Services.Fridge.Sensor;
 
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgeNotification;

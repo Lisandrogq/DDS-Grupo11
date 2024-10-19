@@ -1,6 +1,4 @@
-package org.grupo11;
-
-import org.grupo11.Controller.Controller;
+package org.grupo11.Broker;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;

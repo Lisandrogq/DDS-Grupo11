@@ -1,4 +1,4 @@
-package org.grupo11.Controller.DTOS;
+package org.grupo11.Broker;
 
 import java.util.Map;
 

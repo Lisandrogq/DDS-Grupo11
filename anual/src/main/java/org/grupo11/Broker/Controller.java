@@ -1,18 +1,14 @@
-package org.grupo11.Controller;
+package org.grupo11.Broker;
 
 import java.io.IOException;
 
-import org.grupo11.Controller.DTOS.AlertDTO;
-import org.grupo11.Controller.DTOS.FridgeTempDTO;
-import org.grupo11.Controller.DTOS.OpeningDTO;
-import org.grupo11.Domain.Sensor.Sensor;
-import org.grupo11.Services.Contributor.Contributor;
-import org.grupo11.Services.Contributor.ContributorsManager;
+import org.grupo11.DTOS.AlertDTO;
+import org.grupo11.DTOS.FridgeTempDTO;
+import org.grupo11.DTOS.OpeningDTO;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgesManager;
 import org.grupo11.Services.Fridge.Incident.Alert;
-import org.grupo11.Services.Fridge.Incident.AlertType;
-import org.grupo11.Services.Fridge.Incident.Incident;
+import org.grupo11.Services.Fridge.Sensor.Sensor;
 import org.grupo11.Utils.JSON;
 
 import com.fasterxml.jackson.core.type.TypeReference;

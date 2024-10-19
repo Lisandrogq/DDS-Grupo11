@@ -3,12 +3,11 @@ package org.grupo11.Services.Fridge;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.grupo11.Domain.Sensor.MovementSensorManager;
-import org.grupo11.Domain.Sensor.TemperatureSensorManager;
 import org.grupo11.Enums.Provinces;
 import org.grupo11.Services.Meal;
-import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Incident.Incident;
+import org.grupo11.Services.Fridge.Sensor.MovementSensorManager;
+import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
 import org.grupo11.Utils.Crypto;
 
 public class Fridge {
@@ -51,9 +50,11 @@ public class Fridge {
         this.tempManager = tempManager;
 
     }
+
     public void setMovManager(MovementSensorManager movManager) {
         this.movManager = movManager;
     }
+
     public int getId() {
         return id;
     }

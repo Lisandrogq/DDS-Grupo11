@@ -1,5 +1,4 @@
-package org.grupo11.Controller.DTOS;
-
+package org.grupo11.DTOS;
 
 import org.grupo11.Services.Fridge.Incident.AlertType;
 

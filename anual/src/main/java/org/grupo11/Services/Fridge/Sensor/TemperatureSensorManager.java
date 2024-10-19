@@ -1,8 +1,8 @@
-package org.grupo11.Domain.Sensor;
+package org.grupo11.Services.Fridge.Sensor;
 
 import java.util.List;
 
-import org.grupo11.Rabbit;
+import org.grupo11.Broker.Rabbit;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgeNotification;
 import org.grupo11.Services.Fridge.FridgeNotifications;
@@ -77,7 +77,7 @@ public class TemperatureSensorManager extends SensorManager<Double> {
                 new FridgeNotification(FridgeNotifications.Malfunction, "Fridge is malfunctioning",
                         "The fridge temperature is failing, meals should be redistributed in brevity."));
 
-        org.grupo11.Rabbit rabbit = Rabbit.getInstance();
+        org.grupo11.Broker.Rabbit rabbit = Rabbit.getInstance();
         // rabbit.send("System alerts", "",
         // "{ \"op\": \"set_temp\" \"data\": { \"fridge_id\": " + fridge.getId() + ",
         // \"sensor_id\": "

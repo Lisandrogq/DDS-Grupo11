@@ -1,4 +1,4 @@
-package org.grupo11.Domain.Sensor;
+package org.grupo11.Services.Fridge.Sensor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +32,7 @@ public abstract class SensorManager<T> {
         }
         return null;
     }
+
     public List<Sensor<T>> getSensors() {
         return this.sensors;
     }
@@ -55,7 +56,7 @@ public abstract class SensorManager<T> {
     public void removeSensor(Sensor<T> sensor) {
         sensors.remove(sensor);
     }
-    
+
     public abstract void checkSensors();
 
     public abstract void fireAlert();
