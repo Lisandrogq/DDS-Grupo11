@@ -9,10 +9,19 @@ help:
 compile: ## Compiles the project
 	mvn package -DskipTests
 
-start: ## Start the java server
+docker-up: ## Starts docker containers
+	docker-compose up -d
+
+docker-down: ## Stops and removes docker containers
+	docker-compose down
+
+docker-clean: docker-down ## Remove containers and images
+	docker rmi postgres rabbitmq
+
+start-server: ## Start the java server
 	mvn exec:java -Dexec.mainClass="org.grupo11.app.App"
 
-start_and_compile: compile start ## Starts and compiles the java server
+start: docker-up compile start-server ## Starts docker services, compiles and starts the java server
 
 clean: ## Cleans mvn, useful when mvn is weird
 	mvn clean install -DskipTests
