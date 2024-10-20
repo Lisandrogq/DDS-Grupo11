@@ -1,7 +1,9 @@
 package org.grupo11.app;
 
 import org.grupo11.Utils.PasswordValidator;
+import org.grupo11.DB;
 import org.grupo11.DataImporter;
+import org.grupo11.Logger;
 import org.grupo11.Api.Api;
 import org.grupo11.Broker.Rabbit;
 import org.grupo11.Services.ActivityRegistry.RegistryManager;
@@ -29,9 +31,14 @@ public class App {
         // technicianManager = TechnicianManager.getInstance();
         // cardsManager = RegistryManager.getInstance();
         // rewardSystem = RewardSystem.getInstance();
-        Rabbit.getInstance().connect();
-        Api api = new Api(8000);
-        api.start();
+        try {
+            DB.getSessionFactory();
+            Rabbit.getInstance().connect();
+            Api api = new Api(8000);
+            api.start();
+        } catch (Exception e) {
+            Logger.error("Could not start app");
+        }
     }
 
     public ContributorsManager getContributorsManager() {
