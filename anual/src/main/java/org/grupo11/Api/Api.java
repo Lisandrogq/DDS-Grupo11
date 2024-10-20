@@ -1,6 +1,6 @@
 package org.grupo11.Api;
 
-import org.grupo11.Utils.DateUtils;
+import org.grupo11.Logger;
 
 import java.util.function.Consumer;
 import io.javalin.Javalin;
@@ -16,11 +16,10 @@ public class Api {
         Consumer<JavalinConfig> config = cfg -> {
             cfg.http.generateEtags = true;
             cfg.requestLogger
-                    .http((ctx, executionTimeMs) -> System.out
-                            .println("Received http message \nfrom: " + ctx.ip() + "\nmethod:" + ctx.method()
-                                    + "\npath: " + ctx.path() + "\nat: " +
-                                    DateUtils.now()));
-            cfg.events.serverStarted(() -> System.out.println("Server started, listening at http://localhost:" + port));
+                    .http((ctx, executionTimeMs) -> Logger.info(
+                            "Received http message: from: {} method: {} path: {}", ctx.ip(), ctx.method(),
+                            ctx.path()));
+            cfg.events.serverStarted(() -> Logger.info("Server started, listening at http://localhost:{}", port));
             cfg.fileRenderer(new JavalinFreemarker());
             cfg.staticFiles.add(staticFiles -> {
                 staticFiles.hostedPath = "/public";
