@@ -15,15 +15,16 @@ docker-up: ## Starts docker containers
 docker-down: ## Stops and removes docker containers
 	docker-compose down
 
-docker-clean: docker-down ## Remove containers and images
-	docker rmi postgres rabbitmq
+docker-clean: docker-down ## Remove containers, images and volumes related to fridgebridge
+	docker volume rm fridge-bridge_postgres_data
+	docker rmi postgres rabbitmq adminer
 
 start-server: ## Start the java server
 	mvn exec:java -Dexec.mainClass="org.grupo11.app.App"
 
 start: docker-up compile start-server ## Starts docker services, compiles and starts the java server
 
-clean: ## Cleans mvn, useful when mvn is weird
+mvn-clean: ## Cleans mvn, useful when mvn is weird
 	mvn clean install -DskipTests
 
 test: ## Mvn test
