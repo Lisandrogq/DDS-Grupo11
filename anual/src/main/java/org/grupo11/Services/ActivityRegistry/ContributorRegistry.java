@@ -7,8 +7,11 @@ import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Utils.DateUtils;
 
+import jakarta.persistence.OneToOne;
+
 public class ContributorRegistry extends ActivityRegistry {
     private int id;
+    @OneToOne
     private Contributor owner;
     private List<FridgeSolicitude> permissions;
 
@@ -18,7 +21,7 @@ public class ContributorRegistry extends ActivityRegistry {
         this.permissions = permissions;
     }
 
-    public FridgeSolicitude  registerPermission(Fridge fridge) {
+    public FridgeSolicitude registerPermission(Fridge fridge) {
         FridgeSolicitude solicitude = new FridgeSolicitude(this, DateUtils.getCurrentTimeInMs(), fridge);
         permissions.add(solicitude);
         fridge.addSolicitudes(solicitude);

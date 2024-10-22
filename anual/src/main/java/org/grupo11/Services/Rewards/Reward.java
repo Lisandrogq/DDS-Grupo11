@@ -2,13 +2,22 @@ package org.grupo11.Services.Rewards;
 
 import org.grupo11.Utils.Crypto;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+
+@Entity
 public class Reward {
     private int id;
     private String name;
     private String imageUrl;
     private float neededPoints;
     private int quantity;
+    @Enumerated(EnumType.STRING)
     private RewardCategory category;
+
+    public Reward() {
+    }
 
     public Reward(String name, float neededPoints, String imageUrl, RewardCategory category) {
         this.id = Crypto.getRandomId(10);

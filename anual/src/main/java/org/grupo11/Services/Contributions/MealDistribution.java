@@ -13,7 +13,6 @@ public class MealDistribution extends Contribution {
     private String reason;
     private Meal meal;
 
-    // Constructor
     public MealDistribution(Fridge originFridge, Fridge destinyFridge, int quantity,
             String reason, Meal meal,
             long distributionDate) {
@@ -35,9 +34,11 @@ public class MealDistribution extends Contribution {
     @Override
     public void afterContribution() {
         this.originFridge
-                .addOpenEntry(new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(), this.contributor.getContributorRegistry()));
+                .addOpenEntry(new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(),
+                        this.contributor.getContributorRegistry()));
         this.destinyFridge
-                .addOpenEntry(new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(), this.contributor.getContributorRegistry()));
+                .addOpenEntry(new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(),
+                        this.contributor.getContributorRegistry()));
     }
 
     public ContributionType getContributionType() {
