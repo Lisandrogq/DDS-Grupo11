@@ -6,14 +6,25 @@ import java.util.List;
 import org.grupo11.Enums.Provinces;
 import org.grupo11.Services.Contact.Contact;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+
+@Entity
 public class Technician {
     private String name;
     private String surname;
+    @Enumerated(EnumType.STRING)
     private TechnicianType type;
     private int DNI;
     private String cuil;
+    @Enumerated(EnumType.STRING)
     private Provinces areasOfWork;
+    @OneToMany
     private List<TechnicianVisit> visits;
+    @OneToOne
     private Contact contact;
 
     public Technician(String name, String surname, TechnicianType type, int DNI, String cuil,
