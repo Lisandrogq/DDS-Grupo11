@@ -1,11 +1,8 @@
 package org.grupo11.Services.Contact;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class WhatsApp extends Contact {
     private String number;
 
