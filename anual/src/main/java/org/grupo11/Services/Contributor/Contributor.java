@@ -44,7 +44,7 @@ public class Contributor {
     @OneToMany
     private List<Reward> rewards;
     @OneToOne
-    private ContributorRegistry contributorRegistry = null;
+    private ContributorRegistry contributorRegistry;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Subscription> fridgeSubscriptions;
 

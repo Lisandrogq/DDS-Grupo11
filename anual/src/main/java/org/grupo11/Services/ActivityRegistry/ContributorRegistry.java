@@ -7,12 +7,16 @@ import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Utils.DateUtils;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
+@Entity
 public class ContributorRegistry extends ActivityRegistry {
     private int id;
     @OneToOne
     private Contributor owner;
+    @OneToMany
     private List<FridgeSolicitude> permissions;
 
     public ContributorRegistry(int id, Contributor owner, List<FridgeSolicitude> permissions) {

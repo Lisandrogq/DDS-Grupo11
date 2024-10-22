@@ -9,10 +9,19 @@ import org.grupo11.Services.PersonInNeed.PersonInNeed;
 import org.grupo11.Utils.Crypto;
 import org.grupo11.Utils.DateUtils;
 
-public abstract class PINRegistry extends ActivityRegistry {
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+
+@Entity
+public class PINRegistry extends ActivityRegistry {
     private int id;
+    @OneToOne
     private PersonInNeed owner;
+    @OneToMany
     private List<CardUsage> usages;
+    @ManyToOne
     private Contributor givenBy;
 
     public PINRegistry(PersonInNeed owner, Contributor givenBy) {
@@ -39,7 +48,6 @@ public abstract class PINRegistry extends ActivityRegistry {
     }
 
     // getters and setters
-
     public int getId() {
         return this.id;
     }

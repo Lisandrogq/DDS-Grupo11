@@ -1,10 +1,13 @@
 package org.grupo11.Services.ActivityRegistry;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class ActivityRegistry {
     private int id;
-    // private PersonInNeed owner; //debería ser 'ROL'
-    // private List<CardUsage> usages; // capaz se puede abstraer los usos deambas
-    // tarjetas, no se si vale la pena
 
     // getters and setters
     public int getId() {
