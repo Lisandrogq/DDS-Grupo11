@@ -4,11 +4,24 @@ import java.util.ArrayList;
 
 import org.grupo11.Enums.DocumentType;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+
+@Entity
 public class Individual extends Contributor {
+    @Id
+    private int document;
+    @Enumerated(EnumType.STRING)
+    private DocumentType documentType;
+    private String name;
     private String surname;
     private String birth;
-    private int document;
-    private DocumentType documentType;
+
+    public Individual() {
+        super();
+    }
 
     public Individual(String name, String surname, String address, String birth, int document,
             DocumentType documentType) {
@@ -17,6 +30,14 @@ public class Individual extends Contributor {
         this.birth = birth;
         this.document = document;
         this.documentType = documentType;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void getName(String name) {
+        this.name = name;
     }
 
     public String getSurname() {

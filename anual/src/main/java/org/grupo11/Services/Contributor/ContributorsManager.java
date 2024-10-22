@@ -31,15 +31,6 @@ public class ContributorsManager {
         contributors.remove(contributor);
     }
 
-    public Contributor getByName(String name) {
-        for (Contributor contributor : contributors) {
-            if (contributor.getName() == name) {
-                return contributor;
-            }
-        }
-        return null;
-    }
-
     public Individual getIndividualByDocument(int document) {
         for (Contributor contributor : contributors) {
             if (contributor instanceof Individual && ((Individual) contributor).getDocument() == document)
@@ -52,7 +43,7 @@ public class ContributorsManager {
         if (contribution.validate(contributor)) {
             contribution.setContributor(contributor);
             contributor.addContribution(contribution);
-            contribution.afterContribution();//quesestoxd
+            contribution.afterContribution();// quesestoxd
             RewardSystem.assignPoints(contributor, contribution);
             contributionsManager.add(contribution);
             return true;

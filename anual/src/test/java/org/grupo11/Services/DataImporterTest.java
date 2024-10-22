@@ -81,7 +81,6 @@ public class DataImporterTest {
         System.out.println("Contributions:");
         for (Contribution contribution : contributionsManager.getContributions()) {
             System.out.println("   Contribution Type: " + contribution.getContributionType());
-            System.out.println("   Contributor: " + contribution.getContributor().getName());
             System.out.println("   Contribution Date: " + contribution.getDate());
             System.out.println();
         }
