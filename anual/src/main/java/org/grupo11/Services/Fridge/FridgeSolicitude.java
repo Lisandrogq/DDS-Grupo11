@@ -4,8 +4,14 @@ import org.grupo11.Constants;
 import org.grupo11.Services.ActivityRegistry.ContributorRegistry;
 import org.grupo11.Utils.DateUtils;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+
+@Entity
 public class FridgeSolicitude {
+    @ManyToOne
     private ContributorRegistry issuedBy;
+    @ManyToOne
     private Fridge fridge;
     private long issuedAt;
     private boolean alreadyUsed;

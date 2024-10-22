@@ -10,23 +10,37 @@ import org.grupo11.Services.Fridge.Sensor.MovementSensorManager;
 import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
 import org.grupo11.Utils.Crypto;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Transient;
+
 public class Fridge {
     private int id;
     private boolean isActive;
     private double lon;
     private double lat;
+    @Enumerated(EnumType.STRING)
     private Provinces area;
     private String address;
     private String name;
     private int capacity;
     private int commissioningDate;
+    @OneToMany
     private List<Meal> meals;
+    @Transient
     private TemperatureSensorManager tempManager;
+    @Transient
     private MovementSensorManager movManager;
+    @OneToMany
     private List<FridgeSolicitude> openSolicitudes;
+    @OneToMany
     private List<FridgeOpenLogEntry> openedHistory;
+    @OneToMany
     private List<Incident> incidents = new ArrayList<Incident>();
+    @OneToMany
     protected List<Subscription> notificationSubscriptions = new ArrayList<Subscription>();
+    @OneToMany
     private List<FridgeNotification> notificationsSent = new ArrayList<FridgeNotification>();;
 
     public Fridge(double lon, double lat, String address, String name, int capacity, int commissioningDate,

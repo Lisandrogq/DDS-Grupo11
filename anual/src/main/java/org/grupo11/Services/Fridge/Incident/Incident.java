@@ -5,7 +5,13 @@ import java.util.List;
 
 import org.grupo11.Services.Technician.TechnicianVisit;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+
+@Entity
+
 public class Incident {
+    @OneToMany
     private List<TechnicianVisit> visits;
     private boolean hasBeenFixed;
     private long detectedAt;
