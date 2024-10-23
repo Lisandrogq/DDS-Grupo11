@@ -10,6 +10,7 @@ import org.grupo11.Services.Contact.Phone;
 import org.grupo11.Services.Contact.WhatsApp;
 import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributions.FridgeAdmin;
+import org.grupo11.Services.Contributions.MealDistribution;
 import org.grupo11.Services.Contributions.MoneyDonation;
 import org.grupo11.Services.Contributions.PersonRegistration;
 import org.grupo11.Services.Contributions.RewardContribution;
@@ -21,7 +22,11 @@ import org.grupo11.Services.Fridge.FridgeNotification;
 import org.grupo11.Services.Fridge.FridgeOpenLogEntry;
 import org.grupo11.Services.Fridge.FridgeSolicitude;
 import org.grupo11.Services.Fridge.Subscription;
+import org.grupo11.Services.Fridge.Incident.Alert;
+import org.grupo11.Services.Fridge.Incident.Failure;
 import org.grupo11.Services.Fridge.Incident.Incident;
+import org.grupo11.Services.PersonInNeed.PersonInNeed;
+import org.grupo11.Services.Reporter.Report;
 import org.grupo11.Services.Rewards.Reward;
 import org.grupo11.Services.Technician.Technician;
 import org.grupo11.Services.Technician.TechnicianVisit;
@@ -37,12 +42,15 @@ public class DB {
         try {
             Logger.info("Session factory built");
             return new Configuration().configure()
+                    .addAnnotatedClass(Report.class)
                     // contributions
+                    .addAnnotatedClass(PersonInNeed.class)
+                    .addAnnotatedClass(Contribution.class)
                     .addAnnotatedClass(Reward.class)
                     .addAnnotatedClass(MoneyDonation.class)
                     .addAnnotatedClass(PersonRegistration.class)
+                    .addAnnotatedClass(MealDistribution.class)
                     .addAnnotatedClass(RewardContribution.class)
-                    .addAnnotatedClass(Contribution.class)
                     .addAnnotatedClass(FridgeAdmin.class)
                     // registry
                     .addAnnotatedClass(ContributorRegistry.class)
@@ -52,14 +60,15 @@ public class DB {
                     .addAnnotatedClass(Technician.class)
                     .addAnnotatedClass(TechnicianVisit.class)
                     // fridge
+                    .addAnnotatedClass(Alert.class)
                     .addAnnotatedClass(Incident.class)
+                    .addAnnotatedClass(Failure.class)
                     .addAnnotatedClass(Subscription.class)
                     .addAnnotatedClass(Meal.class)
-                    .addAnnotatedClass(Fridge.class)
                     .addAnnotatedClass(FridgeNotification.class)
                     .addAnnotatedClass(FridgeOpenLogEntry.class)
                     .addAnnotatedClass(FridgeSolicitude.class)
-                    // contributions
+                    .addAnnotatedClass(Fridge.class)
                     // contacts
                     .addAnnotatedClass(Contact.class)
                     .addAnnotatedClass(WhatsApp.class)
