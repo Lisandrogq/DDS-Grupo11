@@ -33,12 +33,7 @@ public class MovementSensorManager extends SensorManager<Boolean> {
     @Override
     public void fireAlert() {
         fridge.addIncident(new Alert(AlertType.FRAUDALERT, DateUtils.getCurrentTimeInMs()));
-        for (Technician technician : TechnicianManager.getInstance().getTechnicians()) {
-            if (technician.getAreasOfWork() == fridge.getArea() && technician.getType() == TechnicianType.ELECTRICIAN) {
-                technician.getContact().SendNotification("WE NEED YOU",
-                        "We need you to fix a fridge");
-            }
-        }
+        Technician selected = TechnicianManager.getInstance().selectTechnician(fridge);
         // send a message to the subscribers
         fridge.sendFridgeNotifications(
                 new FridgeNotification(FridgeNotifications.Malfunction, "Fridge is malfunctioning",

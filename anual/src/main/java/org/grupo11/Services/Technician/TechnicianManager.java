@@ -3,6 +3,8 @@ package org.grupo11.Services.Technician;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.grupo11.Services.Fridge.Fridge;
+
 public class TechnicianManager {
     private List<Technician> technicians;
     private static TechnicianManager instance = null;
@@ -37,6 +39,18 @@ public class TechnicianManager {
     public Technician getByDNI(int id) {
         for (Technician technician : technicians) {
             if (technician.getDNI() == id) {
+                return technician;
+            }
+        }
+        return null;
+    }
+    public Technician selectTechnician (Fridge fridge){
+
+        for (Technician technician : TechnicianManager.getInstance().getTechnicians()) {
+            //todo: aplicar array de strategy para los criterios q van en el if)
+            if (technician.getAreasOfWork() == fridge.getArea() && technician.getType() == TechnicianType.ELECTRICIAN) {
+                technician.getContact().SendNotification("WE NEED YOU",
+                        "We need you to fix a fridge");
                 return technician;
             }
         }
