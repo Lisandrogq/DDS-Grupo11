@@ -8,6 +8,11 @@ import org.grupo11.Services.Contact.Contact;
 import org.grupo11.Services.Contact.EmailContact;
 import org.grupo11.Services.Contact.Phone;
 import org.grupo11.Services.Contact.WhatsApp;
+import org.grupo11.Services.Contributions.Contribution;
+import org.grupo11.Services.Contributions.FridgeAdmin;
+import org.grupo11.Services.Contributions.MoneyDonation;
+import org.grupo11.Services.Contributions.PersonRegistration;
+import org.grupo11.Services.Contributions.RewardContribution;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Contributor.Individual;
 import org.grupo11.Services.Contributor.LegalEntity.LegalEntity;
@@ -34,6 +39,11 @@ public class DB {
             return new Configuration().configure()
                     // contributions
                     .addAnnotatedClass(Reward.class)
+                    .addAnnotatedClass(MoneyDonation.class)
+                    .addAnnotatedClass(PersonRegistration.class)
+                    .addAnnotatedClass(RewardContribution.class)
+                    .addAnnotatedClass(Contribution.class)
+                    .addAnnotatedClass(FridgeAdmin.class)
                     // registry
                     .addAnnotatedClass(ContributorRegistry.class)
                     .addAnnotatedClass(ActivityRegistry.class)
