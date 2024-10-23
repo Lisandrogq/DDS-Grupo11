@@ -3,10 +3,25 @@ package org.grupo11.Services.Contributions;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Utils.Crypto;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.ManyToOne;
+
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Contribution {
+    @Id
+    @GeneratedValue
     private int id;
     protected long date;
+    @ManyToOne
     protected Contributor contributor;
+
+    public Contribution() {
+    }
 
     public Contribution(long date) {
         id = Crypto.getRandomId(6);
@@ -14,7 +29,7 @@ public abstract class Contribution {
     }
 
     public boolean validate(Contributor contributor) {
-    return contributor.canContributeIn(this.getContributionType());
+        return contributor.canContributeIn(this.getContributionType());
     };
 
     public void afterContribution() {

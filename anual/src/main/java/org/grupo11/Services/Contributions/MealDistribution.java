@@ -6,12 +6,26 @@ import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgeOpenLogEntry;
 import org.grupo11.Utils.DateUtils;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+@Entity
 public class MealDistribution extends Contribution {
+    @Id
+    @GeneratedValue
+    private Long id;
+    @OneToMany
     private Fridge originFridge;
+    @OneToMany
     private Fridge destinyFridge;
     private int quantity;
     private String reason;
     private Meal meal;
+
+    public MealDistribution() {
+    }
 
     public MealDistribution(Fridge originFridge, Fridge destinyFridge, int quantity,
             String reason, Meal meal,

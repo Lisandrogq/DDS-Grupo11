@@ -2,7 +2,15 @@ package org.grupo11.Services.Contributions;
 
 import org.grupo11.Services.Rewards.Reward;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+@Entity
 public class RewardContribution extends Contribution {
+    @Id
+    @GeneratedValue
+    private Long id;
     private Reward reward;
 
     public RewardContribution(Reward reward, long date) {

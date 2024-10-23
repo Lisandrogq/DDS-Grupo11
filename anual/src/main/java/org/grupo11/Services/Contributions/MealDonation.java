@@ -5,7 +5,13 @@ import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.FridgeOpenLogEntry;
 import org.grupo11.Utils.DateUtils;
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
 public class MealDonation extends Contribution {
+    @Id
+    @GeneratedValue
+    private Long id;
     private Meal meal;
 
     public MealDonation(Meal meal, long date) {
@@ -15,13 +21,15 @@ public class MealDonation extends Contribution {
 
     @Override
     public boolean validate(Contributor contributor) {
-        return (super.validate(contributor) && this.meal.getFridge().hasPermission(contributor.getContributorRegistry().getId()));
+        return (super.validate(contributor)
+                && this.meal.getFridge().hasPermission(contributor.getContributorRegistry().getId()));
     }
 
     @Override
     public void afterContribution() {
         this.meal.getFridge()
-                .addOpenEntry(new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(), this.contributor.getContributorRegistry()));
+                .addOpenEntry(new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(),
+                        this.contributor.getContributorRegistry()));
     }
 
     public ContributionType getContributionType() {
