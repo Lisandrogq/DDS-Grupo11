@@ -1,5 +1,6 @@
 package org.grupo11.Services;
 
+import org.grupo11.DataImporter;
 import org.grupo11.Services.Contact.Contact;
 import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributions.ContributionsManager;
@@ -19,7 +20,7 @@ public class DataImporterTest {
     private DataImporter dataImporter;
 
     @Before
-    public void setUp() {//sino se pone re nervioso al correr ambos test de una
+    public void setUp() {// sino se pone re nervioso al correr ambos test de una
         contributionsManager.setContributions(new ArrayList<>());
         contributorManager.setContributors(new ArrayList<>());
     }
@@ -35,10 +36,10 @@ public class DataImporterTest {
 
         // Verify the number of contributions
         // Log contributors and contributions
-        
+
         logContributors();
         logContributions();
-        assertEquals("Number of contributions should be 2",17, contributionsManager.getContributions().size());
+        assertEquals("Number of contributions should be 2", 17, contributionsManager.getContributions().size());
     }
 
     @Test
@@ -52,14 +53,11 @@ public class DataImporterTest {
 
         // Verify the number of contributions
         // Log contributors and contributions
-        
+
         logContributors();
         logContributions();
-        assertEquals("Number of contributions should be 2",8 , contributionsManager.getContributions().size());
+        assertEquals("Number of contributions should be 2", 8, contributionsManager.getContributions().size());
     }
-
-
-
 
     private void logContributors() {
         System.out.println("Contributors:");

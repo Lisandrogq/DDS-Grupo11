@@ -3,9 +3,6 @@ package org.grupo11.Services;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.grupo11.Domain.Sensor.MovementSensorManager;
-import org.grupo11.Domain.Sensor.Sensor;
-import org.grupo11.Domain.Sensor.TemperatureSensorManager;
 import org.grupo11.Enums.Provinces;
 import org.grupo11.Services.Contact.Contact;
 import org.grupo11.Services.Contact.EmailContact;
@@ -13,6 +10,9 @@ import org.grupo11.Services.Contributions.ContributionType;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgeNotifications;
+import org.grupo11.Services.Fridge.Sensor.MovementSensorManager;
+import org.grupo11.Services.Fridge.Sensor.Sensor;
+import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
 import org.grupo11.Services.Technician.Technician;
 import org.grupo11.Services.Technician.TechnicianManager;
 import org.grupo11.Services.Technician.TechnicianType;
@@ -87,7 +87,6 @@ public class IncidentTest {
         assertEquals("temp should be the average of the 4 sensors", 36.5, tempManager.getLastTemp(), 0.1);
     }
 
-    
     @Test
     public void AlertIsGenerated() {
         fridge.getTempManager().setMaxTemp(34);

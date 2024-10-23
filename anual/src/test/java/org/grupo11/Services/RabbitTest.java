@@ -4,8 +4,6 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -14,16 +12,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import org.grupo11.Rabbit;
-import org.grupo11.Controller.DTOS.AlertDTO;
-import org.grupo11.Domain.Sensor.Sensor;
-import org.grupo11.Domain.Sensor.TemperatureSensorManager;
+import org.grupo11.Broker.Rabbit;
 import org.grupo11.Services.ActivityRegistry.ContributorRegistry;
 import org.grupo11.Services.Contributions.ContributionType;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgeSolicitude;
 import org.grupo11.Services.Fridge.FridgesManager;
+import org.grupo11.Services.Fridge.Sensor.Sensor;
+import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
 
 public class RabbitTest {
     @Test
@@ -36,7 +33,7 @@ public class RabbitTest {
         fridge.setTempManager(temperatureSensorManager);
         FridgesManager.getInstance().add(fridge);
 
-        org.grupo11.Rabbit rabbit = Rabbit.getInstance();
+        org.grupo11.Broker.Rabbit rabbit = Rabbit.getInstance();
         rabbit.connect();
         rabbit.send("Temp Updates", "",
                 "{ \"fridge_id\": " + fridge.getId() + ", \"sensor_id\": "
@@ -63,26 +60,26 @@ public class RabbitTest {
         FridgesManager.getInstance().add(fridge);
         long actualDate = Calendar.getInstance().getTime().getTime();
 
-        org.grupo11.Rabbit rabbit = Rabbit.getInstance();
-         rabbit.connect();
+        org.grupo11.Broker.Rabbit rabbit = Rabbit.getInstance();
+        rabbit.connect();
         rabbit.send("System Alerts", "",
                 "{ \"fridge_id\": " + fridge.getId() + " , \"type\": "
-                        + "\"FRAUDALERT\"" + " , \"detectedAt\": " + actualDate + "}"); 
+                        + "\"FRAUDALERT\"" + " , \"detectedAt\": " + actualDate + "}");
 
-        
-   /*        String json = "{ \"fridge_id\": " + fridge.getId()
-          + ", \"type\": FRAUDALERT, \"detectedAt\": "
-          + actualDate + "}";
-          System.err.println(json);
-          AlertDTO dto = new ObjectMapper().readValue(json, AlertDTO.class); */
-        
+        /*
+         * String json = "{ \"fridge_id\": " + fridge.getId()
+         * + ", \"type\": FRAUDALERT, \"detectedAt\": "
+         * + actualDate + "}";
+         * System.err.println(json);
+         * AlertDTO dto = new ObjectMapper().readValue(json, AlertDTO.class);
+         */
 
         // this sleep is necessary: it allow some time to rabbit to answer
         try {
             Thread.sleep(1000);
         } catch (Exception e) {
         }
-        //todo: fix enum deserialization
+        // todo: fix enum deserialization
         assertEquals("alert should be registered", 1.0, 1.0, 0.1);
     }
 
@@ -98,13 +95,14 @@ public class RabbitTest {
         List<ContributionType> permisos = new ArrayList<ContributionType>();
         permisos.add(ContributionType.MEAL_DONATION);
         Contributor contributor1 = new Contributor("aa", "null", permisos);
-        ContributorRegistry contributorRegistry = new ContributorRegistry(0, contributor1, new ArrayList<FridgeSolicitude>());
+        ContributorRegistry contributorRegistry = new ContributorRegistry(0, contributor1,
+                new ArrayList<FridgeSolicitude>());
         contributor1.setContributorRegistry(contributorRegistry);
 
         FridgeSolicitude solicitude = contributor1.getContributorRegistry().registerPermission(fridge);
 
         // send msg
-        org.grupo11.Rabbit rabbit = Rabbit.getInstance();
+        org.grupo11.Broker.Rabbit rabbit = Rabbit.getInstance();
         rabbit.connect();
         rabbit.send("Opening Checks", "",
                 "{ \"fridge_id\": " + fridge.getId() + ", \"registry_id\": "

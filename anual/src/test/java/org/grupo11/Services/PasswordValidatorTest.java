@@ -68,10 +68,10 @@ public class PasswordValidatorTest {
 
     @Test
     public void IsKnownPassword_shouldReturnFalseForKnownPassword() {
-        assertFalse(PasswordValidator.IsKnownPassword("123456"));
+        assertFalse(PasswordValidator.IsKnownPassword("hola"));
     }
 
-     @Test
+    @Test
     public void IsKnownPassword_shouldReturnTrueForKnownPassword() {
         assertTrue(PasswordValidator.IsKnownPassword("passrodsklowewq..ewq?382910"));
     }
