@@ -3,13 +3,21 @@ package org.grupo11.Services.Fridge;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
 @Entity
 public class FridgeNotification {
+    @Id
+    @GeneratedValue
+    private Long id;
     private String subject;
     private String message;
     @Enumerated(EnumType.STRING)
     private FridgeNotifications type;
+
+    public FridgeNotification() {
+    }
 
     public FridgeNotification(FridgeNotifications type, String subject, String message) {
         this.subject = subject;

@@ -6,15 +6,20 @@ import java.util.List;
 import org.grupo11.Services.Technician.TechnicianVisit;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToMany;
 
 @Entity
-
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Incident {
     @OneToMany
     private List<TechnicianVisit> visits;
     private boolean hasBeenFixed;
     private long detectedAt;
+
+    public Incident() {
+    }
 
     public Incident(long detectedAt) {
         this.visits = new ArrayList<>();

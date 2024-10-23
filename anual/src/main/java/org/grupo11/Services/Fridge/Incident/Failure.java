@@ -5,9 +5,14 @@ import java.util.List;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Fridge;
 
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+
+@Entity
 public class Failure extends Incident {
     private Contributor reportedBy;
     private String description;
+    @ElementCollection
     private List<String> pictureUrls;
 
     public Failure(Fridge fridge, Contributor reportedBy, String description, List<String> pictureUrls,
