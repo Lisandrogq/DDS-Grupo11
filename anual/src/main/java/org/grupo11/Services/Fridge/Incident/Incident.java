@@ -6,13 +6,18 @@ import java.util.List;
 import org.grupo11.Services.Technician.TechnicianVisit;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToMany;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class Incident {
+public abstract class Incident {
+    @Id
+    @GeneratedValue
+    private Long id;
     @OneToMany
     private List<TechnicianVisit> visits;
     private boolean hasBeenFixed;

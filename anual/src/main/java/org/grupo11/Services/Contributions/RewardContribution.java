@@ -3,15 +3,15 @@ package org.grupo11.Services.Contributions;
 import org.grupo11.Services.Rewards.Reward;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 
 @Entity
+@PrimaryKeyJoinColumn(name = "id")
 public class RewardContribution extends Contribution {
-    @Id
-    @GeneratedValue
-    private Long id;
     private Reward reward;
+
+    public RewardContribution() {
+    }
 
     public RewardContribution(Reward reward, long date) {
         super(date);

@@ -5,6 +5,7 @@ import org.grupo11.Services.ActivityRegistry.PINRegistry;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class PersonInNeed {
@@ -16,6 +17,7 @@ public class PersonInNeed {
     private String address = null;
     private int DNI;
     private int childCount;
+    @OneToOne
     private PINRegistry PINRegistry;
 
     public PersonInNeed() {

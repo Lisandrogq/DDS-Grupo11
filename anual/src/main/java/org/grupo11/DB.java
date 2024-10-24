@@ -2,6 +2,7 @@ package org.grupo11;
 
 import org.grupo11.Services.Meal;
 import org.grupo11.Services.ActivityRegistry.ActivityRegistry;
+import org.grupo11.Services.ActivityRegistry.CardUsage;
 import org.grupo11.Services.ActivityRegistry.ContributorRegistry;
 import org.grupo11.Services.ActivityRegistry.PINRegistry;
 import org.grupo11.Services.Contact.Contact;
@@ -43,8 +44,9 @@ public class DB {
             Logger.info("Session factory built");
             return new Configuration().configure()
                     .addAnnotatedClass(Report.class)
-                    // contributions
                     .addAnnotatedClass(PersonInNeed.class)
+                    .addAnnotatedClass(CardUsage.class)
+                    // contributions
                     .addAnnotatedClass(Contribution.class)
                     .addAnnotatedClass(Reward.class)
                     .addAnnotatedClass(MoneyDonation.class)

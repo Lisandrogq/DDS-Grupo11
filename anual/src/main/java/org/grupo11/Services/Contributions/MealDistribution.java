@@ -7,18 +7,12 @@ import org.grupo11.Services.Fridge.FridgeOpenLogEntry;
 import org.grupo11.Utils.DateUtils;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 
 @Entity
+@PrimaryKeyJoinColumn(name = "id")
 public class MealDistribution extends Contribution {
-    @Id
-    @GeneratedValue
-    private Long id;
-    @OneToMany
     private Fridge originFridge;
-    @OneToMany
     private Fridge destinyFridge;
     private int quantity;
     private String reason;

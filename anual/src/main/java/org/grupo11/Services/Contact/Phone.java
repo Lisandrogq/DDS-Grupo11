@@ -6,6 +6,10 @@ import jakarta.persistence.Entity;
 public class Phone extends Contact {
     private String number;
 
+    public Phone() {
+
+    }
+
     public Phone(String number) {
         this.number = number;
     }

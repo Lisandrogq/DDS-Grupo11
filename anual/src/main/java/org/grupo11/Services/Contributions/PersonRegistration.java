@@ -4,14 +4,11 @@ import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.PersonInNeed.PersonInNeed;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 
 @Entity
+@PrimaryKeyJoinColumn(name = "id")
 public class PersonRegistration extends Contribution {
-    @Id
-    @GeneratedValue
-    private Long id;
     private PersonInNeed person;
     private Contributor givenBy;
 

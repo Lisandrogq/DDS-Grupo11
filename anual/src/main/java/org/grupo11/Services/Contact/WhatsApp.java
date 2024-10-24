@@ -6,6 +6,9 @@ import jakarta.persistence.Entity;
 public class WhatsApp extends Contact {
     private String number;
 
+    public WhatsApp() {
+    }
+
     public WhatsApp(String number) {
         this.number = number;
     }

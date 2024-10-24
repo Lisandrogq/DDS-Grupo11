@@ -9,11 +9,16 @@ import org.grupo11.Services.Contact.Contact;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
 @Entity
 public class Technician {
+    @Id
+    @GeneratedValue
+    private Long id;
     private String name;
     private String surname;
     @Enumerated(EnumType.STRING)
@@ -26,6 +31,9 @@ public class Technician {
     private List<TechnicianVisit> visits;
     @OneToOne
     private Contact contact;
+
+    public Technician() {
+    }
 
     public Technician(String name, String surname, TechnicianType type, int DNI, String cuil,
             Provinces areasOfWork,

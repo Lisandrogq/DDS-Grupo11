@@ -4,10 +4,16 @@ import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Fridge;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Meal {
+    @Id
+    @GeneratedValue
+    private Long id;
+
     private String type;
     private int expirationDate;
     @ManyToOne
@@ -16,8 +22,11 @@ public class Meal {
     @ManyToOne
     private Fridge fridge;
     private String state;
-    private Integer calories;
-    private Integer weight;
+    private int calories;
+    private int weight;
+
+    public Meal() {
+    }
 
     public Meal(String type, int expirationDate, int donationDate, Fridge fridge,
             String state, Integer calories, Integer weight) {

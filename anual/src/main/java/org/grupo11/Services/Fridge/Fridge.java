@@ -23,6 +23,7 @@ public class Fridge {
     @Id
     @GeneratedValue
     private int id;
+
     private boolean isActive;
     private double lon;
     private double lat;
@@ -43,11 +44,11 @@ public class Fridge {
     @OneToMany
     private List<FridgeOpenLogEntry> openedHistory;
     @OneToMany
-    private List<Incident> incidents = new ArrayList<Incident>();
+    private List<Incident> incidents;
     @OneToMany
-    protected List<Subscription> notificationSubscriptions = new ArrayList<Subscription>();
+    protected List<Subscription> notificationSubscriptions;
     @OneToMany
-    private List<FridgeNotification> notificationsSent = new ArrayList<FridgeNotification>();
+    private List<FridgeNotification> notificationsSent;
 
     public Fridge() {
     }
@@ -65,8 +66,11 @@ public class Fridge {
         this.meals = meals;
         this.tempManager = tempManager;
         this.movManager = movManager;
-        this.openSolicitudes = new ArrayList<FridgeSolicitude>();
-        this.openedHistory = new ArrayList<FridgeOpenLogEntry>();
+        this.openSolicitudes = new ArrayList<>();
+        this.openedHistory = new ArrayList<>();
+        this.incidents = new ArrayList<>();
+        this.notificationSubscriptions = new ArrayList<>();
+        this.notificationsSent = new ArrayList<>();
     }
 
     public void setTempManager(TemperatureSensorManager tempManager) {

@@ -15,6 +15,9 @@ public class Failure extends Incident {
     @ElementCollection
     private List<String> pictureUrls;
 
+    public Failure() {
+    }
+
     public Failure(Fridge fridge, Contributor reportedBy, String description, List<String> pictureUrls,
             long detectedAt) {
         super(detectedAt);

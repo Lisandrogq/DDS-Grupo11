@@ -7,11 +7,11 @@ import org.grupo11.Enums.DocumentType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 
 @Entity
+@PrimaryKeyJoinColumn(name = "id")
 public class Individual extends Contributor {
-    @Id
     private int document;
     @Enumerated(EnumType.STRING)
     private DocumentType documentType;

@@ -13,14 +13,15 @@ import jakarta.persistence.OneToOne;
 
 @Entity
 public class ContributorRegistry extends ActivityRegistry {
-    private int id;
     @OneToOne
     private Contributor owner;
     @OneToMany
     private List<FridgeSolicitude> permissions;
 
+    public ContributorRegistry() {
+    }
+
     public ContributorRegistry(int id, Contributor owner, List<FridgeSolicitude> permissions) {
-        this.id = id;
         this.owner = owner;
         this.permissions = permissions;
     }
@@ -30,14 +31,6 @@ public class ContributorRegistry extends ActivityRegistry {
         permissions.add(solicitude);
         fridge.addSolicitudes(solicitude);
         return solicitude;
-    }
-
-    public int getId() {
-        return this.id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public Contributor getOwner() {

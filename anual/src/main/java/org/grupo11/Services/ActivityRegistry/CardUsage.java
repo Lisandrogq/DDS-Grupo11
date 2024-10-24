@@ -2,7 +2,16 @@ package org.grupo11.Services.ActivityRegistry;
 
 import org.grupo11.Services.Fridge.Fridge;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+@Entity
 public class CardUsage {
+    @Id
+    @GeneratedValue
+    private Long id;
+
     private Fridge fridge;
     private long usedAt;
 

@@ -15,6 +15,9 @@ public class Report {
     private float mealsOutPerFridge;
     private float mealsPerCollaborator;
 
+    public Report() {
+    }
+
     public Report(long createdAt, float failuresPerFridge, float mealsInOutPerFridge,
             float mealsPerCollaborator) {
         this.createdAt = createdAt;

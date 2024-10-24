@@ -6,7 +6,6 @@ import java.util.List;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.PersonInNeed.PersonInNeed;
-import org.grupo11.Utils.Crypto;
 import org.grupo11.Utils.DateUtils;
 
 import jakarta.persistence.Entity;
@@ -16,7 +15,6 @@ import jakarta.persistence.OneToOne;
 
 @Entity
 public class PINRegistry extends ActivityRegistry {
-    private int id;
     @OneToOne
     private PersonInNeed owner;
     @OneToMany
@@ -24,8 +22,10 @@ public class PINRegistry extends ActivityRegistry {
     @ManyToOne
     private Contributor givenBy;
 
+    public PINRegistry() {
+    }
+
     public PINRegistry(PersonInNeed owner, Contributor givenBy) {
-        id = Crypto.getRandomId(11);
         this.usages = new ArrayList<>();
         this.givenBy = givenBy;
     }
@@ -48,14 +48,6 @@ public class PINRegistry extends ActivityRegistry {
     }
 
     // getters and setters
-    public int getId() {
-        return this.id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public PersonInNeed getOwner() {
         return this.owner;
     }

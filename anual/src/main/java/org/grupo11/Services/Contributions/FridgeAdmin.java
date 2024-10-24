@@ -5,21 +5,16 @@ import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgesManager;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 
 @Entity
+@PrimaryKeyJoinColumn(name = "id")
 public class FridgeAdmin extends Contribution {
-    @Id
-    @GeneratedValue
-    private Long id;
-    @Enumerated(EnumType.STRING)
     private LegalEntity business;
-    @OneToMany
     private Fridge fridge;
+
+    public FridgeAdmin() {
+    }
 
     public FridgeAdmin(LegalEntity business, Fridge fridge, long date) {
         super(date);

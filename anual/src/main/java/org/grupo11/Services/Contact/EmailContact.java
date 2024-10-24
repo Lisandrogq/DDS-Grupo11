@@ -12,6 +12,9 @@ public class EmailContact extends Contact {
     private String mail;
     private List<String> notifications = new ArrayList<String>();
 
+    public EmailContact() {
+    }
+
     public EmailContact(String mail) {
         this.mail = mail;
     }
