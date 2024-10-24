@@ -15,9 +15,9 @@
 
 - [x] db service with docker
 - [x] basic db class to handle connection and usage with orm
-- [ ] finish mapping classes to tables (mostly contributions)
-- [ ] add ids to all entities
-- [ ] make everything compile and work
+- [x] finish mapping classes to tables (mostly contributions)
+- [x] add ids to all entities
+- [x] make everything compile and work
 - [ ] create api endpoint (this should be fairly straightforward, we already have everything we need)
 - [ ] write some test for the api
 - [ ] corrections
