@@ -6,14 +6,25 @@ import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgeOpenLogEntry;
 import org.grupo11.Utils.DateUtils;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+
+@Entity
+@PrimaryKeyJoinColumn(name = "id")
 public class MealDistribution extends Contribution {
+    @OneToOne
     private Fridge originFridge;
+    @OneToOne
     private Fridge destinyFridge;
     private int quantity;
     private String reason;
+    @OneToOne
     private Meal meal;
 
-    // Constructor
+    public MealDistribution() {
+    }
+
     public MealDistribution(Fridge originFridge, Fridge destinyFridge, int quantity,
             String reason, Meal meal,
             long distributionDate) {
@@ -35,9 +46,11 @@ public class MealDistribution extends Contribution {
     @Override
     public void afterContribution() {
         this.originFridge
-                .addOpenEntry(new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(), this.contributor.getContributorRegistry()));
+                .addOpenEntry(new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(),
+                        this.contributor.getContributorRegistry()));
         this.destinyFridge
-                .addOpenEntry(new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(), this.contributor.getContributorRegistry()));
+                .addOpenEntry(new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(),
+                        this.contributor.getContributorRegistry()));
     }
 
     public ContributionType getContributionType() {

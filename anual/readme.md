@@ -27,6 +27,15 @@ Before, make sure you have the following dependencies:
 5. Run test with: `make test`
 6. For all commands run: `make help`
 
+**Adminer**
+When developing you might want to see the current status of the database. You could enter the into the postgres container shell and use the cli tool by running:
+
+```shell
+docker exec -it fridge-bridge-postgres-1 sh
+```
+
+or use the adminer GUI though a browser by opening: http://localhost:8080/?pgsql=postgres&username=postgres&db=postgres&ns=public
+
 ### Docs
 
 - [Importing data through csv file](./docs/csv_import.md)

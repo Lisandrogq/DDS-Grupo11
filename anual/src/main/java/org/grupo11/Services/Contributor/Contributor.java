@@ -12,26 +12,50 @@ import org.grupo11.Services.Fridge.FridgeNotifications;
 import org.grupo11.Services.Fridge.Subscription;
 import org.grupo11.Services.Fridge.Incident.Incident;
 import org.grupo11.Services.Rewards.Reward;
-import org.grupo11.Services.Rewards.RewardSystem;
-import org.grupo11.Services.Contributions.ContributionsManager;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Contributor {
-    private String name;
-    private List<Contact> contacts = new ArrayList<Contact>();;
-    private List<ContributionType> possibleContributions;
-    private List<Contribution> contributions;
-    private List<Reward> rewards;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String address = null;
     private double points;
-    private ContributorRegistry contributorRegistry = null;
+    @OneToMany
+    private List<Contact> contacts;
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    private List<ContributionType> possibleContributions;
+    @OneToMany
+    private List<Contribution> contributions;
+    @OneToMany
+    private List<Reward> rewards;
+    @OneToOne
+    private ContributorRegistry contributorRegistry;
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Subscription> fridgeSubscriptions;
-    ContributionsManager contributionsManager = ContributionsManager.getInstance();
+
+    public Contributor() {
+    }
 
     public Contributor(String name, String address, List<ContributionType> possibleContributions) {
-        this.name = name;
         this.address = address;
         this.possibleContributions = new ArrayList<ContributionType>(possibleContributions);
         this.contributions = new ArrayList<>();
+        this.contacts = new ArrayList<>();
         this.fridgeSubscriptions = new ArrayList<>();
     }
 
@@ -65,12 +89,8 @@ public class Contributor {
     }
 
     // getters and setters
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public Long getId() {
+        return this.id;
     }
 
     public List<Contact> getContacts() {
@@ -132,6 +152,5 @@ public class Contributor {
     public void setContributorRegistry(ContributorRegistry contributorRegistry) {
         this.contributorRegistry = contributorRegistry;
     }
-
 
 }

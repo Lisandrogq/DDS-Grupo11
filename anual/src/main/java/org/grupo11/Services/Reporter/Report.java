@@ -1,11 +1,22 @@
 package org.grupo11.Services.Reporter;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+@Entity
 public class Report {
+    @Id
+    @GeneratedValue
+    private Long id;
     private long createdAt;
     private float failuresPerFridge;
     private float mealsInOutPerFridge;
     private float mealsOutPerFridge;
     private float mealsPerCollaborator;
+
+    public Report() {
+    }
 
     public Report(long createdAt, float failuresPerFridge, float mealsInOutPerFridge,
             float mealsPerCollaborator) {

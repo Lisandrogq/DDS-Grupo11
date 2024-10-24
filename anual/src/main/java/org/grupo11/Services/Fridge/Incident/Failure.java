@@ -5,10 +5,20 @@ import java.util.List;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Fridge;
 
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
+
+@Entity
 public class Failure extends Incident {
+    @OneToOne
     private Contributor reportedBy;
     private String description;
+    @ElementCollection
     private List<String> pictureUrls;
+
+    public Failure() {
+    }
 
     public Failure(Fridge fridge, Contributor reportedBy, String description, List<String> pictureUrls,
             long detectedAt) {

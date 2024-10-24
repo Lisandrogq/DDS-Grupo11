@@ -4,14 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.grupo11.Config.Env;
-import org.grupo11.Utils.SendGrid;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class EmailContact extends Contact {
     private String mail;
-    private List<String> notifications = new ArrayList<String>();
+    private List<String> notifications;
+
+    public EmailContact() {
+    }
 
     public EmailContact(String mail) {
         this.mail = mail;
+        this.notifications = new ArrayList<>();
     }
 
     public void SendNotification(String subject, String message) {

@@ -1,7 +1,13 @@
 package org.grupo11.Services.Contact;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class WhatsApp extends Contact {
     private String number;
+
+    public WhatsApp() {
+    }
 
     public WhatsApp(String number) {
         this.number = number;

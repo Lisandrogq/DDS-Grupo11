@@ -10,24 +10,48 @@ import org.grupo11.Services.Fridge.Sensor.MovementSensorManager;
 import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
 import org.grupo11.Utils.Crypto;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Transient;
+
+@Entity
 public class Fridge {
+    @Id
+    @GeneratedValue
     private int id;
+
     private boolean isActive;
     private double lon;
     private double lat;
+    @Enumerated(EnumType.STRING)
     private Provinces area;
     private String address;
     private String name;
     private int capacity;
     private int commissioningDate;
+    @OneToMany
     private List<Meal> meals;
+    @Transient
     private TemperatureSensorManager tempManager;
+    @Transient
     private MovementSensorManager movManager;
+    @OneToMany
     private List<FridgeSolicitude> openSolicitudes;
+    @OneToMany
     private List<FridgeOpenLogEntry> openedHistory;
-    private List<Incident> incidents = new ArrayList<Incident>();
-    protected List<Subscription> notificationSubscriptions = new ArrayList<Subscription>();
-    private List<FridgeNotification> notificationsSent = new ArrayList<FridgeNotification>();;
+    @OneToMany
+    private List<Incident> incidents;
+    @OneToMany
+    protected List<Subscription> notificationSubscriptions;
+    @OneToMany
+    private List<FridgeNotification> notificationsSent;
+
+    public Fridge() {
+    }
 
     public Fridge(double lon, double lat, String address, String name, int capacity, int commissioningDate,
             List<Meal> meals,
@@ -42,8 +66,11 @@ public class Fridge {
         this.meals = meals;
         this.tempManager = tempManager;
         this.movManager = movManager;
-        this.openSolicitudes = new ArrayList<FridgeSolicitude>();
-        this.openedHistory = new ArrayList<FridgeOpenLogEntry>();
+        this.openSolicitudes = new ArrayList<>();
+        this.openedHistory = new ArrayList<>();
+        this.incidents = new ArrayList<>();
+        this.notificationSubscriptions = new ArrayList<>();
+        this.notificationsSent = new ArrayList<>();
     }
 
     public void setTempManager(TemperatureSensorManager tempManager) {

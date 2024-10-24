@@ -1,7 +1,14 @@
 package org.grupo11.Services.Contact;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class Phone extends Contact {
     private String number;
+
+    public Phone() {
+
+    }
 
     public Phone(String number) {
         this.number = number;

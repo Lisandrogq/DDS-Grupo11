@@ -2,12 +2,24 @@ package org.grupo11.Services.Fridge;
 
 import org.grupo11.Services.ActivityRegistry.ActivityRegistry;
 
-public class FridgeOpenLogEntry {
-    public long openedAt;
-    public ActivityRegistry openedBy;//PRINCIPALMENTE SE DEBEN ACEPTAR TARJETAS DE PINs, capaz tambien de Contributors
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
-    public FridgeOpenLogEntry(long openedAt, ActivityRegistry openedBy) {
+@Entity
+public class FridgeOpenLogEntry {
+    @Id
+    @GeneratedValue
+    private Long id;
+    public long openedAt;
+    @ManyToOne
+    private Fridge fridge;
+
+    public FridgeOpenLogEntry() {
+    }
+
+    public FridgeOpenLogEntry(long openedAt, ActivityRegistry activityRegistry) {
         this.openedAt = openedAt;
-        this.openedBy = openedBy;
     }
 }

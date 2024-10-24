@@ -1,16 +1,22 @@
 package org.grupo11.Services.ActivityRegistry;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class ActivityRegistry {
+    @Id
+    @GeneratedValue
     private int id;
-   // private PersonInNeed owner; //debería ser 'ROL'
-   // private List<CardUsage> usages; // capaz se puede abstraer los usos deambas tarjetas, no se si vale la pena
 
-    
-
+    public ActivityRegistry() {
+    }
 
     // getters and setters
-
     public int getId() {
         return this.id;
     }
@@ -19,12 +25,14 @@ public abstract class ActivityRegistry {
         this.id = id;
     }
 
-  /*public PersonInNeed getOwner() { //// DEBERÍA SER DE TIPO 'ROL' PERO TODAVIA NO ESTA IMPLEMENTADO
-        return this.owner;
-    }
-    public void setOwner(PersonInNeed owner) {
-        this.owner = owner;
-    }
-    */
+    /*
+     * public PersonInNeed getOwner() { //// DEBERÍA SER DE TIPO 'ROL' PERO TODAVIA
+     * NO ESTA IMPLEMENTADO
+     * return this.owner;
+     * }
+     * public void setOwner(PersonInNeed owner) {
+     * this.owner = owner;
+     * }
+     */
 
 }

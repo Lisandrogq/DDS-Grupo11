@@ -9,14 +9,19 @@
 - [x] create routes for each view
 - [x] update frontend links to point to server: that would include the anchor tags and the assets, css, js.
 - [x] finally pass dynamic data to the html, using a template engine preferably Thymeleaf
-- [ ] add a logger?
+- [x] add a logger
 
 ## Entrega 6
 
 - [x] db service with docker
-- [ ] basic db class to handle connection and usage with orm
-- [ ] create tables
-- [ ] save on db the current data
+- [x] basic db class to handle connection and usage with orm
+- [ ] finish mapping classes to tables (mostly contributions)
+- [ ] add ids to all entities
+- [ ] make everything compile and work
+- [ ] create api endpoint (this should be fairly straightforward, we already have everything we need)
+- [ ] write some test for the api
+- [ ] corrections
+- [ ] see if its worth Person refactor
 
 ### Correcciones
 

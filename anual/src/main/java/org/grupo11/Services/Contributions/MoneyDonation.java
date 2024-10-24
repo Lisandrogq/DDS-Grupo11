@@ -1,8 +1,16 @@
 package org.grupo11.Services.Contributions;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+
+@Entity
+@PrimaryKeyJoinColumn(name = "id")
 public class MoneyDonation extends Contribution {
     private int amount;
     private double rewardCoef = 1.0;
+
+    public MoneyDonation() {
+    }
 
     public MoneyDonation(int amount, long date) {
         super(date);

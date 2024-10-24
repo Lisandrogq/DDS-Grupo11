@@ -2,13 +2,26 @@ package org.grupo11.Services.PersonInNeed;
 
 import org.grupo11.Services.ActivityRegistry.PINRegistry;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+
+@Entity
 public class PersonInNeed {
+    @Id
+    @GeneratedValue
+    private Long id;
     private int birth;
     private int createdAt;
     private String address = null;
     private int DNI;
     private int childCount;
+    @OneToOne
     private PINRegistry PINRegistry;
+
+    public PersonInNeed() {
+    }
 
     public PersonInNeed(int birth, int createdAt, String address, int DNI, int childCount, PINRegistry PINRegistry) {
         this.birth = birth;
