@@ -3,6 +3,7 @@ package org.grupo11.Services.Fridge.Incident;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Technician.TechnicianVisit;
 
 import jakarta.persistence.Entity;
@@ -10,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 @Entity
@@ -22,6 +24,8 @@ public abstract class Incident {
     private List<TechnicianVisit> visits;
     private boolean hasBeenFixed;
     private long detectedAt;
+    @ManyToOne
+    private Fridge fridge;
 
     public Incident() {
     }

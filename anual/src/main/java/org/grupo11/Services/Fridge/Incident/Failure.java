@@ -7,9 +7,11 @@ import org.grupo11.Services.Fridge.Fridge;
 
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Failure extends Incident {
+    @OneToOne
     private Contributor reportedBy;
     private String description;
     @ElementCollection

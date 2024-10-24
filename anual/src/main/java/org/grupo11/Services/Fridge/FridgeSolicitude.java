@@ -17,10 +17,10 @@ public class FridgeSolicitude {
 
     @ManyToOne
     private ContributorRegistry issuedBy;
-    @ManyToOne
-    private Fridge fridge;
     private long issuedAt;
     private boolean alreadyUsed;
+    @ManyToOne
+    private Fridge fridge;
 
     public FridgeSolicitude() {
     }

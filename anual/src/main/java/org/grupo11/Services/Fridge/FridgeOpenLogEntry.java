@@ -5,6 +5,7 @@ import org.grupo11.Services.ActivityRegistry.ActivityRegistry;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class FridgeOpenLogEntry {
@@ -12,6 +13,8 @@ public class FridgeOpenLogEntry {
     @GeneratedValue
     private Long id;
     public long openedAt;
+    @ManyToOne
+    private Fridge fridge;
 
     public FridgeOpenLogEntry() {
     }

@@ -5,6 +5,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class FridgeNotification {
@@ -15,6 +16,8 @@ public class FridgeNotification {
     private String message;
     @Enumerated(EnumType.STRING)
     private FridgeNotifications type;
+    @ManyToOne
+    private Fridge fridge;
 
     public FridgeNotification() {
     }

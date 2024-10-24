@@ -3,11 +3,13 @@ package org.grupo11.Services.Contributions;
 import org.grupo11.Services.Rewards.Reward;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "id")
 public class RewardContribution extends Contribution {
+    @OneToOne
     private Reward reward;
 
     public RewardContribution() {

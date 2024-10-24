@@ -18,6 +18,8 @@ public class Subscription {
     private Contributor contributor;
     @Enumerated(EnumType.STRING)
     private FridgeNotifications type;
+    @ManyToOne
+    private Fridge fridge;
 
     public Subscription() {
     }
