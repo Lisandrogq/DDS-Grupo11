@@ -12,6 +12,7 @@ import org.grupo11.Services.Contact.WhatsApp;
 import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributions.FridgeAdmin;
 import org.grupo11.Services.Contributions.MealDistribution;
+import org.grupo11.Services.Contributions.MealDonation;
 import org.grupo11.Services.Contributions.MoneyDonation;
 import org.grupo11.Services.Contributions.PersonRegistration;
 import org.grupo11.Services.Contributions.RewardContribution;
@@ -54,6 +55,7 @@ public class DB {
                     .addAnnotatedClass(MealDistribution.class)
                     .addAnnotatedClass(RewardContribution.class)
                     .addAnnotatedClass(FridgeAdmin.class)
+                    .addAnnotatedClass(MealDonation.class)
                     // registry
                     .addAnnotatedClass(ContributorRegistry.class)
                     .addAnnotatedClass(ActivityRegistry.class)
