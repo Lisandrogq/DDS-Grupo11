@@ -1,5 +1,7 @@
 package org.grupo11.Services.Reporter;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -10,40 +12,37 @@ public class Report {
     @GeneratedValue
     private Long id;
     private long createdAt;
-    private float failuresPerFridge;
-    private float mealsInOutPerFridge;
-    private float mealsOutPerFridge;
-    private float mealsPerCollaborator;
+    private List<FailureReportRow> failuresPerFridge;
+    private List<MealsPerFridgeReportRow> mealsPerFridgeReport;
+    private List<MealPerContributorReportRow> mealsPerContributor;
 
     public Report() {
     }
 
-    public Report(long createdAt, float failuresPerFridge, float mealsInOutPerFridge,
-            float mealsPerCollaborator) {
+    public Report(long createdAt, List<FailureReportRow> failuresPerFridge,
+            List<MealsPerFridgeReportRow> mealsPerFridgeReport,
+            List<MealPerContributorReportRow> mealsPerContributor) {
         this.createdAt = createdAt;
         this.failuresPerFridge = failuresPerFridge;
-        this.mealsInOutPerFridge = mealsInOutPerFridge;
-        this.mealsPerCollaborator = mealsPerCollaborator;
+        this.mealsPerFridgeReport = mealsPerFridgeReport;
+        this.mealsPerContributor = mealsPerContributor;
     }
 
     public long getCreatedAt() {
         return this.createdAt;
     }
 
-    public float getFailuresPerFridge() {
+    public List<FailureReportRow> getFailuresPerFridge() {
         return this.failuresPerFridge;
     }
 
-    public float getMealsInOutPerFridge() {
-        return this.mealsInOutPerFridge;
+    public List<MealsPerFridgeReportRow> getMealsPerFridgeReport() {
+        return this.mealsPerFridgeReport;
     }
 
-    public float getMealsOutPerFridge() {
-        return this.mealsOutPerFridge;
-    }
 
-    public float getMealsPerCollaborator() {
-        return this.mealsPerCollaborator;
+    public  List<MealPerContributorReportRow> getMealsPerContributor() {
+        return this.mealsPerContributor;
     }
 
 }

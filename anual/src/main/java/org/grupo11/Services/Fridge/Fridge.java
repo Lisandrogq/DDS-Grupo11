@@ -35,6 +35,10 @@ public class Fridge {
     private int commissioningDate;
     @OneToMany
     private List<Meal> meals;
+    @OneToMany
+    private List<Meal> addedMeals;
+    @OneToMany
+    private List<Meal> removedMeals;
     @Transient
     private TemperatureSensorManager tempManager;
     @Transient
@@ -154,8 +158,19 @@ public class Fridge {
         return this.meals;
     }
 
+    public void cleanHistory(){
+        this.addedMeals = new ArrayList<Meal>();
+        this.removedMeals = new ArrayList<Meal>();
+    }
+    public List<Meal> getAddedMeals(){
+        return this.addedMeals;
+    }
+    public List<Meal> getRemovedMeals(){
+        return this.removedMeals;
+    }
     public void addMeal(Meal meal) {
         this.meals.add(meal);
+        this.addedMeals.add(meal);
         // if the fridge is 90 percent full, send a notification
         if (meals.size() >= this.capacity * 0.9)
             this.sendFridgeNotifications(
@@ -165,6 +180,7 @@ public class Fridge {
 
     public void removeMeal(Meal meal) {
         this.meals.remove(meal);
+        this.removedMeals.add(meal);
         // if the fridge is 25 percent full, send a notification
         if (meals.size() >= this.capacity * 0.25)
             this.sendFridgeNotifications(

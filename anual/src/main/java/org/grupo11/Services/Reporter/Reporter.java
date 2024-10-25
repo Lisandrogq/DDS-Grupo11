@@ -7,9 +7,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.grupo11.Services.Meal;
 import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributions.ContributionType;
 import org.grupo11.Services.Contributions.ContributionsManager;
+import org.grupo11.Services.Contributions.MealDonation;
+import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Contributor.ContributorsManager;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgesManager;
@@ -36,44 +39,56 @@ public class Reporter {
     }
 
     public void genReports() {
-        Report report = new Report(DateUtils.getCurrentTimeInMs(), getFailuresPerFridgeStatistic(),
-                getMealsInOutFridgeStatistic(), getMealPerCollaboratorStatistic());
+        Report report = new Report(DateUtils.getCurrentTimeInMs(), getFailuresPerFridgeReport(),
+                getMealsPerFridgeReport(), getMealPerCollaboratorReport());
         this.reports.add(report);
     }
 
-    public float getFailuresPerFridgeStatistic() {
+    public List<FailureReportRow> getFailuresPerFridgeReport() {
+        List<FailureReportRow> failureReport = new ArrayList<FailureReportRow>();
         List<Fridge> fridges = FridgesManager.getInstance().getFridges();
-        int numberOfIncidentsThisWeek = 0;
         for (Fridge fridge : fridges) {
             // Filter incidents that have been detected more than a week ago
             long oneWeekAgoMs = DateUtils.getAWeekAgoFrom(DateUtils.getCurrentTimeInMs());
             List<Incident> incidents = fridge.getIncidents().stream()
                     .filter(incident -> incident.getDetectedAt() < oneWeekAgoMs)
                     .collect(Collectors.toList());
-            numberOfIncidentsThisWeek += incidents.size();
+            FailureReportRow row = new FailureReportRow(fridge, incidents);
+            failureReport.add(row);
         }
-        return numberOfIncidentsThisWeek / fridges.size();
+        return failureReport;
 
     }
 
-    public float getMealsInOutFridgeStatistic() { //CREO QUE EL REPORTE TIENE QUE SER INDIVIDUAL POR CADA HELADERA, NO UN PROMEDIO
-        int totalMeals = FridgesManager.getInstance().getFridges().stream()
-                .mapToInt(fridge -> fridge.getMeals().size())
-                .sum();
+    public List<MealsPerFridgeReportRow> getMealsPerFridgeReport() {
+        List<MealsPerFridgeReportRow> mealsPerFridgeReport = new ArrayList<MealsPerFridgeReportRow>();
 
-        return totalMeals / FridgesManager.getInstance().getFridges().size();
+        List<Fridge> fridges = FridgesManager.getInstance().getFridges();
+        for (Fridge fridge : fridges) {
+            MealsPerFridgeReportRow row = new MealsPerFridgeReportRow(fridge, fridge.getAddedMeals(),
+                    fridge.getRemovedMeals());
+            mealsPerFridgeReport.add(row);
+        }
+        return mealsPerFridgeReport;
     }
 
-    public float getMealPerCollaboratorStatistic() {
+    public List<MealPerContributorReportRow> getMealPerCollaboratorReport() {
         long oneWeekAgoMs = DateUtils.getAWeekAgoFrom(DateUtils.getCurrentTimeInMs());
         // get the meals contribution from a week ago
-        List<Contribution> mealContributions = ContributionsManager.getInstance()
-                .getAllByType(ContributionType.MEAL_DONATION).stream()
-                .filter(contribution -> contribution.getDate() < oneWeekAgoMs)
-                .collect(Collectors.toList());
+        List<MealPerContributorReportRow> mealPerContributorReport = new ArrayList<MealPerContributorReportRow>();
 
-        return mealContributions.size() / ContributorsManager.getInstance().getContributors().size();
-
+        List<Contributor> contributors = ContributorsManager.getInstance()
+                .getContributors();
+        for (Contributor contributor : contributors) {
+            List<MealDonation> mealDonations = contributor.getContributions().stream()
+                    .filter(contribution -> (contribution.getContributionType() == ContributionType.MEAL_DONATION
+                            && contribution.getDate() < oneWeekAgoMs))
+                    .map((contribution) -> (MealDonation) contribution)
+                    .collect(Collectors.toList());
+            MealPerContributorReportRow row = new MealPerContributorReportRow(contributor, mealDonations);
+            mealPerContributorReport.add(row);
+        }
+        return mealPerContributorReport;
     }
 
     public void setupReporter() {
