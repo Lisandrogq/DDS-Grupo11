@@ -14,6 +14,7 @@ public class Router {
         userRoutes(api);
         contributionRoutes(api);
         alertRoutes(api);
+        publicApi(api);
     }
 
     static void clientRoutes(Javalin api) {
@@ -35,7 +36,7 @@ public class Router {
         api.post("/contribution/money", ContributionsController::handleMoneyContribution);
         api.post("/contribution/registration", ContributionsController::handlePersonRegistrationContribution);
         api.post("/contribution/reward", ContributionsController::handleRewardContribution);
-    }
+    } 
 
     static void publicApi(Javalin api) {
         api.get("/api/contributors/recognitions", PublicAPI::handleContributorRecognitions);
