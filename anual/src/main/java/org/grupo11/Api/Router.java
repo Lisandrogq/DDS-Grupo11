@@ -2,6 +2,7 @@ package org.grupo11.Api;
 
 import org.grupo11.Api.Controllers.AlertsController;
 import org.grupo11.Api.Controllers.ContributionsController;
+import org.grupo11.Api.Controllers.PublicAPI;
 import org.grupo11.Api.Controllers.RenderController;
 import org.grupo11.Api.Controllers.UserController;
 
@@ -34,6 +35,10 @@ public class Router {
         api.post("/contribution/money", ContributionsController::handleMoneyContribution);
         api.post("/contribution/registration", ContributionsController::handlePersonRegistrationContribution);
         api.post("/contribution/reward", ContributionsController::handleRewardContribution);
+    }
+
+    static void publicApi(Javalin api) {
+        api.get("/api/contributors/recognitions", PublicAPI::handleContributorRecognitions);
     }
 
     static void alertRoutes(Javalin api) {
