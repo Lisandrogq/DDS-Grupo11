@@ -5,6 +5,7 @@ import java.util.List;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Report {
@@ -12,8 +13,11 @@ public class Report {
     @GeneratedValue
     private Long id;
     private long createdAt;
+    @OneToMany
     private List<FailureReportRow> failuresPerFridge;
+    @OneToMany
     private List<MealsPerFridgeReportRow> mealsPerFridgeReport;
+    @OneToMany
     private List<MealPerContributorReportRow> mealsPerContributor;
 
     public Report() {
@@ -40,8 +44,7 @@ public class Report {
         return this.mealsPerFridgeReport;
     }
 
-
-    public  List<MealPerContributorReportRow> getMealsPerContributor() {
+    public List<MealPerContributorReportRow> getMealsPerContributor() {
         return this.mealsPerContributor;
     }
 

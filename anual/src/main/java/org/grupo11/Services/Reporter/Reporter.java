@@ -7,10 +7,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import org.grupo11.Services.Meal;
-import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributions.ContributionType;
-import org.grupo11.Services.Contributions.ContributionsManager;
 import org.grupo11.Services.Contributions.MealDonation;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Contributor.ContributorsManager;

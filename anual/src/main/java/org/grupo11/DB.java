@@ -27,6 +27,9 @@ import org.grupo11.Services.Fridge.Incident.Alert;
 import org.grupo11.Services.Fridge.Incident.Failure;
 import org.grupo11.Services.Fridge.Incident.Incident;
 import org.grupo11.Services.PersonInNeed.PersonInNeed;
+import org.grupo11.Services.Reporter.FailureReportRow;
+import org.grupo11.Services.Reporter.MealPerContributorReportRow;
+import org.grupo11.Services.Reporter.MealsPerFridgeReportRow;
 import org.grupo11.Services.Reporter.Report;
 import org.grupo11.Services.Rewards.Reward;
 import org.grupo11.Services.Technician.Technician;
@@ -43,6 +46,9 @@ public class DB {
         try {
             Logger.info("Session factory built");
             return new Configuration().configure()
+                    .addAnnotatedClass(FailureReportRow.class)
+                    .addAnnotatedClass(MealPerContributorReportRow.class)
+                    .addAnnotatedClass(MealsPerFridgeReportRow.class)
                     .addAnnotatedClass(Report.class)
                     .addAnnotatedClass(PersonInNeed.class)
                     .addAnnotatedClass(CardUsage.class)
