@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.grupo11.DB;
 import org.grupo11.Logger;
+import org.grupo11.Api.ApiResponse;
 import org.grupo11.Services.Contributor.Contributor;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -34,12 +35,12 @@ public class PublicAPI {
             query.setMaxResults(size);
 
             List<Contributor> contributors = query.getResultList();
-            ctx.json(contributors);
+            ctx.json(new ApiResponse(200, contributors));
 
             Logger.info("Contributors recognitions served");
         } catch (Exception e) {
             Logger.error("Could not serve contributor recognitions {}", e);
-            ctx.status(500);
+            ctx.status(500).json(new ApiResponse(500));
         }
 
     }
