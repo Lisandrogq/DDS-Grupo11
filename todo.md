@@ -18,9 +18,9 @@
 - [x] finish mapping classes to tables (mostly contributions)
 - [x] add ids to all entities
 - [x] make everything compile and work
-- [ ] create api endpoint (this should be fairly straightforward, we already have everything we need)
+- [x] create api endpoint (this should be fairly straightforward, we already have everything we need)
 - [ ] write some test for the api
-- [ ] corrections
+- [x] corrections
 - [ ] see if its worth Person refactor
 
 ### Correcciones
