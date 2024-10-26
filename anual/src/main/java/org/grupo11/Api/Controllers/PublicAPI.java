@@ -26,7 +26,6 @@ public class PublicAPI {
                     "JOIN c.contributions contr " +
                     "JOIN MealDonation md ON contr.id = md.id " +
                     "WHERE c.points >= :minPoints " +
-                    "AND md.date >= :oneMonthAgo " +
                     "GROUP BY c " +
                     "HAVING COUNT(md) >= :minMeals";
             Query<Contributor> query = session.createQuery(hql, Contributor.class);
