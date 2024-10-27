@@ -32,6 +32,15 @@ public class Individual extends Contributor {
         this.documentType = documentType;
     }
 
+    public Individual(String name, String surname, String address, String birth, DocumentType documentType,
+            Integer document, Double points) {
+        super(points);
+        this.surname = surname;
+        this.birth = birth;
+        this.document = document;
+        this.documentType = documentType;
+    }
+
     public String getName() {
         return this.name;
     }

@@ -11,7 +11,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 
-@Entity(name = "legalentity")
+@Entity
 @PrimaryKeyJoinColumn(name = "id")
 public class LegalEntity extends Contributor {
     @Column(name = "type")
