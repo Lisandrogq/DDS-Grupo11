@@ -1,7 +1,7 @@
 package org.grupo11.Api.Controllers;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.grupo11.DB;
 import org.grupo11.Logger;
@@ -14,6 +14,7 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import io.javalin.http.Context;
+import jakarta.persistence.Tuple;
 
 public class PublicAPI {
 
@@ -59,13 +60,13 @@ public class PublicAPI {
             return;
         }
 
-        List<Individual> individuals;
-        List<LegalEntity> legalEntities;
+        List<IndividualDTO> individuals = new ArrayList<>();
+        List<LegalEntityDTO> legalEntities = new ArrayList<>();
 
         // TODO(marcos): we should move this to the managers
         // get individuals
         try (Session session = DB.getSessionFactory().openSession()) {
-            String hql = "SELECT ind " +
+            String hql = "SELECT ind, COUNT(md) " +
                     "FROM Contribution c " +
                     "JOIN c.contributor contr " +
                     "JOIN Individual ind ON ind.id = contr.id " +
@@ -74,14 +75,27 @@ public class PublicAPI {
                     "GROUP BY ind " +
                     "HAVING COUNT(md) >= :minMeals";
 
-            Query<Individual> query = session.createQuery(hql, Individual.class);
+            Query<Tuple> query = session.createQuery(hql, Tuple.class);
             query.setParameter("minPoints", minPoints);
             query.setParameter("minMeals", minMeals);
             query.setMaxResults(size);
 
-            individuals = query.getResultList();
+            List<Tuple> results = query.getResultList();
 
-            Logger.info("Contributors recognitions served");
+            for (Tuple tuple : results) {
+                Individual individual = tuple.get(0, Individual.class);
+                Long mealDonationCount = tuple.get(1, Long.class); // Use the alias defined in HQL
+                IndividualDTO individualDTO = new IndividualDTO(
+                        individual.getName(),
+                        individual.getSurname(),
+                        individual.getAddress(),
+                        individual.getBirth(),
+                        individual.getDocument(),
+                        individual.getDocumentType(),
+                        individual.getPoints(), mealDonationCount.intValue());
+                individuals.add(individualDTO);
+            }
+
         } catch (Exception e) {
             Logger.error("Could not serve contributor recognitions {}", e);
             ctx.status(500).json(new ApiResponse(500));
@@ -90,23 +104,31 @@ public class PublicAPI {
 
         // get legal entities
         try (Session session = DB.getSessionFactory().openSession()) {
-            String hql = "SELECT le " +
+            String hql = "SELECT le, COUNT(md) " +
                     "FROM Contribution c " +
                     "JOIN c.contributor contr " +
-                    "JOIN LegalEntity le ON le.id = le.id " +
+                    "JOIN LegalEntity le ON le.id = contr.id " +
                     "JOIN MealDonation md ON c.id = md.id " +
                     "WHERE contr.points >= :minPoints " +
                     "GROUP BY le " +
                     "HAVING COUNT(md) >= :minMeals";
 
-            Query<LegalEntity> query = session.createQuery(hql, LegalEntity.class);
+            Query<Tuple> query = session.createQuery(hql, Tuple.class);
             query.setParameter("minPoints", minPoints);
             query.setParameter("minMeals", minMeals);
             query.setMaxResults(size);
 
-            legalEntities = query.getResultList();
+            List<Tuple> results = query.getResultList();
 
-            Logger.info("Contributors recognitions served");
+            for (Tuple tuple : results) {
+                LegalEntity legalEntity = tuple.get(0, LegalEntity.class);
+                Long mealDonationCount = tuple.get(1, Long.class); // Use the alias defined in HQL
+                LegalEntityDTO legalEntityDTO = new LegalEntityDTO(
+                        legalEntity.getType(),
+                        legalEntity.getCategory(),
+                        legalEntity.getPoints(), mealDonationCount.intValue());
+                legalEntities.add(legalEntityDTO);
+            }
         } catch (Exception e) {
             Logger.error("Could not serve contributor recognitions {}", e);
             ctx.status(500).json(new ApiResponse(500));
@@ -119,35 +141,15 @@ public class PublicAPI {
             public List<IndividualDTO> individuals;
             public List<LegalEntityDTO> legalEntities;
 
-            public ResponseData(List<Individual> individuals, List<LegalEntity> legalEntities) {
-                this.individuals = mapIndividualsToDTO(individuals);
-                this.legalEntities = mapLegalEntitiesToDTO(legalEntities);
+            public ResponseData(List<IndividualDTO> individuals, List<LegalEntityDTO> legalEntities) {
+                this.individuals = individuals;
+                this.legalEntities = legalEntities;
             }
 
-            List<IndividualDTO> mapIndividualsToDTO(List<Individual> individuals) {
-                return individuals.stream()
-                        .map(individual -> new IndividualDTO(
-                                individual.getName(),
-                                individual.getSurname(),
-                                individual.getAddress(),
-                                individual.getBirth(),
-                                individual.getDocument(),
-                                individual.getDocumentType(),
-                                individual.getPoints()))
-                        .collect(Collectors.toList());
-            }
-
-            List<LegalEntityDTO> mapLegalEntitiesToDTO(List<LegalEntity> legalEntities) {
-                return legalEntities.stream()
-                        .map(legalEntity -> new LegalEntityDTO(
-                                legalEntity.getType(),
-                                legalEntity.getCategory(),
-                                legalEntity.getPoints()))
-                        .collect(Collectors.toList());
-            }
         }
 
         ctx.json(new ApiResponse(200, new ResponseData(individuals, legalEntities)));
+        Logger.info("Contributors recognitions served");
 
     }
 }
