@@ -34,6 +34,7 @@ const config: Config = {
         docs: {
           routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
+          path: "../markdown",
         },
         theme: {
           customCss: "./src/css/custom.css",

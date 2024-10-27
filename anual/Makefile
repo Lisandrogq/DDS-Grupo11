@@ -39,12 +39,12 @@ mock-db: gen-mock-data ## Mocks data into db for dev enviroments, make sure you 
 
 __DOCS__:
 docs-dev: ## Starts a local deve server for documentation site 
-	@cd docs && npm run start
+	@cd docs/site && npm run start
 
 docs-build: ## Builds static documentation site
-	@cd docs && npm run build
+	@cd docs/site && npm run build
 
 docs-serve: ## Serves static build documentation site
-	@cd docs && npm run serve
+	@cd docs/site && npm run serve
 
 docs-deploy: docs-build docs-serve ## Builds docs and serves documentation 
