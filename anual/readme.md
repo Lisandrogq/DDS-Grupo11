@@ -23,7 +23,7 @@ Before, make sure you have the following dependencies:
 3. Create a `.env` [here](./src/main/resources/) and the following fields:
    - SENDGRID_API_KEY=<YOUR_KEY_HERE>
    - COMPANY_MAIL=<YOUR_COMPANY_MAIL_HERE>
-4. Run: `make start_and_compile`
+4. Run: `make start`
 5. Run test with: `make test`
 6. For all commands run: `make help`
 
@@ -35,6 +35,14 @@ docker exec -it fridge-bridge-postgres-1 sh
 ```
 
 or use the adminer GUI though a browser by opening: http://localhost:8080/?pgsql=postgres&username=postgres&db=postgres&ns=public
+
+### Insert mock data to db
+
+In testing environments, you might want to fill your db with mock data to run different tests. For that you need to:
+
+1. Run the project: `make start`
+2. Then run: `make mock-db`
+3. Check that data has been inserted through admniner.
 
 ### Docs
 

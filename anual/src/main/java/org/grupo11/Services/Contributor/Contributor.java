@@ -51,6 +51,10 @@ public class Contributor {
     public Contributor() {
     }
 
+    public Contributor(Double points) {
+        this.points = points;
+    }
+
     public Contributor(String name, String address, List<ContributionType> possibleContributions) {
         this.address = address;
         this.possibleContributions = new ArrayList<ContributionType>(possibleContributions);

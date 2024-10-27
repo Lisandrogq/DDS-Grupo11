@@ -18,7 +18,7 @@ docker-down: ## Stops and removes docker containers
 docker-clean: docker-down ## Remove containers, images and volumes related to fridgebridge
 	docker volume rm fridge-bridge_postgres_data
 	docker rmi postgres rabbitmq adminer
-
+	
 start-server: ## Start the java server
 	mvn exec:java -Dexec.mainClass="org.grupo11.app.App"
 
@@ -29,3 +29,9 @@ mvn-clean: ## Cleans mvn, useful when mvn is weird
 
 test: ## Mvn test
 	mvn test
+
+gen-mock-data: ## Generates random mocked data in .csv format
+	./scripts/mock-data.sh
+
+mock-db: gen-mock-data ## Mocks data into db for dev enviroments, make sure you have postgres running
+	./scripts/insert-data.sh
