@@ -33,5 +33,5 @@ test: ## Mvn test
 gen-mock-data: ## Generates random mocked data in .csv format
 	./scripts/mock-data.sh
 
-mock-db: gen-mock-data # Mocks data into db for dev enviroments, make sure you have postgres running
+mock-db: gen-mock-data ## Mocks data into db for dev enviroments, make sure you have postgres running
 	./scripts/insert-data.sh
