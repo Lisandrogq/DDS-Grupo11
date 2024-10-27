@@ -15,10 +15,10 @@ MEAL_DONATION_FILE="$SCRIPT_DIR/test-files/meal_donations.csv"
 
 function execute_sql {
     local sql="$1"
-    docker exec fridge-bridge-postgres-1 psql -U "$DB_USER" -d "$DB_NAME" -c "$sql"
+    docker exec fridge-bridge-postgres-1 psql -U "$DB_USER" -d "$DB_NAME" -c "$sql" > /dev/null
 }
 
-# Insert Contributors
+echo "Inserting contributors..."
 while IFS=, read -r id address points; do
     if [[ $id == "id" ]]; then
         continue
@@ -27,8 +27,7 @@ while IFS=, read -r id address points; do
     execute_sql "$sql"
 done < "$CONTRIBUTOR_FILE"
 
-
-# Insert Individuals
+echo "Inserting individuals..."
 while IFS=, read -r id document documentType name surname birth; do
     if [[ $id == "id" ]]; then
         continue
@@ -37,7 +36,7 @@ while IFS=, read -r id document documentType name surname birth; do
     execute_sql "$sql"
 done < "$INDIVIDUAL_FILE"
 
-# Insert Legal Entities
+echo "Inserting legal entities..."
 while IFS=, read -r id type category; do
     if [[ $id == "id" ]]; then
         continue
@@ -46,7 +45,7 @@ while IFS=, read -r id type category; do
     execute_sql "$sql"
 done < "$LEGAL_ENTITY_FILE"
 
-# Insert Contributions Entities
+echo "Inserting contributions..."
 while IFS=, read -r id date contributor_id; do
     if [[ $id == "id" ]]; then
         continue
@@ -55,7 +54,7 @@ while IFS=, read -r id date contributor_id; do
     execute_sql "$sql"
 done < "$CONTRIBUTION_FILE"
 
-# Insert Meal Donations
+echo "Inserting meal donations..."
 while IFS=, read -r id mealId; do
     if [[ $id == "id" ]]; then
         continue
@@ -65,3 +64,4 @@ while IFS=, read -r id mealId; do
 done < "$MEAL_DONATION_FILE"
 
 echo "Data has been successfully inserted into the database."
+echo "If you are on a test enviroment, you can see it through adminer:  http://localhost:8080/?pgsql=postgres&username=postgres&db=postgres&ns=public"
