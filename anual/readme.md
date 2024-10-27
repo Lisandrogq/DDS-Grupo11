@@ -10,13 +10,7 @@ anual assignment.
 - [Assignment](https://suriweb.com.ar/archivos/general/DDS-TPA-2024.pdf)
 - [mockAPI](https://mockapi.io/projects/665264aa813d78e6d6d56913)
 
-### How to run
-
-Before, make sure you have the following dependencies:
-
-- java 22: we suggest installing at least version 22 and the [openJDK version](https://openjdk.org/projects/jdk/22/)
-- [maven](https://maven.apache.org/): the package manager we are using
-- [docker engine](https://docs.docker.com/engine/install/) and [docker-compose plugin](https://docs.docker.com/compose/install/): we use it for quickly setup the rabbit and postgress instance and deploy the project in prod.
+### Quickly getting started
 
 1. Clone the project: `git clone https://github.com/Lisandrogq/DDS-Grupo11/tree/main`
 2. cd into this folder: `cd anual`
@@ -27,23 +21,8 @@ Before, make sure you have the following dependencies:
 5. Run test with: `make test`
 6. For all commands run: `make help`
 
-**Adminer**
-When developing you might want to see the current status of the database. You could enter the into the postgres container shell and use the cli tool by running:
-
-```shell
-docker exec -it fridge-bridge-postgres-1 sh
-```
-
-or use the adminer GUI though a browser by opening: http://localhost:8080/?pgsql=postgres&username=postgres&db=postgres&ns=public
-
-### Insert mock data to db
-
-In testing environments, you might want to fill your db with mock data to run different tests. For that you need to:
-
-1. Run the project: `make start`
-2. Then run: `make mock-db`
-3. Check that data has been inserted through admniner.
-
 ### Docs
 
-- [Importing data through csv file](./docs/csv_import.md)
+<!-- update this with the deployed website later -->
+
+Full documentation available [here](./docs/docs/).
