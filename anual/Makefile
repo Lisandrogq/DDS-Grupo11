@@ -27,6 +27,7 @@ start: docker-up compile start-server ## Starts docker services, compiles and st
 mvn-clean: ## Cleans mvn, useful when mvn is weird
 	mvn clean install -DskipTests
 
+__TEST__:
 test: ## Mvn test
 	mvn test
 
@@ -35,3 +36,15 @@ gen-mock-data: ## Generates random mocked data in .csv format
 
 mock-db: gen-mock-data ## Mocks data into db for dev enviroments, make sure you have postgres running
 	./scripts/insert-data.sh
+
+__DOCS__:
+docs-dev: ## Starts a local deve server for documentation site 
+	@cd docs && npm run start
+
+docs-build: ## Builds static documentation site
+	@cd docs && npm run build
+
+docs-serve: ## Serves static build documentation site
+	@cd docs && npm run serve
+
+docs-deploy: docs-build docs-serve ## Builds docs and serves documentation 
