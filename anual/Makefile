@@ -50,7 +50,7 @@ docs-serve: ## Serves static build documentation site
 docs-deploy: docs-build docs-serve ## Builds docs and serves documentation 
 
 docs-open-api-to-markdown: ## Create a mardkown specification from open-api yaml, you need to provide FILE_PATH and OUT_PATH 
-	widdershins $(FILE_PATH) -u docs/openapi3 --language_tabs='shell:Shell' 'javascript:Javascript' -o $(OUT_PATH) 
+	widdershins $(FILE_PATH) -o $(OUT_PATH) 
 
 WIDDERSHINS_PATH?=$(HOME)/widdershins-docusaurus
 docs-install-widdershins: ## Installs widdernshins used to generate .md files from open-api .yml specification
