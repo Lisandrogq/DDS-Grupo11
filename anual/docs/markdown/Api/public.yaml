@@ -1,0 +1,219 @@
+openapi: 3.0.0
+info:
+  version: "1.0.0"
+  title: FridgeBridge API
+  description: |
+    These are the FridgeBridge API endpoints to interact with our services.
+
+servers:
+  - url: https://virtserver.swaggerhub.com/MRABEYFISCHER_1/PruebaTemplate/1.0.0
+
+paths:
+  /api/contributors/recognitions:
+    get:
+      summary: Returns a list of employees who meet the minimum score, meal donation count.
+      parameters:
+        - in: query
+          name: min_points
+          required: true
+          schema:
+            type: integer
+          description: Minimum accumulated score required.
+        - in: query
+          name: min_meals
+          required: true
+          schema:
+            type: integer
+          description: Minimum number of meal donations made.
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 10
+          description: Maximum number of contributors to include in the query.
+      responses:
+        "200":
+          description: List of employees who meet the specified criteria.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+              example:
+                status: 200
+                message: "OK"
+                data:
+                  individuals:
+                    - id: "1"
+                      name: "Alberto"
+                      surname: "Fernandez"
+                      address: "Espana"
+                      birth: "1960-05-12"
+                      document: "19374892"
+                      documentType: "DNI"
+                      points: 120
+                  legalEntities:
+                    - id: "1"
+                      type: "Company"
+                      category: "Education"
+                      points: 21
+                    - id: "2"
+                      type: "Institution"
+                      category: "Technology"
+                      points: 100
+        "Missing parameter":
+          meaning: 400
+          description: Missing required parameter.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+              example:
+                status: 400
+                message: "Missing required parameter: minPoints."
+                data: {}
+        "Invalid Input":
+          meaning: 400
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+              example:
+                status: 400
+                message: "Invalid input: min_points must be an integer."
+                data: {}
+        "500":
+          description: Internal Server Error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+              example:
+                status: 500
+                message: "Internal Server Error."
+                data: {}
+
+components:
+  schemas:
+    ApiResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: HTTP status code of the response.
+          example: 200
+        message:
+          type: string
+          description: Default status message or custom message.
+          example: "OK"
+        data:
+          type: object
+          description: Additional data relevant to the response.
+    ContributorRecognitionResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: HTTP status code of the response.
+          example: 200
+        message:
+          type: string
+          description: Default status message or custom message.
+          example: "OK"
+        data:
+          type: object
+          description: A map of individuals and legal entities that fulfill the constraints.
+          properties:
+            individuals:
+              description: A list of individuals.
+              type: array
+              items:
+                $ref: "#/components/schemas/Individual"
+            legalEntities:
+              description: A list of legal entities.
+              type: array
+              items:
+                $ref: "#/components/schemas/LegalEntity"
+          required:
+            - individuals
+            - legalEntities
+      required:
+        - status
+        - message
+        - data
+    Individual:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the individual.
+        name:
+          type: string
+          description: First name of the individual.
+        surname:
+          type: string
+          description: Surname of the individual.
+        address:
+          type: string
+          description: Address of the individual.
+        birth:
+          type: string
+          format: date
+          description: Birthdate of the individual (YYYY-MM-DD).
+        document:
+          type: string
+          description: Identification document number of the individual.
+        documentType:
+          type: string
+          description: Type of the identification document.
+          enum:
+            - LC
+            - LE
+            - DNI
+        points:
+          type: integer
+          description: Total points earned by the individual.
+      required:
+        - id
+        - name
+        - surname
+        - address
+        - birth
+        - document
+        - documentType
+        - points
+    LegalEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the legal entity.
+        type:
+          type: string
+          description: Type of the legal entity.
+          enum:
+            - Governmental
+            - NGO
+            - Company
+            - Institution
+        category:
+          type: string
+          description: Category of the legal entity.
+          enum:
+            - HealthCare
+            - Education
+            - Finance
+            - Technology
+            - Agriculture
+            - Hospitality
+            - Transportation
+            - Manufacturing
+            - Retail
+        points:
+          type: integer
+          description: Total points earned by the legal entity.
+      required:
+        - id
+        - type
+        - category
+        - points

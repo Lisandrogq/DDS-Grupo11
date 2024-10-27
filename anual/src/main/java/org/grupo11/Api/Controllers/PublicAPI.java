@@ -29,26 +29,26 @@ public class PublicAPI {
 
         // validate input
         if (minPointsParam == null) {
-            ctx.status(400).json(new ApiResponse(400, "Missing required parameter: minPoints", null));
+            ctx.status(400).json(new ApiResponse(400, "Missing required parameter: min_points", null));
             return;
         }
 
         if (minMealsParam == null) {
-            ctx.status(400).json(new ApiResponse(400, "Missing required parameter: minMeals", null));
+            ctx.status(400).json(new ApiResponse(400, "Missing required parameter: min_meals", null));
             return;
         }
 
         try {
             minPoints = Integer.parseInt(minPointsParam);
         } catch (NumberFormatException e) {
-            ctx.status(400).json(new ApiResponse(400, "Invalid input: minPoints must be an integer.", null));
+            ctx.status(400).json(new ApiResponse(400, "Invalid input: min_points must be an integer.", null));
             return;
         }
 
         try {
             minMeals = Integer.parseInt(minMealsParam);
         } catch (NumberFormatException e) {
-            ctx.status(400).json(new ApiResponse(400, "Invalid input: minMeals must be an integer.", null));
+            ctx.status(400).json(new ApiResponse(400, "Invalid input: min_meals must be an integer.", null));
             return;
         }
 
