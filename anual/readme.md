@@ -10,19 +10,8 @@ anual assignment.
 - [Assignment](https://suriweb.com.ar/archivos/general/DDS-TPA-2024.pdf)
 - [mockAPI](https://mockapi.io/projects/665264aa813d78e6d6d56913)
 
-### Quickly getting started
-
-1. Clone the project: `git clone https://github.com/Lisandrogq/DDS-Grupo11/tree/main`
-2. cd into this folder: `cd anual`
-3. Create a `.env` [here](./src/main/resources/) and the following fields:
-   - SENDGRID_API_KEY=<YOUR_KEY_HERE>
-   - COMPANY_MAIL=<YOUR_COMPANY_MAIL_HERE>
-4. Run: `make start`
-5. Run test with: `make test`
-6. For all commands run: `make help`
-
 ### Docs
 
 <!-- update this with the deployed website later -->
 
-Full documentation available [here](./docs/docs/).
+Full documentation available [here](./docs/markdown/).
