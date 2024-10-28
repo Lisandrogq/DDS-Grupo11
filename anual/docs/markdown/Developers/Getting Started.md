@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-This will guide you in setting up FridgeBridge iny your local environment for developing/contributing
+This will guide you in setting up FridgeBridge iny your local environment for developing/contributing.
 
 ## Dependencies
 
