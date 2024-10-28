@@ -6,7 +6,8 @@ info:
     These are the FridgeBridge API endpoints to interact with our services.
 
 servers:
-  - url: https://virtserver.swaggerhub.com/MRABEYFISCHER_1/PruebaTemplate/1.0.0
+  # TODO(marcos): we should update this with prod url once we have a domain
+  - url: http://localhost:8000
 
 paths:
   /api/contributors/recognitions:
@@ -37,7 +38,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ApiResponse"
+                $ref: "#/components/schemas/ContributorRecognitionResponse"
               example:
                 status: 200
                 message: "OK"
@@ -51,18 +52,15 @@ paths:
                       document: "19374892"
                       documentType: "DNI"
                       points: 120
+                      mealDonations: 5
                   legalEntities:
                     - id: "1"
                       type: "Company"
                       category: "Education"
                       points: 21
-                    - id: "2"
-                      type: "Institution"
-                      category: "Technology"
-                      points: 100
-        "Missing parameter":
-          meaning: 400
-          description: Missing required parameter.
+                      mealDonations: 3
+        "400":
+          description: Missing required parameter or Invalid input.
           content:
             application/json:
               schema:
@@ -70,17 +68,6 @@ paths:
               example:
                 status: 400
                 message: "Missing required parameter: minPoints."
-                data: {}
-        "Invalid Input":
-          meaning: 400
-          description: Invalid input.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiResponse"
-              example:
-                status: 400
-                message: "Invalid input: min_points must be an integer."
                 data: {}
         "500":
           description: Internal Server Error.
@@ -173,6 +160,9 @@ components:
         points:
           type: integer
           description: Total points earned by the individual.
+        mealDonations:
+          type: integer
+          description: Number of meal donations made by the individual.
       required:
         - id
         - name
@@ -212,6 +202,9 @@ components:
         points:
           type: integer
           description: Total points earned by the legal entity.
+        mealDonations:
+          type: integer
+          description: Number of meal donations made by the legal entity.
       required:
         - id
         - type

@@ -28,7 +28,7 @@ These are the FridgeBridge API endpoints to interact with our services.
 
 Base URLs:
 
-* <a href="https://virtserver.swaggerhub.com/MRABEYFISCHER_1/PruebaTemplate/1.0.0">https://virtserver.swaggerhub.com/MRABEYFISCHER_1/PruebaTemplate/1.0.0</a>
+* <a href="http://localhost:8000">http://localhost:8000</a>
 
 ## `GET /api/contributors/recognitions`
 
@@ -48,7 +48,7 @@ Base URLs:
 <TabItem value="shell" label="shell">
 
 ```shell
-curl -X GET https://virtserver.swaggerhub.com/MRABEYFISCHER_1/PruebaTemplate/1.0.0/api/contributors/recognitions?min_points=0&min_meals=0 \
+curl -X GET http://localhost:8000/api/contributors/recognitions?min_points=0&min_meals=0 \
   -H 'Accept: application/json'
 
 ```
@@ -57,8 +57,8 @@ curl -X GET https://virtserver.swaggerhub.com/MRABEYFISCHER_1/PruebaTemplate/1.0
 <TabItem value="http" label="http">
 
 ```http
-GET https://virtserver.swaggerhub.com/MRABEYFISCHER_1/PruebaTemplate/1.0.0/api/contributors/recognitions?min_points=0&min_meals=0 HTTP/1.1
-Host: virtserver.swaggerhub.com
+GET http://localhost:8000/api/contributors/recognitions?min_points=0&min_meals=0 HTTP/1.1
+Host: localhost:8000
 Accept: application/json
 
 ```
@@ -72,7 +72,7 @@ const headers = {
   'Accept':'application/json'
 };
 
-fetch('https://virtserver.swaggerhub.com/MRABEYFISCHER_1/PruebaTemplate/1.0.0/api/contributors/recognitions?min_points=0&min_meals=0',
+fetch('http://localhost:8000/api/contributors/recognitions?min_points=0&min_meals=0',
 {
   method: 'GET',
 
@@ -96,7 +96,7 @@ headers = {
   'Accept' => 'application/json'
 }
 
-result = RestClient.get 'https://virtserver.swaggerhub.com/MRABEYFISCHER_1/PruebaTemplate/1.0.0/api/contributors/recognitions',
+result = RestClient.get 'http://localhost:8000/api/contributors/recognitions',
   params: {
   'min_points' => 'integer',
 'min_meals' => 'integer'
@@ -115,7 +115,7 @@ headers = {
   'Accept': 'application/json'
 }
 
-r = requests.get('https://virtserver.swaggerhub.com/MRABEYFISCHER_1/PruebaTemplate/1.0.0/api/contributors/recognitions', params={
+r = requests.get('http://localhost:8000/api/contributors/recognitions', params={
   'min_points': '0',  'min_meals': '0'
 }, headers = headers)
 
@@ -141,7 +141,7 @@ $client = new \GuzzleHttp\Client();
 $request_body = array();
 
 try {
-    $response = $client->request('GET','https://virtserver.swaggerhub.com/MRABEYFISCHER_1/PruebaTemplate/1.0.0/api/contributors/recognitions', array(
+    $response = $client->request('GET','http://localhost:8000/api/contributors/recognitions', array(
         'headers' => $headers,
         'json' => $request_body,
        )
@@ -161,7 +161,7 @@ try {
 <TabItem value="java" label="java">
 
 ```java
-URL obj = new URL("https://virtserver.swaggerhub.com/MRABEYFISCHER_1/PruebaTemplate/1.0.0/api/contributors/recognitions?min_points=0&min_meals=0");
+URL obj = new URL("http://localhost:8000/api/contributors/recognitions?min_points=0&min_meals=0");
 HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 con.setRequestMethod("GET");
 int responseCode = con.getResponseCode();
@@ -195,7 +195,7 @@ func main() {
     }
 
     data := bytes.NewBuffer([]byte{jsonReq})
-    req, err := http.NewRequest("GET", "https://virtserver.swaggerhub.com/MRABEYFISCHER_1/PruebaTemplate/1.0.0/api/contributors/recognitions", data)
+    req, err := http.NewRequest("GET", "http://localhost:8000/api/contributors/recognitions", data)
     req.Header = headers
 
     client := &http.Client{}
@@ -212,10 +212,9 @@ func main() {
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|List of employees who meet the specified criteria.|[ApiResponse](#schemaapiresponse)|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|List of employees who meet the specified criteria.|[ContributorRecognitionResponse](#schemacontributorrecognitionresponse)|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Missing required parameter or Invalid input.|[ApiResponse](#schemaapiresponse)|
 |500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|Internal Server Error.|[ApiResponse](#schemaapiresponse)|
-|Missing parameter|Unknown|Missing required parameter.|[ApiResponse](#schemaapiresponse)|
-|Invalid Input|Unknown|Invalid input.|[ApiResponse](#schemaapiresponse)|
 
 ### Example responses
 
@@ -236,7 +235,8 @@ func main() {
         "birth": "1960-05-12",
         "document": "19374892",
         "documentType": "DNI",
-        "points": 120
+        "points": 120,
+        "mealDonations": 5
       }
     ],
     "legalEntities": [
@@ -244,13 +244,8 @@ func main() {
         "id": "1",
         "type": "Company",
         "category": "Education",
-        "points": 21
-      },
-      {
-        "id": "2",
-        "type": "Institution",
-        "category": "Technology",
-        "points": 100
+        "points": 21,
+        "mealDonations": 3
       }
     ]
   }
@@ -259,19 +254,7 @@ func main() {
 
 </TabItem>
 
-<TabItem value="500 Response" label="500 Response">
-
-```json
-{
-  "status": 500,
-  "message": "Internal Server Error.",
-  "data": {}
-}
-```
-
-</TabItem>
-
-<TabItem value="Missing parameter Response" label="Missing parameter Response">
+<TabItem value="400 Response" label="400 Response">
 
 ```json
 {
@@ -283,12 +266,12 @@ func main() {
 
 </TabItem>
 
-<TabItem value="Invalid Input Response" label="Invalid Input Response">
+<TabItem value="500 Response" label="500 Response">
 
 ```json
 {
-  "status": 400,
-  "message": "Invalid input: min_points must be an integer.",
+  "status": 500,
+  "message": "Internal Server Error.",
   "data": {}
 }
 ```
@@ -344,7 +327,8 @@ func main() {
         "birth": "2019-08-24",
         "document": "string",
         "documentType": "LC",
-        "points": 0
+        "points": 0,
+        "mealDonations": 0
       }
     ],
     "legalEntities": [
@@ -352,7 +336,8 @@ func main() {
         "id": "string",
         "type": "Governmental",
         "category": "HealthCare",
-        "points": 0
+        "points": 0,
+        "mealDonations": 0
       }
     ]
   }
@@ -386,7 +371,8 @@ func main() {
   "birth": "2019-08-24",
   "document": "string",
   "documentType": "LC",
-  "points": 0
+  "points": 0,
+  "mealDonations": 0
 }
 
 ```
@@ -403,6 +389,7 @@ func main() {
 |document|string|true|none|Identification document number of the individual.|
 |documentType|string|true|none|Type of the identification document.|
 |points|integer|true|none|Total points earned by the individual.|
+|mealDonations|integer|false|none|Number of meal donations made by the individual.|
 
 #### Enumerated Values
 
@@ -424,7 +411,8 @@ func main() {
   "id": "string",
   "type": "Governmental",
   "category": "HealthCare",
-  "points": 0
+  "points": 0,
+  "mealDonations": 0
 }
 
 ```
@@ -437,6 +425,7 @@ func main() {
 |type|string|true|none|Type of the legal entity.|
 |category|string|true|none|Category of the legal entity.|
 |points|integer|true|none|Total points earned by the legal entity.|
+|mealDonations|integer|false|none|Number of meal donations made by the legal entity.|
 
 #### Enumerated Values
 
