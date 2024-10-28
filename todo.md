@@ -19,12 +19,12 @@
 - [x] add ids to all entities
 - [x] make everything compile and work
 - [x] create api endpoint (this should be fairly straightforward, we already have everything we need)
-- [ ] write some test for the api
+- [x] write some test for the api
 - [x] corrections
-- [ ] see if its worth Person refactor
+- [x] see if its worth Person refactor
 
 ### Correcciones
 
-- [ ] Reportes - No tenemos cantidad de fallas POR heladera, está todo sobre una clase (usar STRATEGY)
-- [ ] Técnico - modularizar, API que diga quién está más cerca según algún criterio
+- [x] Reportes - No tenemos cantidad de fallas POR heladera, está todo sobre una clase (usar STRATEGY)
+- [x] Técnico - modularizar, API que diga quién está más cerca según algún criterio
 - [ ] Make it more responsive: big part of it is just lowering font-size
