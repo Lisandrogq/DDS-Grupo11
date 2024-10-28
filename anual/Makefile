@@ -50,7 +50,7 @@ docs-serve: ## Serves static build documentation site
 docs-deploy: docs-build docs-serve ## Builds docs and serves documentation 
 
 docs-open-api-to-markdown: ## Create a mardkown specification from open-api yaml, you need to provide FILE_PATH and OUT_PATH 
-	widdershins $(FILE_PATH) -o $(OUT_PATH) 
+	widdershins docs/markdown/Api/$(FILE_NAME).yaml -o docs/markdown/Api/$(FILE_NAME).md
 
 WIDDERSHINS_PATH?=$(HOME)/widdershins-docusaurus
 docs-install-widdershins: ## Installs widdernshins used to generate .md files from open-api .yml specification
