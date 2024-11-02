@@ -1,3 +1,0 @@
--   changed Date datatype to int(epoch), coz it's more portable and easier to manipulate and convert.
--   removed many methods such as add, delete, update we didn't really need them.
--   changed the contributions, instead of creating overloaded methods, one would just pass an Contribution object directly(idk why we didn't thought that before).

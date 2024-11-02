@@ -10,9 +10,10 @@ public class IndividualDTO {
     public int document;
     public DocumentType documentType;
     public double points;
+    public int mealDonations;
 
     public IndividualDTO(String name, String surname, String address, String birth, int document,
-            DocumentType documentType, double points) {
+            DocumentType documentType, double points, int mealDonations) {
         this.name = name;
         this.surname = surname;
         this.address = address;
@@ -20,5 +21,6 @@ public class IndividualDTO {
         this.document = document;
         this.documentType = documentType;
         this.points = points;
+        this.mealDonations = mealDonations;
     }
 }

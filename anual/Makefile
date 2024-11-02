@@ -27,6 +27,7 @@ start: docker-up compile start-server ## Starts docker services, compiles and st
 mvn-clean: ## Cleans mvn, useful when mvn is weird
 	mvn clean install -DskipTests
 
+__TEST__:
 test: ## Mvn test
 	mvn test
 
@@ -35,3 +36,27 @@ gen-mock-data: ## Generates random mocked data in .csv format
 
 mock-db: gen-mock-data ## Mocks data into db for dev enviroments, make sure you have postgres running
 	./scripts/insert-data.sh
+
+__DOCS__:
+docs-dev: ## Starts a local deve server for documentation site 
+	@cd docs/site && npm run start
+
+docs-build: ## Builds static documentation site
+	@cd docs/site && npm run build
+
+docs-serve: ## Serves static build documentation site
+	@cd docs/site && npm run serve
+
+docs-deploy: docs-build docs-serve ## Builds docs and serves documentation 
+
+docs-open-api-to-markdown: ## Create a mardkown specification from open-api yaml, you need to provide FILE_PATH and OUT_PATH 
+	widdershins docs/markdown/Api/$(FILE_NAME).yaml -o docs/markdown/Api/$(FILE_NAME).md
+
+WIDDERSHINS_PATH?=$(HOME)/widdershins-docusaurus
+docs-install-widdershins: ## Installs widdernshins used to generate .md files from open-api .yml specification
+	git clone https://github.com/MarcosNicolau/widdershins-docusaurus.git $(WIDDERSHINS_PATH)
+	cd $(HOME)/widdershins-docusaurus && npm install && npm install --global .
+
+docs-remove-widdershins: ## Removes widdernshins from the system
+	npm remove --global widdershins
+	rm -rf $(WIDDERSHINS_PATH)
