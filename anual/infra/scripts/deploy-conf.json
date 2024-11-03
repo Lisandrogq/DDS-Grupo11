@@ -1,0 +1,9 @@
+{
+  "user": "<USER>",
+  "domain_name": "<DOMAIN_NAME",
+  "postgres_db": "<POSTGRES_DB>",
+  "postgres_user": "<POSTGRES_USER>",
+  "postgres_password": "<POSTGRES_PASSWORD>",
+  "rabbitmq_user": "<RABBITMQ_USER>",
+  "rabbitmq_pass": "<RABBITMQ_PASS>"
+}
