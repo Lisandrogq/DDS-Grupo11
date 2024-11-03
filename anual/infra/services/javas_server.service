@@ -4,8 +4,8 @@ After=network.target
 
 [Service]
 Type=simple
-User=admin
-WorkingDirectory=/home/admin/repos/fridgebridge/anual/
+User={{ user }}
+WorkingDirectory=/home/{{ user }}/repos/fridgebridge/anual/
 ExecStart=make start-prod
 Restart=always
 RestartSec=1
