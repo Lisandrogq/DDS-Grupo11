@@ -1,0 +1,39 @@
+- hosts: all
+  become: true
+  vars:
+    user: "{{ user }}"
+    domain_name: "{{ domain_name }}"
+
+  tasks:
+    - name: Allow all access to tcp port 80
+      ufw:
+        rule: allow
+        port: 80
+        proto: tcp
+
+    - name: Allow all access to tcp port 443
+      ufw:
+        rule: allow
+        port: 443
+        proto: tcp
+
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: latest
+        update_cache: true
+
+    - name: Copy nginx configuration file
+      template:
+        src: ../conf/nginx.conf
+        dest: /home/{{ user }}/conf/nginx.conf
+
+    - name: Create soft link to nginx conf dest
+      command: ln -s /home/{{ user }}/conf/nginx.conf /etc/nginx/nginx.conf
+      become: true
+
+    - name: Start nginx systemd_service
+      ansible.builtin.systemd_service:
+        name: nginx
+        state: started
+        enable: true

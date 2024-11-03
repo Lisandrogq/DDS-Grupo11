@@ -1,0 +1,16 @@
+- name: Install nodejs
+  hosts: all
+
+  tasks:
+    - name: Check if node exists
+      command: . ~/.profile && nvm --version
+      register: node_exists
+      ignore_errors: true
+
+    - name: Download nvm
+      when: node_exists is failed
+      command: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
+
+    - name: Install node latest
+      when: node_exists is failed
+      command: nvm install 22

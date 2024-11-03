@@ -1,0 +1,32 @@
+- hosts: all
+  become: yes
+
+  vars:
+    rabbitmq_user: "{{ rabbitmq_user }}"
+    rabbitmq_password: "{{ rabbitmq_password }}"
+
+  tasks:
+    - name: Install RabbitMQ
+      apt:
+        name: rabbitmq-server
+        state: latest
+
+    - name: RabbitMQ start systemd service
+      ansible.builtin.systemd_service:
+        name: rabbitmq-server
+        state: started
+        enabled: true
+
+    - name: Add RabbitMQ user
+      shell: rabbitmqctl add_user {{ rabbitmq_user }} {{ rabbitmq_password }}
+      ignore_errors: yes
+
+    - name: Set RabbitMQ user permissions
+      shell: rabbitmqctl set_permissions -p / {{ rabbitmq_user }} ".*" ".*" ".*"
+      ignore_errors: yes
+
+    - name: Restart rabbitmq service
+      ansible.builtin.systemd_service:
+        name: rabbitmq-server
+        state: restarted
+        enabled: true

@@ -1,0 +1,7 @@
+- import-playbook: setup.yaml
+- import-playbook: webserver.yaml
+- import-playbook: postgres.yaml
+- import-playbook: rabbit.yaml
+- import-playbook: java.yaml
+- import-playbook: node.yaml
+- import-playbook: services.yaml

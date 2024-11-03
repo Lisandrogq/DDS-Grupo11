@@ -1,0 +1,49 @@
+- hosts: all
+  become: true
+  vars:
+    user: "{{ user }}"
+    db_name: "{{ db_name }}"
+    db_user: "{{ db_user }}"
+    db_password: "{{ db_password }}"
+    rabbitmq_user: "{{ rabbitmq_user }}"
+    rabbitmq_password: "{{ rabbitmq_password }}"
+
+  tasks:
+    - name: Copy JavaServer service
+      template:
+        src: ../services/java_server.service
+        dest: /home/{{ user }}/services/java_server.service
+
+    - name: JavaServer service create soft link
+      command: ln -s /home/{{ user }}/services/java_server.service /etc/systemd/system/java_server.service
+      become: true
+
+    - name: JavaServer service enable
+      ansible.builtin.systemd_service:
+        name: java_service
+        state: started
+        enabled: true
+
+    - name: Copy JavaServer .env
+      template:
+        src: ../conf/.env.java_server
+        dest: /home/{{ user }}/conf/.env.java_server
+
+    - name: Softlink JavaServer .env
+      command: ln -s /home/{{ user }}/conf/.env.java_server /home/{{ user }}/repos/fridge-bridge/anual/src/main/resources/.env
+      become: true
+
+    - name: Copy Docs service
+      template:
+        src: ../services/docs.service
+        dest: /home/{{ user }}/services/docs.service
+
+    - name: Docs service create soft link
+      command: ln -s /home/{{ user }}/services/docs.service /etc/systemd/system/docs.service
+      become: true
+
+    - name: Docs service enable
+      ansible.builtin.systemd_service:
+        name: docs
+        state: started
+        enabled: true
