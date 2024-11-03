@@ -27,7 +27,8 @@ First, change the [json deploy configuration]() with the appropriate parameters,
 Next, you need to add your host to ansible. For that add a new entry to `/etc/ansible/hosts/`, for example:
 
 ```conf
-
+[fridge-bridge]
+fridgebridge-1 ansible_host=<YOUR_HOST_IP>
 ```
 
 Once you have modified the config file, from the project root run:
