@@ -63,3 +63,11 @@ docs-install-widdershins: ## Installs widdernshins used to generate .md files fr
 docs-remove-widdershins: ## Removes widdernshins from the system
 	npm remove --global widdershins
 	rm -rf $(WIDDERSHINS_PATH)
+
+
+__DEPLOY__:
+deploy: ## Deploys fridgebridge to given host
+	infra/scripts/deploy.sh $(HOST)
+
+deploy-upgrade: ## Updates fridgebridge codebase in a host
+	infra/scripts/upgrade.sh $(USER) $(HOST)
