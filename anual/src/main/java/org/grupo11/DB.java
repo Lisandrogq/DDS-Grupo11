@@ -1,5 +1,6 @@
 package org.grupo11;
 
+import org.grupo11.Config.Env;
 import org.grupo11.Services.Meal;
 import org.grupo11.Services.ActivityRegistry.ActivityRegistry;
 import org.grupo11.Services.ActivityRegistry.CardUsage;
@@ -45,8 +46,11 @@ public class DB {
 
     private static SessionFactory buildSessionFactory() {
         try {
-            Logger.info("Session factory built");
-            return new Configuration().configure()
+            return new Configuration()
+                    .setProperty("hibernate.connection.url", Env.getDBUrl())
+                    .setProperty("hibernate.connection.username", Env.getDBUser())
+                    .setProperty("hibernate.connection.password", Env.getDBPassword())
+                    .configure()
                     .addAnnotatedClass(FailureReportRow.class)
                     .addAnnotatedClass(MealPerContributorReportRow.class)
                     .addAnnotatedClass(MealsPerFridgeReportRow.class)
