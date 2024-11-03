@@ -16,9 +16,7 @@ Before, make sure you have the following dependencies:
 
 1. Clone the project: `git clone https://github.com/Lisandrogq/DDS-Grupo11/tree/main`
 2. cd into anual folder: `cd anual`
-3. Create a `.env` [here](https://github.com/Lisandrogq/DDS-Grupo11/tree/main/anual/src/main/resources) and the following fields:
-   - SENDGRID_API_KEY=`<YOUR_KEY_HERE>`
-   - COMPANY_MAIL=`<YOUR_COMPANY_MAIL_HERE>`
+3. Create a `.env` [here](https://github.com/Lisandrogq/DDS-Grupo11/tree/main/anual/src/main/resources). If you are not going to change anything, copy the `.env.dev` file.
 4. Run: `make start`
 5. Run test with: `make test`
 6. For all commands run: `make help`
