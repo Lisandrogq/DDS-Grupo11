@@ -24,6 +24,9 @@ start-server: ## Start the java server
 
 start: docker-up compile start-server ## Starts docker services, compiles and starts the java server
 
+start-prod: compile ## Start server in prod mode
+	mvn exec:java -Dexec.mainClass="org.grupo11.app.App"
+
 mvn-clean: ## Cleans mvn, useful when mvn is weird
 	mvn clean install -DskipTests
 
