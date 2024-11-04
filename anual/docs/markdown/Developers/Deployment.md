@@ -3,38 +3,51 @@
 To deploy Fridge Bridge you'll need to:
 
 - [Install Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+- [jq](https://jqlang.github.io/jq/download/)
 - Have a debian based server.
 
-First, change the [json deploy configuration]() with the appropriate parameters, here is what the config looks like:
+First, you need to add your host to ansible. For that add a new entry to `/etc/ansible/hosts/`:
+
+```conf
+[GROUP]
+<NAME> ansible_host=<YOUR_HOST_IP>
+```
+
+For example:
+
+```conf
+[fridge-bridge]
+fridge-bridge-1 ansible_host=<YOUR_HOST_IP>
+```
+
+Next, change the [json deploy configuration](https://vscode.dev/github/Lisandrogq/DDS-Grupo11/blob/deploy-infra/anual/infra/scripts/deploy-conf.json#L1-L13) with the appropriate parameters, here is what the config looks like:
 
 ```json
 {
-  "user": "<USER>",
-  "domain_name": "<DOMAIN_NAME",
-  "postgres_db": "<POSTGRES_DB>",
-  "postgres_user": "<POSTGRES_USER>",
-  "postgres_password": "<POSTGRES_PASSWORD>",
-  "rabbitmq_user": "<RABBITMQ_USER>",
-  "rabbitmq_pass": "<RABBITMQ_PASS>"
+  "host": "fridge-bridge-aws",
+  "host_ansible": "fridgebridge-1",
+  "user": "admin",
+  "domain_name": "fridgebridge.simplecharity.com",
+  "postgres_url": "jdbc:postgresql://localhost:5432/fridgebridge",
+  "postgres_db": "fridgebridge",
+  "postgres_user": "fridgebridge",
+  "postgres_password": "YMMetjdIClkVKIf",
+  "rabbitmq_user": "fridgebridge",
+  "rabbitmq_pass": "YMMetjdIClkVKIf"
 }
 ```
 
 > Notes:
 >
+> - `host`: refers to the hostname of the host (what you used when doing `ssh user@hostname`).
+> - `host_ansible`: refers to the ansible host name you have set in the previous step.
 > - `user`: refers to the host machine user.
 > - `domain_name`: the domain that is pointing to the host machine, for example: `fridgebridge.simplecharity.com`.
-
-Next, you need to add your host to ansible. For that add a new entry to `/etc/ansible/hosts/`, for example:
-
-```conf
-[fridge-bridge]
-fridgebridge-1 ansible_host=<YOUR_HOST_IP>
-```
 
 Once you have modified the config file, from the project root run:
 
 ```shell
-make deploy HOST=<ANSIBLE_HOST>
+make deploy
 ```
 
 This will:
@@ -49,6 +62,8 @@ Finally, check that the setup went well by going to your domain at:
 
 - `https://<domain_name>`: you should see the fridge bridge client
 - `https://<domain_name>/docs`: you should see the fridge bridge documentation
+
+If anything goes wrong, you can re-run the target or only the ones that failed.
 
 ## Update your host
 
