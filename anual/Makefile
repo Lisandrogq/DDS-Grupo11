@@ -67,7 +67,7 @@ docs-remove-widdershins: ## Removes widdernshins from the system
 
 __DEPLOY__:
 deploy: ## Deploys fridgebridge to given host
-	infra/scripts/deploy.sh $(HOST)
+	infra/scripts/deploy.sh
 
 deploy-upgrade: ## Updates fridgebridge codebase in a host
 	infra/scripts/upgrade.sh $(USER) $(HOST)

@@ -1,8 +1,9 @@
 #!/bin/bash
-HOST=$1
+USER=$1
+HOST=$2
 
 # Setup certificates using certbot
-ssh debian@$HOST
+ssh $USER@$HOST
 
 # Install certbot with snap
 sudo snap install snapd

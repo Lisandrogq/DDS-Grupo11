@@ -1,9 +1,12 @@
 {
-  "user": "<USER>",
-  "domain_name": "<DOMAIN_NAME",
-  "postgres_db": "<POSTGRES_DB>",
-  "postgres_user": "<POSTGRES_USER>",
-  "postgres_password": "<POSTGRES_PASSWORD>",
-  "rabbitmq_user": "<RABBITMQ_USER>",
-  "rabbitmq_pass": "<RABBITMQ_PASS>"
+  "host": "fridge-bridge-aws",
+  "host_ansible": "fridgebridge-1",
+  "user": "admin",
+  "domain_name": "fridgebridge.simplecharity.com",
+  "postgres_url": "jdbc:postgresql://localhost:5432/fridgebridge",
+  "postgres_db": "fridgebridge",
+  "postgres_user": "fridgebridge",
+  "postgres_password": "YMMetjdIClkVKIf",
+  "rabbitmq_user": "fridgebridge",
+  "rabbitmq_pass": "YMMetjdIClkVKIf"
 }
