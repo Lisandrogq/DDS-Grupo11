@@ -6,42 +6,42 @@
     email: "{{ email }}"
 
   tasks:
-    # - name: Install nginx
-    #   apt:
-    #     name: nginx
-    #     state: latest
-    #     update_cache: true
-    #   become: true
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: latest
+        update_cache: true
+      become: true
 
-    # - name: Copy nginx configuration to get ssl certificate
-    #   template:
-    #     src: ../conf/nginx_setup.conf
-    #     dest: /etc/nginx/nginx.conf
-    #   become: true
+    - name: Copy nginx configuration to get ssl certificate
+      template:
+        src: ../conf/nginx_setup.conf
+        dest: /etc/nginx/nginx.conf
+      become: true
 
-    # - name: Start nginx systemd_service
-    #   ansible.builtin.systemd_service:
-    #     name: nginx
-    #     state: started
-    #     enabled: true
-    #   become: true
+    - name: Start nginx systemd_service
+      ansible.builtin.systemd_service:
+        name: nginx
+        state: started
+        enabled: true
+      become: true
 
-    # - name: Install Snap
-    #   apt:
-    #     name: snapd
-    #     state: latest
-    #   become: true
+    - name: Install Snap
+      apt:
+        name: snapd
+        state: latest
+      become: true
 
-    # - name: Install certbot
-    #   shell: snap install --classic certbot
-    #   become: true
+    - name: Install certbot
+      shell: snap install --classic certbot
+      become: true
 
-    # - name: Prepare certbot command
-    #   shell: ln -s /snap/bin/certbot /usr/bin/certbot
-    #   become: true
+    - name: Prepare certbot command
+      shell: ln -s /snap/bin/certbot /usr/bin/certbot
+      become: true
 
     - name: Generate certificate
-      shell: certbot certonly --nginx --agree-tos -m {{ email }} -n -d {{ domain_name }}
+      shell: certbot --nginx --agree-tos -m {{ email }} -n -d {{ domain_name }}
       become: true
 
     - name: Setting automattic renewal

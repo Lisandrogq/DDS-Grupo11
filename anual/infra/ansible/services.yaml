@@ -45,6 +45,7 @@
     - name: JavaServer service enable
       ansible.builtin.systemd_service:
         name: java_server
+        state: started
         enabled: true
       become: true
 

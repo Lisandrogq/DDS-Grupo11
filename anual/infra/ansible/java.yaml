@@ -12,18 +12,18 @@
       command: tar -xvf openjdk-23.0.1_linux-x64_bin.tar.gz -C /home/{{ user }}/bin
 
     - name: Rename jdk folder
-      command: mv /home/{{ user }}/bin/openjdk-23.0.1  /home/{{ user }}/bin/jdk
+      command: mv /home/{{ user }}/bin/jdk-23.0.1  /home/{{ user }}/bin/jdk
 
     - name: Delete downloaded tar file
       shell: rm -rf openjdk-23*_bin.tar.gz
 
     - name: Add java binary path to ~/.profile
-      when: java_exists is failed
       lineinfile:
         path: /home/{{ user }}}/.profile
         line: "export PATH=$PATH:/home/{{ user }}/bin/jdk/bin/"
         create: true
         state: present
+      become: true
 
     # Mvn installation
     - name: Download mvn tar file
@@ -45,3 +45,4 @@
         line: "export PATH=$PATH:/home/{{ user }}/bin/mvn/bin"
         create: true
         state: present
+      become: true

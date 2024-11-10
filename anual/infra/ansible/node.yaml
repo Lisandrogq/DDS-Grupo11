@@ -1,5 +1,7 @@
 - name: Install nodejs
   hosts: all
+  vars:
+    user: "{{ user }}"
 
   tasks:
     - name: Download node tar file
@@ -9,7 +11,7 @@
       command: tar -xvf node-v22.11.0-linux-x64.tar.xz -C /home/{{ user }}/bin/
 
     - name: Rename node folder
-      command: mv /home/{{ user }}/bin/node-v22.11.0  /home/{{ user }}/bin/node
+      command: mv /home/{{ user }}/bin/node-v22.11.0-linux-x64  /home/{{ user }}/bin/node
 
     - name: Delete downloaded tar file
       shell: rm -rf node-v22.11.0-linux-x64.tar.xz
@@ -20,3 +22,4 @@
         line: "export PATH=$PATH:/home/{{ user }}/bin/node/bin/"
         create: true
         state: present
+      become: true
