@@ -2,9 +2,6 @@ package org.grupo11.Services;
 
 import org.junit.Test;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -24,7 +21,7 @@ import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
 
 public class RabbitTest {
     @Test
-    public void connects_and_sends_fridge_message() {
+    public void connects_and_sends_fridge_message() throws Exception {
         // create fridge
         Fridge fridge = new Fridge(0, 0, null, null, 0, 0, null, null, null);
         TemperatureSensorManager temperatureSensorManager = new TemperatureSensorManager(fridge, 0, 0);
@@ -34,23 +31,27 @@ public class RabbitTest {
         FridgesManager.getInstance().add(fridge);
 
         org.grupo11.Broker.Rabbit rabbit = Rabbit.getInstance();
-        rabbit.connect();
-        rabbit.send("Temp Updates", "",
-                "{ \"fridge_id\": " + fridge.getId() + ", \"sensor_id\": "
-                        + sensor.getId() + ", \"temp\": 321432 }");
-
-        // this sleep is necessary: it allow some time to rabbit to answer
         try {
-            Thread.sleep(1000);
+            rabbit.connect();
+            rabbit.send("Temp Updates", "",
+                    "{ \"fridge_id\": " + fridge.getId() + ", \"sensor_id\": "
+                            + sensor.getId() + ", \"temp\": 321432 }");
+
+            // this sleep is necessary: it allow some time to rabbit to answer
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+            }
+            fridge.getTempManager().checkSensors();
+            assertEquals("temp should be updated", 321432.0, fridge.getTempManager().getLastTemp(), 0.1);
         } catch (Exception e) {
+            throw new Exception(e);
         }
-        fridge.getTempManager().checkSensors();
-        assertEquals("temp should be updated", 321432.0, fridge.getTempManager().getLastTemp(), 0.1);
     }
 
     /// TODO HACER LA CONEXION EN EL SETUP
     @Test
-    public void connects_and_sends_alert() throws JsonMappingException, JsonProcessingException {
+    public void connects_and_sends_alert() throws Exception {
         // create fridge
         Fridge fridge = new Fridge(0, 0, null, null, 0, 0, null, null, null);
         TemperatureSensorManager temperatureSensorManager = new TemperatureSensorManager(fridge, 0, 0);
@@ -61,30 +62,35 @@ public class RabbitTest {
         long actualDate = Calendar.getInstance().getTime().getTime();
 
         org.grupo11.Broker.Rabbit rabbit = Rabbit.getInstance();
-        rabbit.connect();
-        rabbit.send("System Alerts", "",
-                "{ \"fridge_id\": " + fridge.getId() + " , \"type\": "
-                        + "\"FRAUDALERT\"" + " , \"detectedAt\": " + actualDate + "}");
-
-        /*
-         * String json = "{ \"fridge_id\": " + fridge.getId()
-         * + ", \"type\": FRAUDALERT, \"detectedAt\": "
-         * + actualDate + "}";
-         * System.err.println(json);
-         * AlertDTO dto = new ObjectMapper().readValue(json, AlertDTO.class);
-         */
-
-        // this sleep is necessary: it allow some time to rabbit to answer
         try {
-            Thread.sleep(1000);
+
+            rabbit.connect();
+            rabbit.send("System Alerts", "",
+                    "{ \"fridge_id\": " + fridge.getId() + " , \"type\": "
+                            + "\"FRAUDALERT\"" + " , \"detectedAt\": " + actualDate + "}");
+
+            /*
+             * String json = "{ \"fridge_id\": " + fridge.getId()
+             * + ", \"type\": FRAUDALERT, \"detectedAt\": "
+             * + actualDate + "}";
+             * System.err.println(json);
+             * AlertDTO dto = new ObjectMapper().readValue(json, AlertDTO.class);
+             */
+
+            // this sleep is necessary: it allow some time to rabbit to answer
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+            }
+            // todo: fix enum deserialization
+            assertEquals("alert should be registered", 1.0, 1.0, 0.1);
         } catch (Exception e) {
+            throw new Exception(e);
         }
-        // todo: fix enum deserialization
-        assertEquals("alert should be registered", 1.0, 1.0, 0.1);
     }
 
     @Test
-    public void connects_and_check_opening_request() {
+    public void connects_and_check_opening_request() throws Exception {
 
         // create fridge
         Fridge fridge = new Fridge(0, 0, null, null, 0, 0, null, null, null);
@@ -103,18 +109,22 @@ public class RabbitTest {
 
         // send msg
         org.grupo11.Broker.Rabbit rabbit = Rabbit.getInstance();
-        rabbit.connect();
-        rabbit.send("Opening Checks", "",
-                "{ \"fridge_id\": " + fridge.getId() + ", \"registry_id\": "
-                        + solicitude.getIssuedBy().getId() + " }");
-
-        // this sleep is necessary: it allow some time to rabbit to answer
         try {
-            Thread.sleep(1000);
-        } catch (Exception e) {
-        }
+            rabbit.connect();
+            rabbit.send("Opening Checks", "",
+                    "{ \"fridge_id\": " + fridge.getId() + ", \"registry_id\": "
+                            + solicitude.getIssuedBy().getId() + " }");
 
-        assertTrue("solicitude has been marked as used", solicitude.hasBeenUsed());
+            // this sleep is necessary: it allow some time to rabbit to answer
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+            }
+
+            assertTrue("solicitude has been marked as used", solicitude.hasBeenUsed());
+        } catch (Exception e) {
+            throw new Exception(e);
+        }
     }
 
 }

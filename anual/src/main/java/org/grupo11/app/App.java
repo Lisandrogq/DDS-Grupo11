@@ -37,7 +37,7 @@ public class App {
             Api api = new Api(8000);
             api.start();
         } catch (Exception e) {
-            Logger.error("Could not start app");
+            Logger.error("Could not start app {}", e);
         }
     }
 

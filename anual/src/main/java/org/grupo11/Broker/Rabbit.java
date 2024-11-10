@@ -1,5 +1,8 @@
 package org.grupo11.Broker;
 
+import org.grupo11.Logger;
+import org.grupo11.Config.Env;
+
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -15,12 +18,12 @@ public class Rabbit {
         return instance;
     }
 
-    public void connect() {
+    public void connect() throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
-        factory.setUsername("fridgebridge");
-        factory.setPassword("fridgebridge");
-        factory.setPort(5672);
+        factory.setHost(Env.getRabbitHost());
+        factory.setUsername(Env.getRabbitUser());
+        factory.setPassword(Env.getRabbitPassword());
+        factory.setPort(Integer.parseInt(Env.getRabbitPort()));
 
         try {
             Connection connection = factory.newConnection();
@@ -30,8 +33,10 @@ public class Rabbit {
             channel.queueDeclare("Opening Checks", true, false, false, null);
 
             setup_consumers(channel);
-        } catch (Exception e) {
-            System.err.println(e);
+            Logger.info("Connection to rabbit successful");
+        } catch (Throwable e) {
+            Logger.error("Could not connect to rabbit {}", e);
+            throw new Exception(e);
         }
     }
 

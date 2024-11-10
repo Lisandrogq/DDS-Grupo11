@@ -1,0 +1,48 @@
+- name: Install java and mvn
+  hosts: all
+  vars:
+    user: "{{ user }}"
+
+  tasks:
+    # Open-jdk installation
+    - name: Download openjdk tar file
+      command: wget https://download.java.net/java/GA/jdk23.0.1/c28985cbf10d4e648e4004050f8781aa/11/GPL/openjdk-23.0.1_linux-x64_bin.tar.gz
+
+    - name: Extract jdk
+      command: tar -xvf openjdk-23.0.1_linux-x64_bin.tar.gz -C /home/{{ user }}/bin
+
+    - name: Rename jdk folder
+      command: mv /home/{{ user }}/bin/jdk-23.0.1  /home/{{ user }}/bin/jdk
+
+    - name: Delete downloaded tar file
+      shell: rm -rf openjdk-23*_bin.tar.gz
+
+    - name: Add java binary path to ~/.profile
+      lineinfile:
+        path: /home/{{ user }}}/.profile
+        line: "export PATH=$PATH:/home/{{ user }}/bin/jdk/bin/"
+        create: true
+        state: present
+      become: true
+
+    # Mvn installation
+    - name: Download mvn tar file
+      command: wget https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz
+
+    - name: Extract mvn
+      command: tar -xvf apache-maven-3.9.9-bin.tar.gz -C /home/{{ user }}/bin/
+      become: true
+
+    - name: Rename mvn folder
+      command: mv /home/{{ user }}/bin/apache-maven-3.9.9 /home/{{ user }}/bin/mvn
+
+    - name: Delete downloaded tar file
+      shell: rm -rf apache-maven-*-bin.tar.gz
+
+    - name: Add mvn binary path to ~/.profile
+      lineinfile:
+        path: /home/{{user}}}/.profile
+        line: "export PATH=$PATH:/home/{{ user }}/bin/mvn/bin"
+        create: true
+        state: present
+      become: true

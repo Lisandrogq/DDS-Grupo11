@@ -1,0 +1,43 @@
+- name: Setup server
+  hosts: all
+  become: true
+  vars:
+    user: "{{ user }}"
+
+  tasks:
+    - name: Install basic tools
+      apt: name={{ item }} state=latest update_cache=true
+      loop:
+        [
+          gnupg,
+          openssl,
+          acl,
+          git,
+          make,
+          openssl,
+          wget,
+          ufw,
+          unzip,
+          curl,
+          vim,
+          tmux,
+        ]
+
+    - name: Create basic directories if do not exist
+      ansible.builtin.file:
+        path: /home/{{ user }}/{{ item }}
+        state: directory
+        mode: "0755"
+      become_user: "{{ user }}"
+      loop:
+        - repos
+        - conf
+        - services
+        - bin
+
+    - name: Clone fridge bridge repository
+      ansible.builtin.git:
+        repo: https://github.com/Lisandrogq/DDS-Grupo11.git
+        dest: /home/{{ user }}/repos/fridge-bridge
+        version: main
+      become_user: "{{ user }}"

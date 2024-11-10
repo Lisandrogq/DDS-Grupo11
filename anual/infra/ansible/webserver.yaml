@@ -1,0 +1,75 @@
+- name: Start webserver with nginx
+  hosts: all
+  vars:
+    user: "{{ user }}"
+    domain_name: "{{ domain_name }}"
+    email: "{{ email }}"
+
+  tasks:
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: latest
+        update_cache: true
+      become: true
+
+    - name: Copy nginx configuration to get ssl certificate
+      template:
+        src: ../conf/nginx_setup.conf
+        dest: /etc/nginx/nginx.conf
+      become: true
+
+    - name: Start nginx systemd_service
+      ansible.builtin.systemd_service:
+        name: nginx
+        state: started
+        enabled: true
+      become: true
+
+    - name: Install Snap
+      apt:
+        name: snapd
+        state: latest
+      become: true
+
+    - name: Install certbot
+      shell: snap install --classic certbot
+      become: true
+
+    - name: Prepare certbot command
+      shell: ln -s /snap/bin/certbot /usr/bin/certbot
+      become: true
+
+    - name: Generate certificate
+      shell: certbot --nginx --agree-tos -m {{ email }} -n -d {{ domain_name }}
+      become: true
+
+    - name: Setting automattic renewal
+      shell: certbot renew --dry-run
+      become: true
+
+    - name: Generate dhparams
+      shell: openssl dhparam -out /etc/nginx/dhparams.pem 2048
+      args:
+        creates: /etc/nginx/dhparams.pem
+      become: true
+
+    - name: Copy nginx configuration file
+      template:
+        src: ../conf/nginx.conf
+        dest: /home/{{ user }}/conf/nginx.conf
+
+    - name: Create a symbolic link for nginx.conf
+      ansible.builtin.file:
+        src: /home/{{ user }}/conf/nginx.conf
+        dest: /etc/nginx/nginx.conf
+        state: link
+        force: yes
+      become: true
+
+    - name: Restart nginx systemd_service
+      ansible.builtin.systemd_service:
+        name: nginx
+        state: restarted
+        enabled: true
+      become: true

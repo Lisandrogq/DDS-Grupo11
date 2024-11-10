@@ -8,8 +8,8 @@ const config: Config = {
   favicon: "img/favicon.ico",
 
   //TODO(marcos): change this once we have a domain
-  url: "https://your-docusaurus-site.example.com",
-  baseUrl: "/",
+  url: "https://fridgebridge.simplecharity.com/",
+  baseUrl: "/docs",
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -74,11 +74,11 @@ const config: Config = {
           items: [
             {
               label: "Site",
-              href: "http://localhost:8000",
+              href: "https://fridgebridge.simplecharity.com",
             },
             {
               label: "Signup",
-              href: "http://localhost:8000/register/login",
+              href: "https://fridgebridge.simplecharity.com/register/login",
             },
           ],
         },

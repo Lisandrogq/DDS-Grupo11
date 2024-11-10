@@ -1,0 +1,50 @@
+- name: Install and setup postgres
+  hosts: all
+  vars:
+    postgres_db: "{{ postgres_db }}"
+    postgres_user: "{{ postgres_user }}"
+    postgres_password: "{{ postgres_password }}"
+
+  tasks:
+    - name: Install postgres
+      apt: name={{ item }} state=latest update_cache=true
+      loop: [python3-psycopg2, postgresql]
+      become: true
+
+    - name: Start db server
+      ansible.builtin.systemd_service:
+        name: postgresql
+        state: started
+        enabled: true
+      become: true
+
+    - name: Create database
+      community.postgresql.postgresql_db:
+        name: "{{ postgres_db }}"
+        comment: java server postgres
+      become: true
+      become_user: postgres
+
+    - name: Create database user
+      community.postgresql.postgresql_user:
+        name: "{{ postgres_user }}"
+        password: "{{ postgres_password }}"
+      become: true
+      become_user: postgres
+
+    - name: Grant privileges on database
+      community.postgresql.postgresql_privs:
+        type: database
+        database: "{{ postgres_db }}"
+        roles: "{{ postgres_user }}"
+        grant_option: no
+        privs: ALL
+      become: true
+      become_user: postgres
+
+    - name: Restart db server
+      ansible.builtin.systemd_service:
+        name: postgresql
+        state: restarted
+        enabled: true
+      become: true
