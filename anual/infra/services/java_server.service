@@ -5,7 +5,8 @@ After=network.target
 [Service]
 Type=simple
 User={{ user }}
-WorkingDirectory=/home/{{ user }}/repos/fridgebridge/anual/
+EnvironmentFile=/home/{{ user }}/services/java_server.service.env
+WorkingDirectory=/home/{{ user }}/repos/fridge-bridge/anual/
 ExecStart=make start-prod
 Restart=always
 RestartSec=1
