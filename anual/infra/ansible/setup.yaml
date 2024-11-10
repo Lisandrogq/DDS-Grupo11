@@ -8,7 +8,20 @@
     - name: Install basic tools
       apt: name={{ item }} state=latest update_cache=true
       loop:
-        [gnupg, openssl, git, make, openssl, wget, ufw, unzip, curl, vim, tmux]
+        [
+          gnupg,
+          openssl,
+          acl,
+          git,
+          make,
+          openssl,
+          wget,
+          ufw,
+          unzip,
+          curl,
+          vim,
+          tmux,
+        ]
 
     - name: Create basic directories if do not exist
       ansible.builtin.file:
@@ -26,5 +39,5 @@
       ansible.builtin.git:
         repo: https://github.com/Lisandrogq/DDS-Grupo11.git
         dest: /home/{{ user }}/repos/fridge-bridge
-        version: main
+        version: deploy-infra
       become_user: "{{ user }}"

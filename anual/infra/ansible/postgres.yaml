@@ -18,36 +18,33 @@
         enabled: true
       become: true
 
-    - name: "Initialize PostgreSQL"
-      shell: "postgresql-setup initdb"
-      when: not postgres_data.stat.exists
-
-    - name: Create application database
-      postgresql_db:
+    - name: Create database
+      community.postgresql.postgresql_db:
         name: "{{ postgres_db }}"
-      become: yes
+        comment: java server postgres
+      become: true
       become_user: postgres
 
     - name: Create database user
-      postgresql_user:
+      community.postgresql.postgresql_user:
         name: "{{ postgres_user }}"
         password: "{{ postgres_password }}"
       become: true
       become_user: postgres
 
     - name: Grant privileges on database
-      postgresql_privs:
+      community.postgresql.postgresql_privs:
         type: database
         database: "{{ postgres_db }}"
         roles: "{{ postgres_user }}"
         grant_option: no
-        privs: all
+        privs: ALL
       become: true
       become_user: postgres
 
     - name: Restart db server
       ansible.builtin.systemd_service:
-        name: postgres
+        name: postgresql
         state: restarted
         enabled: true
       become: true
