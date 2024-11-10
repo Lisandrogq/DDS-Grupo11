@@ -41,7 +41,10 @@ mock-db: gen-mock-data ## Mocks data into db for dev enviroments, make sure you 
 	./scripts/insert-data.sh
 
 __DOCS__:
-docs-dev: ## Starts a local deve server for documentation site 
+docs-install: ## Install a docs deps 
+	@cd docs/site && npm run start
+
+docs-dev: ## Starts a local dev server for documentation site 
 	@cd docs/site && npm run start
 
 docs-build: ## Builds static documentation site
