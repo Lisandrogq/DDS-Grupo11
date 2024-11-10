@@ -1,4 +1,5 @@
-- hosts: all
+- name: Install and setup postgres
+  hosts: all
   become: yes
   vars:
     db_name: "{{ db_name }}"

@@ -1,10 +1,11 @@
-- hosts: all
-  become: true
+- name: Start systemd services
+  hosts: all
   vars:
     user: "{{ user }}"
-    db_name: "{{ db_name }}"
-    db_user: "{{ db_user }}"
-    db_password: "{{ db_password }}"
+    postgres_url: "{{ postgres_url }}"
+    postgres_name: "{{ postgres_name }}"
+    postgres_user: "{{ postgres_user }}"
+    postgres_password: "{{ postgres_password }}"
     rabbitmq_user: "{{ rabbitmq_user }}"
     rabbitmq_password: "{{ rabbitmq_password }}"
 
@@ -14,23 +15,37 @@
         src: ../services/java_server.service
         dest: /home/{{ user }}/services/java_server.service
 
-    - name: JavaServer service create soft link
-      command: ln -s /home/{{ user }}/services/java_server.service /etc/systemd/system/java_server.service
-      become: true
+    - name: Copy JavaServer service env file
+      template:
+        src: ../services/java_server.service.env
+        dest: /home/{{ user }}/services/java_server.service.env
 
-    - name: JavaServer service enable
-      ansible.builtin.systemd_service:
-        name: java_service
-        state: started
-        enabled: true
+    - name: JavaServer service create soft link
+      ansible.builtin.file:
+        src: /home/{{ user }}/services/java_server.service
+        dest: /etc/systemd/system/java_server.service
+        state: link
+        force: yes
+      become: true
 
     - name: Copy JavaServer .env
       template:
         src: ../conf/.env.java_server
         dest: /home/{{ user }}/conf/.env.java_server
+        force: yes
 
     - name: Softlink JavaServer .env
-      command: ln -s /home/{{ user }}/conf/.env.java_server /home/{{ user }}/repos/fridge-bridge/anual/src/main/resources/.env
+      ansible.builtin.file:
+        src: /home/{{ user }}/conf/.env.java_server
+        dest: /home/{{ user }}/repos/fridge-bridge/anual/src/main/resources/.env
+        state: link
+        force: yes
+      become: true
+
+    - name: JavaServer service enable
+      ansible.builtin.systemd_service:
+        name: java_server
+        enabled: true
       become: true
 
     - name: Copy Docs service
@@ -38,8 +53,17 @@
         src: ../services/docs.service
         dest: /home/{{ user }}/services/docs.service
 
+    - name: Copy Docs service env
+      template:
+        src: ../services/docs.service.env
+        dest: /home/{{ user }}/services/docs.service.env
+
     - name: Docs service create soft link
-      command: ln -s /home/{{ user }}/services/docs.service /etc/systemd/system/docs.service
+      ansible.builtin.file:
+        src: /home/{{ user }}/services/docs.service
+        dest: /etc/systemd/system/docs.service
+        state: link
+        force: yes
       become: true
 
     - name: Docs service enable
@@ -47,3 +71,4 @@
         name: docs
         state: started
         enabled: true
+      become: true

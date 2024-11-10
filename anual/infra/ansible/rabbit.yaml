@@ -1,4 +1,5 @@
-- hosts: all
+- name: Install and setup rabbitmq
+  hosts: all
   become: yes
 
   vars:

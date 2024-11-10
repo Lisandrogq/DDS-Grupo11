@@ -2,15 +2,18 @@
   hosts: all
 
   tasks:
-    - name: Check if node exists
-      command: . ~/.profile && nvm --version
-      register: node_exists
-      ignore_errors: true
+    - name: Download node tar file
+      command: wget https://nodejs.org/dist/v22.11.0/node-v22.11.0-linux-x64.tar.xz
 
-    - name: Download nvm
-      when: node_exists is failed
-      command: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
+    - name: Extract node
+      command: tar -xvf node-v22.11.0-linux-x64.tar.xz -C /home/{{ user }}/bin/ && mv /home/{{ user }}/bin/node-v22.11.0-linux-x64  /home/{{ user }}/bin/node
 
-    - name: Install node latest
-      when: node_exists is failed
-      command: nvm install 22
+    - name: Delete downloaded tar file
+      shell: rm -rf node-v22.11.0-linux-x64.tar.xz
+
+    - name: Add node binary path to ~/.profile
+      lineinfile:
+        path: /home/{{user}}/.profile
+        line: "export PATH=$PATH:/home/{{ user }}/bin/node/bin/"
+        create: true
+        state: present
