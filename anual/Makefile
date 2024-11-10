@@ -42,7 +42,7 @@ mock-db: gen-mock-data ## Mocks data into db for dev enviroments, make sure you 
 
 __DOCS__:
 docs-install: ## Install a docs deps 
-	@cd docs/site && npm run start
+	@cd docs/site && npm install
 
 docs-dev: ## Starts a local dev server for documentation site 
 	@cd docs/site && npm run start
@@ -53,7 +53,7 @@ docs-build: ## Builds static documentation site
 docs-serve: ## Serves static build documentation site
 	@cd docs/site && npm run serve
 
-docs-deploy: docs-build docs-serve ## Builds docs and serves documentation 
+docs-deploy: docs-install docs-build docs-serve ## Builds docs and serves documentation 
 
 docs-open-api-to-markdown: ## Create a mardkown specification from open-api yaml, you need to provide FILE_PATH and OUT_PATH 
 	widdershins docs/markdown/Api/$(FILE_NAME).yaml -o docs/markdown/Api/$(FILE_NAME).md
