@@ -6,7 +6,10 @@
       command: wget https://nodejs.org/dist/v22.11.0/node-v22.11.0-linux-x64.tar.xz
 
     - name: Extract node
-      command: tar -xvf node-v22.11.0-linux-x64.tar.xz -C /home/{{ user }}/bin/ && mv /home/{{ user }}/bin/node-v22.11.0-linux-x64  /home/{{ user }}/bin/node
+      command: tar -xvf node-v22.11.0-linux-x64.tar.xz -C /home/{{ user }}/bin/
+
+    - name: Rename node folder
+      command: mv /home/{{ user }}/bin/node-v22.11.0  /home/{{ user }}/bin/node
 
     - name: Delete downloaded tar file
       shell: rm -rf node-v22.11.0-linux-x64.tar.xz
