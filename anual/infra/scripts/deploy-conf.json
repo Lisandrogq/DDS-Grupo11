@@ -2,11 +2,12 @@
   "host": "fridge-bridge-aws",
   "host_ansible": "fridgebridge-1",
   "user": "admin",
+  "email": "mnicolau@frba.utn.edu.ar",
   "domain_name": "fridgebridge.simplecharity.com",
   "postgres_url": "jdbc:postgresql://localhost:5432/fridgebridge",
   "postgres_db": "fridgebridge",
   "postgres_user": "fridgebridge",
   "postgres_password": "YMMetjdIClkVKIf",
   "rabbitmq_user": "fridgebridge",
-  "rabbitmq_pass": "YMMetjdIClkVKIf"
+  "rabbitmq_password": "YMMetjdIClkVKIf"
 }
