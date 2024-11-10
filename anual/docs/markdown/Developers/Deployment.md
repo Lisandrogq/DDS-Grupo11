@@ -4,7 +4,7 @@ To deploy Fridge Bridge you'll need to:
 
 - [Install Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 - [jq](https://jqlang.github.io/jq/download/)
-- Have a debian based server.
+- Have a debian based server with inbound roules open for ports `80` (HTTP), `443`(HTTPS) and `22` (SSH).
 
 First, you need to add your host to ansible. For that add a new entry to `/etc/ansible/hosts/`:
 
@@ -24,16 +24,17 @@ Next, change the [json deploy configuration](https://vscode.dev/github/Lisandrog
 
 ```json
 {
-  "host": "fridge-bridge-aws",
-  "host_ansible": "fridgebridge-1",
-  "user": "admin",
-  "domain_name": "fridgebridge.simplecharity.com",
-  "postgres_url": "jdbc:postgresql://localhost:5432/fridgebridge",
-  "postgres_db": "fridgebridge",
-  "postgres_user": "fridgebridge",
-  "postgres_password": "YMMetjdIClkVKIf",
-  "rabbitmq_user": "fridgebridge",
-  "rabbitmq_pass": "YMMetjdIClkVKIf"
+  "host": "<YOUR_HOST>",
+  "host_ansible": "<ANSIBLE_HOST_NAME>",
+  "user": "<HOST_USER>",
+  "email": "<MAIL>",
+  "domain_name": "<YOUR_DOMAIN_NAME>",
+  "postgres_url": "",
+  "postgres_db": "",
+  "postgres_user": "",
+  "postgres_password": "",
+  "rabbitmq_user": "",
+  "rabbitmq_password": ""
 }
 ```
 
@@ -43,6 +44,7 @@ Next, change the [json deploy configuration](https://vscode.dev/github/Lisandrog
 > - `host_ansible`: refers to the ansible host name you have set in the previous step.
 > - `user`: refers to the host machine user.
 > - `domain_name`: the domain that is pointing to the host machine, for example: `fridgebridge.simplecharity.com`.
+> - `email`: this email is used when setting the certificate. You'll receive notifications about the state of your site certification here.
 
 Once you have modified the config file, from the project root run:
 
@@ -56,14 +58,20 @@ This will:
 - Start systemd services for postgres, rabbit, the java server and the docs.
 - It will start a proxy server with nginx on ports `:80` and `:443`.
 
-After that, it will get ssl certificates with `certbot`. This tool, will prompt for some parameters. In order for `certbot` to work, you need to make sure your domain is correctly pointing to your host.
-
 Finally, check that the setup went well by going to your domain at:
 
 - `https://<domain_name>`: you should see the fridge bridge client
 - `https://<domain_name>/docs`: you should see the fridge bridge documentation
 
 If anything goes wrong, you can re-run the target or only the ones that failed.
+
+## See logs
+
+To see the logs in the server run:
+
+```shell
+journalctl -xefu java_server
+```
 
 ## Update your host
 
