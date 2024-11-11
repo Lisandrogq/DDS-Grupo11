@@ -67,6 +67,11 @@ docs-remove-widdershins: ## Removes widdernshins from the system
 	npm remove --global widdershins
 	rm -rf $(WIDDERSHINS_PATH)
 
+__METRICS__:
+# Prometheus and graphana
+start_metrics: ## Run prometheus and grafana metrics with docker-compose 
+	@echo "Running metrics..."
+	@docker compose -f ./metrics/metrics.docker-compose.yaml up
 
 __DEPLOY__:
 deploy: ## Deploys fridgebridge to given host
