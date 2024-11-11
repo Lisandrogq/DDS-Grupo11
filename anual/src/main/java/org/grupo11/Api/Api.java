@@ -1,6 +1,7 @@
 package org.grupo11.Api;
 
 import org.grupo11.Logger;
+import org.grupo11.Metrics;
 
 import java.util.function.Consumer;
 import io.javalin.Javalin;
@@ -35,11 +36,23 @@ public class Api {
     }
 
     void setupMiddlewares() {
+        api.before(ctx -> {
+            Metrics.getInstance().getOpenConnectionsGauge().inc();
+        });
+
+        api.after(ctx -> {
+            Metrics metrics = Metrics.getInstance();
+            metrics.getOpenConnectionsGauge().dec();
+            if (ctx.statusCode() >= 400) {
+                metrics.getRequestsFailedCounter().inc();
+            } else {
+                metrics.getRequestsServedCounter().inc();
+            }
+        });
 
     }
 
     public void start() {
-        // we'll be running the server behind a proxy in prod
         api.start("127.0.0.1", port);
     }
 }

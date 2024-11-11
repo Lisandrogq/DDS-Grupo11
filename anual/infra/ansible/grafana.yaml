@@ -1,0 +1,88 @@
+- name: Install and setup metrics services
+  hosts: all
+  vars:
+    user: "{{ user }}"
+
+  tasks:
+    - name: Download grafana tar file
+      command: wget https://dl.grafana.com/oss/release/grafana-11.3.0.linux-amd64.tar.gz
+
+    - name: Extract grafana
+      command: tar -zxvf  grafana-11.3.0.linux-amd64.tar.gz -C /home/{{ user }}/bin/
+
+    - name: Rename grafana folder
+      command: mv /home/{{ user }}/bin/grafana-v11.3.0  /home/{{ user }}/bin/grafana
+
+    - name: Delete downloaded tar file
+      shell: rm -rf grafana-11.3.0.linux-amd6
+
+    - name: Ensure Grafana conf directory exists
+      ansible.builtin.file:
+        path: /home/{{ user }}/conf/grafana
+        state: directory
+
+    - name: Copy grafana conf file
+      template:
+        src: ../conf/grafana.ini
+        dest: /home/{{ user }}/conf/grafana
+
+    - name: Copy Grafana provisioning conf folder
+      ansible.builtin.copy:
+        src: ../../metrics/grafana/
+        dest: /home/{{ user }}/conf/grafana
+
+    - name: Ensure Grafana /etc/grafana directories exists
+      ansible.builtin.file:
+        path: /etc/{{ item }}
+        state: directory
+      become: true
+      loop:
+        - grafana
+        - grafana/provisioning
+        - grafana/provisioning/datasources
+        - grafana/provisioning/dashboards
+        - grafana/provisioning/dashboards/fridgebridge
+
+    - name: Create symlinks in /etc/grafana/provisioning/datasource/datasource.yaml
+      ansible.builtin.file:
+        src: /home/{{ user }}/conf/grafana/provisioning/datasources/datasource.yaml
+        dest: /etc/grafana/provisioning/datasources/datasource.yaml
+        state: link
+        force: yes
+      become: true
+
+    - name: Create symlinks in /etc/grafana/provisioning/dashboards/dashboard_provider.yaml
+      ansible.builtin.file:
+        src: /home/{{ user }}/conf/grafana/provisioning/dashboards/dashboard_provider.yaml
+        dest: /etc/grafana/provisioning/dashboards/dashboard_provider.yaml
+        state: link
+        force: yes
+      become: true
+
+    - name: Create symlinks in /etc/grafana/provisioning/dashboards/fridgebridge/fridge-bridge.json
+      ansible.builtin.file:
+        src: /home/{{ user }}/conf/grafana/provisioning/dashboards/fridgebridge/fridge-bridge.json
+        dest: /etc/grafana/provisioning/dashboards/fridgebridge/fridge-bridge.json
+        state: link
+        force: yes
+      become: true
+
+    - name: Copy grafana service
+      template:
+        src: ../services/grafana.service
+        dest: /home/{{ user }}/services/grafana.service
+
+    - name: Grafana service create soft link
+      ansible.builtin.file:
+        src: /home/{{ user }}/services/grafana.service
+        dest: /etc/systemd/system/grafana.service
+        state: link
+        force: yes
+      become: true
+
+    - name: Grafana service enable
+      ansible.builtin.systemd_service:
+        name: grafana
+        state: started
+        enabled: true
+      become: true
