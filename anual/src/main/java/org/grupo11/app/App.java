@@ -4,6 +4,7 @@ import org.grupo11.Utils.PasswordValidator;
 import org.grupo11.DB;
 import org.grupo11.DataImporter;
 import org.grupo11.Logger;
+import org.grupo11.Metrics;
 import org.grupo11.Api.Api;
 import org.grupo11.Broker.Rabbit;
 import org.grupo11.Services.ActivityRegistry.RegistryManager;
@@ -38,6 +39,12 @@ public class App {
             api.start();
         } catch (Exception e) {
             Logger.error("Could not start app {}", e);
+        }
+
+        try {
+            Metrics.getInstance().startMetricsServer();
+        } catch (Exception e) {
+            Logger.error("Could not start metrics server", e);
         }
     }
 
