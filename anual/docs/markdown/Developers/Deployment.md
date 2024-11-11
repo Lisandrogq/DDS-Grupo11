@@ -78,7 +78,7 @@ journalctl -xefu java_server
 If you have already deployed fridge bridge, upgrading your host to the latest release is straightforward, just from the project root run:
 
 ```shell
-make deploy-upgrade USER=<HOST_USER> HOST=<YOUR_HOST>
+make deploy-upgrade HOST=<YOUR_HOST>
 ```
 
 This will `ssh` into your host and restart the systemd-services which will trigger a recompilation.

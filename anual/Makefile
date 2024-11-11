@@ -78,4 +78,4 @@ deploy: ## Deploys fridgebridge to given host
 	infra/scripts/deploy.sh
 
 deploy-upgrade: ## Updates fridgebridge codebase in a host
-	infra/scripts/upgrade.sh $(USER) $(HOST)
+	infra/scripts/upgrade.sh $(HOST)

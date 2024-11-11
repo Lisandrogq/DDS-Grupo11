@@ -1,10 +1,3 @@
-USER=$1
-HOST=$2
+HOST=$1
 
-ssh $USER@$HOST
-cd repos/fridge-bridge/anual
-make update-server
-make update-docs
-
-# update systemd services
-sudo systemctl daemon-reload
+ssh $HOST -t 'cd repos/fridge-bridge/anual && git pull && sudo systemctl restart java_server && sudo systemctl restart docs'
