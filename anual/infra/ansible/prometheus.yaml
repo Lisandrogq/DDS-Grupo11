@@ -1,0 +1,57 @@
+- name: Install and setup metrics services
+  hosts: all
+  vars:
+    user: "{{ user }}"
+
+  tasks:
+    - name: Download prometheus tar file
+      command: wget https://github.com/prometheus/prometheus/releases/download/v2.55.1/prometheus-2.55.1.linux-amd64.tar.gz
+
+    - name: Extract prometheus
+      command: tar -xvf prometheus-2.55.1.linux-amd64.tar.gz -C /home/{{ user }}/bin/
+
+    - name: Rename prometheus folder
+      command: mv /home/{{ user }}/bin/prometheus-2.55.1.linux-amd64/   /home/{{ user }}/bin/prometheus
+
+    - name: Delete downloaded tar file
+      shell: rm -rf prometheus-2.55.1.linux-amd64.tar.gz
+
+    - name: Ensure Prometheus directory exists
+      ansible.builtin.file:
+        path: /etc/prometheus
+        state: directory
+      become: true
+
+    - name: Copy Prometheus conf file
+      template:
+        src: ../conf/prometheus.yaml
+        dest: /home/{{ user }}/conf/prometheus.yaml
+      become: true
+
+    - name: Create a symbolic link for prometheus.yaml
+      ansible.builtin.file:
+        src: /home/{{ user }}/conf/prometheus.yaml
+        dest: /etc/prometheus/prometheus.yaml
+        state: link
+        force: yes
+      become: true
+
+    - name: Copy prometheus service
+      template:
+        src: ../services/prometheus.service
+        dest: /home/{{ user }}/services/prometheus.service
+
+    - name: Prometheus service create soft link
+      ansible.builtin.file:
+        src: /home/{{ user }}/services/prometheus.service
+        dest: /etc/systemd/system/prometheus.service
+        state: link
+        force: yes
+      become: true
+
+    - name: Prometheus service enable
+      ansible.builtin.systemd_service:
+        name: prometheus
+        state: started
+        enabled: true
+      become: true

@@ -1,7 +1,9 @@
-- import_playbook: setup.yaml
-- import_playbook: webserver.yaml
-- import_playbook: postgres.yaml
-- import_playbook: rabbit.yaml
-- import_playbook: java.yaml
-- import_playbook: node.yaml
-- import_playbook: services.yaml
+# - import_playbook: setup.yaml
+# - import_playbook: webserver.yaml
+# - import_playbook: postgres.yaml
+# - import_playbook: rabbit.yaml
+# - import_playbook: java.yaml
+# - import_playbook: node.yaml
+# - import_playbook: prometheus.yaml
+- import_playbook: grafana.yaml
+# - import_playbook: services.yaml
