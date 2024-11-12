@@ -33,4 +33,4 @@ jobs:
           SSH_HOST: ${{ secrets.SSH_HOST }}
 
       - name: Deploy new code
-        run: make deploy-upgrade HOST=fridgebridge
+        run: cd repos/fridge-bridge && make deploy-upgrade HOST=fridgebridge
