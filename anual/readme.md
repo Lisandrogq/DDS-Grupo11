@@ -12,6 +12,4 @@ anual assignment.
 
 ### Docs
 
-<!-- update this with the deployed website later -->
-
-Full documentation available [here](./docs/markdown/).
+Full documentation available [here](https://fridgebridge.simplecharity.com/docs).
