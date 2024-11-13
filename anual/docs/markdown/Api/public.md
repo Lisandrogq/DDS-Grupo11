@@ -28,7 +28,7 @@ These are the FridgeBridge API endpoints to interact with our services.
 
 Base URLs:
 
-* <a href="http://localhost:8000">http://localhost:8000</a>
+* <a href="https://fridgebridge.simplecharity.com/">http://fridgebridge.simplecharity.com</a>
 
 ## `GET /api/contributors/recognitions`
 
