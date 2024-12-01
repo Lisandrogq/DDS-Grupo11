@@ -1,30 +1,17 @@
 ## Anual
 
-## Entrega 5
-
-- [x] setup webserver with javalin
-- [x] create clear file structure for mvc
-- [x] render basic files
-- [x] move frontend into main
-- [x] create routes for each view
-- [x] update frontend links to point to server: that would include the anchor tags and the assets, css, js.
-- [x] finally pass dynamic data to the html, using a template engine preferably Thymeleaf
-- [x] add a logger
-
-## Entrega 6
-
-- [x] db service with docker
-- [x] basic db class to handle connection and usage with orm
-- [x] finish mapping classes to tables (mostly contributions)
-- [x] add ids to all entities
-- [x] make everything compile and work
-- [x] create api endpoint (this should be fairly straightforward, we already have everything we need)
-- [x] write some test for the api
-- [x] corrections
-- [x] see if its worth Person refactor
-
-### Correcciones
-
-- [x] Reportes - No tenemos cantidad de fallas POR heladera, está todo sobre una clase (usar STRATEGY)
-- [x] Técnico - modularizar, API que diga quién está más cerca según algún criterio
+- [ ] Authentication with jwt
+- [ ] Make forms work:
+  - [ ] Meal contribution
+  - [ ] Meal distribution
+  - [ ] Money contribution
+  - [ ] Person registration
+  - [ ] Reward contribution
+  - [ ] Add report
+  - [ ] Subscription
+- [ ] Add new modal that lists all fridges (see if we can include a map)
+- [ ] Show recent donations from db
+- [ ] Show alerts from db
+- [ ] Show reports from db
+- [ ] Add rewards page and a button to claim (if it has points show a success message saying that it will be delivered)
 - [ ] Make it more responsive: big part of it is just lowering font-size
