@@ -1,5 +1,6 @@
 package org.grupo11.Api.Controllers;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.grupo11.DB;
@@ -23,7 +24,10 @@ public class UserController {
             if (mail.equals("admin@admin.com") && password.equals("admin")) {
                 ctx.redirect("/dash/home");
             } else {
-                ctx.render("/templates/register/login.html", Map.of("error", "invalid credentials"));
+                Map<String, String> error_map = new HashMap<>();
+                error_map.put("error", "invalid credentials");
+                ctx.render("/templates/register/login.html", error_map); // Map.of("error", "invalid credentials")--CAPAZ POR
+                                                                   // LA VERSION DE JAVA ESTO NO ANDA
             }
         } catch (Exception e) {
             ctx.status(500);
