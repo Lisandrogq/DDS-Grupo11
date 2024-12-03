@@ -14,6 +14,9 @@ import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributions.FridgeAdmin;
 import org.grupo11.Services.Contributions.MealDistribution;
 import org.grupo11.Services.Contributions.MealDonation;
+import org.grupo11.Services.Contributions.MoneyDonation;
+import org.grupo11.Services.Contributions.PersonRegistration;
+import org.grupo11.Services.Contributions.RewardContribution;
 import org.grupo11.Services.Contributor.Individual;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -146,38 +149,63 @@ public class RenderController {
             try (Session session = DB.getSessionFactory().openSession()) {
                 String hql = "FROM Contribution c ";
                 Query<Contribution> query = session.createQuery(hql, Contribution.class);
-                query.setMaxResults(4);
                 List<Contribution> results = query.getResultList();
-                System.out.println(results.size());
+                System.out.println("results.size(): " + results.size());
                 for (Contribution contribution : results) {
                     Map<String, Object> donation = new HashMap<>();
 
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                    String formattedContributionDate = sdf.format(new Date(contribution.getDate()));
+
                     if (contribution instanceof MealDonation) {
                         MealDonation mealDonation = (MealDonation) contribution;
-                        donation.put("emoji", "🥘");
+                        donation.put("emoji", "🍕"); //cambie el emogi pq el otro es muy grande y se coje la alineacion (🥘)
                         donation.put("type", "Meal Donation");
-                        donation.put("desc", "You have donated " + mealDonation.getMeal().getType() + " to "
-                                + mealDonation.getMeal().getFridge().getName());
+                        donation.put("desc",
+                                "On " + formattedContributionDate + " you have donated "
+                                        + mealDonation.getMeal().getType() + " to "
+                                        + mealDonation.getMeal().getFridge().getName());
                         donation.put("fridge", donatedFridge);
                     } else if (contribution instanceof MealDistribution) {
                         MealDistribution mealDistribution = (MealDistribution) contribution;
                         donation.put("emoji", "📦");
                         donation.put("type", "Meal Distribution");
                         donation.put("desc",
-                                "You have moved a meal from " + mealDistribution.getOriginFridge().getName() + " to "
+                                "On " + formattedContributionDate + " you have moved a meal from "
+                                        + mealDistribution.getOriginFridge().getName() + " to "
                                         + mealDistribution.getDestinyFridge().getName());
                         donation.put("fridge", donatedFridge);
                     } else if (contribution instanceof FridgeAdmin) {
                         FridgeAdmin fridgeAdmin = (FridgeAdmin) contribution;
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                        String formattedDate = sdf.format(new Date(fridgeAdmin.getDate()));
                         donation.put("emoji", "🧞‍♂️");
-                        donation.put("type", "Meal administration");
+                        donation.put("type", "Fridge administration");
                         donation.put("desc", "You are administrating " + fridgeAdmin.getFridge().getName() + " since "
-                                + formattedDate);
+                                + formattedContributionDate);
+                        donation.put("fridge", donatedFridge);
+                    } else if (contribution instanceof MoneyDonation) {
+                        MoneyDonation moneyDonation = (MoneyDonation) contribution;
+                        donation.put("emoji", "💰");
+                        donation.put("type", "Money Donation");
+                        donation.put("desc", "On " + formattedContributionDate + " you have donated "
+                                + moneyDonation.getAmount() + "$");
                         donation.put("fridge", donatedFridge);
                     }
-
+                    else if (contribution instanceof PersonRegistration) {
+                        PersonRegistration personRegistration = (PersonRegistration) contribution;
+                        donation.put("emoji", "👲🏽");
+                        donation.put("type", "Person Registrarion");
+                        donation.put("desc", "On " + formattedContributionDate + " you have registered "
+                                + personRegistration.getPerson().getName());
+                        donation.put("fridge", donatedFridge);
+                    }
+                    else if (contribution instanceof RewardContribution) {
+                        RewardContribution rewardContribution = (RewardContribution) contribution;
+                        donation.put("emoji", "🏆");
+                        donation.put("type", "Reward Contribution");
+                        donation.put("desc", "On " + formattedContributionDate + " you have offered "
+                                + rewardContribution.getReward().getName()+" as a reward");
+                        donation.put("fridge", donatedFridge);
+                    }
                     donations.add(donation);
                 }
 

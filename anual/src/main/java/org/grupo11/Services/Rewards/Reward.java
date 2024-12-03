@@ -1,10 +1,13 @@
 package org.grupo11.Services.Rewards;
 
+import org.grupo11.Services.Contributor.Contributor;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Reward {
@@ -17,7 +20,8 @@ public class Reward {
     private int quantity;
     @Enumerated(EnumType.STRING)
     private RewardCategory category;
-
+    @ManyToOne
+    private Contributor contributor;
     public Reward() {
     }
 
@@ -42,6 +46,12 @@ public class Reward {
 
     public void setName(String name) {
         this.name = name;
+    }
+    public Contributor getContributor() {
+        return this.contributor;
+    }
+    public void setContributor(Contributor contributor) {
+        this.contributor = contributor;
     }
 
     public String getImageUrl() {
