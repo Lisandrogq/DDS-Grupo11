@@ -1,5 +1,8 @@
 package org.grupo11.Services.Rewards;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.grupo11.Services.Contributor.Contributor;
 
 import jakarta.persistence.Entity;
@@ -11,6 +14,7 @@ import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Reward {
+    
     @Id
     @GeneratedValue
     private int id;
@@ -84,5 +88,13 @@ public class Reward {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+        public Map<String, Object> toMap() {
+        Map<String, Object> reward_map = new HashMap<>();
+        String emoji = getCategory() == RewardCategory.TECH ? "💻":(getCategory()==RewardCategory.COOKING?"🍴":"🏡");          
+        reward_map.put("emoji", emoji);
+        reward_map.put("category", getCategory().toString());
+        reward_map.put("description", "You can exchange your points for (todo text depending on category)");
+        return reward_map;
     }
 }

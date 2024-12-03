@@ -19,6 +19,8 @@ import org.grupo11.Services.Contributions.PersonRegistration;
 import org.grupo11.Services.Contributions.RewardContribution;
 import org.grupo11.Services.Contributor.Individual;
 import org.grupo11.Services.Fridge.Fridge;
+import org.grupo11.Services.Rewards.Reward;
+import org.grupo11.Services.Rewards.RewardCategory;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -97,7 +99,7 @@ public class RenderController {
             List<Map<String, Object>> fridges = new ArrayList<>();
 
             try (Session session = DB.getSessionFactory().openSession()) {
-                String hql = "FROM Fridge f ";//faltaría el where con el userid cuando marquitos lo haga
+                String hql = "FROM Fridge f ";// faltaría el where con el userid cuando marquitos haga el sso
                 Query<Fridge> query = session.createQuery(hql, Fridge.class);
                 List<Fridge> results = query.getResultList();
                 System.out.println("results.size(): " + results.size());
@@ -111,30 +113,26 @@ public class RenderController {
                 return;
             }
 
-
             // rewards
             List<Map<String, Object>> rewards = new ArrayList<>();
-            Map<String, Object> reward1 = new HashMap<>();
 
-            reward1.put("emoji", "🍴");
-            reward1.put("category", "Cooking");
-            reward1.put("description", "You can exchange your points for useful cooking supplies");
-
-            Map<String, Object> reward2 = new HashMap<>();
-            reward2.put("emoji", "🛋️");
-            reward2.put("category", "Home");
-            reward2.put("description", "You can exchange your points for nice home supplies");
-
-            Map<String, Object> reward3 = new HashMap<>();
-            reward3.put("emoji", "🎮");
-            reward3.put("category", "Technology");
-            reward3.put("description", "You can exchange your points for trendy technological devices");
-
-            rewards.add(reward1);
-            rewards.add(reward2);
-            rewards.add(reward3);
             try (Session session = DB.getSessionFactory().openSession()) {
-                String hql = "FROM Contribution c ";//faltaría el where con el userid cuando marquitos lo haga
+                String hql = "FROM Reward r ";// faltaría el where con el userid cuando marquitos haga el sso
+                Query<Reward> query = session.createQuery(hql, Reward.class);
+                List<Reward> results = query.getResultList();
+                System.out.println("results.size(): " + results.size());
+                for (Reward reward : results) {
+                    rewards.add(reward.toMap());
+                }
+
+            } catch (Exception e) {
+                Logger.error("Could not serve contributor recognitions {}", e);
+                ctx.status(500).json(new ApiResponse(500));
+                return;
+            }
+
+            try (Session session = DB.getSessionFactory().openSession()) {
+                String hql = "FROM Contribution c ";// faltaría el where con el userid cuando marquitos haga el sso
                 Query<Contribution> query = session.createQuery(hql, Contribution.class);
                 List<Contribution> results = query.getResultList();
                 System.out.println("results.size(): " + results.size());
@@ -146,7 +144,8 @@ public class RenderController {
 
                     if (contribution instanceof MealDonation) {
                         MealDonation mealDonation = (MealDonation) contribution;
-                        donation.put("emoji", "🍕"); //cambie el emogi pq el otro es muy grande y se coje la alineacion (🥘)
+                        donation.put("emoji", "🍕"); // cambie el emogi pq el otro es muy grande y se coje la alineacion
+                                                     // (🥘)
                         donation.put("type", "Meal Donation");
                         donation.put("desc",
                                 "On " + formattedContributionDate + " you have donated "
@@ -176,21 +175,19 @@ public class RenderController {
                         donation.put("desc", "On " + formattedContributionDate + " you have donated "
                                 + moneyDonation.getAmount() + "$");
                         donation.put("fridge", donatedFridge);
-                    }
-                    else if (contribution instanceof PersonRegistration) {
+                    } else if (contribution instanceof PersonRegistration) {
                         PersonRegistration personRegistration = (PersonRegistration) contribution;
                         donation.put("emoji", "👲🏽");
                         donation.put("type", "Person Registrarion");
                         donation.put("desc", "On " + formattedContributionDate + " you have registered "
                                 + personRegistration.getPerson().getName());
                         donation.put("fridge", donatedFridge);
-                    }
-                    else if (contribution instanceof RewardContribution) {
+                    } else if (contribution instanceof RewardContribution) {
                         RewardContribution rewardContribution = (RewardContribution) contribution;
                         donation.put("emoji", "🏆");
                         donation.put("type", "Reward Contribution");
                         donation.put("desc", "On " + formattedContributionDate + " you have offered "
-                                + rewardContribution.getReward().getName()+" as a reward");
+                                + rewardContribution.getReward().getName() + " as a reward");
                         donation.put("fridge", donatedFridge);
                     }
                     donations.add(donation);

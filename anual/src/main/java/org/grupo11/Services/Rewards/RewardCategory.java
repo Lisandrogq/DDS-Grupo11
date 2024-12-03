@@ -1,6 +1,6 @@
 package org.grupo11.Services.Rewards;
 
-enum RewardCategory {
+public enum RewardCategory {
     TECH,
     COOKING,
     HOME
