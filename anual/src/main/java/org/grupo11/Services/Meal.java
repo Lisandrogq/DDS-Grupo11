@@ -1,13 +1,11 @@
 package org.grupo11.Services;
 
-import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Fridge;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-
 @Entity
 public class Meal {
     @Id
@@ -16,8 +14,8 @@ public class Meal {
 
     private String type;
     private int expirationDate;
-    @ManyToOne
-    private Contributor contributor;
+    // @OneToOne //las bidireccionalidades son re de trolo mal
+    // private MealDonation mealDonation;
     private int donationDate;
     @ManyToOne
     private Fridge fridge;
@@ -47,10 +45,6 @@ public class Meal {
         return expirationDate;
     }
 
-    public Contributor getContributor() {
-        return contributor;
-    }
-
     public int getDonationDate() {
         return donationDate;
     }
@@ -59,9 +53,9 @@ public class Meal {
         this.fridge = fridge;
     }
 
-    public void setContributor(Contributor contributor) {
-        this.contributor = contributor;
-    }
+/*     public void setContribution(MealDonation mealDonation) {
+        this.mealDonation = mealDonation;
+    } */
 
     public Fridge getFridge() {
         return fridge;

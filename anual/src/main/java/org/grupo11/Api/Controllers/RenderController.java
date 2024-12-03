@@ -3,12 +3,28 @@ package org.grupo11.Api.Controllers;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.Map;
+
+import org.grupo11.DB;
+import org.grupo11.Logger;
+import org.grupo11.Api.ApiResponse;
+import org.grupo11.Services.Meal;
+import org.grupo11.Services.Contributions.Contribution;
+import org.grupo11.Services.Contributions.FridgeAdmin;
+import org.grupo11.Services.Contributions.MealDistribution;
+import org.grupo11.Services.Contributions.MealDonation;
+import org.grupo11.Services.Contributor.Individual;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.HashMap;
 
 import io.javalin.http.Context;
+import jakarta.persistence.Tuple;
 
 public class RenderController {
     public static void renderRegisterPages(Context ctx) {
@@ -69,9 +85,10 @@ public class RenderController {
             donation2.put("desc", "You have registered “valentina” as part of our community");
             donation2.put("fridge", donatedFridge);
 
-            donations.add(donation1);
-            donations.add(donation2);
-
+            /*
+             * donations.add(donation1);
+             * donations.add(donation2);
+             */
             // fridges
             List<Map<String, Object>> fridges = new ArrayList<>();
             Map<String, Object> fridge1 = new HashMap<>();
@@ -126,6 +143,49 @@ public class RenderController {
             rewards.add(reward1);
             rewards.add(reward2);
             rewards.add(reward3);
+            try (Session session = DB.getSessionFactory().openSession()) {
+                String hql = "FROM Contribution c ";
+                Query<Contribution> query = session.createQuery(hql, Contribution.class);
+                query.setMaxResults(4);
+                List<Contribution> results = query.getResultList();
+                System.out.println(results.size());
+                for (Contribution contribution : results) {
+                    Map<String, Object> donation = new HashMap<>();
+
+                    if (contribution instanceof MealDonation) {
+                        MealDonation mealDonation = (MealDonation) contribution;
+                        donation.put("emoji", "🥘");
+                        donation.put("type", "Meal Donation");
+                        donation.put("desc", "You have donated " + mealDonation.getMeal().getType() + " to "
+                                + mealDonation.getMeal().getFridge().getName());
+                        donation.put("fridge", donatedFridge);
+                    } else if (contribution instanceof MealDistribution) {
+                        MealDistribution mealDistribution = (MealDistribution) contribution;
+                        donation.put("emoji", "📦");
+                        donation.put("type", "Meal Distribution");
+                        donation.put("desc",
+                                "You have moved a meal from " + mealDistribution.getOriginFridge().getName() + " to "
+                                        + mealDistribution.getDestinyFridge().getName());
+                        donation.put("fridge", donatedFridge);
+                    } else if (contribution instanceof FridgeAdmin) {
+                        FridgeAdmin fridgeAdmin = (FridgeAdmin) contribution;
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                        String formattedDate = sdf.format(new Date(fridgeAdmin.getDate()));
+                        donation.put("emoji", "🧞‍♂️");
+                        donation.put("type", "Meal administration");
+                        donation.put("desc", "You are administrating " + fridgeAdmin.getFridge().getName() + " since "
+                                + formattedDate);
+                        donation.put("fridge", donatedFridge);
+                    }
+
+                    donations.add(donation);
+                }
+
+            } catch (Exception e) {
+                Logger.error("Could not serve contributor recognitions {}", e);
+                ctx.status(500).json(new ApiResponse(500));
+                return;
+            }
 
             // final model
             Map<String, Object> model = new HashMap<>();
