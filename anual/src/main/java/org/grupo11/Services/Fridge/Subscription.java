@@ -22,12 +22,13 @@ public class Subscription {
     @ManyToOne
     private Fridge fridge;
 
-    public Subscription() {
+    public Subscription(int threshold) {
     }
 
-    public Subscription(Contributor contributor, FridgeNotifications fridgeNotificationsPreferences) {
+    public Subscription(Contributor contributor, FridgeNotifications fridgeNotificationsPreferences,int threshold) {
         this.contributor = contributor;
         this.type = fridgeNotificationsPreferences;
+        this.threshold = threshold;
     }
 
     public Contributor getContributor() {
