@@ -1,7 +1,9 @@
 package org.grupo11.Services.Fridge;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.grupo11.Enums.Provinces;
 import org.grupo11.Services.Meal;
@@ -76,6 +78,19 @@ public class Fridge {
         this.notificationSubscriptions = new ArrayList<>();
         this.notificationsSent = new ArrayList<>();
     }
+    // Method to convert to a Map
+    public Map<String, Object> toMap() {
+        Map<String, Object> fridgeMap = new HashMap<>();
+        fridgeMap.put("name", getName());
+        fridgeMap.put("temp", getTempManager().getLastTemp());
+        fridgeMap.put("reserved", 0);//q pija es esto??
+        fridgeMap.put("state", getIsActive()?"Active":"Inactive");
+        fridgeMap.put("meals", getMeals().size());
+        fridgeMap.put("food_status_desc", "wtf");//q criterio iria aca? si tiene alertas se pone eso??
+        fridgeMap.put("meal_urgency", "wtf");//q criterio iria aca? si tiene alertas se pone eso??
+        return fridgeMap;
+    }
+
 
     public void setTempManager(TemperatureSensorManager tempManager) {
         this.tempManager = tempManager;
