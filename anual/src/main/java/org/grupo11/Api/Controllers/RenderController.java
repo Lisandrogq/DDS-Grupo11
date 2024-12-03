@@ -18,6 +18,7 @@ import org.grupo11.Services.Contributions.MoneyDonation;
 import org.grupo11.Services.Contributions.PersonRegistration;
 import org.grupo11.Services.Contributions.RewardContribution;
 import org.grupo11.Services.Contributor.Individual;
+import org.grupo11.Services.Fridge.Fridge;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -94,36 +95,22 @@ public class RenderController {
              */
             // fridges
             List<Map<String, Object>> fridges = new ArrayList<>();
-            Map<String, Object> fridge1 = new HashMap<>();
-            fridge1.put("name", "Medrano");
-            fridge1.put("temp", 3);
-            fridge1.put("reserved", 40);
-            fridge1.put("state", "Active");
-            fridge1.put("meals", 120);
-            fridge1.put("food_status_desc", "Medrano fridge needs food");
-            fridge1.put("meal_urgency", "High");
 
-            Map<String, Object> fridge2 = new HashMap<>();
-            fridge2.put("name", "Lugano");
-            fridge2.put("temp", 3);
-            fridge2.put("reserved", 40);
-            fridge2.put("state", "Active");
-            fridge2.put("meals", 120);
-            fridge2.put("food_status_desc", "Lugano fridge needs food");
-            fridge2.put("meal_urgency", "Medium");
+            try (Session session = DB.getSessionFactory().openSession()) {
+                String hql = "FROM Fridge f ";//faltaría el where con el userid cuando marquitos lo haga
+                Query<Fridge> query = session.createQuery(hql, Fridge.class);
+                List<Fridge> results = query.getResultList();
+                System.out.println("results.size(): " + results.size());
+                for (Fridge fridge : results) {
+                    fridges.add(fridge.toMap());
+                }
 
-            Map<String, Object> fridge3 = new HashMap<>();
-            fridge3.put("name", "Mataderos");
-            fridge3.put("temp", 3);
-            fridge3.put("reserved", 40);
-            fridge3.put("state", "Active");
-            fridge3.put("meals", 120);
-            fridge3.put("food_status_desc", "Lugano fridge needs food");
-            fridge3.put("meal_urgency", "Low");
+            } catch (Exception e) {
+                Logger.error("Could not serve contributor recognitions {}", e);
+                ctx.status(500).json(new ApiResponse(500));
+                return;
+            }
 
-            fridges.add(fridge1);
-            fridges.add(fridge2);
-            fridges.add(fridge3);
 
             // rewards
             List<Map<String, Object>> rewards = new ArrayList<>();
@@ -147,7 +134,7 @@ public class RenderController {
             rewards.add(reward2);
             rewards.add(reward3);
             try (Session session = DB.getSessionFactory().openSession()) {
-                String hql = "FROM Contribution c ";
+                String hql = "FROM Contribution c ";//faltaría el where con el userid cuando marquitos lo haga
                 Query<Contribution> query = session.createQuery(hql, Contribution.class);
                 List<Contribution> results = query.getResultList();
                 System.out.println("results.size(): " + results.size());
@@ -181,7 +168,7 @@ public class RenderController {
                         donation.put("type", "Fridge administration");
                         donation.put("desc", "You are administrating " + fridgeAdmin.getFridge().getName() + " since "
                                 + formattedContributionDate);
-                        donation.put("fridge", donatedFridge);
+                        donation.put("fridge", fridgeAdmin.getFridge().toMap());
                     } else if (contribution instanceof MoneyDonation) {
                         MoneyDonation moneyDonation = (MoneyDonation) contribution;
                         donation.put("emoji", "💰");

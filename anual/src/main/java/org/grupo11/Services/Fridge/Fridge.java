@@ -87,8 +87,8 @@ public class Fridge {
         fridgeMap.put("reserved", 0);//q pija es esto??
         fridgeMap.put("state", getIsActive()?"Active":"Inactive");
         fridgeMap.put("meals", getMeals().size());
-        fridgeMap.put("food_status_desc", "wtf");//q criterio iria aca? si tiene alertas se pone eso??
-        fridgeMap.put("meal_urgency", "wtf");//q criterio iria aca? si tiene alertas se pone eso??
+        fridgeMap.put("food_status_desc", "located at "+getAddress());//q criterio iria aca? si tiene alertas se pone eso??
+        fridgeMap.put("meal_urgency", "fix subscription");//q criterio iria aca? si tiene alertas se pone eso??
         return fridgeMap;
     }
 
