@@ -8,7 +8,7 @@ import org.grupo11.DTOS.OpeningDTO;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgesManager;
 import org.grupo11.Services.Fridge.Incident.Alert;
-import org.grupo11.Services.Fridge.Sensor.Sensor;
+import org.grupo11.Services.Fridge.Sensor.TemperatureSensor;
 import org.grupo11.Utils.JSON;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -30,7 +30,7 @@ public class Controller {
             FridgeTempDTO dto = JSON.parse(json, new TypeReference<FridgeTempDTO>() {
             });
             Fridge fridge = FridgesManager.getInstance().getById(dto.fridge_id);
-            Sensor<Double> sensor = fridge.getTempManager().getSensorById(dto.sensor_id);
+            TemperatureSensor sensor = (TemperatureSensor) fridge.getTempManager().getSensorById(dto.sensor_id);
             sensor.setData(dto.temp);
         } catch (Exception e) {
             System.err.println("Err while handling a temp update: " + e);

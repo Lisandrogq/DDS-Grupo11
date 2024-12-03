@@ -11,7 +11,7 @@ import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgeNotifications;
 import org.grupo11.Services.Fridge.Sensor.MovementSensorManager;
-import org.grupo11.Services.Fridge.Sensor.Sensor;
+import org.grupo11.Services.Fridge.Sensor.TemperatureSensor;
 import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
 import org.grupo11.Services.Technician.Technician;
 import org.grupo11.Services.Technician.TechnicianManager;
@@ -22,7 +22,7 @@ import org.junit.Before;
 
 public class IncidentTest {
 
-    Sensor<Double> sensor1 = new Sensor<Double>();
+    TemperatureSensor sensor1 = new TemperatureSensor();
     Fridge fridge = null;
     TemperatureSensorManager tempManager = null;
     MovementSensorManager movManager = null;
@@ -69,9 +69,9 @@ public class IncidentTest {
 
     @Test
     public void TempIsUpdatedWithMultipleSensors() throws InterruptedException {
-        Sensor<Double> sensor2 = new Sensor<Double>();
-        Sensor<Double> sensor3 = new Sensor<Double>();
-        Sensor<Double> sensor4 = new Sensor<Double>();
+        TemperatureSensor sensor2 = new TemperatureSensor();
+        TemperatureSensor sensor3 = new TemperatureSensor();
+        TemperatureSensor sensor4 = new TemperatureSensor();
 
         fridge.getTempManager().setMaxTemp(34);
         sensor1.setData(35.0);

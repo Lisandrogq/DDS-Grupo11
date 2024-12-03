@@ -18,6 +18,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Transient;
 
 @Entity
@@ -41,9 +42,9 @@ public class Fridge {
     private List<Meal> addedMeals;
     @OneToMany
     private List<Meal> removedMeals;
-    @Transient
+    @OneToOne
     private TemperatureSensorManager tempManager;
-    @Transient
+    @OneToOne
     private MovementSensorManager movManager;
     @OneToMany
     private List<FridgeSolicitude> openSolicitudes;

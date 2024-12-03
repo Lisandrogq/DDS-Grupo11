@@ -1,34 +1,20 @@
 package org.grupo11.Services.Fridge.Sensor;
 
-import org.grupo11.Utils.Crypto;
 
-public class Sensor<T> {
-    private T data;
-    private T prevData;// cual era el sentido de esto??
-    private int sensor_id;
 
-    public Sensor() {
-        sensor_id = Crypto.getRandomId(6);
-    }
-
-    public T getData() {
-        return this.data;
-    }
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+public class Sensor {
+    @Id
+    @GeneratedValue
+    private int id;
 
     public int getId() {
-        return this.sensor_id;
+        return id;
     }
-
-    public void setData(T data) {
-        this.data = data;
-    }
-
-    public T getPrevData() {
-        return this.prevData;
-    }
-
-    public void setPrevData(T prev_data) {
-        this.prevData = prev_data;
-    }
-
 }

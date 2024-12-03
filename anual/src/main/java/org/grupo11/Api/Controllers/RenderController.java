@@ -165,7 +165,7 @@ public class RenderController {
                                 "On " + formattedContributionDate + " you have donated "
                                         + mealDonation.getMeal().getType() + " to "
                                         + mealDonation.getMeal().getFridge().getName());
-                        donation.put("fridge", donatedFridge);
+                        donation.put("fridge", mealDonation.getMeal().getFridge().toMap());
                     } else if (contribution instanceof MealDistribution) {
                         MealDistribution mealDistribution = (MealDistribution) contribution;
                         donation.put("emoji", "📦");
