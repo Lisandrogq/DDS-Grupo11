@@ -81,7 +81,7 @@ public class DB {
                     // technician
                     .addAnnotatedClass(Technician.class)
                     .addAnnotatedClass(TechnicianVisit.class)
-                    //sensorManagers
+                    // sensorManagers
                     .addAnnotatedClass(MovementSensor.class)
                     .addAnnotatedClass(TemperatureSensor.class)
                     .addAnnotatedClass(Sensor.class)
@@ -145,7 +145,8 @@ public class DB {
 
     private static void executeInTransaction(TransactionOperation operation) {
         Transaction transaction = null;
-        try (Session session = getSessionFactory().openSession()) {
+        Session session = getSessionFactory().openSession();
+        try {
             transaction = session.beginTransaction();
             operation.execute(session);
             transaction.commit();
@@ -154,6 +155,8 @@ public class DB {
                 transaction.rollback();
             }
             throw e;
+        } finally {
+            session.close();
         }
     }
 

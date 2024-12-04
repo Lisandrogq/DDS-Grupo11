@@ -3,6 +3,7 @@ package org.grupo11.Services.Contributor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.grupo11.Logger;
 import org.grupo11.Services.ActivityRegistry.ContributorRegistry;
 import org.grupo11.Services.Contact.Contact;
 import org.grupo11.Services.Contributions.Contribution;
@@ -33,18 +34,18 @@ public class Contributor {
     private String address = null;
     private double points;
     @OneToMany
-    private List<Contact> contacts;
+    private List<Contact> contacts = new ArrayList<>();
     @ElementCollection
     @Enumerated(EnumType.STRING)
-    private List<ContributionType> possibleContributions;
+    private List<ContributionType> possibleContributions = new ArrayList<>();
     @OneToMany
-    private List<Contribution> contributions;
+    private List<Contribution> contributions = new ArrayList<>();
     @OneToMany
-    private List<Reward> rewards;
+    private List<Reward> rewards = new ArrayList<>();
     @OneToOne
     private ContributorRegistry contributorRegistry;
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Subscription> fridgeSubscriptions;
+    private List<Subscription> fridgeSubscriptions = new ArrayList<>();
 
     public Contributor() {
     }
@@ -64,7 +65,7 @@ public class Contributor {
     }
 
     public void addContribution(Contribution contribution) {
-        contributions.add(contribution);
+        this.contributions.add(contribution);
     }
 
     public boolean canContributeIn(ContributionType contribution) {
@@ -83,8 +84,8 @@ public class Contributor {
         fridge.addIncident(incident);
     }
 
-    public void subscribeToFridge(Fridge fridge, FridgeNotifications type,int threshold) {
-        fridge.addNotificationSubscription(new Subscription(this, type,threshold));
+    public void subscribeToFridge(Fridge fridge, FridgeNotifications type, int threshold) {
+        fridge.addNotificationSubscription(new Subscription(this, type, threshold));
     }
 
     public void unsubscribeFromFridge(Fridge fridge, Subscription subscription) {
