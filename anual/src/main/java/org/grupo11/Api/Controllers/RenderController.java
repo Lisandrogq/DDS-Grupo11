@@ -55,12 +55,7 @@ public class RenderController {
 
     public static void renderDashboardPage(Context ctx) {
         try {
-            DecodedJWT jwt = Middlewares.isAuthenticated(ctx);
-            if (jwt == null) {
-                ctx.redirect("/register/login");
-                return;
-            }
-            Contributor contributor = HttpUtils.getContributorFromAccessToken(jwt);
+            Contributor contributor = Middlewares.isAuthenticated(ctx);
             if (contributor == null) {
                 ctx.redirect("/register/login");
                 return;
