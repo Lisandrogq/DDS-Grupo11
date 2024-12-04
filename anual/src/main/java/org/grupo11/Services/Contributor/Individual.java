@@ -28,6 +28,7 @@ public class Individual extends Contributor {
     public Individual(String name, String surname, String address, String birth, int document,
             DocumentType documentType) {
         super(name, address, new ArrayList<>());
+        this.name = name;
         this.surname = surname;
         this.birth = birth;
         this.document = document;

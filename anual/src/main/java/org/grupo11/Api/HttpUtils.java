@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.grupo11.DB;
 import org.grupo11.Logger;
+import org.grupo11.Enums.UserTypes;
 import org.grupo11.Services.Contributor.Contributor;
 import org.hibernate.Session;
 
@@ -24,8 +25,6 @@ public class HttpUtils {
 
     public static Contributor getContributorFromAccessToken(DecodedJWT token) {
         String payload = new String(java.util.Base64.getDecoder().decode(token.getPayload()));
-        Logger.info("Payload {}", payload);
-
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> payloadMap;
         try {
@@ -34,11 +33,23 @@ public class HttpUtils {
             return null;
         }
         Long owner_id = Long.valueOf(payloadMap.get("owner_id").toString());
+        UserTypes type = Enum.valueOf(UserTypes.class, payloadMap.get("type").toString());
+        if (type == null) {
+            return null;
+        }
 
         try (Session session = DB.getSessionFactory().openSession()) {
-            String hql = "SELECT contr " +
-                    "FROM Contributor contr " +
-                    "WHERE contr.id = :owner_id";
+            String entity;
+            if (type == UserTypes.Individual) {
+                entity = "Individual";
+            } else {
+                entity = "Legalentity";
+            }
+
+            String hql = "SELECT entity " +
+                    "FROM " + entity + " entity " +
+                    "JOIN Contributor contr ON entity.id = contr.id " +
+                    "WHERE entity.id = :owner_id";
             org.hibernate.query.Query<Contributor> query = session.createQuery(hql, Contributor.class);
             query.setParameter("owner_id", owner_id);
             Contributor contributor = query.getSingleResult();

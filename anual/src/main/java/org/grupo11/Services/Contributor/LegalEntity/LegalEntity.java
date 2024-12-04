@@ -29,6 +29,7 @@ public class LegalEntity extends Contributor {
     private LegalEntityCategory category;
     @OneToOne
     private Credentials credentials;
+    String orgName;
 
     public LegalEntity() {
     }
@@ -37,6 +38,7 @@ public class LegalEntity extends Contributor {
             List<ContributionType> possibleContributions) {
         super(businessName, address, possibleContributions);
         this.id = Crypto.genId();
+        this.orgName = businessName;
         this.type = type;
         this.category = category;
     }
@@ -50,6 +52,10 @@ public class LegalEntity extends Contributor {
 
     public LegalEntityType getType() {
         return this.type;
+    }
+
+    public String getName() {
+        return this.orgName;
     }
 
     public void setType(LegalEntityType type) {

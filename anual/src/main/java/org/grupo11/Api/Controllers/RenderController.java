@@ -9,7 +9,6 @@ import java.util.Map;
 import org.grupo11.DB;
 import org.grupo11.Logger;
 import org.grupo11.Api.ApiResponse;
-import org.grupo11.Services.Meal;
 import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributions.FridgeAdmin;
 import org.grupo11.Services.Contributions.MealDistribution;
@@ -17,19 +16,19 @@ import org.grupo11.Services.Contributions.MealDonation;
 import org.grupo11.Services.Contributions.MoneyDonation;
 import org.grupo11.Services.Contributions.PersonRegistration;
 import org.grupo11.Services.Contributions.RewardContribution;
-import org.grupo11.Services.Contributor.Individual;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Rewards.Reward;
-import org.grupo11.Services.Rewards.RewardCategory;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.grupo11.Api.HttpUtils;
 import org.grupo11.Api.Middlewares;
 import org.grupo11.Services.Contributor.Contributor;
+import org.grupo11.Services.Contributor.Individual;
+import org.grupo11.Services.Contributor.LegalEntity.LegalEntity;
+
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.HashMap;
 
@@ -66,11 +65,17 @@ public class RenderController {
                 ctx.redirect("/register/login");
                 return;
             }
+            String name;
+            if (contributor instanceof Individual) {
+                name = ((Individual) contributor).getName();
+            } else {
+                name = ((LegalEntity) contributor).getName();
+            }
 
             // user
             Map<String, Object> user = new HashMap<>();
-            user.put("name", "John");
-            user.put("points", 1213);
+            user.put("name", name);
+            user.put("points", contributor.getPoints());
 
             // temperature
             List<Map<String, Object>> temperatures = new ArrayList<>();
