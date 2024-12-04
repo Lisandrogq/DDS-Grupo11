@@ -563,3 +563,33 @@ function fridgeReport() {
 		</div>
 	`;
 }
+
+/**
+ * ===================================== CONTRIBUTIONS MODAL LOGIC =====================================
+ */
+
+const redeemRewardBtns = document.querySelectorAll("#redeem-reward-btn");
+
+const user = document.querySelector("#user-points");
+let userPoints = parseInt(user.getAttribute("data-user-points").replace(/\./g, ""));
+
+redeemRewardBtns.forEach((button) => {
+    button.onclick = () => {
+
+		const rewardPoints = parseInt(button.getAttribute("data-reward-neededpoints"));
+
+        if (userPoints >= rewardPoints) {
+            userPoints -= rewardPoints;
+            user.textContent = userPoints;
+			user.setAttribute("user-points", userPoints);
+			user.textContent = userPoints;
+            alert("Reward redeemed successfully!");
+        } else {
+            alert("Not enough points to redeem this reward.");
+        }
+    };
+});
+
+/**
+ * ===================================== ACTUAL MODALS =====================================
+ */

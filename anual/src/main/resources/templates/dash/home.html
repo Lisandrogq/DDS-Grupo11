@@ -86,7 +86,7 @@
 							>
 								<#list donations as donation> 
 									<div
-										class="d-flex align-items-center my-card-item"
+										class="d-flex align-items-center"
 										style="gap: 30px"
 									>
 										<h4>${donation.emoji}</h4>
@@ -151,23 +151,28 @@
 						<div class="my-card d-flex flex-column" style="gap: 30px; height: 350px">
 							<div class="d-flex w-100 justify-content-between">
 								<p>Your points:</p>
-								<p class="points">${user.points}</p>
+								<p class="points" id="user-points" data-user-points="${user.points}">${user.points}</p>
 							</div>
 							<#list rewards as reward> 
 								<div
-									class="d-flex align-items-center justify-content-between my-card-item"
+									class="d-flex align-items-center justify-content-between"
 									style="gap: 30px"
 									id="reward"
-									data-reward-neededpoints=${reward.neededPoints}
-									>
-									<div class="d-flex align-items-center my-card-item" style="gap: 30px">
+								>
+									<div class="d-flex align-items-center" style="gap: 30px">
 										<img src="${reward.imageUrl}" alt="${reward.name}" style="width: 50px; height: 50px; object-fit: cover;">
 										<div>
 											<h6>${reward.name}</h6>
 											<p>${reward.description}</p>
 										</div>
 									</div>
-									<button class="btn-primary" id="claim-reward-btn">Redeem it for ${reward.neededPoints} points</button>
+									<button
+										class="btn-primary redeem-reward-btn"
+										id="redeem-reward-btn"
+										data-reward-neededpoints=${reward.neededPoints}
+									>
+										Redeem it for ${reward.neededPoints} points
+									</button>
 								</div>
 							</#list>
 						</div>
