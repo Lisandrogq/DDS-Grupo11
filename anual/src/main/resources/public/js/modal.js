@@ -281,14 +281,37 @@ function mealDistribution() {
 
 function fridgeAdministration() {
 	return `
-		<div id="has_map" class="d-flex flex-column" style="gap: 40px;">
+		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
 				<h5 class="accent-100 mb-2">Fridge Administration</h5>
 				<p>Contribute administrating a fridge</p>
-		<div id="map" style="height: 500px;"></div>
-
 			</div>
-		<div>`;
+
+			 <form method="POST" action="/contribution/fridge_admin" class="form">
+				<input type="text" id="name" name="name" required placeholder="Name of the fridge..." />
+				<input type="text" id="address" name="address" required placeholder="Address of the fridge..." />
+				<div class="d-flex justify-content-between w-100 gap">
+					<input
+						type="text"
+						id="capacity"
+						name="capacity"
+						required
+						placeholder="Capacity of the fridge..."
+						class="w-100"
+					/>
+					<select required name="isActive" value="true" class="boton1 inputs" style="width: 100%;">
+						<option selected disabled hidden>Will the fridge be active?</option>
+						<option value='true' class="desplegables">Yes</option>
+						<option value='false' class="desplegables">No</option>
+					</select>
+				</div>
+				<div class="form-btns-container">
+					<button type="reset" class="btn-text w-100" id="modal-close">Cancel</button>
+					<button type="submit" class="btn-primary w-100">Submit</button>
+				</div>
+			</form>
+		<div>
+		`;
 }
 
 function moneyDonation() {

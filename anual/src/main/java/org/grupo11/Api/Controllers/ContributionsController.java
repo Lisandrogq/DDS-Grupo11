@@ -20,6 +20,12 @@ public class ContributionsController {
     public static void handleMealDistributionContribution(Context ctx) {
     }
 
+    public static void handlFridgeAdministrationContribution(Context ctx) {
+        //name address capacity isactive
+        System.err.println(ctx.body());
+
+    }
+
     public static void handleMoneyContribution(Context ctx) {
         Contributor contributor = Middlewares.isAuthenticated(ctx);
         if (contributor == null) {

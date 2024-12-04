@@ -35,6 +35,7 @@ public class Router {
         api.post("/contribution/meal", ContributionsController::handleMealContribution);
         api.post("/contribution/meal/distribution", ContributionsController::handleMealDistributionContribution);
         api.post("/contribution/money", ContributionsController::handleMoneyContribution);
+        api.post("/contribution/fridge_admin", ContributionsController::handlFridgeAdministrationContribution);
         api.post("/contribution/registration", ContributionsController::handlePersonRegistrationContribution);
         api.post("/contribution/reward", ContributionsController::handleRewardContribution);
     }
