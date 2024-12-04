@@ -614,9 +614,11 @@ redeemRewardBtns.forEach((button) => {
             confirmBtn.style.display = "inline-block";
 
             // alert("Reward redeemed successfully!");
+        } else if (quantities[rewardId] <= 0) {
+            alert("There are no more rewards available");
         } else {
-            // alert("Not enough points to redeem this reward.");
-        }
+			alert("You don't have enough points");
+		}
     };
 });
 
@@ -643,8 +645,42 @@ cancelBtn.onclick = () => {
 };
 
 confirmBtn.onclick = () => {
-	alert("Reward redeemed successfully!");
-	// Aca le deberia mandar un post al backend para que se actualice la cantidad de puntos del usuario
+
+	// Actualizar BD
+	const data = {
+        userPoints: dataUserPoints,
+        rewards: []
+    };
+
+	redeemRewardBtns.forEach((button) => {
+		const rewardId = button.getAttribute("data-reward-id");
+		if (quantities[rewardId] < originalQuantities[rewardId]) {
+			const quantity = quantities[rewardId];
+			data.rewards.push({ rewardId, quantity });
+		}
+	});
+
+	console.log(data);
+
+	fetch("/rewards", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(data),
+	})
+	.then(response => {
+		if (response.ok) {
+			alert("Reward redeemed successfully!");
+		} else {
+			alert("Failed to redeem the reward. Please try again.");
+		}
+	})
+	.catch(error => {
+		console.error('Error:', error);
+		alert("An error occurred. Please try again.");
+	});
+
 };
 
 /*
