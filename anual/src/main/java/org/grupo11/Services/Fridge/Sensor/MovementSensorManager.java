@@ -45,8 +45,8 @@ public class MovementSensorManager extends SensorManager {
         fridge.addIncident(new Alert(AlertType.FRAUDALERT, DateUtils.getCurrentTimeInMs()));
         Technician selected = TechnicianManager.getInstance().selectTechnician(fridge);
         // send a message to the subscribers
-        fridge.sendFridgeNotifications(
-                new FridgeNotification(FridgeNotifications.Malfunction, "Fridge is malfunctioning",
+        fridge.evaluateSendNotification(
+                new FridgeNotification(FridgeNotifications.Malfunction, 0,
                         "The fridge is moving, meals should be redistributed in brevity."));
     }
 

@@ -85,8 +85,8 @@ public class TemperatureSensorManager extends SensorManager{
             }
         }
         // send a message to the subscribers
-        fridge.sendFridgeNotifications(
-                new FridgeNotification(FridgeNotifications.Malfunction, "Fridge is malfunctioning",
+        fridge.evaluateSendNotification(
+                new FridgeNotification(FridgeNotifications.Malfunction, 0,
                         "The fridge temperature is failing, meals should be redistributed in brevity."));
 
         org.grupo11.Broker.Rabbit rabbit = Rabbit.getInstance();

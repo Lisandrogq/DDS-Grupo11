@@ -279,7 +279,7 @@ public class Fridge {
             boolean full_condition = fridgeNotification.getType() == FridgeNotifications.NearFullInventory
                     && subscription.getThreshold() <= fridgeNotification.getAmmount();
 
-            if (low_condition || full_condition) {
+            if (low_condition || full_condition || fridgeNotification.getType()==FridgeNotifications.Malfunction) {
                 if (subscription.getType() == fridgeNotification.getType()) {
                     subscription.getContributor().getContacts().forEach(value -> {
                         this.notificationsSent.add(fridgeNotification);
