@@ -586,9 +586,8 @@ let quantities = {};
 let idRegister = 1;
 
 redeemRewardBtns.forEach((button) => {
-	const rewardId = idRegister;
-	button.setAttribute("data-reward-id", rewardId);
-	idRegister += 1;
+	const rewardId = button.getAttribute("data-reward-id");
+	// console.log(rewardId);
 
 	const originalQuantity = parseInt(button.getAttribute("data-reward-quantity").replace(/\./g, ""));
 	originalQuantities[rewardId] = originalQuantity;
@@ -630,7 +629,7 @@ cancelBtn.onclick = () => {
 	userPoints.setAttribute("data-user-points", originalPoints);
 
     redeemRewardBtns.forEach((button) => {
-		rewardId = button.getAttribute("data-reward-id");
+		const rewardId = button.getAttribute("data-reward-id");
         const originalQuantity = originalQuantities[rewardId]; // Usar el valor original guardado
         button.setAttribute("data-reward-quantity", originalQuantity);
 		quantities[rewardId] = originalQuantity;

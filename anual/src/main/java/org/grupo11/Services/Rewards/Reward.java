@@ -107,6 +107,7 @@ public class Reward {
         Map<String, Object> reward_map = new HashMap<>();
         String emoji = getCategory() == RewardCategory.TECH ? "💻"
                 : (getCategory() == RewardCategory.COOKING ? "🍴" : "🏡");
+        reward_map.put("id", getId());
         reward_map.put("name", getName());
         reward_map.put("emoji", emoji);
         reward_map.put("category", getCategory().toString());
