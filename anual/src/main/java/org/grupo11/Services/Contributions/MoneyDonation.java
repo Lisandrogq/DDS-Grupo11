@@ -5,14 +5,16 @@ import jakarta.persistence.PrimaryKeyJoinColumn;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "id")
-public class MoneyDonation extends Contribution {
+public class 
+MoneyDonation extends Contribution {
     private int amount;
     private double rewardCoef = 1.0;
+    private String message;
 
     public MoneyDonation() {
     }
 
-    public MoneyDonation(int amount, long date) {
+    public MoneyDonation(int amount, long date,String message) {
         super(date);
         this.amount = amount;
     }
@@ -20,6 +22,11 @@ public class MoneyDonation extends Contribution {
     public ContributionType getContributionType() {
         return ContributionType.MONEY_DONATION;
     }
+
+    public String getMessage() {
+        return this.message;
+    }
+
 
     public int getAmount() {
         return this.amount;
