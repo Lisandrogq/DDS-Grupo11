@@ -605,13 +605,11 @@ redeemRewardBtns.forEach((button) => {
 			quantities[rewardId] -= 1;
 			button.setAttribute("data-reward-quantity", quantities[rewardId]);
 			
-			/*
 			const descriptionElement = button.closest(".d-flex").querySelector("p");
             if (descriptionElement) {
-                const newDescription = descriptionElement.textContent.replace(/\d+ remaining/, `${quantity} remaining`);
+                const newDescription = descriptionElement.textContent.replace(/\d+ remaining/, `${quantities[rewardId]} remaining`);
                 descriptionElement.textContent = newDescription;
             }
-			*/
 
 			cancelBtn.style.display = "inline-block";
             confirmBtn.style.display = "inline-block";
@@ -637,13 +635,11 @@ cancelBtn.onclick = () => {
         button.setAttribute("data-reward-quantity", originalQuantity);
 		quantities[rewardId] = originalQuantity;
 
-		/*
         const descriptionElement = button.closest(".d-flex").querySelector("p");
         if (descriptionElement) {
             const newDescription = descriptionElement.textContent.replace(/\d+ remaining/, `${originalQuantity} remaining`);
             descriptionElement.textContent = newDescription;
         }
-		*/
     });
 };
 
@@ -651,6 +647,14 @@ confirmBtn.onclick = () => {
 	alert("Reward redeemed successfully!");
 	// Aca le deberia mandar un post al backend para que se actualice la cantidad de puntos del usuario
 };
+
+/*
+	Para probar: reward
+		id	category	description		imageurl																name		neededpoints	quantity	contributor_id
+ 		1	HOME		Holaaaa			hola																	TV samsung	300				100			NULL
+ 		2	TECH		reward 2		https://http2.mlstatic.com/D_NQ_NP_624014-MLA52221738197_102022-O.webp	TV phillips	100				100			NULL
+ 		3	TECH		hay poco		NULL																	perro		1				1			NULL
+*/
 
 /**
  * =========================================================================================
