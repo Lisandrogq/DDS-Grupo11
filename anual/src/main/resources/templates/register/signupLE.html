@@ -30,9 +30,17 @@
                     placeholder="Organization email..."
                     class="col-12 inputs"
                 />
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    required
+                    placeholder="Organization name..."
+                    class="inputs"
+                />
 
                 <div class="d-flex w-100" style="gap: 10px">
-                    <select required value="Organization Type" class="w-100">
+                    <select required name="org-type" value="Organization Type" class="w-100">
                         <option selected disabled hidden>Organization Type</option>
                         <option value="Governmental">Governmental</option>
                         <option value="NGO">NGO</option>
@@ -40,9 +48,9 @@
                         <option value="Institution">Institution</option>
                     </select>
 
-                    <select required value="Organization Category" class="w-100">
+                    <select required name="org-category" value="Organization Category" class="w-100">
                         <option selected disabled hidden>Organization Category</option>
-                        <option value="Health Care">Health Care</option>
+                        <option value="HealthCare">Health Care</option>
                         <option value="Education">Education</option>
                         <option value="Finance">Finance</option>
                         <option value="Agriculture">Agriculture</option>
@@ -53,29 +61,23 @@
 
                 <input
                     type="password"
-                    id="contrasena"
-                    name="contrasena"
+                    id="password"
+                    name="password"
                     required
                     placeholder="Your password..."
-                    class="col-12 inputs"
+                    class="inputs"
                 />
                 <input
                     type="password"
                     id="contrasenaConfirmada"
-                    name="contrasena"
                     required
                     placeholder="Your password again..."
-                    class="col-12 inputs"
-                />
-                <input
-                    type="text"
-                    id="nombreYApellido"
-                    name="nombreYApellido"
-                    required
-                    placeholder="Organization name..."
-                    class="col-12 inputs"
+                    class="inputs"
                 />
 
+                <#if error??>
+                    <div style="color: red">${error}</div>
+                </#if>
                 <div class="form-btns-container">
                     <button type="submit" class="btn-text w-100" onclick="validar()">Accept</button>
                 </div>

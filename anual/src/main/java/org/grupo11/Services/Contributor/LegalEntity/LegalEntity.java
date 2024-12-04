@@ -1,5 +1,6 @@
 package org.grupo11.Services.Contributor.LegalEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.grupo11.Services.Credentials;
@@ -40,6 +41,13 @@ public class LegalEntity extends Contributor {
         this.category = category;
     }
 
+    public LegalEntity(String businessName, String address, LegalEntityType type, LegalEntityCategory category) {
+        super(businessName, address, new ArrayList<>());
+        this.id = Crypto.genId();
+        this.type = type;
+        this.category = category;
+    }
+
     public LegalEntityType getType() {
         return this.type;
     }
@@ -58,5 +66,9 @@ public class LegalEntity extends Contributor {
 
     public Long getId() {
         return id;
+    }
+
+    public void setCredentials(Credentials credentials) {
+        this.credentials = credentials;
     }
 }

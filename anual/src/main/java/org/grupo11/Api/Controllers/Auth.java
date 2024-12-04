@@ -15,6 +15,9 @@ import org.grupo11.Services.Credentials;
 import org.grupo11.Services.Contact.Contact;
 import org.grupo11.Services.Contact.EmailContact;
 import org.grupo11.Services.Contributor.Individual;
+import org.grupo11.Services.Contributor.LegalEntity.LegalEntity;
+import org.grupo11.Services.Contributor.LegalEntity.LegalEntityCategory;
+import org.grupo11.Services.Contributor.LegalEntity.LegalEntityType;
 import org.grupo11.Utils.Crypto;
 import org.grupo11.Utils.FieldValidator;
 import org.grupo11.Utils.JWTService;
@@ -158,10 +161,81 @@ public class Auth {
             Logger.error("Unexpected error while creating user", e);
             sendFormError.accept("Unexpected error, try again...");
         }
-
     }
 
     public static void handleLegalEntitySignup(Context ctx) {
-        ctx.redirect("/dash/home");
+        String mail = ctx.formParam("mail");
+        String name = ctx.formParam("name");
+        String type = ctx.formParam("org-type");
+        String category = ctx.formParam("org-category");
+        String pw = ctx.formParam("password");
+
+        Consumer<String> sendFormError = (msg) -> {
+            ctx.status(400)
+                    .json(new ApiResponse(400, msg, null));
+            ctx.redirect("/register/signupLE?error=" + msg);
+        };
+
+        if (!FieldValidator.isEmail(mail)) {
+            sendFormError.accept("Invalid email");
+            return;
+        }
+
+        if (!FieldValidator.isValidEnumValue(LegalEntityType.class, type)) {
+            sendFormError.accept("Invalid organization type");
+            return;
+        }
+
+        if (!FieldValidator.isValidEnumValue(LegalEntityCategory.class, category)) {
+            sendFormError.accept("Invalid organization category");
+            return;
+        }
+
+        if (!FieldValidator.isString(name)) {
+            sendFormError.accept("Invalid name");
+            return;
+        }
+
+        if (!FieldValidator.acceptablePassword(pw)) {
+            sendFormError.accept("Invalid password");
+            return;
+        }
+
+        try {
+            // check there isn't a registered account for that mail
+            try (Session session = DB.getSessionFactory().openSession()) {
+                String hql = "SELECT c " +
+                        "FROM Credentials c " +
+                        "WHERE c.mail = :mail";
+                org.hibernate.query.Query<Credentials> query = session.createQuery(hql, Credentials.class);
+                query.setParameter("mail", mail);
+
+                if (query.uniqueResult() != null) {
+                    sendFormError.accept("Mail already registered");
+                    return;
+                }
+            } catch (Exception e) {
+                Logger.error("Unexpected error while authenticating user", e);
+                sendFormError.accept("Unexpected error, try again...");
+            }
+
+            String hashedPassword = Crypto.sha256Hash(pw.getBytes());
+            LegalEntity legalEntity = new LegalEntity(name, "", Enum.valueOf(LegalEntityType.class, type),
+                    Enum.valueOf(LegalEntityCategory.class, category));
+            Contact contact = new EmailContact(mail);
+            Credentials credentials = new Credentials(mail, hashedPassword, UserTypes.LegalEntity, legalEntity.getId());
+            legalEntity.addContact(contact);
+            legalEntity.setCredentials(credentials);
+
+            DB.create(contact);
+            DB.create(credentials);
+            DB.create(legalEntity);
+
+            contact.SendNotification("Registered as new user", "You have registered in fridge bridge services!");
+            ctx.redirect("/register/login");
+        } catch (Exception e) {
+            Logger.error("Unexpected error while creating user", e);
+            sendFormError.accept("Unexpected error, try again...");
+        }
     }
 }
