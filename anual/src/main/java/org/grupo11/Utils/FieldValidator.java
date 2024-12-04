@@ -48,7 +48,7 @@ public class FieldValidator {
     }
 
     public static boolean acceptablePassword(String password) {
-        if (password == null || password.length() < 8) {
+        if (password == null || password.length() < 4) {
             return false;
         }
 

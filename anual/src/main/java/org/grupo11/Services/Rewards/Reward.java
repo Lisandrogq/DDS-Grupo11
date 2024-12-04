@@ -19,6 +19,7 @@ public class Reward {
     @GeneratedValue
     private int id;
     private String name;
+    private String description;
     private String imageUrl;
     private float neededPoints;
     private int quantity;

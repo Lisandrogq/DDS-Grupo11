@@ -395,13 +395,22 @@ function rewardCollab() {
 			</div>
 
 			<form method="POST" action="/contribution/reward" class="form">
-				<input
+			<div class="d-flex justify-content-between w-100 gap">	
+					<input
 					type="text"
 					id="name"
 					name="name"
 					required
 					placeholder="Reward name..."
 				/>
+					<input
+					type="number"
+					id="stock"
+					name="stock"
+					required
+					placeholder="Available stock..."
+				/>
+			</div>
 				<input
 					type="text"
 					id="description"
@@ -411,7 +420,7 @@ function rewardCollab() {
 				/>
 				<div class="d-flex justify-content-between w-100 gap">
 					<input
-						type="text"
+						type="number"
 						id="points"
 						name="points"
 						required
@@ -419,16 +428,17 @@ function rewardCollab() {
 					/>
 
 					<select
+						name = "category"
 						required
 						value="category"
 					>
 						<option selected disabled hidden>
 							Choose a category of reward
 						</option>
-						<option value="Technology">Technology</option>
+						<option value="TECH">Technology</option>
 						<!-- sujeto a cambios-->
-						<option value="Cooking">Cooking</option>
-						<option value="Home">Home</option>
+						<option value="COOKING">Cooking</option>
+						<option value="HOME">Home</option>
 					</select>
 				</div>
 
