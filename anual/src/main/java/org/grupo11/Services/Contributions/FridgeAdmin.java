@@ -39,9 +39,9 @@ public class FridgeAdmin extends Contribution {
         this.business = business;
     }
 
-    // public Fridge getFridge() {
-    // return this.fridge;
-    // }
+     public Fridge getFridge() {
+     return this.fridge;
+     }
 
     // public void setFridge(Fridge fridge) {
     // this.fridge = fridge;

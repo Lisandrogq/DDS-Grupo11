@@ -1,7 +1,9 @@
 package org.grupo11.Services.Fridge;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.grupo11.Enums.Provinces;
 import org.grupo11.Services.Meal;
@@ -16,6 +18,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Transient;
 
 @Entity
@@ -39,9 +42,9 @@ public class Fridge {
     private List<Meal> addedMeals;
     @OneToMany
     private List<Meal> removedMeals;
-    @Transient
+    @OneToOne
     private TemperatureSensorManager tempManager;
-    @Transient
+    @OneToOne
     private MovementSensorManager movManager;
     @OneToMany
     private List<FridgeSolicitude> openSolicitudes;
@@ -75,6 +78,20 @@ public class Fridge {
         this.incidents = new ArrayList<>();
         this.notificationSubscriptions = new ArrayList<>();
         this.notificationsSent = new ArrayList<>();
+    }
+
+    // Method to convert to a Map
+    public Map<String, Object> toMap() {
+        Map<String, Object> fridgeMap = new HashMap<>();
+        fridgeMap.put("name", getName());
+        fridgeMap.put("temp", getTempManager().getLastTemp());
+        fridgeMap.put("reserved", 0);// q pija es esto??
+        fridgeMap.put("state", getIsActive() ? "Active" : "Inactive");
+        fridgeMap.put("meals", getMeals().size());
+        fridgeMap.put("food_status_desc", "located at " + getAddress());// q criterio iria aca? si tiene alertas se pone
+                                                                        // eso??
+        fridgeMap.put("meal_urgency", "fix subscription");// q criterio iria aca? si tiene alertas se pone eso??
+        return fridgeMap;
     }
 
     public void setTempManager(TemperatureSensorManager tempManager) {
@@ -158,34 +175,31 @@ public class Fridge {
         return this.meals;
     }
 
-    public void cleanHistory(){
+    public void cleanHistory() {
         this.addedMeals = new ArrayList<Meal>();
         this.removedMeals = new ArrayList<Meal>();
     }
-    public List<Meal> getAddedMeals(){
+
+    public List<Meal> getAddedMeals() {
         return this.addedMeals;
     }
-    public List<Meal> getRemovedMeals(){
+
+    public List<Meal> getRemovedMeals() {
         return this.removedMeals;
     }
+
     public void addMeal(Meal meal) {
         this.meals.add(meal);
         this.addedMeals.add(meal);
-        // if the fridge is 90 percent full, send a notification
-        if (meals.size() >= this.capacity * 0.9)
-            this.sendFridgeNotifications(
-                    new FridgeNotification(FridgeNotifications.NearFullInventory, "Fridge almost full",
-                            "Fridge has low inventory with " + meals.size() + " meals"));
+        this.evaluateSendNotification(
+                new FridgeNotification(FridgeNotifications.NearFullInventory, meals.size(), "Fridge almost full"));
     }
 
     public void removeMeal(Meal meal) {
         this.meals.remove(meal);
         this.removedMeals.add(meal);
-        // if the fridge is 25 percent full, send a notification
-        if (meals.size() >= this.capacity * 0.25)
-            this.sendFridgeNotifications(
-                    new FridgeNotification(FridgeNotifications.NearFullInventory, "Fridge almost full",
-                            "Fridge has low inventory with " + meals.size() + " meals"));
+        this.evaluateSendNotification(
+                new FridgeNotification(FridgeNotifications.LowInventory, meals.size(), "Fridge almost full"));
 
     }
 
@@ -258,14 +272,20 @@ public class Fridge {
         this.notificationSubscriptions.remove(subscription);
     }
 
-    public void sendFridgeNotifications(FridgeNotification fridgeNotification) {
+    public void evaluateSendNotification(FridgeNotification fridgeNotification) {
         for (Subscription subscription : this.notificationSubscriptions) {
-            if (subscription.getType() == fridgeNotification.getType()) {
+            boolean low_condition = fridgeNotification.getType() == FridgeNotifications.LowInventory
+                    && subscription.getThreshold() >= fridgeNotification.getAmmount();
+            boolean full_condition = fridgeNotification.getType() == FridgeNotifications.NearFullInventory
+                    && subscription.getThreshold() <= fridgeNotification.getAmmount();
 
-                subscription.getContributor().getContacts().forEach(value -> {
-                    this.notificationsSent.add(fridgeNotification);
-                    value.SendNotification(fridgeNotification.getSubject(), fridgeNotification.getMessage());
-                });
+            if (low_condition || full_condition) {
+                if (subscription.getType() == fridgeNotification.getType()) {
+                    subscription.getContributor().getContacts().forEach(value -> {
+                        this.notificationsSent.add(fridgeNotification);
+                        value.SendNotification("Subscription alert", fridgeNotification.getMessage());
+                    });
+                }
             }
         }
     }

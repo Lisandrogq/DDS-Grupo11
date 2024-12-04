@@ -1,13 +1,20 @@
 package org.grupo11.Services.Rewards;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.grupo11.Services.Contributor.Contributor;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Reward {
+
     @Id
     @GeneratedValue
     private int id;
@@ -17,6 +24,8 @@ public class Reward {
     private int quantity;
     @Enumerated(EnumType.STRING)
     private RewardCategory category;
+    @ManyToOne
+    private Contributor contributor;
 
     public Reward() {
     }
@@ -42,6 +51,14 @@ public class Reward {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Contributor getContributor() {
+        return this.contributor;
+    }
+
+    public void setContributor(Contributor contributor) {
+        this.contributor = contributor;
     }
 
     public String getImageUrl() {
@@ -74,5 +91,15 @@ public class Reward {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> reward_map = new HashMap<>();
+        String emoji = getCategory() == RewardCategory.TECH ? "💻"
+                : (getCategory() == RewardCategory.COOKING ? "🍴" : "🏡");
+        reward_map.put("emoji", emoji);
+        reward_map.put("category", getCategory().toString());
+        reward_map.put("description", "You can exchange your points for (todo text depending on category)");
+        return reward_map;
     }
 }

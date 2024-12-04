@@ -28,6 +28,12 @@ import org.grupo11.Services.Fridge.Subscription;
 import org.grupo11.Services.Fridge.Incident.Alert;
 import org.grupo11.Services.Fridge.Incident.Failure;
 import org.grupo11.Services.Fridge.Incident.Incident;
+import org.grupo11.Services.Fridge.Sensor.MovementSensorManager;
+import org.grupo11.Services.Fridge.Sensor.Sensor;
+import org.grupo11.Services.Fridge.Sensor.SensorManager;
+import org.grupo11.Services.Fridge.Sensor.TemperatureSensor;
+import org.grupo11.Services.Fridge.Sensor.MovementSensor;
+import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
 import org.grupo11.Services.PersonInNeed.PersonInNeed;
 import org.grupo11.Services.Reporter.FailureReportRow;
 import org.grupo11.Services.Reporter.MealPerContributorReportRow;
@@ -73,6 +79,13 @@ public class DB {
                     // technician
                     .addAnnotatedClass(Technician.class)
                     .addAnnotatedClass(TechnicianVisit.class)
+                    //sensorManagers
+                    .addAnnotatedClass(MovementSensor.class)
+                    .addAnnotatedClass(TemperatureSensor.class)
+                    .addAnnotatedClass(Sensor.class)
+                    .addAnnotatedClass(TemperatureSensorManager.class)
+                    .addAnnotatedClass(MovementSensorManager.class)
+                    .addAnnotatedClass(SensorManager.class)
                     // fridge
                     .addAnnotatedClass(Alert.class)
                     .addAnnotatedClass(Incident.class)
@@ -83,6 +96,7 @@ public class DB {
                     .addAnnotatedClass(FridgeOpenLogEntry.class)
                     .addAnnotatedClass(FridgeSolicitude.class)
                     .addAnnotatedClass(Fridge.class)
+
                     // contacts
                     .addAnnotatedClass(Contact.class)
                     .addAnnotatedClass(WhatsApp.class)

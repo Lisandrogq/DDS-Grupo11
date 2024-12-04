@@ -16,6 +16,7 @@ public class PersonInNeed {
     private int createdAt;
     private String address = null;
     private int DNI;
+    private String name;
     private int childCount;
     @OneToOne
     private PINRegistry PINRegistry;
@@ -59,7 +60,9 @@ public class PersonInNeed {
     public int getDNI() {
         return this.DNI;
     }
-
+    public String getName() {
+        return this.name;
+    }
     public void setDNI(int identification) {
         this.DNI = identification;
     }
