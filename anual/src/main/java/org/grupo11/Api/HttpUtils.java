@@ -22,4 +22,29 @@ public class HttpUtils {
         return cookie;
     }
 
+    public static Contributor getContributorFromAccessToken(DecodedJWT token) {
+        String payload = new String(java.util.Base64.getDecoder().decode(token.getPayload()));
+        Logger.info("Payload {}", payload);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> payloadMap;
+        try {
+            payloadMap = objectMapper.readValue(payload, Map.class);
+        } catch (Exception e) {
+            return null;
+        }
+        Long owner_id = Long.valueOf(payloadMap.get("owner_id").toString());
+
+        try (Session session = DB.getSessionFactory().openSession()) {
+            String hql = "SELECT contr " +
+                    "FROM Contributor contr " +
+                    "WHERE contr.id = :owner_id";
+            org.hibernate.query.Query<Contributor> query = session.createQuery(hql, Contributor.class);
+            query.setParameter("owner_id", owner_id);
+            Contributor contributor = query.getSingleResult();
+            return contributor;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }
