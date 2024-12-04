@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import org.grupo11.DB;
 import org.grupo11.Logger;
 import org.grupo11.Api.ApiResponse;
+import org.grupo11.Api.HttpUtils;
 import org.grupo11.Enums.DocumentType;
 import org.grupo11.Enums.UserTypes;
 import org.grupo11.Services.Credentials;
@@ -20,21 +21,12 @@ import org.grupo11.Utils.JWTService;
 import org.hibernate.Session;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
-import jakarta.servlet.http.Cookie;
 
 enum Type {
     Contributor, Technician
 }
 
 public class Auth {
-    private static Cookie createHttpOnlyCookie(String name, String value, int maxAgeInSeconds) {
-        Cookie cookie = new Cookie(name, value);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(maxAgeInSeconds);
-        cookie.setSecure(true);
-        return cookie;
-    }
 
     public static void handleUserLogin(Context ctx) {
         try {
@@ -60,7 +52,6 @@ public class Auth {
                         "WHERE c.password = :password AND c.mail = :mail";
 
                 org.hibernate.query.Query<Credentials> query = session.createQuery(hql, Credentials.class);
-                Logger.info("MAIL {} PASSWORD {} HASHED {}", mail, pw, hashedPassword);
                 query.setParameter("mail", mail);
                 query.setParameter("password", hashedPassword);
 
@@ -76,7 +67,7 @@ public class Auth {
                 payload.put("type", credentials.getUserType().toString());
 
                 String jwtToken = JWTService.generate(payload, 3600);
-                ctx.res().addCookie(createHttpOnlyCookie("bearer-token", jwtToken, 3600));
+                ctx.res().addCookie(HttpUtils.createHttpOnlyCookie("access-token", jwtToken, 3600));
                 ctx.redirect("/dash/home");
             } catch (Exception e) {
                 Logger.error("Unexpected error while authenticating user", e);

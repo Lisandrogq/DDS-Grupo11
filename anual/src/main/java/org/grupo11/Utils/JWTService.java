@@ -3,6 +3,7 @@ package org.grupo11.Utils;
 import java.util.Date;
 import java.util.Map;
 
+import org.grupo11.Logger;
 import org.grupo11.Config.Env;
 
 import com.auth0.jwt.JWT;
@@ -31,7 +32,6 @@ public class JWTService {
     public static String generate(Map<String, ?> payload, long expirationTimeInSeconds) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(Env.getJWTSecret());
-
             long expirationTimeMillis = System.currentTimeMillis() + expirationTimeInSeconds * 1000;
             Date expirationDate = new Date(expirationTimeMillis);
             String token = JWT.create()
