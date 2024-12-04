@@ -43,7 +43,7 @@ public class MealDonation extends Contribution {
     @Override
     public void setContributor(Contributor contributor) {
         super.setContributor(contributor);
-        meal.setContributor(contributor);
+        //meal.setContributor(contributor); las bidireccionalidades son re de trolo
     }
 
     public Meal getMeal() {

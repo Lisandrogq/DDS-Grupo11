@@ -83,8 +83,8 @@ public class Contributor {
         fridge.addIncident(incident);
     }
 
-    public void subscribeToFridge(Fridge fridge, FridgeNotifications type) {
-        fridge.addNotificationSubscription(new Subscription(this, type));
+    public void subscribeToFridge(Fridge fridge, FridgeNotifications type,int threshold) {
+        fridge.addNotificationSubscription(new Subscription(this, type,threshold));
     }
 
     public void unsubscribeFromFridge(Fridge fridge, Subscription subscription) {

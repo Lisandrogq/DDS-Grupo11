@@ -17,6 +17,7 @@ import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgeSolicitude;
 import org.grupo11.Services.Fridge.FridgesManager;
 import org.grupo11.Services.Fridge.Sensor.Sensor;
+import org.grupo11.Services.Fridge.Sensor.TemperatureSensor;
 import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
 
 public class RabbitTest {
@@ -25,7 +26,7 @@ public class RabbitTest {
         // create fridge
         Fridge fridge = new Fridge(0, 0, null, null, 0, 0, null, null, null);
         TemperatureSensorManager temperatureSensorManager = new TemperatureSensorManager(fridge, 0, 0);
-        Sensor<Double> sensor = new Sensor<Double>();
+        TemperatureSensor sensor = new TemperatureSensor();
         temperatureSensorManager.addSensor(sensor);
         fridge.setTempManager(temperatureSensorManager);
         FridgesManager.getInstance().add(fridge);
@@ -55,7 +56,7 @@ public class RabbitTest {
         // create fridge
         Fridge fridge = new Fridge(0, 0, null, null, 0, 0, null, null, null);
         TemperatureSensorManager temperatureSensorManager = new TemperatureSensorManager(fridge, 0, 0);
-        Sensor<Double> sensor = new Sensor<Double>();
+        TemperatureSensor sensor = new TemperatureSensor();
         temperatureSensorManager.addSensor(sensor);
         fridge.setTempManager(temperatureSensorManager);
         FridgesManager.getInstance().add(fridge);

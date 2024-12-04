@@ -1,5 +1,6 @@
 package org.grupo11.Services.Fridge.Sensor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.grupo11.Broker.Rabbit;
@@ -13,7 +14,16 @@ import org.grupo11.Services.Technician.TechnicianManager;
 import org.grupo11.Services.Technician.TechnicianType;
 import org.grupo11.Utils.DateUtils;
 
-public class TemperatureSensorManager extends SensorManager<Double> {
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+@Entity
+public class TemperatureSensorManager extends SensorManager{
+
+    @OneToMany
+    protected List<TemperatureSensor> sensors = new ArrayList<>();
     private double minTemp;
     private double maxTemp;
     private double lastTemp;
@@ -23,7 +33,9 @@ public class TemperatureSensorManager extends SensorManager<Double> {
         this.minTemp = minTemp;
         this.maxTemp = maxTemp;
     }
-
+    public TemperatureSensorManager() {
+        super(null, 60);
+    }
     public double getMinTemp() {
         return this.minTemp;
     }
@@ -48,7 +60,7 @@ public class TemperatureSensorManager extends SensorManager<Double> {
         this.lastTemp = lastTemp;
     }
 
-    private double getSensorsAvgTemp(List<Sensor<Double>> sensors) {
+    private double getSensorsAvgTemp(List<TemperatureSensor> sensors) {
         return sensors.stream()
                 .mapToDouble(sensor -> sensor.getData())
                 .average()
@@ -73,8 +85,8 @@ public class TemperatureSensorManager extends SensorManager<Double> {
             }
         }
         // send a message to the subscribers
-        fridge.sendFridgeNotifications(
-                new FridgeNotification(FridgeNotifications.Malfunction, "Fridge is malfunctioning",
+        fridge.evaluateSendNotification(
+                new FridgeNotification(FridgeNotifications.Malfunction, 0,
                         "The fridge temperature is failing, meals should be redistributed in brevity."));
 
         org.grupo11.Broker.Rabbit rabbit = Rabbit.getInstance();
@@ -83,6 +95,32 @@ public class TemperatureSensorManager extends SensorManager<Double> {
         // \"sensor_id\": "
         // + sensor.getId() + ", \"temp\": 321432 } }");
     }
+
+    public Sensor getSensorById(int id) {
+        for (Sensor sensor : sensors) {
+            if (sensor.getId() == id) {
+                return sensor;
+            }
+        }
+        return null;
+    }
+    public List<TemperatureSensor> getSensors() {
+        return this.sensors;
+    }
+
+    public void setSensors(List<TemperatureSensor> sensors) {
+        this.sensors = sensors;
+    }
+
+   
+    public void addSensor(TemperatureSensor sensor) {
+        sensors.add(sensor);
+    }
+
+    public void removeSensor(TemperatureSensor sensor) {
+        sensors.remove(sensor);
+    }
+
 
     @Override
     public void checkSensors() {

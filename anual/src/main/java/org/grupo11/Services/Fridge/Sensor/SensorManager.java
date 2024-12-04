@@ -1,17 +1,34 @@
 package org.grupo11.Services.Fridge.Sensor;
 
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.grupo11.Services.Fridge.Fridge;
 
-public abstract class SensorManager<T> {
-    protected List<Sensor<T>> sensors;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Transient;
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class SensorManager {
+/*     @OneToMany
+    protected List<Sensor> sensors; */
+    @OneToOne
     protected Fridge fridge;
+    @Transient
     protected ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    @Id
+    @GeneratedValue
+    private int id;
+    public int getId() {
+        return id;
+    }
 
     /**
      * @param checkSensorsEvery should be in seconds
@@ -19,27 +36,10 @@ public abstract class SensorManager<T> {
      */
     public SensorManager(Fridge fridge, Integer checkSensorsEvery) {
         this.fridge = fridge;
-        sensors = new ArrayList<>();
         Runnable task = () -> this.checkSensors();
         scheduler.scheduleAtFixedRate(task, checkSensorsEvery, checkSensorsEvery, TimeUnit.SECONDS);
     }
 
-    public Sensor<T> getSensorById(int id) {
-        for (Sensor<T> sensor : sensors) {
-            if (sensor.getId() == id) {
-                return sensor;
-            }
-        }
-        return null;
-    }
-
-    public List<Sensor<T>> getSensors() {
-        return this.sensors;
-    }
-
-    public void setSensors(List<Sensor<T>> sensors) {
-        this.sensors = sensors;
-    }
 
     public Fridge getFridge() {
         return this.fridge;
@@ -49,13 +49,6 @@ public abstract class SensorManager<T> {
         this.fridge = fridge;
     }
 
-    public void addSensor(Sensor<T> sensor) {
-        sensors.add(sensor);
-    }
-
-    public void removeSensor(Sensor<T> sensor) {
-        sensors.remove(sensor);
-    }
 
     public abstract void checkSensors();
 
