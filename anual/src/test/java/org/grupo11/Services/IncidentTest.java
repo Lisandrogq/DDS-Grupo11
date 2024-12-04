@@ -56,8 +56,8 @@ public class IncidentTest {
         fridge.setMovManager(movManager);
         tempManager.addSensor(sensor1);
 
-        contributor1.subscribeToFridge(fridge, FridgeNotifications.Malfunction);
-        contributor2.subscribeToFridge(fridge, FridgeNotifications.LowInventory);
+        contributor1.subscribeToFridge(fridge,FridgeNotifications.Malfunction,0);
+        contributor2.subscribeToFridge(fridge,FridgeNotifications.LowInventory,10);
     }
 
     @Test
