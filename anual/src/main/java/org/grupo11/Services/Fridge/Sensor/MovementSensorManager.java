@@ -27,7 +27,10 @@ public class MovementSensorManager extends SensorManager {
         super(fridge, 7);
         this.isMoving = false;
     }
-
+    public MovementSensorManager() {
+        super();
+        this.isMoving = false;
+    }
     public Boolean isIsMoving() {
         return this.isMoving;
     }

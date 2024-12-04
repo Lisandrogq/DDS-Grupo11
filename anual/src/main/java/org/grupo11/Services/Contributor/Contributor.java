@@ -30,7 +30,7 @@ import jakarta.persistence.OneToOne;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Contributor {
     @Id
-    private Long id;
+    protected Long id;
     private String address = null;
     private double points;
     @OneToMany
@@ -48,6 +48,7 @@ public class Contributor {
     private List<Subscription> fridgeSubscriptions = new ArrayList<>();
 
     public Contributor() {
+        this.id = Crypto.genId();
     }
 
     public Contributor(Double points) {

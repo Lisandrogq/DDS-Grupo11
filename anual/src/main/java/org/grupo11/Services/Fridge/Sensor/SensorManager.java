@@ -12,6 +12,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Transient;
 @Entity
@@ -19,7 +21,7 @@ import jakarta.persistence.Transient;
 public abstract class SensorManager {
 /*     @OneToMany
     protected List<Sensor> sensors; */
-    @OneToOne
+    @ManyToOne
     protected Fridge fridge;
     @Transient
     protected ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -40,6 +42,10 @@ public abstract class SensorManager {
         scheduler.scheduleAtFixedRate(task, checkSensorsEvery, checkSensorsEvery, TimeUnit.SECONDS);
     }
 
+    public SensorManager() {
+        Runnable task = () -> this.checkSensors();
+        scheduler.scheduleAtFixedRate(task, 60, 60, TimeUnit.SECONDS);
+    }
 
     public Fridge getFridge() {
         return this.fridge;

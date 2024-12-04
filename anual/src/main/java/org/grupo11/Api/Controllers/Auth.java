@@ -116,7 +116,7 @@ public class Auth {
         }
 
         if (!FieldValidator.acceptablePassword(pw)) {
-            sendFormError.accept("Invalid password");
+            sendFormError.accept("Invalid passwordddd");
             return;
         }
 

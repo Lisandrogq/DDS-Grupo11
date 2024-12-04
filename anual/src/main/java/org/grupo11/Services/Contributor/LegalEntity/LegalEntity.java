@@ -18,9 +18,7 @@ import jakarta.persistence.OneToOne;
 
 @Entity
 public class LegalEntity extends Contributor {
-    @Id
-    @GeneratedValue
-    Long id;
+    
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
     private LegalEntityType type;
@@ -32,6 +30,7 @@ public class LegalEntity extends Contributor {
     String orgName;
 
     public LegalEntity() {
+        this.id = Crypto.genId();
     }
 
     public LegalEntity(String businessName, String address, LegalEntityType type, LegalEntityCategory category,

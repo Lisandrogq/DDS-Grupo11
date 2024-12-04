@@ -34,7 +34,7 @@ public class TemperatureSensorManager extends SensorManager{
         this.maxTemp = maxTemp;
     }
     public TemperatureSensorManager() {
-        super(null, 60);
+        super();
     }
     public double getMinTemp() {
         return this.minTemp;

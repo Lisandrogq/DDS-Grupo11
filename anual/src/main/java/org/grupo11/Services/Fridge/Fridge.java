@@ -9,17 +9,17 @@ import org.grupo11.Enums.Provinces;
 import org.grupo11.Services.Meal;
 import org.grupo11.Services.Fridge.Incident.Incident;
 import org.grupo11.Services.Fridge.Sensor.MovementSensorManager;
+import org.grupo11.Services.Fridge.Sensor.SensorManager;
 import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
 import org.grupo11.Utils.Crypto;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Transient;
 
 @Entity
 public class Fridge {
@@ -42,10 +42,12 @@ public class Fridge {
     private List<Meal> addedMeals;
     @OneToMany
     private List<Meal> removedMeals;
-    @OneToOne
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<SensorManager> sensorManagers = new ArrayList<SensorManager>(); //[0] = temp , [1] = mov
+/*  @OneToOne(cascade = CascadeType.ALL)
     private TemperatureSensorManager tempManager;
-    @OneToOne
-    private MovementSensorManager movManager;
+    @OneToOne(cascade = CascadeType.ALL)
+    private MovementSensorManager movManager; */
     @OneToMany
     private List<FridgeSolicitude> openSolicitudes;
     @OneToMany
@@ -63,7 +65,6 @@ public class Fridge {
     public Fridge(double lon, double lat, String address, String name, int capacity, int commissioningDate,
             List<Meal> meals,
             TemperatureSensorManager tempManager, MovementSensorManager movManager) {
-        this.id = Crypto.getRandomId(6);
         this.lon = lon;
         this.lat = lat;
         this.address = address;
@@ -71,8 +72,8 @@ public class Fridge {
         this.capacity = capacity;
         this.commissioningDate = commissioningDate;
         this.meals = meals;
-        this.tempManager = tempManager;
-        this.movManager = movManager;
+        this.sensorManagers.add(0, tempManager);
+        this.sensorManagers.add(1,movManager) ;
         this.openSolicitudes = new ArrayList<>();
         this.openedHistory = new ArrayList<>();
         this.incidents = new ArrayList<>();
@@ -90,17 +91,19 @@ public class Fridge {
         fridgeMap.put("meals", getMeals().size());
         fridgeMap.put("food_status_desc", "located at " + getAddress());// q criterio iria aca? si tiene alertas se pone
                                                                         // eso??
-        fridgeMap.put("meal_urgency", "fix subscription");// q criterio iria aca? si tiene alertas se pone eso??
+        fridgeMap.put("meal_urgency", "TODO: fix subscription");// q criterio iria aca? si tiene alertas se pone eso??
         return fridgeMap;
     }
 
     public void setTempManager(TemperatureSensorManager tempManager) {
-        this.tempManager = tempManager;
+
+        this.sensorManagers.add(0, tempManager);
 
     }
 
     public void setMovManager(MovementSensorManager movManager) {
-        this.movManager = movManager;
+
+        this.sensorManagers.add(1,movManager);
     }
 
     public int getId() {
@@ -204,21 +207,14 @@ public class Fridge {
     }
 
     public TemperatureSensorManager getTempManager() {
-        return this.tempManager;
+        return (TemperatureSensorManager)this.sensorManagers.get(0);
     }
 
-    public void setTemp(TemperatureSensorManager temp) {
-        this.tempManager = temp;
-    }
 
-    public MovementSensorManager getMovManager() {
-        return this.movManager;
-    }
+    public MovementSensorManager getMovManager() {        
+        return (MovementSensorManager)this.sensorManagers.get(1);
 
-    public void setMov(MovementSensorManager mov) {
-        this.movManager = mov;
     }
-
     public String getMapLocation() {
         return FridgeMapper.getSingleFridgeMapLocation(this);
     }
