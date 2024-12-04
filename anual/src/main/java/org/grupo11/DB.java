@@ -1,6 +1,7 @@
 package org.grupo11;
 
 import org.grupo11.Config.Env;
+import org.grupo11.Services.Credentials;
 import org.grupo11.Services.Meal;
 import org.grupo11.Services.ActivityRegistry.ActivityRegistry;
 import org.grupo11.Services.ActivityRegistry.CardUsage;
@@ -57,6 +58,7 @@ public class DB {
                     .addAnnotatedClass(Report.class)
                     .addAnnotatedClass(PersonInNeed.class)
                     .addAnnotatedClass(CardUsage.class)
+                    .addAnnotatedClass(Credentials.class)
                     // contributions
                     .addAnnotatedClass(Contribution.class)
                     .addAnnotatedClass(Reward.class)

@@ -3,14 +3,14 @@ package org.grupo11.Services.Contributor;
 import java.util.ArrayList;
 
 import org.grupo11.Enums.DocumentType;
+import org.grupo11.Services.Credentials;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.OneToOne;
 
 @Entity
-@PrimaryKeyJoinColumn(name = "id")
 public class Individual extends Contributor {
     private int document;
     @Enumerated(EnumType.STRING)
@@ -18,6 +18,8 @@ public class Individual extends Contributor {
     private String name;
     private String surname;
     private String birth;
+    @OneToOne
+    private Credentials credentials;
 
     public Individual() {
         super();
@@ -79,5 +81,9 @@ public class Individual extends Contributor {
 
     public void setDocumentType(DocumentType documentType) {
         this.documentType = documentType;
+    }
+
+    public void setCredentials(Credentials credentials) {
+        this.credentials = credentials;
     }
 }

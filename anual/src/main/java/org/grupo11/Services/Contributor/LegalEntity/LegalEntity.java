@@ -2,24 +2,32 @@ package org.grupo11.Services.Contributor.LegalEntity;
 
 import java.util.List;
 
+import org.grupo11.Services.Credentials;
 import org.grupo11.Services.Contributions.ContributionType;
 import org.grupo11.Services.Contributor.Contributor;
+import org.grupo11.Utils.Crypto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 
 @Entity
-@PrimaryKeyJoinColumn(name = "id")
 public class LegalEntity extends Contributor {
+    @Id
+    @GeneratedValue
+    Long id;
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
     private LegalEntityType type;
     @Column(name = "category")
     @Enumerated(EnumType.STRING)
     private LegalEntityCategory category;
+    @OneToOne
+    private Credentials credentials;
 
     public LegalEntity() {
     }
@@ -27,6 +35,7 @@ public class LegalEntity extends Contributor {
     public LegalEntity(String businessName, String address, LegalEntityType type, LegalEntityCategory category,
             List<ContributionType> possibleContributions) {
         super(businessName, address, possibleContributions);
+        this.id = Crypto.genId();
         this.type = type;
         this.category = category;
     }
@@ -47,4 +56,7 @@ public class LegalEntity extends Contributor {
         this.category = category;
     }
 
+    public Long getId() {
+        return id;
+    }
 }
