@@ -112,8 +112,9 @@ public class Reward {
         reward_map.put("category", getCategory().toString());
         reward_map.put("description", getDescription());
         reward_map.put("neededPoints", getNeededPoints());
+        reward_map.put("quantity", getQuantity());
         if (getImageUrl() != null) reward_map.put("imageUrl", getImageUrl());
-        else reward_map.put("imageUrl", "https://via.placeholder.com/150");
+            else reward_map.put("imageUrl", "https://images.emojiterra.com/google/android-12l/512px/1f381.png");
         return reward_map;
     }
 }

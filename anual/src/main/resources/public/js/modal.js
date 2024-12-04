@@ -565,31 +565,93 @@ function fridgeReport() {
 }
 
 /**
- * ===================================== CONTRIBUTIONS MODAL LOGIC =====================================
+ * ===================================== REWARDS MODAL LOGIC =====================================
  */
 
-const redeemRewardBtns = document.querySelectorAll("#redeem-reward-btn");
+// Puntos de usuario
+const userPoints = document.querySelector("#user-points");
+const originalPoints = parseInt(userPoints.getAttribute("data-user-points").replace(/\./g, ""));
+let dataUserPoints = parseInt(userPoints.getAttribute("data-user-points").replace(/\./g, ""));
 
-const user = document.querySelector("#user-points");
-let userPoints = parseInt(user.getAttribute("data-user-points").replace(/\./g, ""));
+// Botones de cancelar y confirmar
+const cancelBtn = document.getElementById("cancel-reward-btn");
+const confirmBtn = document.getElementById("confirm-reward-btn");
+cancelBtn.style.display = "none";
+confirmBtn.style.display = "none";
+
+// Botones de reclamar recompensas
+const redeemRewardBtns = document.querySelectorAll("#redeem-reward-btn");
+let originalQuantities = {};
+let quantities = {};
+let idRegister = 1;
 
 redeemRewardBtns.forEach((button) => {
-    button.onclick = () => {
+	const rewardId = idRegister;
+	button.setAttribute("data-reward-id", rewardId);
+	idRegister += 1;
 
-		const rewardPoints = parseInt(button.getAttribute("data-reward-neededpoints"));
+	const originalQuantity = parseInt(button.getAttribute("data-reward-quantity").replace(/\./g, ""));
+	originalQuantities[rewardId] = originalQuantity;
+	quantities[rewardId] = originalQuantity;
 
-        if (userPoints >= rewardPoints) {
-            userPoints -= rewardPoints;
-            user.textContent = userPoints;
-			user.setAttribute("user-points", userPoints);
-			user.textContent = userPoints;
-            alert("Reward redeemed successfully!");
+	const neededPoints = parseInt(button.getAttribute("data-reward-neededpoints").replace(/\./g, ""));
+    
+	button.onclick = () => {
+        if (dataUserPoints >= neededPoints && quantities[rewardId] > 0) {
+            dataUserPoints -= neededPoints;
+            userPoints.textContent = dataUserPoints;
+			userPoints.setAttribute("data-user-points", dataUserPoints);
+
+			quantities[rewardId] -= 1;
+			button.setAttribute("data-reward-quantity", quantities[rewardId]);
+			
+			/*
+			const descriptionElement = button.closest(".d-flex").querySelector("p");
+            if (descriptionElement) {
+                const newDescription = descriptionElement.textContent.replace(/\d+ remaining/, `${quantity} remaining`);
+                descriptionElement.textContent = newDescription;
+            }
+			*/
+
+			cancelBtn.style.display = "inline-block";
+            confirmBtn.style.display = "inline-block";
+
+            // alert("Reward redeemed successfully!");
         } else {
-            alert("Not enough points to redeem this reward.");
+            // alert("Not enough points to redeem this reward.");
         }
     };
 });
 
+cancelBtn.onclick = () => {
+    cancelBtn.style.display = "none";
+    confirmBtn.style.display = "none";
+
+	dataUserPoints = originalPoints;
+	userPoints.textContent = originalPoints;
+	userPoints.setAttribute("data-user-points", originalPoints);
+
+    redeemRewardBtns.forEach((button) => {
+		rewardId = button.getAttribute("data-reward-id");
+        const originalQuantity = originalQuantities[rewardId]; // Usar el valor original guardado
+        button.setAttribute("data-reward-quantity", originalQuantity);
+		quantities[rewardId] = originalQuantity;
+
+		/*
+        const descriptionElement = button.closest(".d-flex").querySelector("p");
+        if (descriptionElement) {
+            const newDescription = descriptionElement.textContent.replace(/\d+ remaining/, `${originalQuantity} remaining`);
+            descriptionElement.textContent = newDescription;
+        }
+		*/
+    });
+};
+
+confirmBtn.onclick = () => {
+	alert("Reward redeemed successfully!");
+	// Aca le deberia mandar un post al backend para que se actualice la cantidad de puntos del usuario
+};
+
 /**
- * ===================================== ACTUAL MODALS =====================================
+ * =========================================================================================
  */

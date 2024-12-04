@@ -142,34 +142,58 @@
 				<div class="d-flex flex-column w-100" style="gap: 100px"></div>
 				<div class="d-flex flex-row w-100 flex-wrap" style="gap: 50px">
 					<div class="d-flex flex-column flex-grow-1" style="min-width: 300px">
-						<div class="mb-3">
-							<h4>Rewards 🎁</h4>
-							<p>Here are some rewards for your hard work!</p>
-						</div>
+						<div class="mb-3 d-flex justify-content-between">
+							<div>
+								<h4>Rewards 🎁</h4>
+								<p>Here are some rewards for your hard work!</p>
+							</div>
+							<div class="d-flex align-items-center" style="gap: 30px">
+								<button
+									class="btn-primary"
+									id="cancel-reward-btn"
+								>
+									Cancel exchanges
+								</button>
 
+								<button
+									class="btn-primary"
+									id="confirm-reward-btn"
+								>
+									Confirm exchanges
+								</button>
+							</div>
+						</div>
 						
 						<div class="my-card d-flex flex-column" style="gap: 30px; height: 350px">
 							<div class="d-flex w-100 justify-content-between">
 								<p>Your points:</p>
-								<p class="points" id="user-points" data-user-points="${user.points}">${user.points}</p>
+								<p
+									class="points"
+									id="user-points"
+									data-user-points="${user.points}">${user.points}
+								</p>
 							</div>
 							<#list rewards as reward> 
 								<div
 									class="d-flex align-items-center justify-content-between"
 									style="gap: 30px"
-									id="reward"
 								>
 									<div class="d-flex align-items-center" style="gap: 30px">
-										<img src="${reward.imageUrl}" alt="${reward.name}" style="width: 50px; height: 50px; object-fit: cover;">
+										<img
+											src="${reward.imageUrl}"
+											style="width: 50px; height: 50px; object-fit: contain;"
+											onerror="this.onerror=null; this.src='https://images.emojiterra.com/google/android-12l/512px/1f381.png';"
+										>
 										<div>
 											<h6>${reward.name}</h6>
-											<p>${reward.description}</p>
+											<p>${reward.description} (${reward.quantity} remaining)</p>
 										</div>
 									</div>
 									<button
-										class="btn-primary redeem-reward-btn"
+										class="btn-primary"
 										id="redeem-reward-btn"
 										data-reward-neededpoints=${reward.neededPoints}
+										data-reward-quantity="${reward.quantity}"
 									>
 										Redeem it for ${reward.neededPoints} points
 									</button>
