@@ -23,6 +23,10 @@ import org.grupo11.Services.Rewards.Reward;
 import org.grupo11.Services.Rewards.RewardCategory;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.grupo11.Api.HttpUtils;
+import org.grupo11.Api.Middlewares;
+import org.grupo11.Services.Contributor.Contributor;
+import com.auth0.jwt.interfaces.DecodedJWT;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,16 +34,18 @@ import java.util.List;
 import java.util.HashMap;
 
 import io.javalin.http.Context;
-import jakarta.persistence.Tuple;
 
 public class RenderController {
     public static void renderRegisterPages(Context ctx) {
         try {
             String filename = ctx.pathParam("filename");
             Path filePath = Paths.get("src/main/resources/templates/register/", filename + ".html");
+            String error = ctx.queryParam("error");
+            Map<String, Object> model = new HashMap<>();
+            model.put("error", error);
 
             if (Files.exists(filePath)) {
-                ctx.render("templates/register/" + filename + ".html");
+                ctx.render("templates/register/" + filename + ".html", model);
             } else {
                 ctx.status(404);
             }
@@ -48,10 +54,19 @@ public class RenderController {
         }
     }
 
-    // TODO(marcos): here we should check if the user is authenticated
-    // otherwise redirect to login
     public static void renderDashboardPage(Context ctx) {
         try {
+            DecodedJWT jwt = Middlewares.isAuthenticated(ctx);
+            if (jwt == null) {
+                ctx.redirect("/register/login");
+                return;
+            }
+            Contributor contributor = HttpUtils.getContributorFromAccessToken(jwt);
+            if (contributor == null) {
+                ctx.redirect("/register/login");
+                return;
+            }
+
             // user
             Map<String, Object> user = new HashMap<>();
             user.put("name", "John");

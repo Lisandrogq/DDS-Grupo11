@@ -12,14 +12,13 @@ import org.grupo11.Services.Fridge.FridgeNotifications;
 import org.grupo11.Services.Fridge.Subscription;
 import org.grupo11.Services.Fridge.Incident.Incident;
 import org.grupo11.Services.Rewards.Reward;
+import org.grupo11.Utils.Crypto;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
@@ -30,7 +29,6 @@ import jakarta.persistence.OneToOne;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Contributor {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String address = null;
     private double points;
@@ -53,6 +51,7 @@ public class Contributor {
 
     public Contributor(Double points) {
         this.points = points;
+        this.id = Crypto.genId();
     }
 
     public Contributor(String name, String address, List<ContributionType> possibleContributions) {
@@ -61,6 +60,7 @@ public class Contributor {
         this.contributions = new ArrayList<>();
         this.contacts = new ArrayList<>();
         this.fridgeSubscriptions = new ArrayList<>();
+        this.id = Crypto.genId();
     }
 
     public void addContribution(Contribution contribution) {

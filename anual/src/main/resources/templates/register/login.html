@@ -34,13 +34,15 @@
 
 				<input
 					type="password"
-					id="contrasena"
-					name="contrasena"
+					id="password"
+					name="password"
 					required
 					placeholder="Your password..."
 					class="w-100 inputs"
 				/>
-
+                <#if error??>
+                    <div style="color: red">${error}</div>
+                </#if>
 				<div class="form-btns-container">
 					<a href="/register/signup" class="btn-text w-100">Sign up</a>
 					<button type="submit" class="btn-primary w-100">Log in</button>

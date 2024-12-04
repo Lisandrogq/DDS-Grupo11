@@ -4,7 +4,7 @@ import org.grupo11.Api.Controllers.AlertsController;
 import org.grupo11.Api.Controllers.ContributionsController;
 import org.grupo11.Api.Controllers.PublicAPI;
 import org.grupo11.Api.Controllers.RenderController;
-import org.grupo11.Api.Controllers.UserController;
+import org.grupo11.Api.Controllers.Auth;
 
 import io.javalin.Javalin;
 
@@ -26,8 +26,9 @@ public class Router {
     }
 
     static void userRoutes(Javalin api) {
-        api.post("/user/login", UserController::handleUserLogin);
-        api.post("/user/", UserController::handleUserSignup);
+        api.post("/user/login", Auth::handleUserLogin);
+        api.post("/user/individual", Auth::handleIndividualSignup);
+        api.post("/user/legal-entity", Auth::handleLegalEntitySignup);
     }
 
     static void contributionRoutes(Javalin api) {
@@ -36,7 +37,7 @@ public class Router {
         api.post("/contribution/money", ContributionsController::handleMoneyContribution);
         api.post("/contribution/registration", ContributionsController::handlePersonRegistrationContribution);
         api.post("/contribution/reward", ContributionsController::handleRewardContribution);
-    } 
+    }
 
     static void publicApi(Javalin api) {
         api.get("/api/contributors/recognitions", PublicAPI::handleContributorRecognitions);
