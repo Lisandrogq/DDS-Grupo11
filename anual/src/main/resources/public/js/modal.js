@@ -300,9 +300,8 @@ function moneyDonation() {
 			</div>
 
 			 <form method="POST" action="/contribution/money" class="form">
-				<input type="text" id="amount" name="amount" required placeholder="Amount to donate..." />
-				<input type="text" id="cardID" name="cardID" required placeholder="Your card ID..." />
-				<input type="password" id="cvv" name="cvv" required placeholder="Your card verification value..." />
+				<input type="text" id="ammount" name="ammount" required placeholder="Amount to donate..." />
+				<input type="text" id="message" name="message" required placeholder="Your donation message..." />
 
 				<div class="form-btns-container">
 					<button type="reset" class="btn-text w-100" id="modal-close">Cancel</button>

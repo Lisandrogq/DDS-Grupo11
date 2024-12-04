@@ -121,6 +121,7 @@ public class RenderController {
                 for (Fridge fridge : results) {
                     fridges.add(fridge.toMap());
                 }
+                session.close();
 
             } catch (Exception e) {
                 Logger.error("Could not serve contributor recognitions {}", e);
@@ -139,6 +140,7 @@ public class RenderController {
                 for (Reward reward : results) {
                     rewards.add(reward.toMap());
                 }
+                session.close();
 
             } catch (Exception e) {
                 Logger.error("Could not serve contributor recognitions {}", e);
@@ -155,7 +157,7 @@ public class RenderController {
                     Map<String, Object> donation = new HashMap<>();
 
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                    String formattedContributionDate = sdf.format(new Date(contribution.getDate()));
+                    String formattedContributionDate = sdf.format(contribution.getDate());
 
                     if (contribution instanceof MealDonation) {
                         MealDonation mealDonation = (MealDonation) contribution;
@@ -207,7 +209,7 @@ public class RenderController {
                     }
                     donations.add(donation);
                 }
-
+                session.close();
             } catch (Exception e) {
                 Logger.error("Could not serve contributor recognitions {}", e);
                 ctx.status(500).json(new ApiResponse(500));
