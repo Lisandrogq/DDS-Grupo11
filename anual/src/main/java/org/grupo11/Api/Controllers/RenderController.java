@@ -15,9 +15,12 @@ public class RenderController {
         try {
             String filename = ctx.pathParam("filename");
             Path filePath = Paths.get("src/main/resources/templates/register/", filename + ".html");
+            String error = ctx.queryParam("error");
+            Map<String, Object> model = new HashMap<>();
+            model.put("error", error);
 
             if (Files.exists(filePath)) {
-                ctx.render("templates/register/" + filename + ".html");
+                ctx.render("templates/register/" + filename + ".html", model);
             } else {
                 ctx.status(404);
             }
