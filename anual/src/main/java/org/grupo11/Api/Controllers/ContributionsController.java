@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import org.grupo11.DB;
 import org.grupo11.Logger;
 import org.grupo11.Api.Middlewares;
+import org.grupo11.Services.Credentials;
+import org.grupo11.Services.Meal;
 import org.grupo11.Services.Contributions.FridgeAdmin;
+import org.grupo11.Services.Contributions.MealDonation;
 import org.grupo11.Services.Contributions.MoneyDonation;
 import org.grupo11.Services.Contributions.RewardContribution;
 import org.grupo11.Services.Contributor.Contributor;
@@ -18,21 +21,73 @@ import org.grupo11.Services.Rewards.Reward;
 import org.grupo11.Services.Rewards.RewardCategory;
 import org.grupo11.Utils.DateUtils;
 import org.grupo11.Utils.FieldValidator;
+import org.hibernate.Session;
 
 import io.javalin.http.Context;
 
 public class ContributionsController {
     public static void handleMealContribution(Context ctx) {
+        Contributor contributor = Middlewares.isAuthenticated(ctx);
+        if (contributor == null) {
+            ctx.redirect("/register/login");
+            return;
+        }
+
+        String type = ctx.formParam("type");
+        String expirationDate = ctx.formParam("expirationDate");
+        String fridge_address = ctx.formParam("fridge_address");
+        String calories = ctx.formParam("calories");
+        String weight = ctx.formParam("weight");
+
+        System.err.println(ctx.body());
+        try (Session session = DB.getSessionFactory().openSession()) {
+            if (!FieldValidator.isString(type)) {
+                throw new IllegalArgumentException("invalid type");
+            }
+            if (!FieldValidator.isString(fridge_address)) {
+                throw new IllegalArgumentException("invalid fridge_address");
+            }
+            if (!FieldValidator.isDate(expirationDate)) {
+                throw new IllegalArgumentException("invalid expirationDate");
+            }
+            if (!FieldValidator.isInt(calories)) {
+                throw new IllegalArgumentException("invalid calories");
+            }
+            if (!FieldValidator.isInt(weight)) {
+                throw new IllegalArgumentException("invalid weight");
+            }
+            String hql = "SELECT f " +
+                    "FROM Fridge f " +
+                    "WHERE f.address = :fridge_address";
+            org.hibernate.query.Query<Fridge> query = session.createQuery(hql, Fridge.class);
+            query.setParameter("fridge_address", fridge_address);
+            Fridge fridge = query.uniqueResult();
+            if (fridge == null) {
+                throw new IllegalArgumentException("address inexistente");
+            }
+            Meal meal = new Meal(type, DateUtils.parseDateString(expirationDate), DateUtils.now(), fridge, "",
+                    Integer.parseInt(calories), Integer.parseInt(weight));
+            MealDonation mealDonation = new MealDonation(meal, DateUtils.now());
+            mealDonation.setContributor(contributor);
+            fridge.addMeal(meal);
+            DB.create(meal);
+            DB.create(mealDonation);
+            DB.update(fridge);
+            ctx.redirect("/dash/home");
+
+        } catch (Exception e) {
+            Logger.error("Exception ", e);
+            // ditto
+            ctx.json("TODO: make front error message");
+            return;
+        }
     }
 
     public static void handleMealDistributionContribution(Context ctx) {
     }
 
     public static void handlFridgeAdministrationContribution(Context ctx) {// TODO: only allow this contribution to
-                                                                           // legalentities
-        // name address capacity isactive
-        System.err.println(ctx.body());
-
+                                                                           // legal entities
         Contributor contributor = Middlewares.isAuthenticated(ctx);
         if (contributor == null) {
             ctx.redirect("/register/login");
@@ -59,8 +114,9 @@ public class ContributionsController {
 
             Fridge fridge = new Fridge(0, 0, address, name, Integer.parseInt(capacity), 0, new ArrayList<>(), null,
                     null);
-            LegalEntity le = new LegalEntity(); // this should be retrieved from the db using the contributor that islogged                           
-            TemperatureSensorManager tManager = new TemperatureSensorManager(fridge,-1,60);
+            LegalEntity le = new LegalEntity(); // this should be retrieved from the db using the contributor that
+                                                // islogged
+            TemperatureSensorManager tManager = new TemperatureSensorManager(fridge, -1, 60);
             MovementSensorManager mManager = new MovementSensorManager(fridge);
             fridge.setIsActive(Boolean.parseBoolean(isactive));
             fridge.setTempManager(tManager);
@@ -71,6 +127,7 @@ public class ContributionsController {
             fridgeAdmin.setContributor(contributor);// TODO: only allow this contribution to legalentities
             DB.create(le);
             DB.create(fridge);
+            DB.create(fridgeAdmin);
             ctx.redirect("/dash/home");
         } catch (Exception e) {
             Logger.error("Exception ", e);

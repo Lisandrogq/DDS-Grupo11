@@ -180,14 +180,13 @@ function mealDonation() {
 						placeholder="Expiration date..."
 					/>
 
-					<select required value="fridge" class="w-100">
-						<option selected disabled hidden>Choose a fridge</option>
-						<option value="Heladera 1">Heladera 1</option>
-						<!-- sujeto a cambios-->
-						<option value="Heladera 2">Heladera 2</option>
-						<option value="Heladera 3">Heladera 3</option>
-						<option value="Heladera 4">Heladera 4</option>
-					</select>
+					<input
+						type="text"
+						id="fridge_address"
+						name="fridge_address"
+						required
+						placeholder="Fridge Address...(TODO: handle invalid address)"
+					/>
 				</div>
 				<div class="d-flex justify-content-between w-100 gap">
 					<input

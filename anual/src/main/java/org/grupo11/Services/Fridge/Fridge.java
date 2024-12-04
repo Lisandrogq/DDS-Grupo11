@@ -38,13 +38,12 @@ public class Fridge {
     private int commissioningDate;
     @OneToMany
     private List<Meal> meals;
-    @OneToMany
-    private List<Meal> addedMeals;
-    @OneToMany
-    private List<Meal> removedMeals;
+
+    private Integer addedMeals=0;
+    private Integer removedMeals=0;
     @OneToMany(cascade = CascadeType.ALL)
     private List<SensorManager> sensorManagers = new ArrayList<SensorManager>(); //[0] = temp , [1] = mov
-/*  @OneToOne(cascade = CascadeType.ALL)
+/*  @OneToOne(cascade = CascadeType.ALL) /// los saque pq se volvio imposible manejar las dos bidireccionalidades al mismo tiempo 
     private TemperatureSensorManager tempManager;
     @OneToOne(cascade = CascadeType.ALL)
     private MovementSensorManager movManager; */
@@ -179,28 +178,28 @@ public class Fridge {
     }
 
     public void cleanHistory() {
-        this.addedMeals = new ArrayList<Meal>();
-        this.removedMeals = new ArrayList<Meal>();
+        this.addedMeals =0;
+        this.removedMeals =0;
     }
 
-    public List<Meal> getAddedMeals() {
+    public Integer getAddedMeals() {
         return this.addedMeals;
     }
 
-    public List<Meal> getRemovedMeals() {
+    public Integer getRemovedMeals() {
         return this.removedMeals;
     }
 
     public void addMeal(Meal meal) {
         this.meals.add(meal);
-        this.addedMeals.add(meal);
+        this.addedMeals++;
         this.evaluateSendNotification(
                 new FridgeNotification(FridgeNotifications.NearFullInventory, meals.size(), "Fridge almost full"));
     }
 
     public void removeMeal(Meal meal) {
         this.meals.remove(meal);
-        this.removedMeals.add(meal);
+        this.removedMeals++;
         this.evaluateSendNotification(
                 new FridgeNotification(FridgeNotifications.LowInventory, meals.size(), "Fridge almost full"));
 

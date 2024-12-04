@@ -26,7 +26,7 @@ public class Meal {
     public Meal() {
     }
 
-    public Meal(String type, int expirationDate, int donationDate, Fridge fridge,
+    public Meal(String type, long expirationDate, long donationDate, Fridge fridge,
             String state, Integer calories, Integer weight) {
         this.type = type;
         this.expirationDate = expirationDate;

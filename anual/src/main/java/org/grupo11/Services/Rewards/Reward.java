@@ -99,7 +99,7 @@ public class Reward {
         String emoji = getCategory() == RewardCategory.TECH ? "💻"
                 : (getCategory() == RewardCategory.COOKING ? "🍴" : "🏡");
         reward_map.put("emoji", emoji);
-        reward_map.put("category", getCategory().toString());
+        reward_map.put("name", getName());
         reward_map.put("description", "You can exchange your points for (todo text depending on category)");
         return reward_map;
     }
