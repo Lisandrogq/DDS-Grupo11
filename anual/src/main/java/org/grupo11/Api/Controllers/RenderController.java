@@ -149,8 +149,9 @@ public class RenderController {
             }
 
             try (Session session = DB.getSessionFactory().openSession()) {
-                String hql = "FROM Contribution c ";// faltaría el where con el userid cuando marquitos haga el sso
+                String hql = "SELECT c FROM Contribution c WHERE contributor = :contributor";
                 Query<Contribution> query = session.createQuery(hql, Contribution.class);
+                query.setParameter("contributor",contributor);
                 List<Contribution> results = query.getResultList();
                 System.out.println("results.size(): " + results.size());
                 for (Contribution contribution : results) {
