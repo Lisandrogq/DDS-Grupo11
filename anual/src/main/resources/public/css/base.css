@@ -23,12 +23,12 @@ body {
 }
 
 .fullscreen {
-	height: 100vh;
-	width: 100vw;
+	min-height: 100vh;
+	min-width: 100vw;
 }
 
 .fullscreen-h {
-	height: 100vh;
+	min-height: 100vh;
 }
 
 h1 {
