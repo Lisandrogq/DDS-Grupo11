@@ -72,20 +72,22 @@ public class HttpUtils {
         }
         Long owner_id = Long.valueOf(payloadMap.get("owner_id").toString());
         UserTypes type = Enum.valueOf(UserTypes.class, payloadMap.get("type").toString());
+
         if (type == null) {
             return null;
         }
 
         try (Session session = DB.getSessionFactory().openSession()) {
             
-            String hql = "SELECT entity " +
-                    "FROM technician t" +
+            String hql = "SELECT t " +
+                    "FROM Technician t " +
                     "WHERE t.id = :owner_id";
             org.hibernate.query.Query<Technician> query = session.createQuery(hql, Technician.class);
             query.setParameter("owner_id", owner_id);
             Technician technician = query.getSingleResult();
             return technician;
         } catch (Exception e) {
+            Logger.error("An error during jwt decode.", e);
             return null;
         }
     }

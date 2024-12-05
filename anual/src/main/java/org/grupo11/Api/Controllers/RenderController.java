@@ -60,178 +60,192 @@ public class RenderController {
                 ctx.redirect("/register/login");
                 return;
             }
-            ctx.json("technician"+technician.getName());
-            return;
-           /*  String name;
-            if (contributor instanceof Individual) {
-                name = ((Individual) contributor).getName();
-            } else {
-                name = ((LegalEntity) contributor).getName();
+            Map<String, Object> model = null;
+            if (contributor != null) {
+                model = getContributorModel(contributor, ctx);
+                if (model == null)
+                    return;// caso de error en la generacion del modelo (TODO: estaría bueno manejar
+                // errores con throw como en ContributionsController pero notime)
+
             }
-
-            // user
-            Map<String, Object> user = new HashMap<>();
-            user.put("name", name);
-            user.put("points", contributor.getPoints());
-
-            // temperature
-            List<Map<String, Object>> temperatures = new ArrayList<>();
-            Map<String, Object> fridge1Temp = new HashMap<>();
-            fridge1Temp.put("fridge", "Medrano");
-            fridge1Temp.put("temp", 10);
-
-            Map<String, Object> fridge2Temp = new HashMap<>();
-            fridge2Temp.put("fridge", "Lugano");
-            fridge2Temp.put("temp", 15);
-
-            temperatures.add(fridge1Temp);
-            temperatures.add(fridge2Temp);
-
-            // donations
-            List<Map<String, Object>> donations = new ArrayList<>();
-            Map<String, Object> donation1 = new HashMap<>();
-            Map<String, Object> donatedFridge = new HashMap<>();
-            donatedFridge.put("name", "Medrano");
-            donatedFridge.put("temp", 3);
-            donatedFridge.put("reserved", 40);
-            donatedFridge.put("state", "Active");
-            donatedFridge.put("meals", 120);
-
-            donation1.put("emoji", "🥘");
-            donation1.put("type", "Food");
-            donation1.put("desc", "You have donated “musaka”");
-            donation1.put("fridge", donatedFridge);
-
-            Map<String, Object> donation2 = new HashMap<>();
-            donation2.put("emoji", "👨");
-            donation2.put("type", "Registered person");
-            donation2.put("desc", "You have registered “valentina” as part of our community");
-            donation2.put("fridge", donatedFridge);
-
-            // fridges
-            List<Map<String, Object>> fridges = new ArrayList<>();
-
-            try (Session session = DB.getSessionFactory().openSession()) {
-                String hql = "FROM Fridge f ";// faltaría el where con el userid cuando marquitos haga el sso
-                Query<Fridge> query = session.createQuery(hql, Fridge.class);
-                List<Fridge> results = query.getResultList();
-                System.out.println("results.size(): " + results.size());
-                for (Fridge fridge : results) {
-                    fridges.add(fridge.toMap());
-                }
-                session.close();
-
-            } catch (Exception e) {
-                Logger.error("Could not serve contributor recognitions {}", e);
-                ctx.status(500).json(new ApiResponse(500));
-                return;
+            if (technician != null) {
+                model = getTechnicianModel(technician, ctx);
+                if (model == null)
+                    return;
             }
-
-            // rewards
-            List<Map<String, Object>> rewards = new ArrayList<>();
-
-            try (Session session = DB.getSessionFactory().openSession()) {
-                String hql = "FROM Reward r ";// faltaría el where con el userid cuando marquitos haga el sso
-                Query<Reward> query = session.createQuery(hql, Reward.class);
-                List<Reward> results = query.getResultList();
-                System.out.println("results.size(): " + results.size());
-                for (Reward reward : results) {
-                    if (reward.getQuantity() > 0) {
-                        rewards.add(reward.toMap());
-                    }
-                }
-                session.close();
-
-            } catch (Exception e) {
-                Logger.error("Could not serve contributor recognitions {}", e);
-                ctx.status(500).json(new ApiResponse(500));
-                return;
-            }
-
-            try (Session session = DB.getSessionFactory().openSession()) {
-                String hql = "SELECT c FROM Contribution c WHERE contributor = :contributor";
-                Query<Contribution> query = session.createQuery(hql, Contribution.class);
-                query.setParameter("contributor",contributor);
-                List<Contribution> results = query.getResultList();
-                System.out.println("results.size(): " + results.size());
-                for (Contribution contribution : results) {
-                    Map<String, Object> donation = new HashMap<>();
-
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                    String formattedContributionDate = sdf.format(contribution.getDate());
-
-                    if (contribution instanceof MealDonation) {
-                        MealDonation mealDonation = (MealDonation) contribution;
-                        donation.put("emoji", "🍕"); // cambie el emogi pq el otro es muy grande y se coje la alineacion
-                                                     // (🥘)
-                        donation.put("type", "Meal Donation");
-                        donation.put("desc",
-                                "On " + formattedContributionDate + " you have donated "
-                                        + mealDonation.getMeal().getType() + " to "
-                                        + mealDonation.getMeal().getFridge().getName());
-                        donation.put("fridge", mealDonation.getMeal().getFridge().toMap());
-                    } else if (contribution instanceof MealDistribution) {
-                        MealDistribution mealDistribution = (MealDistribution) contribution;
-                        donation.put("emoji", "📦");
-                        donation.put("type", "Meal Distribution");
-                        donation.put("desc",
-                                "On " + formattedContributionDate + " you have moved a meal from "
-                                        + mealDistribution.getOriginFridge().getName() + " to "
-                                        + mealDistribution.getDestinyFridge().getName());
-                        donation.put("fridge", donatedFridge);
-                    } else if (contribution instanceof FridgeAdmin) {
-                        FridgeAdmin fridgeAdmin = (FridgeAdmin) contribution;
-                        donation.put("emoji", "🧞‍♂️");
-                        donation.put("type", "Fridge administration");
-                        donation.put("desc", "You are administrating " + fridgeAdmin.getFridge().getName() + " since "
-                                + formattedContributionDate);
-                        donation.put("fridge", fridgeAdmin.getFridge().toMap());
-                    } else if (contribution instanceof MoneyDonation) {
-                        MoneyDonation moneyDonation = (MoneyDonation) contribution;
-                        donation.put("emoji", "💰");
-                        donation.put("type", "Money Donation");
-                        donation.put("desc", "On " + formattedContributionDate + " you have donated "
-                                + moneyDonation.getAmount() + "$");
-                        donation.put("fridge", donatedFridge);
-                    } else if (contribution instanceof PersonRegistration) {
-                        PersonRegistration personRegistration = (PersonRegistration) contribution;
-                        donation.put("emoji", "👲🏽");
-                        donation.put("type", "Person Registrarion");
-                        donation.put("desc", "On " + formattedContributionDate + " you have registered "
-                                + personRegistration.getPerson().getName());
-                        donation.put("fridge", donatedFridge);
-                    } else if (contribution instanceof RewardContribution) {
-                        RewardContribution rewardContribution = (RewardContribution) contribution;
-                        donation.put("emoji", "🏆");
-                        donation.put("type", "Reward Contribution");
-                        donation.put("desc", "On " + formattedContributionDate + " you have offered "
-                                + rewardContribution.getReward().getName() + " as a reward");
-                        donation.put("fridge", donatedFridge);
-                    }
-                    donations.add(donation);
-                }
-                session.close();
-            } catch (Exception e) {
-                Logger.error("Could not serve contributor recognitions {}", e);
-                ctx.status(500).json(new ApiResponse(500));
-                return;
-            }
-
-            // final model
-            Map<String, Object> model = new HashMap<>();
-            model.put("user", user);
-            model.put("temperatures", temperatures);
-            model.put("donations", donations);
-            model.put("fridges", fridges);
-            model.put("rewards", rewards);
-
-            String page = "templates/dash/home" + (contributor.isIndividual() ? "IND" : "LE");
-
-            ctx.render(page + ".html", model); */
-        } catch (
-
-        Exception e) {
+            String page = "templates/dash/home"
+                    + (technician != null ? "TECH" : contributor.isIndividual() ? "IND" : "LE");
+            ctx.render(page + ".html", model);
+        } catch (Exception e) {
+            Logger.error("Error while rendering dashboard", e);
             ctx.status(500);
         }
+    }
+
+    public static Map<String, Object> getContributorModel(Contributor contributor, Context ctx) {
+        String name;
+        if (contributor instanceof Individual) {
+            name = ((Individual) contributor).getName();
+        } else {
+            name = ((LegalEntity) contributor).getName();
+        }
+
+        // user
+        Map<String, Object> user = new HashMap<>();
+        user.put("name", name);
+        user.put("points", contributor.getPoints());
+
+        // temperature
+        List<Map<String, Object>> temperatures = new ArrayList<>();
+
+        // donations
+        List<Map<String, Object>> donations = new ArrayList<>();
+        Map<String, Object> donatedFridge = new HashMap<>();
+        donatedFridge.put("name", "Medrano");
+        donatedFridge.put("temp", 3);
+        donatedFridge.put("reserved", 40);
+        donatedFridge.put("state", "Active");
+        donatedFridge.put("meals", 120);
+
+        // fridges
+        List<Map<String, Object>> fridges = new ArrayList<>();
+
+        try (Session session = DB.getSessionFactory().openSession()) {
+            String hql = "FROM Fridge f ";// faltaría el where con el userid cuando marquitos haga el sso
+            Query<Fridge> query = session.createQuery(hql, Fridge.class);
+            List<Fridge> results = query.getResultList();
+            System.out.println("results.size(): " + results.size());
+            for (Fridge fridge : results) {
+                fridges.add(fridge.toMap());
+            }
+            session.close();
+
+        } catch (Exception e) {
+            Logger.error("Could not serve contributor recognitions {}", e);
+            ctx.status(500).json(new ApiResponse(500));
+            return null;
+        }
+
+        // rewards
+        List<Map<String, Object>> rewards = new ArrayList<>();
+
+        try (Session session = DB.getSessionFactory().openSession()) {
+            String hql = "FROM Reward r ";// faltaría el where con el userid cuando marquitos haga el sso
+            Query<Reward> query = session.createQuery(hql, Reward.class);
+            List<Reward> results = query.getResultList();
+            System.out.println("results.size(): " + results.size());
+            for (Reward reward : results) {
+                if (reward.getQuantity() > 0) {
+                    rewards.add(reward.toMap());
+                }
+            }
+            session.close();
+
+        } catch (Exception e) {
+            Logger.error("Could not serve contributor recognitions {}", e);
+            ctx.status(500).json(new ApiResponse(500));
+            return null;
+        }
+
+        try (Session session = DB.getSessionFactory().openSession()) {
+            String hql = "SELECT c FROM Contribution c WHERE contributor = :contributor";
+            Query<Contribution> query = session.createQuery(hql, Contribution.class);
+            query.setParameter("contributor", contributor);
+            List<Contribution> results = query.getResultList();
+            System.out.println("results.size(): " + results.size());
+            for (Contribution contribution : results) {
+                Map<String, Object> donation = new HashMap<>();
+
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                String formattedContributionDate = sdf.format(contribution.getDate());
+
+                if (contribution instanceof MealDonation) {
+                    MealDonation mealDonation = (MealDonation) contribution;
+                    donation.put("emoji", "🍕"); // cambie el emogi pq el otro es muy grande y se coje la alineacion
+                                                 // (🥘)
+                    donation.put("type", "Meal Donation");
+                    donation.put("desc",
+                            "On " + formattedContributionDate + " you have donated "
+                                    + mealDonation.getMeal().getType() + " to "
+                                    + mealDonation.getMeal().getFridge().getName());
+                    donation.put("fridge", mealDonation.getMeal().getFridge().toMap());
+                } else if (contribution instanceof MealDistribution) {
+                    MealDistribution mealDistribution = (MealDistribution) contribution;
+                    donation.put("emoji", "📦");
+                    donation.put("type", "Meal Distribution");
+                    donation.put("desc",
+                            "On " + formattedContributionDate + " you have moved a meal from "
+                                    + mealDistribution.getOriginFridge().getName() + " to "
+                                    + mealDistribution.getDestinyFridge().getName());
+                    donation.put("fridge", donatedFridge);
+                } else if (contribution instanceof FridgeAdmin) {
+                    FridgeAdmin fridgeAdmin = (FridgeAdmin) contribution;
+                    donation.put("emoji", "🧞‍♂️");
+                    donation.put("type", "Fridge administration");
+                    donation.put("desc", "You are administrating " + fridgeAdmin.getFridge().getName() + " since "
+                            + formattedContributionDate);
+                    donation.put("fridge", fridgeAdmin.getFridge().toMap());
+                } else if (contribution instanceof MoneyDonation) {
+                    MoneyDonation moneyDonation = (MoneyDonation) contribution;
+                    donation.put("emoji", "💰");
+                    donation.put("type", "Money Donation");
+                    donation.put("desc", "On " + formattedContributionDate + " you have donated "
+                            + moneyDonation.getAmount() + "$");
+                    donation.put("fridge", donatedFridge);
+                } else if (contribution instanceof PersonRegistration) {
+                    PersonRegistration personRegistration = (PersonRegistration) contribution;
+                    donation.put("emoji", "👲🏽");
+                    donation.put("type", "Person Registrarion");
+                    donation.put("desc", "On " + formattedContributionDate + " you have registered "
+                            + personRegistration.getPerson().getName());
+                    donation.put("fridge", donatedFridge);
+                } else if (contribution instanceof RewardContribution) {
+                    RewardContribution rewardContribution = (RewardContribution) contribution;
+                    donation.put("emoji", "🏆");
+                    donation.put("type", "Reward Contribution");
+                    donation.put("desc", "On " + formattedContributionDate + " you have offered "
+                            + rewardContribution.getReward().getName() + " as a reward");
+                    donation.put("fridge", donatedFridge);
+                }
+                donations.add(donation);
+            }
+            session.close();
+        } catch (Exception e) {
+            Logger.error("Could not serve contributor recognitions {}", e);
+            ctx.status(500).json(new ApiResponse(500));
+            return null;
+        }
+        Map<String, Object> model = new HashMap<>();
+        model.put("user", user);
+        model.put("temperatures", temperatures);
+        model.put("donations", donations);
+        model.put("fridges", fridges);
+        model.put("rewards", rewards);
+        return model;
+    }
+
+    public static Map<String, Object> getTechnicianModel(Technician technician, Context ctx) {
+        Map<String, Object> model = new HashMap<>();
+        
+        Map<String, Object> user = new HashMap<>();
+        user.put("name", technician.getName());
+
+        Map<String, Object> donatedFridge = new HashMap<>();
+        List<Map<String, Object>> fridges = new ArrayList<>();
+
+        donatedFridge.put("id", "123");
+        donatedFridge.put("food_status_desc", "piola");
+        donatedFridge.put("meal_urgency", "High");
+        donatedFridge.put("name", "Medrano");
+        donatedFridge.put("temp", 3);
+        donatedFridge.put("reserved", 40);
+        donatedFridge.put("state", "Active");
+        donatedFridge.put("meals", 120);
+        fridges.add(donatedFridge);
+
+
+        model.put("user", user);
+        model.put("fridges", fridges);
+        return model;
     }
 }

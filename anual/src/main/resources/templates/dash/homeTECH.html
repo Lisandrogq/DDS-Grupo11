@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>FridgeBridge</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+	<link rel="stylesheet" href="/public/css/home.css" />
+	<link rel="stylesheet" href="/public/css/forms.css" />
+	<link rel="stylesheet" href="/public/css/base.css" />
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+		integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+	<!-- Make sure you put this AFTER Leaflet's CSS -->
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+		integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+</head>
+
+<body>
+	<div class="fullscreen overflow-auto" style="max-height: 100vh">
+		<div class="d-flex flex-column w-100" style="max-width: 1280px; margin: auto; gap: 30px; padding: 50px">
+			<div class="d-flex flex-row justify-content-between align-items-center w-100" style="margin-bottom: 20px">
+				<div class="d-flex flex-column gap-3">
+					<h4>Hello ${user.name} 👋</h4>
+					<p>Thanks for beeing our technician</p>
+				</div>
+				<div class="d-flex flex-row align-items-center" style="gap: 30px">
+					<div class="position-relative alerts-container">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6"
+							style="height: 30px; color: var(--gray)">
+							<path fill-rule="evenodd"
+								d="M5.25 9a6.75 6.75 0 0 1 13.5 0v.75c0 2.123.8 4.057 2.118 5.52a.75.75 0 0 1-.297 1.206c-1.544.57-3.16.99-4.831 1.243a3.75 3.75 0 1 1-7.48 0 24.585 24.585 0 0 1-4.831-1.244.75.75 0 0 1-.298-1.205A8.217 8.217 0 0 0 5.25 9.75V9Zm4.502 8.9a2.25 2.25 0 1 0 4.496 0 25.057 25.057 0 0 1-4.496 0Z"
+								clip-rule="evenodd" />
+						</svg>
+
+
+					</div>
+
+				</div>
+			</div>
+
+			<div class="d-flex flex-column w-100" style="gap: 100px">
+				<div class="d-flex flex-row w-100 flex-wrap" style="gap: 50px">
+					<div class="d-flex flex-column flex-grow-1" style="min-width: 300px">
+						<div class="mb-3">
+							<h4>We need your help</h4>
+							<p>Here is the state of the current fridges</p>
+						</div>
+						<div class="my-card d-flex flex-column" style="gap: 30px; height: 350px">
+							<#list fridges as fridge>
+								<div class="d-flex align-items-center my-card-item" style="gap: 30px" id="fridge"
+									data-fridge-name=${fridge.name} data-fridge-id=${fridge.id}
+									data-fridge-temp=${fridge.temp} data-fridge-reserved=${fridge.reserved}
+									data-fridge-state=${fridge.state} data-fridge-meals=${fridge.meals}>
+									<h4>🧊</h4>
+									<div class="w-100">
+										<h6>${fridge.name} fridge</h6>
+										<div class="d-flex w-100 justify-content-between">
+											<p>${fridge.food_status_desc}</p>
+											<#if fridge.meal_urgency=="High">
+												<p class="small bold text-danger">${fridge.meal_urgency} urgency</p>
+												<#elseif fridge.meal_urgency=="Medium">
+													<p class="small bold text-warning">${fridge.meal_urgency} urgency
+													</p>
+													<#else>
+														<p class="small bold text-success">${fridge.meal_urgency}
+															urgency</p>
+											</#if>
+										</div>
+									</div>
+								</div>
+							</#list>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+</body>
+
+<div class="modal" id="modal">
+	<div class="my-card d-flex flex-column justify-content-center overflow-auto" style="width: 650px; max-height: 100%">
+		<p class="small accent-100 align-self-end btn" id="modal-close">X</p>
+		<div class="my-modal-content" id="modal-content"></div>
+	</div>
+</div>
+
+<script src="/public/js/forms.js"></script>
+<script src="/public/js/modal.js"></script>
+
+</html>

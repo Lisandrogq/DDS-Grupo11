@@ -1,5 +1,6 @@
 package org.grupo11.Api;
 
+import org.grupo11.Logger;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Technician.Technician;
 import org.grupo11.Utils.JWTService;
@@ -34,6 +35,7 @@ public class Middlewares {
             Technician technician = HttpUtils.getTechnicianFromAccessToken(decoded);
             return technician;
         } catch (Exception e) {
+            Logger.error("An error during jwt decode.", e);
             return null;
         }
     }
