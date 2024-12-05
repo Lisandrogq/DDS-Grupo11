@@ -24,7 +24,6 @@ public class Reward {
     private String imageUrl;
     private float neededPoints;
     private int quantity;
-    private String description;
     @Enumerated(EnumType.STRING)
     private RewardCategory category;
     @ManyToOne

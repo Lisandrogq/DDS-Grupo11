@@ -13,8 +13,6 @@ import org.grupo11.Services.Technician.TechnicianManager;
 import org.grupo11.Utils.DateUtils;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
 @Entity

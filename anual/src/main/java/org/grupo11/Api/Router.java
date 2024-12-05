@@ -5,7 +5,6 @@ import org.grupo11.Api.Controllers.ContributionsController;
 import org.grupo11.Api.Controllers.PublicAPI;
 import org.grupo11.Api.Controllers.RenderController;
 import org.grupo11.Api.Controllers.RewardsController;
-import org.grupo11.Api.Controllers.UserController;
 import org.grupo11.Api.Controllers.Auth;
 
 import io.javalin.Javalin;
