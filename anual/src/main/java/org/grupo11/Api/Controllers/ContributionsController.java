@@ -14,6 +14,7 @@ import org.grupo11.Services.Contributions.MealDonation;
 import org.grupo11.Services.Contributions.MoneyDonation;
 import org.grupo11.Services.Contributions.RewardContribution;
 import org.grupo11.Services.Contributor.Contributor;
+import org.grupo11.Services.Contributor.ContributorsManager;
 import org.grupo11.Services.Contributor.LegalEntity.LegalEntity;
 import org.grupo11.Services.Contributor.LegalEntity.LegalEntityCategory;
 import org.grupo11.Services.Fridge.Fridge;
@@ -71,6 +72,11 @@ public class ContributionsController {
                     Integer.parseInt(calories), Integer.parseInt(weight));
             MealDonation mealDonation = new MealDonation(meal, DateUtils.now());
             mealDonation.setContributor(contributor);
+            boolean canContribute = ContributorsManager.getInstance().addContributionToContributor(contributor,
+                    mealDonation);
+            if (!canContribute)
+                throw new IllegalArgumentException("no puede contribuir de esta forma");// TODO: validar antes de esto q
+                                                                                        // haya openSolicitude
             fridge.addMeal(meal);
             DB.create(meal);
             DB.create(mealDonation);
@@ -79,8 +85,8 @@ public class ContributionsController {
 
         } catch (Exception e) {
             Logger.error("Exception ", e);
-            // ditto          
-              ctx.json("TODO: make front error message - "+ e.getMessage());
+            // ditto
+            ctx.json("TODO: make front error message - " + e.getMessage());
             return;
         }
     }
@@ -114,7 +120,7 @@ public class ContributionsController {
 
             String origin_hql = "SELECT f " +
                     "FROM Fridge f " +
-                    "WHERE f.address = :origin_address"; 
+                    "WHERE f.address = :origin_address";
             org.hibernate.query.Query<Fridge> origin_query = session.createQuery(origin_hql, Fridge.class);
             origin_query.setParameter("origin_address", origin_address);
             String destiny_hql = "SELECT f " +
@@ -129,35 +135,42 @@ public class ContributionsController {
                 throw new IllegalArgumentException("alguna address inexistente");
             }
 
-            for (int i = 0; i < 10; i++) { // primero se valida que todas las comidas estén . se podría hacer con transacciones pero notiempo
+            int i = 0;
+            int max = 0;
+            for (i = 0; i < 10; i++) { // primero se valida que todas las comidas estén . se podría hacer con
+                                       // transacciones pero notiempo
                 String meal_type = ctx.formParam("meal_" + i);
                 if (meal_type != null) {
                     Meal meal = origin_fridge.getMealByType(meal_type);
-
+                    max++;
                     if (meal == null) {
-                        throw new IllegalArgumentException(meal_type+" no existe en la heladera de origen");
+                        throw new IllegalArgumentException(meal_type + " no existe en la heladera de origen");
                     }
                 }
             }
-            int i;
-            for (i = 0; i < 10; i++) { // luego se realiza el movimiento.
+            MealDistribution mealDistribution = new MealDistribution(origin_fridge, destiny_fridge, max, reason,
+                    DateUtils.now());
+            boolean canContribute = ContributorsManager.getInstance().addContributionToContributor(contributor,
+                    mealDistribution);
+            if (!canContribute)
+                throw new IllegalArgumentException("no puede contribuir de esta forma");// TODO: validar antes de esto q
+                                                                                        // haya openSolicitude
+            for (i = 0; i < max; i++) { // luego se realiza el movimiento.
                 String meal_type = ctx.formParam("meal_" + i);
                 if (meal_type != null) {
                     Meal meal = origin_fridge.getMealByType(meal_type);
-                    System.out.println("adad: "+meal_type+" - "+meal.getType());
-                    
-                        origin_fridge.removeMeal(meal);
-                        destiny_fridge.addMeal(meal);
-                        meal.setFridge(destiny_fridge);
-                        DB.update(meal);
-                    
+                    System.out.println("adad: " + meal_type + " - " + meal.getType());
+
+                    origin_fridge.removeMeal(meal);
+                    destiny_fridge.addMeal(meal);
+                    meal.setFridge(destiny_fridge);
+                    DB.update(meal);
+
                 }
             }
             DB.update(origin_fridge);
             DB.update(destiny_fridge);
 
-            MealDistribution mealDistribution = new MealDistribution(origin_fridge, destiny_fridge, i + 1, reason,
-                    DateUtils.now());
             mealDistribution.setContributor(contributor);
             DB.create(mealDistribution);
 
@@ -166,7 +179,7 @@ public class ContributionsController {
         } catch (Exception e) {
             Logger.error("Exception ", e);
             // ditto
-            ctx.json("TODO: make front error message - "+ e.getMessage());
+            ctx.json("TODO: make front error message - " + e.getMessage());
             return;
         }
 
@@ -211,6 +224,11 @@ public class ContributionsController {
             mManager.setFridge(fridge);
             FridgeAdmin fridgeAdmin = new FridgeAdmin(le, fridge, DateUtils.now());
             fridgeAdmin.setContributor(contributor);// TODO: only allow this contribution to legalentities
+            boolean canContribute = ContributorsManager.getInstance().addContributionToContributor(contributor,
+                    fridgeAdmin);
+            if (!canContribute)
+                throw new IllegalArgumentException("no puede contribuir de esta forma");// TODO: validar antes de esto q
+                                                                                        // haya openSolicitude
             DB.create(le);
             DB.create(fridge);
             DB.create(fridgeAdmin);
@@ -218,7 +236,7 @@ public class ContributionsController {
         } catch (Exception e) {
             Logger.error("Exception ", e);
             // ditto
-            ctx.json("TODO: make front error message - "+ e.getMessage());
+            ctx.json("TODO: make front error message - " + e.getMessage());
             return;
         }
     }
@@ -245,12 +263,17 @@ public class ContributionsController {
         try {
             MoneyDonation moneyDonation = new MoneyDonation(Integer.parseInt(amount), DateUtils.now(), message);
             moneyDonation.setContributor(contributor);
+            boolean canContribute = ContributorsManager.getInstance().addContributionToContributor(contributor,
+                    moneyDonation);
+            if (!canContribute)
+                throw new IllegalArgumentException("no puede contribuir de esta forma");// TODO: validar antes de esto q
+                                                                                        // haya openSolicitude
             DB.create(moneyDonation);
             ctx.redirect("/dash/home");
         } catch (Exception e) {
             Logger.error("Exception ", e);
             // ditto
-            ctx.json("TODO: make front error message - "+ e.getMessage());
+            ctx.json("TODO: make front error message - " + e.getMessage());
             return;
         }
     }
@@ -292,13 +315,18 @@ public class ContributionsController {
             reward.setQuantity(Integer.parseInt(stock));
             RewardContribution rewardContribution = new RewardContribution(reward, DateUtils.now());
             rewardContribution.setContributor(contributor);
+            boolean canContribute = ContributorsManager.getInstance().addContributionToContributor(contributor,
+                    rewardContribution);
+            if (!canContribute)
+                throw new IllegalArgumentException("no puede contribuir de esta forma");// TODO: validar antes de esto q
+                                                                                        // haya openSolicitude
             DB.create(reward);
             DB.create(rewardContribution);
             ctx.redirect("/dash/home");
         } catch (Exception e) {
             Logger.error("Exception ", e);
             // ditto
-            ctx.json("TODO: make front error message - "+ e.getMessage());
+            ctx.json("TODO: make front error message - " + e.getMessage());
             return;
         }
     }

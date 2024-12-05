@@ -1,9 +1,11 @@
 package org.grupo11.Services.Contributor;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.grupo11.Enums.DocumentType;
 import org.grupo11.Services.Credentials;
+import org.grupo11.Services.Contributions.ContributionType;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -23,21 +25,23 @@ public class Individual extends Contributor {
 
     public Individual() {
         super();
+        List<ContributionType> possibleContributions = new ArrayList<ContributionType>();
+        possibleContributions.add(ContributionType.MEAL_DONATION);
+        possibleContributions.add(ContributionType.MEAL_DISTRIBUTION);
+        possibleContributions.add(ContributionType.MONEY_DONATION);
+        possibleContributions.add(ContributionType.PERSON_REGISTRATION);
+        this.setPossibleContributions(possibleContributions);
     }
 
     public Individual(String name, String surname, String address, String birth, int document,
             DocumentType documentType) {
         super(name, address, new ArrayList<>());
+        List<ContributionType> possibleContributions = new ArrayList<ContributionType>();
+        possibleContributions.add(ContributionType.MEAL_DONATION);
+        possibleContributions.add(ContributionType.MEAL_DISTRIBUTION);
+        possibleContributions.add(ContributionType.MONEY_DONATION);
+        possibleContributions.add(ContributionType.PERSON_REGISTRATION);
         this.name = name;
-        this.surname = surname;
-        this.birth = birth;
-        this.document = document;
-        this.documentType = documentType;
-    }
-
-    public Individual(String name, String surname, String address, String birth, DocumentType documentType,
-            Integer document, Double points) {
-        super(points);
         this.surname = surname;
         this.birth = birth;
         this.document = document;

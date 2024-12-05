@@ -21,6 +21,7 @@ import org.grupo11.Services.Contributor.LegalEntity.LegalEntityType;
 import org.grupo11.Utils.Crypto;
 import org.grupo11.Utils.FieldValidator;
 import org.grupo11.Utils.JWTService;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
@@ -150,7 +151,6 @@ public class Auth {
             Credentials credentials = new Credentials(mail, hashedPassword, UserTypes.Individual, individual.getId());
             individual.addContact(contact);
             individual.setCredentials(credentials);
-
             DB.create(contact);
             DB.create(credentials);
             DB.create(individual);

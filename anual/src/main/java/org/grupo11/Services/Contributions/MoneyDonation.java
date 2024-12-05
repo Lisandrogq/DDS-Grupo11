@@ -37,7 +37,7 @@ public class MoneyDonation extends Contribution {
 
     @Override
     public double getRewardPoints() {
-        return amount * rewardCoef;
+        return amount * 0.5;
     }
 
 }

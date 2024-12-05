@@ -33,18 +33,17 @@ public class LegalEntity extends Contributor {
         this.id = Crypto.genId();
     }
 
-    public LegalEntity(String businessName, String address, LegalEntityType type, LegalEntityCategory category,
-            List<ContributionType> possibleContributions) {
-        super(businessName, address, possibleContributions);
-        this.id = Crypto.genId();
-        this.orgName = businessName;
-        this.type = type;
-        this.category = category;
-    }
+
 
     public LegalEntity(String businessName, String address, LegalEntityType type, LegalEntityCategory category) {
-        super(businessName, address, new ArrayList<>());
+        super(businessName, address,new ArrayList<>());
+        List<ContributionType> possibleContributions =  new ArrayList<ContributionType>();
+        possibleContributions.add(ContributionType.MONEY_DONATION);
+        possibleContributions.add(ContributionType.FRIDGE_ADMINISTRATION);
+        possibleContributions.add(ContributionType.REWARD);
+        setPossibleContributions(possibleContributions);
         this.id = Crypto.genId();
+        this.orgName = businessName;
         this.type = type;
         this.category = category;
     }

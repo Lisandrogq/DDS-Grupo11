@@ -1,5 +1,6 @@
 package org.grupo11.Services.Contributions;
 
+import org.grupo11.DB;
 import org.grupo11.Services.Meal;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Fridge;
@@ -22,6 +23,7 @@ public class MealDistribution extends Contribution {
     private Fridge destinyFridge;
     private int quantity;
     private String reason;
+
     public MealDistribution() {
     }
 
@@ -37,19 +39,21 @@ public class MealDistribution extends Contribution {
 
     @Override
     public boolean validate(Contributor contributor) {
-        return (super.validate(contributor) &&
+        return (super.validate(contributor) && (true || //// TODO: implement open solicitudes with db and front
                 this.originFridge.hasPermission(contributor.getContributorRegistry().getId())
-                && this.destinyFridge.hasPermission(contributor.getContributorRegistry().getId()));
+                        && this.destinyFridge.hasPermission(contributor.getContributorRegistry().getId())));
     }
 
     @Override
     public void afterContribution() {
-        this.originFridge
-                .addOpenEntry(new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(),
-                        this.contributor.getContributorRegistry()));
-        this.destinyFridge
-                .addOpenEntry(new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(),
-                        this.contributor.getContributorRegistry()));
+        FridgeOpenLogEntry originEntry = new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(),
+                this.contributor.getContributorRegistry());
+        FridgeOpenLogEntry destinyEntry = new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(),
+                this.contributor.getContributorRegistry());
+                DB.create(originEntry);
+                DB.create(destinyEntry);
+        this.originFridge.addOpenEntry(originEntry);
+        this.destinyFridge.addOpenEntry(destinyEntry);
     }
 
     public ContributionType getContributionType() {
@@ -88,10 +92,8 @@ public class MealDistribution extends Contribution {
         this.reason = reason;
     }
 
-
-
     @Override
     public double getRewardPoints() {
-        return 1.5;
+        return 1*quantity;
     }
 }

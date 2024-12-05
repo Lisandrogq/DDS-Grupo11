@@ -3,6 +3,7 @@ package org.grupo11.Services.Rewards;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.grupo11.DB;
 import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributor.Contributor;
 
@@ -31,6 +32,7 @@ public class RewardSystem {
 
     public static void assignPoints(Contributor contributor, Contribution contribution) {
         contributor.setPoints(contributor.getPoints() + contribution.getRewardPoints());
+        DB.update(contributor);
     }
 
     /**

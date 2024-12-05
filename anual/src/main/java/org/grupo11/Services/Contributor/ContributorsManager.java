@@ -42,8 +42,9 @@ public class ContributorsManager {
     public Boolean addContributionToContributor(Contributor contributor, Contribution contribution) {
         if (contribution.validate(contributor)) {
             contribution.setContributor(contributor);
-            contributor.addContribution(contribution);
-            contribution.afterContribution();// quesestoxd
+            // contributor.addContribution(contribution); //deja de ser necesario pq las
+            // contribuciones de un contributor se sacan por FK 
+            contribution.afterContribution();
             RewardSystem.assignPoints(contributor, contribution);
             contributionsManager.add(contribution);
             return true;

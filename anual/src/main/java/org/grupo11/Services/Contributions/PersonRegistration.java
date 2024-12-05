@@ -47,7 +47,7 @@ public class PersonRegistration extends Contribution {
 
     @Override
     public double getRewardPoints() {
-        return 1.2;
+        return 2;
     }
 
 }
