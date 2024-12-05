@@ -27,6 +27,7 @@ import io.javalin.http.Context;
 
 public class ContributionsController {
     public static void handleMealContribution(Context ctx) {
+        System.out.println(ctx.body());
         Contributor contributor = Middlewares.isAuthenticated(ctx);
         if (contributor == null) {
             ctx.redirect("/register/login");

@@ -91,4 +91,7 @@ public class Individual extends Contributor {
     public void setCredentials(Credentials credentials) {
         this.credentials = credentials;
     }
+    public Credentials getCredentials() {
+        return credentials;
+    }
 }

@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.grupo11.Enums.Provinces;
+import org.grupo11.Services.Credentials;
 import org.grupo11.Services.Contact.Contact;
+import org.grupo11.Utils.Crypto;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -17,7 +19,6 @@ import jakarta.persistence.OneToOne;
 @Entity
 public class Technician {
     @Id
-    @GeneratedValue
     private Long id;
     private String name;
     private String surname;
@@ -31,13 +32,15 @@ public class Technician {
     private List<TechnicianVisit> visits;
     @OneToOne
     private Contact contact;
-
+    @OneToOne
+    private Credentials credentials;
     public Technician() {
     }
 
     public Technician(String name, String surname, TechnicianType type, int DNI, String cuil,
             Provinces areasOfWork,
             Contact contact) {
+        this.id = Crypto.genId();
         this.name = name;
         this.surname = surname;
         this.type = type;
@@ -48,8 +51,20 @@ public class Technician {
         this.visits = new ArrayList<>();
     }
 
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
     public String getName() {
         return this.name;
+    }
+    public void setCredentials(Credentials credentials) {
+        this.credentials = credentials;
+    }
+    public Credentials getCredentials() {
+        return credentials;
     }
 
     public void setName(String name) {

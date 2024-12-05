@@ -18,6 +18,8 @@ import org.grupo11.Services.Contributor.Individual;
 import org.grupo11.Services.Contributor.LegalEntity.LegalEntity;
 import org.grupo11.Services.Contributor.LegalEntity.LegalEntityCategory;
 import org.grupo11.Services.Contributor.LegalEntity.LegalEntityType;
+import org.grupo11.Services.Technician.Technician;
+import org.grupo11.Services.Technician.TechnicianType;
 import org.grupo11.Utils.Crypto;
 import org.grupo11.Utils.FieldValidator;
 import org.grupo11.Utils.JWTService;
@@ -83,6 +85,7 @@ public class Auth {
     }
 
     public static void handleIndividualSignup(Context ctx) {
+        System.out.println(ctx.body());
         String mail = ctx.formParam("mail");
         String type = ctx.formParam("type");
         String pw = ctx.formParam("password");
@@ -117,10 +120,10 @@ public class Auth {
         }
 
         if (!FieldValidator.acceptablePassword(pw)) {
-            sendFormError.accept("Invalid password format.<br> It must include uppercase, lowercase, digit and special character");
+            sendFormError.accept(
+                    "Invalid password format.<br> It must include uppercase, lowercase, digit and special character");
             return;
         }
-
 
         if (!FieldValidator.isInt(document)) {
             sendFormError.accept("Invalid document");
@@ -146,15 +149,29 @@ public class Auth {
             }
 
             String hashedPassword = Crypto.sha256Hash(pw.getBytes());
-            Individual individual = new Individual(name, "", "", birthdate, Integer.parseInt(document),
-                    DocumentType.DNI);
             Contact contact = new EmailContact(mail);
-            Credentials credentials = new Credentials(mail, hashedPassword, UserTypes.Individual, individual.getId());
-            individual.addContact(contact);
-            individual.setCredentials(credentials);
-            DB.create(contact);
-            DB.create(credentials);
-            DB.create(individual);
+            if (Type.valueOf(type) == Type.Contributor) {
+
+                Individual individual = new Individual(name, "", "", birthdate, Integer.parseInt(document),
+                        DocumentType.DNI);
+                Credentials credentials = new Credentials(mail, hashedPassword, UserTypes.Individual,
+                        individual.getId());
+                individual.addContact(contact);
+                individual.setCredentials(credentials);
+                DB.create(contact);
+                DB.create(credentials);
+                DB.create(individual);
+            } else {
+                Technician technician = new Technician(name, "", TechnicianType.ELECTRICIAN, Integer.parseInt(document),
+                        "", null, contact);
+
+                Credentials credentials = new Credentials(mail, hashedPassword, UserTypes.Technician,
+                        technician.getId());
+                technician.setCredentials(credentials);
+                DB.create(contact);
+                DB.create(credentials);
+                DB.create(technician);
+            }
 
             contact.SendNotification("Registered as new user", "You have registered in fridge bridge services!");
             ctx.redirect("/register/login");
