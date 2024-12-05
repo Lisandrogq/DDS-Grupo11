@@ -629,7 +629,7 @@ redeemRewardBtns.forEach((button) => {
 	button.onclick = () => {
         if (dataUserPoints >= neededPoints && quantities[rewardId] > 0) {
             dataUserPoints -= neededPoints;
-            userPoints.textContent = dataUserPoints;
+            userPoints.textContent = dataUserPoints.toLocaleString('es-ES');
 			userPoints.setAttribute("data-user-points", dataUserPoints);
 
 			quantities[rewardId] -= 1;
