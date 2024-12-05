@@ -86,6 +86,7 @@ public class Fridge {
     public Map<String, Object> toMap() {
         Map<String, Object> fridgeMap = new HashMap<>();
         fridgeMap.put("name", getName());
+        fridgeMap.put("id",getId());
         fridgeMap.put("temp", getTempManager().getLastTemp());
         fridgeMap.put("reserved", 0);// q pija es esto??
         fridgeMap.put("state", getIsActive() ? "Active" : "Inactive");

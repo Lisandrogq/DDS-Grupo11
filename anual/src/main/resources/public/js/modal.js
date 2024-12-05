@@ -89,6 +89,7 @@ const setupFridgeListeners = () => {
 	const fridges = document.querySelectorAll("#fridge");
 	fridges.forEach((fridge) => {
 		const name = fridge.getAttribute("data-fridge-name");
+		const id = fridge.getAttribute("data-fridge-id");
 		const meals = fridge.getAttribute("data-fridge-meals");
 		const temp = fridge.getAttribute("data-fridge-temp");
 		const reserved = fridge.getAttribute("data-fridge-reserved");
@@ -97,7 +98,7 @@ const setupFridgeListeners = () => {
 			openModal(fridgeModal(name, meals, temp, reserved, state), () => {
 				// setup listener in report failure to open te modal
 				const failureBtn = document.querySelector("#fridge-report-failure");
-				failureBtn.onclick = () => setModalContent(failureAlert());
+				failureBtn.onclick = () => setModalContent(failureAlert(id));
 
 				// setup listener in report failure to open te modal
 				const reportBtn = document.querySelector("#fridge-view-report");
@@ -504,7 +505,7 @@ function rewardCollab() {
 	`;
 }
 
-function failureAlert() {
+function failureAlert(fridge_id) {
 	return `
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
@@ -531,6 +532,7 @@ function failureAlert() {
 					required
 					placeholder="Description..."
 				></textarea>
+				<input type="hidden" name="fridge" value="${fridge_id}">
 				<div class="form-btns-container">
 					<button
 						type="reset"
