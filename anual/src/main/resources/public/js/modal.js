@@ -512,11 +512,14 @@ function failureAlert() {
 				<p>Report a fridge's malfunction</p>
 			</div>
 			<form method="POST" action="/fridge/failure" class="form">
-				<select required value="fridge" class="boton1 inputs" style="width: 100%">
-					<option selected disabled hidden>What happened?</option>
-					<option value="low meal" class="desplegables">Low on meal</option>
-					<option value="people" class="desplegables">
-						Too many people
+				<select required name="urgency" value="none" class="boton1 inputs" style="width: 100%">
+					<option selected disabled hidden>Urgency</option>
+					<option value="High" class="desplegables">High Urgency</option>
+					<option value="Medium" class="desplegables">
+						Medium Urgency
+					</option>
+					<option value="Low" class="desplegables">
+						Low Urgency
 					</option>
 				</select>
 				<textarea

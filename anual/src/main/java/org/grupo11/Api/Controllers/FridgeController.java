@@ -4,6 +4,7 @@ import io.javalin.http.Context;
 
 public class FridgeController {
     public static void handleSubmitFailure(Context ctx) {
+        System.out.println(ctx.body());
     }
 
     public static void handleSubscription(Context ctx) {
