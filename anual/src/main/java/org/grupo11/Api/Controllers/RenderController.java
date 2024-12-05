@@ -226,23 +226,28 @@ public class RenderController {
 
     public static Map<String, Object> getTechnicianModel(Technician technician, Context ctx) {
         Map<String, Object> model = new HashMap<>();
-        
+
         Map<String, Object> user = new HashMap<>();
         user.put("name", technician.getName());
 
-        Map<String, Object> donatedFridge = new HashMap<>();
+        // fridges
         List<Map<String, Object>> fridges = new ArrayList<>();
 
-        donatedFridge.put("id", "123");
-        donatedFridge.put("food_status_desc", "piola");
-        donatedFridge.put("meal_urgency", "High");
-        donatedFridge.put("name", "Medrano");
-        donatedFridge.put("temp", 3);
-        donatedFridge.put("reserved", 40);
-        donatedFridge.put("state", "Active");
-        donatedFridge.put("meals", 120);
-        fridges.add(donatedFridge);
+        try (Session session = DB.getSessionFactory().openSession()) {
+            String hql = "FROM Fridge f ";
+            Query<Fridge> query = session.createQuery(hql, Fridge.class);
+            List<Fridge> results = query.getResultList();
+            System.out.println("results.size(): " + results.size());
+            for (Fridge fridge : results) {
+                fridges.add(fridge.toMap());
+            }
+            session.close();
 
+        } catch (Exception e) {
+            Logger.error("Could not serve contributor recognitions {}", e);
+            ctx.status(500).json(new ApiResponse(500));
+            return null;
+        }
 
         model.put("user", user);
         model.put("fridges", fridges);
