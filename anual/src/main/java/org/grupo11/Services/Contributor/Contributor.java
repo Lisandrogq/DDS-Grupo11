@@ -84,10 +84,12 @@ public class Contributor {
                     || contributionType == ContributionType.MEAL_DISTRIBUTION
                     || contributionType == ContributionType.MONEY_DONATION
                     || contributionType == ContributionType.PERSON_REGISTRATION
-                    /*TODO: REMOVE THE FOLLOWING ContributionTypes AFTER IMPLEMENTING LEGAL ENTITY FRONTEND*/
-                    ||contributionType == ContributionType.FRIDGE_ADMINISTRATION
-                    || contributionType == ContributionType.REWARD
-                    ;
+                    /*
+                     * TODO: REMOVE THE FOLLOWING ContributionTypes AFTER IMPLEMENTING LEGAL ENTITY
+                     * FRONTEND
+                     */
+                    || contributionType == ContributionType.FRIDGE_ADMINISTRATION
+                    || contributionType == ContributionType.REWARD;
         }
         if (this instanceof LegalEntity) {
             return contributionType == ContributionType.FRIDGE_ADMINISTRATION
@@ -181,6 +183,14 @@ public class Contributor {
 
     public void setContributorRegistry(ContributorRegistry contributorRegistry) {
         this.contributorRegistry = contributorRegistry;
+    }
+
+    public boolean isIndividual() {
+        return this instanceof Individual;
+    }
+
+    public boolean isLegalEntity() {
+        return this instanceof LegalEntity;
     }
 
 }

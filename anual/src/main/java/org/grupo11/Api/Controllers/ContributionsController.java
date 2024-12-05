@@ -1,12 +1,10 @@
 package org.grupo11.Api.Controllers;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.grupo11.DB;
 import org.grupo11.Logger;
 import org.grupo11.Api.Middlewares;
-import org.grupo11.Services.Credentials;
 import org.grupo11.Services.Meal;
 import org.grupo11.Services.Contributions.FridgeAdmin;
 import org.grupo11.Services.Contributions.MealDistribution;
@@ -16,7 +14,6 @@ import org.grupo11.Services.Contributions.RewardContribution;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Contributor.ContributorsManager;
 import org.grupo11.Services.Contributor.LegalEntity.LegalEntity;
-import org.grupo11.Services.Contributor.LegalEntity.LegalEntityCategory;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.Sensor.MovementSensorManager;
 import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
@@ -92,9 +89,6 @@ public class ContributionsController {
     }
 
     public static void handleMealDistributionContribution(Context ctx) {
-        System.out.println(ctx.body());
-        // meal_0=id&reason=reason&origin_address=origin&destiny_address=destiny
-
         Contributor contributor = Middlewares.isAuthenticated(ctx);
         if (contributor == null) {
             ctx.redirect("/register/login");
@@ -105,7 +99,6 @@ public class ContributionsController {
         String origin_address = ctx.formParam("origin_address");
         String destiny_address = ctx.formParam("destiny_address");
 
-        System.err.println(ctx.body());
         try (Session session = DB.getSessionFactory().openSession()) {
 
             if (!FieldValidator.isString(reason)) {
@@ -177,7 +170,6 @@ public class ContributionsController {
             ctx.redirect("/dash/home");
 
         } catch (Exception e) {
-            Logger.error("Exception ", e);
             // ditto
             ctx.json("TODO: make front error message - " + e.getMessage());
             return;
