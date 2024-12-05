@@ -43,6 +43,23 @@
 				<div class="d-flex flex-row w-100 flex-wrap" style="gap: 50px">
 					<div class="d-flex flex-column flex-grow-1" style="min-width: 300px">
 						<div class="mb-3">
+							<h4>Your recent visits</h4>
+							<p>A history of all your visits</p>
+						</div>
+						<div class="my-card d-flex flex-column" style="gap: 30px; height: 350px">
+							<#list visits as visit>
+								<div class="d-flex align-items-center" style="gap: 30px">
+									<h4>${visit.emoji}</h4>
+									<div>
+										<h6>${visit.type}</h6>
+										<p>${visit.desc}</p>
+									</div>
+								</div>
+							</#list>
+						</div>
+					</div>
+					<div class="d-flex flex-column flex-grow-1" style="min-width: 300px">
+						<div class="mb-3">
 							<h4>We need your help</h4>
 							<p>Here is the state of the current fridges</p>
 						</div>
@@ -57,13 +74,13 @@
 										<h6>${fridge.name} fridge</h6>
 										<div class="d-flex w-100 justify-content-between">
 											<p>${fridge.food_status_desc}</p>
-											<#if fridge.meal_urgency == "0 Incidents">
-													<p class="small bold text-success">${fridge.meal_urgency}</p>
-												<#elseif fridge.meal_urgency == "1 Incident">
+											<#if fridge.meal_urgency=="0 Active Incidents">
+												<p class="small bold text-success">${fridge.meal_urgency}</p>
+												<#elseif fridge.meal_urgency=="1 Active Incident">
 													<p class="small bold text-warning">${fridge.meal_urgency}</p>
-												<#else>
-													<p class="small bold text-danger">${fridge.meal_urgency}</p>
-												</#if>
+													<#else>
+														<p class="small bold text-danger">${fridge.meal_urgency}</p>
+											</#if>
 										</div>
 									</div>
 								</div>
@@ -85,6 +102,6 @@
 </div>
 
 <script src="/public/js/forms.js"></script>
-<script src="/public/js/modal.js"></script>
+<script src="/public/js/modal_tech.js"></script>
 
 </html>

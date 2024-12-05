@@ -12,16 +12,86 @@ import org.grupo11.Api.ApiResponse;
 import org.grupo11.Api.JsonData.ExchangeRewards.RedeemRequest;
 import org.grupo11.Api.JsonData.FridgeInfo.FridgeFullInfo;
 import org.grupo11.Services.Rewards.Reward;
+import org.grupo11.Services.Technician.Technician;
+import org.grupo11.Services.Technician.TechnicianVisit;
 import org.grupo11.Utils.FieldValidator;
 import org.hibernate.Session;
 import org.grupo11.Services.Fridge.Incident.Failure;
+import org.grupo11.Services.Fridge.Incident.Incident;
 import org.grupo11.Services.Fridge.Incident.Urgency;
 import org.grupo11.Services.Meal;
 import org.grupo11.Services.Fridge.Fridge;
 
+import io.javalin.http.ContentTooLargeResponse;
 import io.javalin.http.Context;
 
 public class FridgeController {
+    public static void handleAddVisit(Context ctx) {
+        System.out.println(ctx.body());
+        // Obtengo el Technician
+        Technician technician = Middlewares.technicianIsAuthenticated(ctx);
+        if (technician == null) {
+            ctx.redirect("/register/login");
+            return;
+        }
+
+        String incident_id = ctx.formParam("incident_id");
+        String is_fixed = ctx.formParam("fixed");
+        String description = ctx.formParam("description");
+        String fridge_id = ctx.formParam("fridge");
+
+        try (Session session = DB.getSessionFactory().openSession()) {
+            if (!FieldValidator.isInt(incident_id)) {
+                throw new IllegalArgumentException("invalid incident_id");
+            }
+            if (!FieldValidator.isBool(is_fixed)) {
+                throw new IllegalArgumentException("invalid is_fixed");
+            }
+            if (!FieldValidator.isString(description)) {
+                throw new IllegalArgumentException("invalid description");
+            }
+            if (!FieldValidator.isInt(fridge_id)) {
+                throw new IllegalArgumentException("invalid fridge_id");
+            }
+
+            String hql = "SELECT f " +
+                    "FROM Fridge f " +
+                    "WHERE f.id = :fridge_id";
+            org.hibernate.query.Query<Fridge> query = session.createQuery(hql, Fridge.class);
+            query.setParameter("fridge_id", fridge_id);
+            Fridge fridge = query.uniqueResult();
+            if (fridge == null) {
+                throw new IllegalArgumentException("fridge_id inexistente");
+            }
+            Incident incident = fridge.getIncidentById(Integer.parseInt(incident_id));
+            if (incident == null || incident.hasBeenFixed() == true) {
+                throw new IllegalArgumentException("incident_id inexistente o ya arreglado");
+            }
+            TechnicianVisit visit = new TechnicianVisit(technician, null, description, fridge.getName(),
+                    fridge.getAddress(), DateUtils.now(), Boolean.parseBoolean(is_fixed));
+            incident.addVisits(visit);
+            if (Boolean.parseBoolean(is_fixed)) {
+                incident.markAsFixed();
+                if (fridge.getActiveIncidents().size() == 0)
+                    fridge.setIsActive(true);
+                // aca no se esta teniendo en cuenta si los incidentes que quedan fueron
+                // marcados para desactivar el fridge :p pero la consigna no
+                // lo pedia asi q no pasa nada
+            }
+            DB.create(visit);
+            DB.update(incident);
+            DB.update(fridge);
+            ctx.redirect("/dash/home");
+
+        } catch (Exception e) {
+            Logger.error("Exception ", e);
+            // ditto
+            ctx.json("TODO: make front error message - " + e.getMessage());
+            return;
+        }
+
+    }
+
     public static void handleSubmitFailure(Context ctx) {
         System.out.println(ctx.body());
 
@@ -62,7 +132,8 @@ public class FridgeController {
             }
             Failure failure = new Failure(fridge, contributor, description, Urgency.valueOf(urgency), DateUtils.now());
             fridge.addIncident(failure);
-            if (Boolean.parseBoolean(set_inactive)) //se chequea pq si no se podría activar una heladera mediante un reporte de falla
+            if (Boolean.parseBoolean(set_inactive)) // se chequea pq si no se podría activar una heladera mediante un
+                                                    // reporte de falla
                 fridge.setIsActive(false);
             DB.create(failure);
             DB.update(fridge);
@@ -141,8 +212,7 @@ public class FridgeController {
 
         } catch (NumberFormatException e) {
             ctx.status(400).result("Invalid 'id' query parameter");
-         }
-
+        }
 
     }
 }

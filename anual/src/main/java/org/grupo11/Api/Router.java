@@ -47,6 +47,7 @@ public class Router {
     }
 
     static void fridgeRoutes(Javalin api) {
+        api.post("/fridge/add_visit", FridgeController::handleAddVisit);
         api.post("/fridge/failure", FridgeController::handleSubmitFailure);
         api.get("/fridge/subscribe", FridgeController::handleSubscription);
         api.post("/fridge/unsubscribe", FridgeController::handleUnSubscription);

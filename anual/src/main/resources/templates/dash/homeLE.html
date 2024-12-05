@@ -85,9 +85,9 @@
 										<h6>${fridge.name} fridge</h6>
 										<div class="d-flex w-100 justify-content-between">
 											<p>${fridge.food_status_desc}</p>
-											<#if fridge.meal_urgency=="0 Incidents">
+											<#if fridge.meal_urgency=="0 Active Incidents">
 												<p class="small bold text-success">${fridge.meal_urgency}</p>
-												<#elseif fridge.meal_urgency=="1 Incident">
+												<#elseif fridge.meal_urgency=="1 Active Incident">
 													<p class="small bold text-warning">${fridge.meal_urgency}</p>
 													<#else>
 														<p class="small bold text-danger">${fridge.meal_urgency}</p>

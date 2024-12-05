@@ -19,6 +19,7 @@ import org.grupo11.Services.Contributions.RewardContribution;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Rewards.Reward;
 import org.grupo11.Services.Technician.Technician;
+import org.grupo11.Services.Technician.TechnicianVisit;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.grupo11.Api.Middlewares;
@@ -249,7 +250,27 @@ public class RenderController {
             return null;
         }
 
+         // fridges
+         List<Map<String, Object>> visits = new ArrayList<>();
+
+         try (Session session = DB.getSessionFactory().openSession()) {
+             String hql = "FROM TechnicianVisit v ";
+             Query<TechnicianVisit> query = session.createQuery(hql, TechnicianVisit.class);
+             List<TechnicianVisit> results = query.getResultList();
+             System.out.println("results.size(): " + results.size());
+             for (TechnicianVisit visit : results) {
+                 visits.add(visit.toMap());
+             }
+             session.close();
+ 
+         } catch (Exception e) {
+             Logger.error("Could not serve contributor recognitions {}", e);
+             ctx.status(500).json(new ApiResponse(500));
+             return null;
+         }
+
         model.put("user", user);
+        model.put("visits", visits);
         model.put("fridges", fridges);
         return model;
     }

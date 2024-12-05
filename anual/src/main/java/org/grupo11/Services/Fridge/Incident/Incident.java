@@ -28,6 +28,8 @@ public abstract class Incident {
     protected Fridge fridge;
 
     public Incident() {
+        this.visits = new ArrayList<>();
+
     }
 
     public Incident(long detectedAt) {
@@ -60,5 +62,8 @@ public abstract class Incident {
     }
     public void setFridge(Fridge fridge) {
         this.fridge = fridge;
+    }
+    public Long getId() {
+        return id;
     }
 }

@@ -100,11 +100,10 @@ public class Fridge {
         fridgeMap.put("reserved", 0);// q pija es esto??
         fridgeMap.put("state", getIsActive() ? "Active" : "Inactive");
         fridgeMap.put("meals", getMeals().size());
-        fridgeMap.put("food_status_desc", "located at " + getAddress());// q criterio iria aca? si tiene alertas se pone
-                                                                        // eso??
+        fridgeMap.put("food_status_desc", "located at " + getAddress());
         int cantIncidentes = getActiveIncidents().size();
         fridgeMap.put("meal_urgency",
-                cantIncidentes + " Incident" + (cantIncidentes == 1 ? "" : "s"));
+                cantIncidentes + " Active Incident" + (cantIncidentes == 1 ? "" : "s"));
         return fridgeMap;
     }
 
@@ -272,6 +271,14 @@ public class Fridge {
             }
         }
         return false;
+    }
+    public Incident getIncidentById(int incident_id) {
+        for (Incident incident : incidents) {
+            if (incident.getId() == incident_id) {
+                return incident; 
+            }
+        }
+        return null; 
     }
 
     public List<Incident> getIncidents() {
