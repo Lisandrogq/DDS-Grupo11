@@ -36,6 +36,7 @@ public class ContributionsController {
 
         String type = ctx.formParam("type");
         String expirationDate = ctx.formParam("expirationDate");
+        Logger.info("expirationDate: " + expirationDate);
         String fridge_address = ctx.formParam("fridge_address");
         String calories = ctx.formParam("calories");
         String weight = ctx.formParam("weight");

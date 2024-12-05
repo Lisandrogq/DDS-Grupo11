@@ -51,4 +51,8 @@ public class Failure extends Incident {
     public List<String> getPictureUrls() {
         return this.pictureUrls;
     }
+
+    public Long getReporterID() {
+        return this.reportedBy.getId();
+    }
 }

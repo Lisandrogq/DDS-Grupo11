@@ -37,6 +37,10 @@ public class Meal {
         this.weight = weight;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getType() {
         return type;
     }

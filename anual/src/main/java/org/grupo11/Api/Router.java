@@ -50,6 +50,7 @@ public class Router {
         api.post("/fridge/failure", FridgeController::handleSubmitFailure);
         api.get("/fridge/subscribe", FridgeController::handleSubscription);
         api.post("/fridge/unsubscribe", FridgeController::handleUnSubscription);
+        api.get("/fridge/info", FridgeController::getFridgeInfo);
     }
 
     static void rewardRoutes(Javalin api) {

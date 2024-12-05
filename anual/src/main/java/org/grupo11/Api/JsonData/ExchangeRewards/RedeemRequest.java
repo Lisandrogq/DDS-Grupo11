@@ -1,4 +1,4 @@
-package org.grupo11.Services.Rewards.ExchangeRewards;
+package org.grupo11.Api.JsonData.ExchangeRewards;
 
 import java.util.List;
 

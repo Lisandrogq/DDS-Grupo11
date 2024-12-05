@@ -77,7 +77,7 @@ const fridgeModal = (name, meals, temp, reserved, state) => `
 
 	<div class="d-flex w-100" style="gap: 10px;">
 		<button id="fridge-report-failure" class="btn-primary w-100">Report failure</button>
-		<button id="fridge-view-report" class="btn-primary w-100">View report</button>
+		<button id="fridge-view-info" class="btn-primary w-100">View info</button>
 	</div>
 </div>
 `;
@@ -98,8 +98,8 @@ const setupFridgeListeners = () => {
 				failureBtn.onclick = () => setModalContent(failureAlert(id));
 
 				// setup listener in report failure to open te modal
-				const reportBtn = document.querySelector("#fridge-view-report");
-				reportBtn.onclick = () => showFridgeInfo();
+				const infoBtn = document.querySelector("#fridge-view-info");
+				infoBtn.onclick = () => showFridgeInfo(id);
 			});
 		};
 	});
@@ -169,9 +169,11 @@ contributeBtn.onclick = () => {
 };
 
 /**
- * ===================================== ACTUAL MODALS =====================================
+ * ===================================== CONTRIBUTION MODALS =====================================
  */
 function mealDonation() {
+	
+
 	return `
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
@@ -557,12 +559,103 @@ function failureAlert(fridge_id) {
 	`;
 }
 
-function showFridgeInfo() {
+/**
+ * ===================================== FRIDGE MODALS =====================================
+ */
 
-	openModal(fridgeReport());
+function showFridgeInfo(id) {
+	if (!id) {
+		console.error("Invalid fridge ID:", id);
+		alert("Invalid fridge ID. Please try again.");
+		return;
+	}
+
+	const url = `/fridge/info?id=${encodeURIComponent(id)}`;
+	console.log(url);
+
+	fetch(url, {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+		},
+	})
+		.then(response => {
+			if (!response.ok) {
+				console.error('Error:', response);
+				throw new Error("Failed to retrieve fridge info. Please try again.");
+			}
+			return response.json();
+		})
+		.then(data => {
+			console.log("Fridge info retrieved successfully:", data);
+			setModalContent(updateFridgeModal(data));
+		})
+		.catch(error => {
+			console.error('Error:', error);
+			alert("An error occurred. Please try again.");
+		});
 }
 
-function fridgeReport() {
+function updateFridgeModal(data) {
+	const { fridgeId, meals, failures } = data;
+	console.log("Fridge info:", data);
+
+	const mealRows = meals.map(meal => `
+        <tr>
+            <td>${meal.id}</td>
+            <td>${meal.type}</td>
+            <td>${meal.state}</td>
+            <td>${new Date(meal.expirationDate).toLocaleDateString()}</td>
+            <td>${meal.weight}g</td>
+            <td>${meal.calories}cal</td>
+        </tr>
+    `).join('');
+	console.log(mealRows);
+
+	const failureRows = failures.map(failure => `
+        <tr>
+            <td>${failure.reportedBy}</td>
+            <td>${failure.description}</td>
+            <td>${failure.urgency}</td>
+        </tr>
+    `).join('');
+	console.log(failureRows);
+	
+	return `
+        <div class="d-flex flex-column" style="gap: 40px;">
+            <div>
+                <h5 class="accent-100 mb-2">Fridge reports</h5>
+                <p>Report history for this fridge</p>
+            </div>
+            <div>
+                <p class="bold text-200" style="margin-bottom: 10px">Meal history</p>
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Expiration date</th>
+                        <th>Weight</th>
+                        <th>Calories</th>
+                    </tr>
+                    ${mealRows}
+                </table>  
+            </div>
+            <div>
+                <p class="bold text-200" style="margin-bottom: 10px">Incidents history</p>
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                    </tr>
+                    ${failureRows}
+                </table>
+            </div>
+        </div>
+    `;
+
+	/*
 	return `
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
@@ -599,7 +692,7 @@ function fridgeReport() {
 				</table>	
 			</div>
 			<div>
-				<p class="bold text-200" style="margin-bottom: 10px">Failures history</p>
+				<p class="bold text-200" style="margin-bottom: 10px">Incidents history</p>
 				<table>
 					<tr>
 						<th>ID</th>
@@ -620,6 +713,7 @@ function fridgeReport() {
 			</ div>
 		</div>
 	`;
+	*/
 }
 
 /**

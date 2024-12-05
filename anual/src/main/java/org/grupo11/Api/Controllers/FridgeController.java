@@ -3,16 +3,21 @@ package org.grupo11.Api.Controllers;
 import org.grupo11.DB;
 import org.grupo11.Logger;
 import org.grupo11.Api.Middlewares;
-import org.grupo11.Services.Meal;
 import org.grupo11.Services.Contributions.MealDonation;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Contributor.ContributorsManager;
-import org.grupo11.Services.Fridge.Fridge;
-import org.grupo11.Services.Fridge.Incident.Urgency;
-import org.grupo11.Services.Fridge.Incident.Failure;
 import org.grupo11.Utils.DateUtils;
+import java.util.List;
+import org.grupo11.Api.ApiResponse;
+import org.grupo11.Api.JsonData.ExchangeRewards.RedeemRequest;
+import org.grupo11.Api.JsonData.FridgeInfo.FridgeFullInfo;
+import org.grupo11.Services.Rewards.Reward;
 import org.grupo11.Utils.FieldValidator;
 import org.hibernate.Session;
+import org.grupo11.Services.Fridge.Incident.Failure;
+import org.grupo11.Services.Fridge.Incident.Urgency;
+import org.grupo11.Services.Meal;
+import org.grupo11.Services.Fridge.Fridge;
 
 import io.javalin.http.Context;
 
@@ -75,5 +80,69 @@ public class FridgeController {
     }
 
     public static void handleUnSubscription(Context ctx) {
+    }
+
+    public static void getFridgeInfo(Context ctx) {
+        String fridgeIdParam = ctx.queryParam("id");
+
+        if (fridgeIdParam == null) {
+            ctx.status(400).result("Missing 'id' query parameter");
+            return;
+        }
+
+        try {
+            int fridgeId = Integer.parseInt(fridgeIdParam);
+            org.hibernate.Transaction transaction = null;
+
+            try (Session session = DB.getSessionFactory().openSession()) {
+
+                // Existe fridge?
+                Fridge fridge = session.get(Fridge.class, fridgeId);
+
+                if (fridge == null) {
+                    ctx.status(404).result("Fridge not found");
+                    return;
+                }
+
+                // Fridge info y ID
+                FridgeFullInfo fridgeFullInfo = new FridgeFullInfo();
+                fridgeFullInfo.setFridgeId(fridgeId);
+
+                // Meals
+                String mealsHQL = "FROM Meal m WHERE m.fridge.id = :fridgeId";
+                org.hibernate.query.Query<Meal> mealsQuery = session.createQuery(mealsHQL);
+                mealsQuery.setParameter("fridgeId", fridgeId);
+                List<Meal> meals = mealsQuery.getResultList();
+
+                List<FridgeFullInfo.MealsData> mealsData = new java.util.ArrayList<>();
+                for (Meal meal : meals) {
+                    FridgeFullInfo.MealsData mealData = new FridgeFullInfo.MealsData();
+                    mealData.setId(meal.getId());
+                    mealData.setType(meal.getType());
+                    mealData.setExpirationDate(meal.getExpirationDate());
+                    mealData.setState(meal.getState());
+                    mealData.setWeight(meal.getWeight());
+                    mealData.setCalories(meal.getCalories());
+                    mealsData.add(mealData);
+                }
+                fridgeFullInfo.setMeals(mealsData);
+
+                // Failures
+                String incidentsHQL = "FROM Incident i WHERE i.fridge.id = :fridgeId";
+
+                List<FridgeFullInfo.IncidentsData> incidentsData = new java.util.ArrayList<>();
+                fridgeFullInfo.setIncidents(incidentsData);
+
+                ctx.json(fridgeFullInfo);
+            } catch (Exception e) {
+                e.printStackTrace();
+                ctx.status(500).result("Internal server error: " + e.getMessage());
+            }
+
+        } catch (NumberFormatException e) {
+            ctx.status(400).result("Invalid 'id' query parameter");
+         }
+
+
     }
 }

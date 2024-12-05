@@ -4,9 +4,9 @@ import org.grupo11.DB;
 import org.grupo11.Logger;
 import org.grupo11.Api.ApiResponse;
 import org.grupo11.Api.Middlewares;
+import org.grupo11.Api.JsonData.ExchangeRewards.RedeemRequest;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Rewards.Reward;
-import org.grupo11.Services.Rewards.ExchangeRewards.RedeemRequest;
 import org.grupo11.Utils.FieldValidator;
 import org.hibernate.Session;
 
