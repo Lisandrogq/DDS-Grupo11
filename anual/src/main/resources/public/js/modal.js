@@ -33,7 +33,7 @@ function agregarInput() {
 		let div = document.createElement("div");
 		div.classList.add("input");
 		div.innerHTML =
-			' <input type="text" id="meal" name="meal_'+count+'" required placeholder="ID of meal to distribute..."class="col-12 inputs">';
+			' <input type="text" id="meal" name="meal_' + count + '" required placeholder="ID of meal to distribute..."class="col-12 inputs">';
 		document.getElementById("input-placeholder").appendChild(div);
 		count++;
 	}
@@ -127,17 +127,27 @@ const modalMapper = {
 const contributionFormBtn = (text, modalDataAttr) =>
 	`<button class="btn-primary" style="flex: 1;" id="contribution-form-btn" data-attr=${modalDataAttr}>${text}</button>`;
 
-const contributeModal = `<div class="d-flex flex-column" style="gap: 40px">
+const contributeModalIND = `<div class="d-flex flex-column" style="gap: 40px">
 		<div>
 			<h5 class="accent-100 mb-2">Contributions</h5>
 			<p>How do you want to collaborate?</p>
 		</div>
 		<div class="d-flex flex-row w-100 flex-wrap justify-content-center align-items-center" style="gap: 20px;">
-			${contributionFormBtn("Meal donation", "meal-donation")}
-			${contributionFormBtn("Meal distribution", "meal-distribution")}
-			${contributionFormBtn("Fridge administration", "fridge-admin")}
-			${contributionFormBtn("Person registration", "person-registration")}
+		${contributionFormBtn("Meal donation", "meal-donation")}
+		${contributionFormBtn("Meal distribution", "meal-distribution")}
+		${contributionFormBtn("Person registration", "person-registration")}
+		${contributionFormBtn("Money donation", "money-donation")}
+		</div>
+	</div>`;
+
+const contributeModalLE = `<div class="d-flex flex-column" style="gap: 40px">
+		<div>
+			<h5 class="accent-100 mb-2">Contributions</h5>
+			<p>How do you want to collaborate?</p>
+		</div>
+		<div class="d-flex flex-row w-100 flex-wrap justify-content-center align-items-center" style="gap: 20px;">
 			${contributionFormBtn("Money donation", "money-donation")}
+			${contributionFormBtn("Fridge administration", "fridge-admin")}
 			${contributionFormBtn("Reward collaboration", "reward-collab")}
 		</div>
 	</div>`;
@@ -153,7 +163,10 @@ const setupListenersContributionsListeners = () => {
 
 const contributeBtn = document.querySelector("#contribute-btn");
 contributeBtn.onclick = () => {
-	openModal(contributeModal);
+	if (document.getElementById('contribute-btn').getAttribute("user-type") == "IND")
+		openModal(contributeModalIND);
+	else
+		openModal(contributeModalLE);
 	setupListenersContributionsListeners();
 };
 
@@ -625,66 +638,66 @@ redeemRewardBtns.forEach((button) => {
 	quantities[rewardId] = originalQuantity;
 
 	const neededPoints = parseInt(button.getAttribute("data-reward-neededpoints").replace(/\./g, ""));
-    
+
 	button.onclick = () => {
-        if (dataUserPoints >= neededPoints && quantities[rewardId] > 0) {
-            dataUserPoints -= neededPoints;
-            userPoints.textContent = dataUserPoints.toLocaleString('es-ES');
+		if (dataUserPoints >= neededPoints && quantities[rewardId] > 0) {
+			dataUserPoints -= neededPoints;
+			userPoints.textContent = dataUserPoints.toLocaleString('es-ES');
 			userPoints.setAttribute("data-user-points", dataUserPoints);
 
 			quantities[rewardId] -= 1;
 			button.setAttribute("data-reward-quantity", quantities[rewardId]);
-			
+
 			const descriptionElement = button.closest(".d-flex").querySelector("p");
-            if (descriptionElement) {
-                const newDescription = descriptionElement.textContent.replace(
+			if (descriptionElement) {
+				const newDescription = descriptionElement.textContent.replace(
 					/\((.*?) remaining\)/,
 					`(${quantities[rewardId].toLocaleString('es-ES')} remaining)`
 				);
-                descriptionElement.textContent = newDescription;
-            }
+				descriptionElement.textContent = newDescription;
+			}
 
 			cancelBtn.style.display = "inline-block";
-            confirmBtn.style.display = "inline-block";
+			confirmBtn.style.display = "inline-block";
 
-            // alert("Reward redeemed successfully!");
-        } else if (quantities[rewardId] <= 0) {
-            alert("There are no more rewards available");
-        } else {
+			// alert("Reward redeemed successfully!");
+		} else if (quantities[rewardId] <= 0) {
+			alert("There are no more rewards available");
+		} else {
 			alert("You don't have enough points");
 		}
-    };
+	};
 });
 
 cancelBtn.onclick = () => {
-    cancelBtn.style.display = "none";
-    confirmBtn.style.display = "none";
+	cancelBtn.style.display = "none";
+	confirmBtn.style.display = "none";
 
 	dataUserPoints = originalPoints;
 	userPoints.textContent = originalPoints;
 	userPoints.setAttribute("data-user-points", originalPoints);
 
-    redeemRewardBtns.forEach((button) => {
+	redeemRewardBtns.forEach((button) => {
 		const rewardId = button.getAttribute("data-reward-id");
-        const originalQuantity = originalQuantities[rewardId]; // Usar el valor original guardado
-        button.setAttribute("data-reward-quantity", originalQuantity);
+		const originalQuantity = originalQuantities[rewardId]; // Usar el valor original guardado
+		button.setAttribute("data-reward-quantity", originalQuantity);
 		quantities[rewardId] = originalQuantity;
 
-        const descriptionElement = button.closest(".d-flex").querySelector("p");
-        if (descriptionElement) {
-            const newDescription = descriptionElement.textContent.replace(/\d+ remaining/, `${originalQuantity} remaining`);
-            descriptionElement.textContent = newDescription;
-        }
-    });
+		const descriptionElement = button.closest(".d-flex").querySelector("p");
+		if (descriptionElement) {
+			const newDescription = descriptionElement.textContent.replace(/\d+ remaining/, `${originalQuantity} remaining`);
+			descriptionElement.textContent = newDescription;
+		}
+	});
 };
 
 confirmBtn.onclick = () => {
 
 	// Actualizar BD
 	const data = {
-        userPoints: dataUserPoints,
-        rewards: []
-    };
+		userPoints: dataUserPoints,
+		rewards: []
+	};
 
 	redeemRewardBtns.forEach((button) => {
 		const rewardId = button.getAttribute("data-reward-id");
@@ -703,24 +716,24 @@ confirmBtn.onclick = () => {
 		},
 		body: JSON.stringify(data),
 	})
-	.then(response => {
-		if (response.ok) {
-			alert("Reward redeemed successfully!");
-			console.log("Antes del cambio:", originalPoints);
-			console.log("Antes del cambio:", originalQuantities);
-			originalPoints = dataUserPoints;
-			originalQuantities = { ...quantities };
-			console.log("Tras el cambio:", originalPoints);
-			console.log("Tras el cambio:", originalQuantities);
-			cancelBtn.style.display = "none";
-			confirmBtn.style.display = "none";
-		} else {
-			alert("Failed to redeem the reward. Please try again.");
-		}
-	})
-	.catch(error => {
-		console.error('Error:', error);
-		alert("An error occurred. Please try again.");
-	});
+		.then(response => {
+			if (response.ok) {
+				alert("Reward redeemed successfully!");
+				console.log("Antes del cambio:", originalPoints);
+				console.log("Antes del cambio:", originalQuantities);
+				originalPoints = dataUserPoints;
+				originalQuantities = { ...quantities };
+				console.log("Tras el cambio:", originalPoints);
+				console.log("Tras el cambio:", originalQuantities);
+				cancelBtn.style.display = "none";
+				confirmBtn.style.display = "none";
+			} else {
+				alert("Failed to redeem the reward. Please try again.");
+			}
+		})
+		.catch(error => {
+			console.error('Error:', error);
+			alert("An error occurred. Please try again.");
+		});
 
 };

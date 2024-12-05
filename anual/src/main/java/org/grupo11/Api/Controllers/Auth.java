@@ -22,6 +22,7 @@ import org.grupo11.Utils.Crypto;
 import org.grupo11.Utils.FieldValidator;
 import org.grupo11.Utils.JWTService;
 import org.hibernate.Session;
+
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 
@@ -116,9 +117,10 @@ public class Auth {
         }
 
         if (!FieldValidator.acceptablePassword(pw)) {
-            sendFormError.accept("Invalid password");
+            sendFormError.accept("Invalid password format.<br> It must include uppercase, lowercase, digit and special character");
             return;
         }
+
 
         if (!FieldValidator.isInt(document)) {
             sendFormError.accept("Invalid document");
