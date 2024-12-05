@@ -510,8 +510,9 @@ function failureAlert(fridge_id) {
 				<p>Report a fridge's malfunction</p>
 			</div>
 			<form method="POST" action="/fridge/failure" class="form">
-				<select required name="urgency" value="none" class="boton1 inputs" style="width: 100%">
-					<option selected disabled hidden>Urgency</option>
+			<div class="d-flex justify-content-between w-100 gap">
+				<select required name="urgency"  class="boton1 inputs" style="width: 100%">
+					<option value="" selected disabled hidden>Urgency</option>
 					<option value="High" class="desplegables">High Urgency</option>
 					<option value="Medium" class="desplegables">
 						Medium Urgency
@@ -520,6 +521,12 @@ function failureAlert(fridge_id) {
 						Low Urgency
 					</option>
 				</select>
+				<select required name="set_inactive"  class="boton1 inputs" style="width: 100%">
+					<option value="" selected disabled hidden>Should we disable fridge?</option>
+					<option value="true" class="desplegables">Yes</option>
+					<option value="false" class="desplegables">No</option>
+				</select>
+			</div>
 				<textarea
 					type="textarea"
 					cols="10"

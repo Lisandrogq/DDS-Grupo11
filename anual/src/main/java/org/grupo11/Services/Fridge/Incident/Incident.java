@@ -25,7 +25,7 @@ public abstract class Incident {
     private boolean hasBeenFixed;
     private long detectedAt;
     @ManyToOne
-    private Fridge fridge;
+    protected Fridge fridge;
 
     public Incident() {
     }
@@ -54,5 +54,11 @@ public abstract class Incident {
 
     public long getDetectedAt() {
         return this.detectedAt;
+    }
+    public Fridge getFridge() {
+        return fridge;
+    }
+    public void setFridge(Fridge fridge) {
+        this.fridge = fridge;
     }
 }

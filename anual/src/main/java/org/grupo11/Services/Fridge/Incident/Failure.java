@@ -10,11 +10,12 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 
 @Entity
 public class Failure extends Incident {
-    @OneToOne
+    @ManyToOne
     private Contributor reportedBy;
     private String description;
     @ElementCollection
@@ -27,6 +28,7 @@ public class Failure extends Incident {
     public Failure(Fridge fridge, Contributor reportedBy, String description, Urgency urgency,
             long detectedAt) {
         super(detectedAt);
+        this.fridge = fridge;
         this.urgency = urgency;
         this.reportedBy = reportedBy;
         this.description = description;
