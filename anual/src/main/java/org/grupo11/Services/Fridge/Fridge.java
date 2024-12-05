@@ -17,6 +17,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -37,7 +38,7 @@ public class Fridge {
     private int capacity;
     private int commissioningDate;
     @OneToMany
-    private List<Meal> meals;
+    private List<Meal> meals= new ArrayList<Meal>();
 
     private Integer addedMeals=0;
     private Integer removedMeals=0;
@@ -59,6 +60,7 @@ public class Fridge {
     private List<FridgeNotification> notificationsSent;
 
     public Fridge() {
+        
     }
 
     public Fridge(double lon, double lat, String address, String name, int capacity, int commissioningDate,
@@ -190,6 +192,9 @@ public class Fridge {
         return this.removedMeals;
     }
 
+    public void setMeals(List<Meal>meals){
+        this.meals = meals;
+    }
     public void addMeal(Meal meal) {
         this.meals.add(meal);
         this.addedMeals++;
@@ -205,6 +210,14 @@ public class Fridge {
 
     }
 
+    public Meal getMealByType(String type){
+        for (Meal meal :meals) {
+            if (meal.getType().equals(type) ) {
+                return meal;
+            }
+        }
+        return null;
+    }
     public TemperatureSensorManager getTempManager() {
         return (TemperatureSensorManager)this.sensorManagers.get(0);
     }

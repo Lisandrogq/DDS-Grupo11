@@ -27,18 +27,24 @@ const closeModal = () => {
 document.addEventListener("keyup", (e) => {
 	if (e.key == "Escape") closeModal();
 });
-
+var count = 1;
 function agregarInput() {
-	let div = document.createElement("div");
-	div.classList.add("input");
-	div.innerHTML =
-		' <input type="text" id="meal" name="meal" required placeholder="ID of meal to distribute..."class="col-12 inputs">';
-	document.getElementById("input-placeholder").appendChild(div);
+	if (count < 4) {
+		let div = document.createElement("div");
+		div.classList.add("input");
+		div.innerHTML =
+			' <input type="text" id="meal" name="meal_'+count+'" required placeholder="ID of meal to distribute..."class="col-12 inputs">';
+		document.getElementById("input-placeholder").appendChild(div);
+		count++;
+	}
 }
 
 function eliminarInput() {
-	var inputs = document.getElementById("input-placeholder").querySelectorAll(".input");
-	inputs[inputs.length - 1].remove();
+	if (count >= 0) {
+		var inputs = document.getElementById("input-placeholder").querySelectorAll(".input");
+		inputs[inputs.length - 1].remove();
+		count--;
+	}
 }
 
 function setup_map() {
@@ -233,39 +239,33 @@ function mealDistribution() {
 				<h5 class="accent-100 mb-2">Meal distribution</h5>
 				<p>Contribute distributing a meal</p>
 			</div>
-			<form method="POST" action="/contribution/meal/distrubution" class="form">
+			<form method="POST" action="/contribution/meal/distribution" class="form">
 				<div>
 					<span id="btnCrearInput" style="color: #136C91;" class="clickable-text" onclick="agregarInput()">Add meal</span> <b>|</b>
 					<span  style="color: #136C91" class="clickable-text" onclick="eliminarInput()">Delete meal</span>
 				</div>
 				<div id="input-placeholder"> 
-				<input type="text" id="meal" name="meal" required placeholder="ID of meal to distribute..."class="col-12 inputs">
+				<input type="text" id="meal" name="meal_0" required placeholder="ID of meal to distribute..."class="col-12 inputs">
 				</div>
 				<input type="text" id="reason" name="reason" required placeholder="Reason for relocation...">
 				
 				<div class="d-flex justify-content-between w-100 gap">
-					<select required value="fridge" class="boton1 inputs" style="width: 100%;">
-						<option selected disabled hidden>Choose origin fridge</option>
-						<option value='Heladera 1' class="desplegables">Heladera 1</option> <!-- sujeto a cambios-->
-						<option value='Heladera 2' class="desplegables">Heladera 2</option>
-						<option value='Heladera 3' class="desplegables">Heladera 3</option>
-						<option value='Heladera 4' class="desplegables">Heladera 4</option>
-					</select>
+						<input
+						type="text"
+						id="origin_address"
+						name="origin_address"
+						required
+						placeholder="Origin fridge Address..."
+					/>
 
-					<select required value="fridge" class="boton1 inputs" style="width: 100%;">
-						<option selected disabled hidden>Choose destiny fridge</option>
-						<option value='Heladera 1' class="desplegables">Heladera 1</option> <!-- sujeto a cambios-->
-						<option value='Heladera 2' class="desplegables">Heladera 2</option>
-						<option value='Heladera 3' class="desplegables">Heladera 3</option>
-						<option value='Heladera 4' class="desplegables">Heladera 4</option>
-					</select>
+						<input
+						type="text"
+						id="destiny_address"
+						name="destiny_address"
+						required
+						placeholder="Destiny fridge Address..."
+					/>
 					
-				</div>
-
-				<p>Date of distribution</p>	
-				<div class="d-flex justify-content-between w-100 gap">
-					<input type="date" id="dateOfDistribution" name="dateOfDistribution" required placeholder="Date of distribution..."
-					class="w-100 inputs">
 				</div>
 
 				<div class="form-btns-container">

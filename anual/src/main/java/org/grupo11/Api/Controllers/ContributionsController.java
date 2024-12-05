@@ -1,6 +1,7 @@
 package org.grupo11.Api.Controllers;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.grupo11.DB;
 import org.grupo11.Logger;
@@ -8,6 +9,7 @@ import org.grupo11.Api.Middlewares;
 import org.grupo11.Services.Credentials;
 import org.grupo11.Services.Meal;
 import org.grupo11.Services.Contributions.FridgeAdmin;
+import org.grupo11.Services.Contributions.MealDistribution;
 import org.grupo11.Services.Contributions.MealDonation;
 import org.grupo11.Services.Contributions.MoneyDonation;
 import org.grupo11.Services.Contributions.RewardContribution;
@@ -77,13 +79,96 @@ public class ContributionsController {
 
         } catch (Exception e) {
             Logger.error("Exception ", e);
-            // ditto
-            ctx.json("TODO: make front error message");
+            // ditto          
+              ctx.json("TODO: make front error message - "+ e.getMessage());
             return;
         }
     }
 
     public static void handleMealDistributionContribution(Context ctx) {
+        System.out.println(ctx.body());
+        // meal_0=id&reason=reason&origin_address=origin&destiny_address=destiny
+
+        Contributor contributor = Middlewares.isAuthenticated(ctx);
+        if (contributor == null) {
+            ctx.redirect("/register/login");
+            return;
+        }
+
+        String reason = ctx.formParam("reason");
+        String origin_address = ctx.formParam("origin_address");
+        String destiny_address = ctx.formParam("destiny_address");
+
+        System.err.println(ctx.body());
+        try (Session session = DB.getSessionFactory().openSession()) {
+
+            if (!FieldValidator.isString(reason)) {
+                throw new IllegalArgumentException("invalid reason");
+            }
+            if (!FieldValidator.isString(origin_address)) {
+                throw new IllegalArgumentException("invalid origin_address");
+            }
+            if (!FieldValidator.isString(destiny_address)) {
+                throw new IllegalArgumentException("invalid destiny_address");
+            }
+
+            String origin_hql = "SELECT f " +
+                    "FROM Fridge f " +
+                    "WHERE f.address = :origin_address"; 
+            org.hibernate.query.Query<Fridge> origin_query = session.createQuery(origin_hql, Fridge.class);
+            origin_query.setParameter("origin_address", origin_address);
+            String destiny_hql = "SELECT f " +
+                    "FROM Fridge f " +
+                    "WHERE f.address = :destiny_address";
+            org.hibernate.query.Query<Fridge> destiny_query = session.createQuery(destiny_hql, Fridge.class);
+            destiny_query.setParameter("destiny_address", destiny_address);
+
+            Fridge origin_fridge = origin_query.getSingleResult();
+            Fridge destiny_fridge = destiny_query.getSingleResult();
+            if (origin_fridge == null || destiny_fridge == null) {
+                throw new IllegalArgumentException("alguna address inexistente");
+            }
+
+            for (int i = 0; i < 10; i++) { // primero se valida que todas las comidas estén . se podría hacer con transacciones pero notiempo
+                String meal_type = ctx.formParam("meal_" + i);
+                if (meal_type != null) {
+                    Meal meal = origin_fridge.getMealByType(meal_type);
+
+                    if (meal == null) {
+                        throw new IllegalArgumentException(meal_type+" no existe en la heladera de origen");
+                    }
+                }
+            }
+            int i;
+            for (i = 0; i < 10; i++) { // luego se realiza el movimiento.
+                String meal_type = ctx.formParam("meal_" + i);
+                if (meal_type != null) {
+                    Meal meal = origin_fridge.getMealByType(meal_type);
+                    
+                        origin_fridge.removeMeal(meal);
+                        destiny_fridge.addMeal(meal);
+                        meal.setFridge(destiny_fridge);
+                        DB.update(meal);
+                    
+                }
+            }
+            DB.update(origin_fridge);
+            DB.update(destiny_fridge);
+
+            MealDistribution mealDistribution = new MealDistribution(origin_fridge, destiny_fridge, i + 1, reason,
+                    DateUtils.now());
+            mealDistribution.setContributor(contributor);
+            DB.create(mealDistribution);
+
+            ctx.redirect("/dash/home");
+
+        } catch (Exception e) {
+            Logger.error("Exception ", e);
+            // ditto
+            ctx.json("TODO: make front error message - "+ e.getMessage());
+            return;
+        }
+
     }
 
     public static void handlFridgeAdministrationContribution(Context ctx) {// TODO: only allow this contribution to
@@ -132,7 +217,7 @@ public class ContributionsController {
         } catch (Exception e) {
             Logger.error("Exception ", e);
             // ditto
-            ctx.json("TODO: make front error message ");
+            ctx.json("TODO: make front error message - "+ e.getMessage());
             return;
         }
     }
@@ -164,7 +249,7 @@ public class ContributionsController {
         } catch (Exception e) {
             Logger.error("Exception ", e);
             // ditto
-            ctx.json("TODO: make front error message ");
+            ctx.json("TODO: make front error message - "+ e.getMessage());
             return;
         }
     }
@@ -210,8 +295,7 @@ public class ContributionsController {
         } catch (Exception e) {
             Logger.error("Exception ", e);
             // ditto
-            ctx.json("TODO: make front error message ");
-
+            ctx.json("TODO: make front error message - "+ e.getMessage());
             return;
         }
     }
