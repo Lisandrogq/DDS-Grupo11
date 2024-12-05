@@ -20,7 +20,7 @@ public class FridgeController {
     public static void handleSubmitFailure(Context ctx) {
         System.out.println(ctx.body());
 
-        Contributor contributor = Middlewares.isAuthenticated(ctx);
+        Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
         if (contributor == null) {
             ctx.redirect("/register/login");
             return;

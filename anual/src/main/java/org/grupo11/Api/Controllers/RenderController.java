@@ -18,6 +18,7 @@ import org.grupo11.Services.Contributions.PersonRegistration;
 import org.grupo11.Services.Contributions.RewardContribution;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Rewards.Reward;
+import org.grupo11.Services.Technician.Technician;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.grupo11.Api.Middlewares;
@@ -52,13 +53,16 @@ public class RenderController {
 
     public static void renderDashboardPage(Context ctx) {
         try {
-            Contributor contributor = Middlewares.isAuthenticated(ctx);
-            if (contributor == null) {
-                Logger.info("Contributor not founrd");
+            Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
+            Technician technician = Middlewares.technicianIsAuthenticated(ctx);
+            if (contributor == null && technician == null) {
+                Logger.info("Contributor or techinician not found");
                 ctx.redirect("/register/login");
                 return;
             }
-            String name;
+            ctx.json("technician"+technician.getName());
+            return;
+           /*  String name;
             if (contributor instanceof Individual) {
                 name = ((Individual) contributor).getName();
             } else {
@@ -104,10 +108,6 @@ public class RenderController {
             donation2.put("desc", "You have registered “valentina” as part of our community");
             donation2.put("fridge", donatedFridge);
 
-            /*
-             * donations.add(donation1);
-             * donations.add(donation2);
-             */
             // fridges
             List<Map<String, Object>> fridges = new ArrayList<>();
 
@@ -227,7 +227,7 @@ public class RenderController {
 
             String page = "templates/dash/home" + (contributor.isIndividual() ? "IND" : "LE");
 
-            ctx.render(page + ".html", model);
+            ctx.render(page + ".html", model); */
         } catch (
 
         Exception e) {

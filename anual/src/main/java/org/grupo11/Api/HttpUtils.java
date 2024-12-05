@@ -6,6 +6,7 @@ import org.grupo11.DB;
 import org.grupo11.Logger;
 import org.grupo11.Enums.UserTypes;
 import org.grupo11.Services.Contributor.Contributor;
+import org.grupo11.Services.Technician.Technician;
 import org.hibernate.Session;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -54,6 +55,36 @@ public class HttpUtils {
             query.setParameter("owner_id", owner_id);
             Contributor contributor = query.getSingleResult();
             return contributor;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
+    public static Technician getTechnicianFromAccessToken(DecodedJWT token) {
+        String payload = new String(java.util.Base64.getDecoder().decode(token.getPayload()));
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> payloadMap;
+        try {
+            payloadMap = objectMapper.readValue(payload, Map.class);
+        } catch (Exception e) {
+            return null;
+        }
+        Long owner_id = Long.valueOf(payloadMap.get("owner_id").toString());
+        UserTypes type = Enum.valueOf(UserTypes.class, payloadMap.get("type").toString());
+        if (type == null) {
+            return null;
+        }
+
+        try (Session session = DB.getSessionFactory().openSession()) {
+            
+            String hql = "SELECT entity " +
+                    "FROM technician t" +
+                    "WHERE t.id = :owner_id";
+            org.hibernate.query.Query<Technician> query = session.createQuery(hql, Technician.class);
+            query.setParameter("owner_id", owner_id);
+            Technician technician = query.getSingleResult();
+            return technician;
         } catch (Exception e) {
             return null;
         }

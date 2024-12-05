@@ -28,7 +28,7 @@ import io.javalin.http.Context;
 public class ContributionsController {
     public static void handleMealContribution(Context ctx) {
         System.out.println(ctx.body());
-        Contributor contributor = Middlewares.isAuthenticated(ctx);
+        Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
         if (contributor == null) {
             ctx.redirect("/register/login");
             return;
@@ -93,7 +93,7 @@ public class ContributionsController {
     }
 
     public static void handleMealDistributionContribution(Context ctx) {
-        Contributor contributor = Middlewares.isAuthenticated(ctx);
+        Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
         if (contributor == null) {
             ctx.redirect("/register/login");
             return;
@@ -193,7 +193,7 @@ public class ContributionsController {
 
     public static void handlFridgeAdministrationContribution(Context ctx) {// TODO: only allow this contribution to
                                                                            // legal entities
-        Contributor contributor = Middlewares.isAuthenticated(ctx);
+        Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
         if (contributor == null) {
             ctx.redirect("/register/login");
             return;
@@ -248,7 +248,7 @@ public class ContributionsController {
     }
 
     public static void handleMoneyContribution(Context ctx) {
-        Contributor contributor = Middlewares.isAuthenticated(ctx);
+        Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
         if (contributor == null) {
             ctx.redirect("/register/login");
             return;
@@ -288,7 +288,7 @@ public class ContributionsController {
     }
 
     public static void handleRewardContribution(Context ctx) {
-        Contributor contributor = Middlewares.isAuthenticated(ctx);
+        Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
         if (contributor == null) {
             ctx.redirect("/register/login");
             return;

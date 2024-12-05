@@ -16,7 +16,7 @@ public class RewardsController {
 
     public static void handleUpdateRewards(Context ctx) {
         // Obtengo el contributor
-        Contributor contributor = Middlewares.isAuthenticated(ctx);
+        Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
         if (contributor == null) {
             ctx.redirect("/register/login");
             return;
