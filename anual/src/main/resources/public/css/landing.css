@@ -3,7 +3,7 @@
 
 :root {
 	--landing-bg: #dcf1fc;
-	--nav-link-color: #84d2f8;
+	--nav-link-color: #ffffff;
 	--hero-bg: #b3e1f8;
 	--hero-desc: #f1f1f1;
 }
@@ -69,6 +69,7 @@ nav {
 .nav-link:hover {
 	color: var(--nav-link-color);
 	opacity: 0.8;
+	text-decoration: underline;
 }
 
 .hero-bg {
