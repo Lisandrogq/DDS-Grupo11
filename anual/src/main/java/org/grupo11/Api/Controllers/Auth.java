@@ -21,7 +21,6 @@ import org.grupo11.Services.Contributor.LegalEntity.LegalEntityType;
 import org.grupo11.Utils.Crypto;
 import org.grupo11.Utils.FieldValidator;
 import org.grupo11.Utils.JWTService;
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
@@ -117,7 +116,7 @@ public class Auth {
         }
 
         if (!FieldValidator.acceptablePassword(pw)) {
-            sendFormError.accept("Invalid passwordddd");
+            sendFormError.accept("Invalid password");
             return;
         }
 

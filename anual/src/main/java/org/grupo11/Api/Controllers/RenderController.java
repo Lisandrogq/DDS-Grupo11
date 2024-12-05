@@ -20,13 +20,10 @@ import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Rewards.Reward;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import org.grupo11.Api.HttpUtils;
 import org.grupo11.Api.Middlewares;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Contributor.Individual;
 import org.grupo11.Services.Contributor.LegalEntity.LegalEntity;
-
-import com.auth0.jwt.interfaces.DecodedJWT;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +54,7 @@ public class RenderController {
         try {
             Contributor contributor = Middlewares.isAuthenticated(ctx);
             if (contributor == null) {
+                Logger.info("Contributor not founrd");
                 ctx.redirect("/register/login");
                 return;
             }
@@ -226,7 +224,9 @@ public class RenderController {
             model.put("fridges", fridges);
             model.put("rewards", rewards);
 
-            ctx.render("templates/dash/home.html", model);
+            String page = "templates/dash/home" + (contributor.isIndividual() ? "IND" : "LE");
+
+            ctx.render(page + ".html", model);
         } catch (
 
         Exception e) {

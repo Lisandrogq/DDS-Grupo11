@@ -43,7 +43,7 @@ public class HttpUtils {
             if (type == UserTypes.Individual) {
                 entity = "Individual";
             } else {
-                entity = "Legalentity";
+                entity = "LegalEntity";
             }
 
             String hql = "SELECT entity " +
