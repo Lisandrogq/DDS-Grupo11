@@ -1,6 +1,7 @@
 package org.grupo11;
 
 import org.grupo11.Config.Env;
+import org.grupo11.Services.Credentials;
 import org.grupo11.Services.Meal;
 import org.grupo11.Services.ActivityRegistry.ActivityRegistry;
 import org.grupo11.Services.ActivityRegistry.CardUsage;
@@ -63,6 +64,7 @@ public class DB {
                     .addAnnotatedClass(Report.class)
                     .addAnnotatedClass(PersonInNeed.class)
                     .addAnnotatedClass(CardUsage.class)
+                    .addAnnotatedClass(Credentials.class)
                     // contributions
                     .addAnnotatedClass(Contribution.class)
                     .addAnnotatedClass(Reward.class)
@@ -79,7 +81,7 @@ public class DB {
                     // technician
                     .addAnnotatedClass(Technician.class)
                     .addAnnotatedClass(TechnicianVisit.class)
-                    //sensorManagers
+                    // sensorManagers
                     .addAnnotatedClass(MovementSensor.class)
                     .addAnnotatedClass(TemperatureSensor.class)
                     .addAnnotatedClass(Sensor.class)
@@ -143,7 +145,8 @@ public class DB {
 
     private static void executeInTransaction(TransactionOperation operation) {
         Transaction transaction = null;
-        try (Session session = getSessionFactory().openSession()) {
+        Session session = getSessionFactory().openSession();
+        try {
             transaction = session.beginTransaction();
             operation.execute(session);
             transaction.commit();
@@ -152,6 +155,8 @@ public class DB {
                 transaction.rollback();
             }
             throw e;
+        } finally {
+            session.close();
         }
     }
 

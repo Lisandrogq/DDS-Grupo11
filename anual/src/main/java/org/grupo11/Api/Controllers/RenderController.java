@@ -9,7 +9,6 @@ import java.util.Map;
 import org.grupo11.DB;
 import org.grupo11.Logger;
 import org.grupo11.Api.ApiResponse;
-import org.grupo11.Services.Meal;
 import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributions.FridgeAdmin;
 import org.grupo11.Services.Contributions.MealDistribution;
@@ -17,29 +16,35 @@ import org.grupo11.Services.Contributions.MealDonation;
 import org.grupo11.Services.Contributions.MoneyDonation;
 import org.grupo11.Services.Contributions.PersonRegistration;
 import org.grupo11.Services.Contributions.RewardContribution;
-import org.grupo11.Services.Contributor.Individual;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Rewards.Reward;
-import org.grupo11.Services.Rewards.RewardCategory;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.grupo11.Api.HttpUtils;
+import org.grupo11.Api.Middlewares;
+import org.grupo11.Services.Contributor.Contributor;
+import org.grupo11.Services.Contributor.Individual;
+import org.grupo11.Services.Contributor.LegalEntity.LegalEntity;
+
+import com.auth0.jwt.interfaces.DecodedJWT;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.HashMap;
 
 import io.javalin.http.Context;
-import jakarta.persistence.Tuple;
 
 public class RenderController {
     public static void renderRegisterPages(Context ctx) {
         try {
             String filename = ctx.pathParam("filename");
             Path filePath = Paths.get("src/main/resources/templates/register/", filename + ".html");
+            String error = ctx.queryParam("error");
+            Map<String, Object> model = new HashMap<>();
+            model.put("error", error);
 
             if (Files.exists(filePath)) {
-                ctx.render("templates/register/" + filename + ".html");
+                ctx.render("templates/register/" + filename + ".html", model);
             } else {
                 ctx.status(404);
             }
@@ -48,14 +53,24 @@ public class RenderController {
         }
     }
 
-    // TODO(marcos): here we should check if the user is authenticated
-    // otherwise redirect to login
     public static void renderDashboardPage(Context ctx) {
         try {
+            Contributor contributor = Middlewares.isAuthenticated(ctx);
+            if (contributor == null) {
+                ctx.redirect("/register/login");
+                return;
+            }
+            String name;
+            if (contributor instanceof Individual) {
+                name = ((Individual) contributor).getName();
+            } else {
+                name = ((LegalEntity) contributor).getName();
+            }
+
             // user
             Map<String, Object> user = new HashMap<>();
-            user.put("name", "John");
-            user.put("points", 1213);
+            user.put("name", name);
+            user.put("points", contributor.getPoints());
 
             // temperature
             List<Map<String, Object>> temperatures = new ArrayList<>();
@@ -106,6 +121,7 @@ public class RenderController {
                 for (Fridge fridge : results) {
                     fridges.add(fridge.toMap());
                 }
+                session.close();
 
             } catch (Exception e) {
                 Logger.error("Could not serve contributor recognitions {}", e);
@@ -126,6 +142,7 @@ public class RenderController {
                         rewards.add(reward.toMap());
                     }
                 }
+                session.close();
 
             } catch (Exception e) {
                 Logger.error("Could not serve contributor recognitions {}", e);
@@ -142,7 +159,7 @@ public class RenderController {
                     Map<String, Object> donation = new HashMap<>();
 
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                    String formattedContributionDate = sdf.format(new Date(contribution.getDate()));
+                    String formattedContributionDate = sdf.format(contribution.getDate());
 
                     if (contribution instanceof MealDonation) {
                         MealDonation mealDonation = (MealDonation) contribution;
@@ -194,7 +211,7 @@ public class RenderController {
                     }
                     donations.add(donation);
                 }
-
+                session.close();
             } catch (Exception e) {
                 Logger.error("Could not serve contributor recognitions {}", e);
                 ctx.status(500).json(new ApiResponse(500));

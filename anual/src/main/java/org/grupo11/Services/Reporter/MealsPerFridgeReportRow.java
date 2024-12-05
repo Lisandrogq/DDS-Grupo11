@@ -18,15 +18,15 @@ public class MealsPerFridgeReportRow {
     private Long id;
     @OneToOne
     private Fridge fridge;
-    @OneToMany
-    private List<Meal> mealsIn;
-    @OneToMany
-    private List<Meal> mealsOut;
+
+    private Integer mealsIn;
+
+    private Integer mealsOut;
 
     public MealsPerFridgeReportRow() {
     }
 
-    public MealsPerFridgeReportRow(Fridge fridge, List<Meal> mealsIn, List<Meal> mealsOut) {
+    public MealsPerFridgeReportRow(Fridge fridge, Integer mealsIn, Integer mealsOut) {
         this.fridge = fridge;
         this.mealsIn = mealsIn;
         this.mealsOut = mealsOut;
@@ -36,11 +36,11 @@ public class MealsPerFridgeReportRow {
         return this.fridge;
     }
 
-    public List<Meal> getMealsOut() {
+    public Integer getMealsOut() {
         return this.mealsOut;
     }
 
-    public List<Meal> getMealsin() {
+    public Integer getMealsin() {
         return this.mealsIn;
     }
 }

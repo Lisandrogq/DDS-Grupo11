@@ -13,10 +13,10 @@ public class Meal {
     private Long id;
 
     private String type;
-    private int expirationDate;
+    private long expirationDate;
     // @OneToOne //las bidireccionalidades son re de trolo mal
     // private MealDonation mealDonation;
-    private int donationDate;
+    private long donationDate;
     @ManyToOne
     private Fridge fridge;
     private String state;
@@ -26,7 +26,7 @@ public class Meal {
     public Meal() {
     }
 
-    public Meal(String type, int expirationDate, int donationDate, Fridge fridge,
+    public Meal(String type, long expirationDate, long donationDate, Fridge fridge,
             String state, Integer calories, Integer weight) {
         this.type = type;
         this.expirationDate = expirationDate;
@@ -41,11 +41,11 @@ public class Meal {
         return type;
     }
 
-    public int getExpirationDate() {
+    public long getExpirationDate() {
         return expirationDate;
     }
 
-    public int getDonationDate() {
+    public long getDonationDate() {
         return donationDate;
     }
 

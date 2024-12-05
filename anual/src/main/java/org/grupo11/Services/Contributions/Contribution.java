@@ -24,7 +24,6 @@ public abstract class Contribution {
     }
 
     public Contribution(long date) {
-        id = Crypto.getRandomId(6);
         this.date = date;
     }
 
@@ -62,5 +61,4 @@ public abstract class Contribution {
     public void setContributor(Contributor contributor) {
         this.contributor = contributor;
     }
-
 }

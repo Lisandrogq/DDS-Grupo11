@@ -7,33 +7,32 @@ import org.grupo11.Services.Fridge.FridgeOpenLogEntry;
 import org.grupo11.Utils.DateUtils;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "id")
 public class MealDistribution extends Contribution {
-    @OneToOne
+    @ManyToOne
     private Fridge originFridge;
-    @OneToOne
+    @ManyToOne
     private Fridge destinyFridge;
     private int quantity;
     private String reason;
-    @OneToOne
-    private Meal meal;
-
     public MealDistribution() {
     }
 
     public MealDistribution(Fridge originFridge, Fridge destinyFridge, int quantity,
-            String reason, Meal meal,
+            String reason,
             long distributionDate) {
         super(distributionDate);
         this.originFridge = originFridge;
         this.destinyFridge = destinyFridge;
         this.quantity = quantity;
         this.reason = reason;
-        this.meal = meal;
     }
 
     @Override
@@ -89,13 +88,7 @@ public class MealDistribution extends Contribution {
         this.reason = reason;
     }
 
-    public Meal getMeal() {
-        return this.meal;
-    }
 
-    public void setMeal(Meal meal) {
-        this.meal = meal;
-    }
 
     @Override
     public double getRewardPoints() {

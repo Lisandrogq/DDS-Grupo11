@@ -56,4 +56,8 @@ public class Env {
     public static String getRabbitPassword() {
         return properties.getProperty("RABBIT_PASSWORD");
     }
+
+    public static String getJWTSecret() {
+        return properties.getProperty("JWT_SECRET");
+    }
 }

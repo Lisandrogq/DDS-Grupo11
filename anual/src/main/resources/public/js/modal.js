@@ -27,18 +27,24 @@ const closeModal = () => {
 document.addEventListener("keyup", (e) => {
 	if (e.key == "Escape") closeModal();
 });
-
+var count = 1;
 function agregarInput() {
-	let div = document.createElement("div");
-	div.classList.add("input");
-	div.innerHTML =
-		' <input type="text" id="meal" name="meal" required placeholder="ID of meal to distribute..."class="col-12 inputs">';
-	document.getElementById("input-placeholder").appendChild(div);
+	if (count < 4) {
+		let div = document.createElement("div");
+		div.classList.add("input");
+		div.innerHTML =
+			' <input type="text" id="meal" name="meal_'+count+'" required placeholder="ID of meal to distribute..."class="col-12 inputs">';
+		document.getElementById("input-placeholder").appendChild(div);
+		count++;
+	}
 }
 
 function eliminarInput() {
-	var inputs = document.getElementById("input-placeholder").querySelectorAll(".input");
-	inputs[inputs.length - 1].remove();
+	if (count >= 0) {
+		var inputs = document.getElementById("input-placeholder").querySelectorAll(".input");
+		inputs[inputs.length - 1].remove();
+		count--;
+	}
 }
 
 function setup_map() {
@@ -180,14 +186,13 @@ function mealDonation() {
 						placeholder="Expiration date..."
 					/>
 
-					<select required value="fridge" class="w-100">
-						<option selected disabled hidden>Choose a fridge</option>
-						<option value="Heladera 1">Heladera 1</option>
-						<!-- sujeto a cambios-->
-						<option value="Heladera 2">Heladera 2</option>
-						<option value="Heladera 3">Heladera 3</option>
-						<option value="Heladera 4">Heladera 4</option>
-					</select>
+					<input
+						type="text"
+						id="fridge_address"
+						name="fridge_address"
+						required
+						placeholder="Fridge Address...(TODO: handle invalid address)"
+					/>
 				</div>
 				<div class="d-flex justify-content-between w-100 gap">
 					<input
@@ -234,39 +239,33 @@ function mealDistribution() {
 				<h5 class="accent-100 mb-2">Meal distribution</h5>
 				<p>Contribute distributing a meal</p>
 			</div>
-			<form method="POST" action="/contribution/meal/distrubution" class="form">
+			<form method="POST" action="/contribution/meal/distribution" class="form">
 				<div>
 					<span id="btnCrearInput" style="color: #136C91;" class="clickable-text" onclick="agregarInput()">Add meal</span> <b>|</b>
 					<span  style="color: #136C91" class="clickable-text" onclick="eliminarInput()">Delete meal</span>
 				</div>
 				<div id="input-placeholder"> 
-				<input type="text" id="meal" name="meal" required placeholder="ID of meal to distribute..."class="col-12 inputs">
+				<input type="text" id="meal" name="meal_0" required placeholder="ID of meal to distribute..."class="col-12 inputs">
 				</div>
 				<input type="text" id="reason" name="reason" required placeholder="Reason for relocation...">
 				
 				<div class="d-flex justify-content-between w-100 gap">
-					<select required value="fridge" class="boton1 inputs" style="width: 100%;">
-						<option selected disabled hidden>Choose origin fridge</option>
-						<option value='Heladera 1' class="desplegables">Heladera 1</option> <!-- sujeto a cambios-->
-						<option value='Heladera 2' class="desplegables">Heladera 2</option>
-						<option value='Heladera 3' class="desplegables">Heladera 3</option>
-						<option value='Heladera 4' class="desplegables">Heladera 4</option>
-					</select>
+						<input
+						type="text"
+						id="origin_address"
+						name="origin_address"
+						required
+						placeholder="Origin fridge Address..."
+					/>
 
-					<select required value="fridge" class="boton1 inputs" style="width: 100%;">
-						<option selected disabled hidden>Choose destiny fridge</option>
-						<option value='Heladera 1' class="desplegables">Heladera 1</option> <!-- sujeto a cambios-->
-						<option value='Heladera 2' class="desplegables">Heladera 2</option>
-						<option value='Heladera 3' class="desplegables">Heladera 3</option>
-						<option value='Heladera 4' class="desplegables">Heladera 4</option>
-					</select>
+						<input
+						type="text"
+						id="destiny_address"
+						name="destiny_address"
+						required
+						placeholder="Destiny fridge Address..."
+					/>
 					
-				</div>
-
-				<p>Date of distribution</p>	
-				<div class="d-flex justify-content-between w-100 gap">
-					<input type="date" id="dateOfDistribution" name="dateOfDistribution" required placeholder="Date of distribution..."
-					class="w-100 inputs">
 				</div>
 
 				<div class="form-btns-container">
@@ -281,14 +280,37 @@ function mealDistribution() {
 
 function fridgeAdministration() {
 	return `
-		<div id="has_map" class="d-flex flex-column" style="gap: 40px;">
+		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
 				<h5 class="accent-100 mb-2">Fridge Administration</h5>
 				<p>Contribute administrating a fridge</p>
-		<div id="map" style="height: 500px;"></div>
-
 			</div>
-		<div>`;
+
+			 <form method="POST" action="/contribution/fridge_admin" class="form">
+				<input type="text" id="name" name="name" required placeholder="Name of the fridge..." />
+				<input type="text" id="address" name="address" required placeholder="Address of the fridge..." />
+				<div class="d-flex justify-content-between w-100 gap">
+					<input
+						type="text"
+						id="capacity"
+						name="capacity"
+						required
+						placeholder="Capacity of the fridge..."
+						class="w-100"
+					/>
+					<select required name="isActive" value="true" class="boton1 inputs" style="width: 100%;">
+						<option selected disabled hidden>Will the fridge be active?</option>
+						<option value='true' class="desplegables">Yes</option>
+						<option value='false' class="desplegables">No</option>
+					</select>
+				</div>
+				<div class="form-btns-container">
+					<button type="reset" class="btn-text w-100" id="modal-close">Cancel</button>
+					<button type="submit" class="btn-primary w-100">Submit</button>
+				</div>
+			</form>
+		<div>
+		`;
 }
 
 function moneyDonation() {
@@ -301,8 +323,7 @@ function moneyDonation() {
 
 			 <form method="POST" action="/contribution/money" class="form">
 				<input type="text" id="amount" name="amount" required placeholder="Amount to donate..." />
-				<input type="text" id="cardID" name="cardID" required placeholder="Your card ID..." />
-				<input type="password" id="cvv" name="cvv" required placeholder="Your card verification value..." />
+				<input type="text" id="message" name="message" required placeholder="Your donation message..." />
 
 				<div class="form-btns-container">
 					<button type="reset" class="btn-text w-100" id="modal-close">Cancel</button>
@@ -396,13 +417,22 @@ function rewardCollab() {
 			</div>
 
 			<form method="POST" action="/contribution/reward" class="form">
-				<input
+			<div class="d-flex justify-content-between w-100 gap">	
+					<input
 					type="text"
 					id="name"
 					name="name"
 					required
 					placeholder="Reward name..."
 				/>
+					<input
+					type="number"
+					id="stock"
+					name="stock"
+					required
+					placeholder="Available stock..."
+				/>
+			</div>
 				<input
 					type="text"
 					id="description"
@@ -412,7 +442,7 @@ function rewardCollab() {
 				/>
 				<div class="d-flex justify-content-between w-100 gap">
 					<input
-						type="text"
+						type="number"
 						id="points"
 						name="points"
 						required
@@ -420,16 +450,17 @@ function rewardCollab() {
 					/>
 
 					<select
+						name = "category"
 						required
 						value="category"
 					>
 						<option selected disabled hidden>
 							Choose a category of reward
 						</option>
-						<option value="Technology">Technology</option>
+						<option value="TECH">Technology</option>
 						<!-- sujeto a cambios-->
-						<option value="Cooking">Cooking</option>
-						<option value="Home">Home</option>
+						<option value="COOKING">Cooking</option>
+						<option value="HOME">Home</option>
 					</select>
 				</div>
 

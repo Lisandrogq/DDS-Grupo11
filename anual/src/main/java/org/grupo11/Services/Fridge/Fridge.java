@@ -9,17 +9,18 @@ import org.grupo11.Enums.Provinces;
 import org.grupo11.Services.Meal;
 import org.grupo11.Services.Fridge.Incident.Incident;
 import org.grupo11.Services.Fridge.Sensor.MovementSensorManager;
+import org.grupo11.Services.Fridge.Sensor.SensorManager;
 import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
 import org.grupo11.Utils.Crypto;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Transient;
 
 @Entity
 public class Fridge {
@@ -37,15 +38,16 @@ public class Fridge {
     private int capacity;
     private int commissioningDate;
     @OneToMany
-    private List<Meal> meals;
-    @OneToMany
-    private List<Meal> addedMeals;
-    @OneToMany
-    private List<Meal> removedMeals;
-    @OneToOne
+    private List<Meal> meals= new ArrayList<Meal>();
+
+    private Integer addedMeals=0;
+    private Integer removedMeals=0;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<SensorManager> sensorManagers = new ArrayList<SensorManager>(); //[0] = temp , [1] = mov
+/*  @OneToOne(cascade = CascadeType.ALL) /// los saque pq se volvio imposible manejar las dos bidireccionalidades al mismo tiempo 
     private TemperatureSensorManager tempManager;
-    @OneToOne
-    private MovementSensorManager movManager;
+    @OneToOne(cascade = CascadeType.ALL)
+    private MovementSensorManager movManager; */
     @OneToMany
     private List<FridgeSolicitude> openSolicitudes;
     @OneToMany
@@ -58,12 +60,12 @@ public class Fridge {
     private List<FridgeNotification> notificationsSent;
 
     public Fridge() {
+        
     }
 
     public Fridge(double lon, double lat, String address, String name, int capacity, int commissioningDate,
             List<Meal> meals,
             TemperatureSensorManager tempManager, MovementSensorManager movManager) {
-        this.id = Crypto.getRandomId(6);
         this.lon = lon;
         this.lat = lat;
         this.address = address;
@@ -71,8 +73,8 @@ public class Fridge {
         this.capacity = capacity;
         this.commissioningDate = commissioningDate;
         this.meals = meals;
-        this.tempManager = tempManager;
-        this.movManager = movManager;
+        this.sensorManagers.add(0, tempManager);
+        this.sensorManagers.add(1,movManager) ;
         this.openSolicitudes = new ArrayList<>();
         this.openedHistory = new ArrayList<>();
         this.incidents = new ArrayList<>();
@@ -90,17 +92,19 @@ public class Fridge {
         fridgeMap.put("meals", getMeals().size());
         fridgeMap.put("food_status_desc", "located at " + getAddress());// q criterio iria aca? si tiene alertas se pone
                                                                         // eso??
-        fridgeMap.put("meal_urgency", "fix subscription");// q criterio iria aca? si tiene alertas se pone eso??
+        fridgeMap.put("meal_urgency", "TODO: fix subscription");// q criterio iria aca? si tiene alertas se pone eso??
         return fridgeMap;
     }
 
     public void setTempManager(TemperatureSensorManager tempManager) {
-        this.tempManager = tempManager;
+
+        this.sensorManagers.add(0, tempManager);
 
     }
 
     public void setMovManager(MovementSensorManager movManager) {
-        this.movManager = movManager;
+
+        this.sensorManagers.add(1,movManager);
     }
 
     public int getId() {
@@ -176,49 +180,53 @@ public class Fridge {
     }
 
     public void cleanHistory() {
-        this.addedMeals = new ArrayList<Meal>();
-        this.removedMeals = new ArrayList<Meal>();
+        this.addedMeals =0;
+        this.removedMeals =0;
     }
 
-    public List<Meal> getAddedMeals() {
+    public Integer getAddedMeals() {
         return this.addedMeals;
     }
 
-    public List<Meal> getRemovedMeals() {
+    public Integer getRemovedMeals() {
         return this.removedMeals;
     }
 
+    public void setMeals(List<Meal>meals){
+        this.meals = meals;
+    }
     public void addMeal(Meal meal) {
         this.meals.add(meal);
-        this.addedMeals.add(meal);
+        this.addedMeals++;
         this.evaluateSendNotification(
                 new FridgeNotification(FridgeNotifications.NearFullInventory, meals.size(), "Fridge almost full"));
     }
 
     public void removeMeal(Meal meal) {
         this.meals.remove(meal);
-        this.removedMeals.add(meal);
+        this.removedMeals++;
         this.evaluateSendNotification(
                 new FridgeNotification(FridgeNotifications.LowInventory, meals.size(), "Fridge almost full"));
 
     }
 
+    public Meal getMealByType(String type){
+        for (Meal meal :meals) {
+            if (meal.getType().equals(type) ) {
+                return meal;
+            }
+        }
+        return null;
+    }
     public TemperatureSensorManager getTempManager() {
-        return this.tempManager;
+        return (TemperatureSensorManager)this.sensorManagers.get(0);
     }
 
-    public void setTemp(TemperatureSensorManager temp) {
-        this.tempManager = temp;
-    }
 
-    public MovementSensorManager getMovManager() {
-        return this.movManager;
-    }
+    public MovementSensorManager getMovManager() {        
+        return (MovementSensorManager)this.sensorManagers.get(1);
 
-    public void setMov(MovementSensorManager mov) {
-        this.movManager = mov;
     }
-
     public String getMapLocation() {
         return FridgeMapper.getSingleFridgeMapLocation(this);
     }
@@ -279,7 +287,7 @@ public class Fridge {
             boolean full_condition = fridgeNotification.getType() == FridgeNotifications.NearFullInventory
                     && subscription.getThreshold() <= fridgeNotification.getAmmount();
 
-            if (low_condition || full_condition) {
+            if (low_condition || full_condition || fridgeNotification.getType()==FridgeNotifications.Malfunction) {
                 if (subscription.getType() == fridgeNotification.getType()) {
                     subscription.getContributor().getContacts().forEach(value -> {
                         this.notificationsSent.add(fridgeNotification);

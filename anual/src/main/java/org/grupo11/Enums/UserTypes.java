@@ -1,7 +1,8 @@
 package org.grupo11.Enums;
 
-public enum Role {
+public enum UserTypes {
     PersonInNeed,
     Technician,
-    Contributor,
+    Individual,
+    LegalEntity
 }
