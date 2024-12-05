@@ -144,6 +144,7 @@ public class ContributionsController {
                 String meal_type = ctx.formParam("meal_" + i);
                 if (meal_type != null) {
                     Meal meal = origin_fridge.getMealByType(meal_type);
+                    System.out.println("adad: "+meal_type+" - "+meal.getType());
                     
                         origin_fridge.removeMeal(meal);
                         destiny_fridge.addMeal(meal);
@@ -287,6 +288,8 @@ public class ContributionsController {
         }
         try {
             Reward reward = new Reward(name, Float.parseFloat(points), "", RewardCategory.valueOf(category));
+            reward.setDescription(description);
+            reward.setQuantity(Integer.parseInt(stock));
             RewardContribution rewardContribution = new RewardContribution(reward, DateUtils.now());
             rewardContribution.setContributor(contributor);
             DB.create(reward);
