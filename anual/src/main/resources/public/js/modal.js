@@ -551,7 +551,7 @@ function failureAlert(fridge_id) {
 }
 
 function showFridgeInfo() {
-	
+
 	openModal(fridgeReport());
 }
 
