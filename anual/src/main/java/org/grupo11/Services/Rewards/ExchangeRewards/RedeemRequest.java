@@ -4,7 +4,7 @@ import java.util.List;
 
 public class RedeemRequest {
     private int userPoints;
-    private List<Reward> rewards;
+    private List<RewardData> rewards;
 
     // Getters y setters
     public int getUserPoints() {
@@ -15,16 +15,14 @@ public class RedeemRequest {
         this.userPoints = userPoints;
     }
 
-    public List<Reward> getRewards() {
+    public List<RewardData> getRewardsData() {
         return rewards;
     }
 
-    public void setRewards(List<Reward> rewards) {
-        this.rewards = rewards;
+    public void setRewards(List<RewardData> rewardsData) {
+        this.rewards = rewardsData;
     }
-
-    // Clase interna para representar una recompensa
-    public static class Reward {
+    public static class RewardData {
         private String rewardId;
         private int quantity;
 

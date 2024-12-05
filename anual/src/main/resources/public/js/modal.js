@@ -601,7 +601,7 @@ function fridgeReport() {
 
 // Puntos de usuario
 const userPoints = document.querySelector("#user-points");
-const originalPoints = parseInt(userPoints.getAttribute("data-user-points").replace(/\./g, ""));
+let originalPoints = parseInt(userPoints.getAttribute("data-user-points").replace(/\./g, ""));
 let dataUserPoints = parseInt(userPoints.getAttribute("data-user-points").replace(/\./g, ""));
 
 // Botones de cancelar y confirmar
@@ -637,7 +637,10 @@ redeemRewardBtns.forEach((button) => {
 			
 			const descriptionElement = button.closest(".d-flex").querySelector("p");
             if (descriptionElement) {
-                const newDescription = descriptionElement.textContent.replace(/\d+ remaining/, `${quantities[rewardId]} remaining`);
+                const newDescription = descriptionElement.textContent.replace(
+					/\((.*?) remaining\)/,
+					`(${quantities[rewardId].toLocaleString('es-ES')} remaining)`
+				);
                 descriptionElement.textContent = newDescription;
             }
 
@@ -703,6 +706,14 @@ confirmBtn.onclick = () => {
 	.then(response => {
 		if (response.ok) {
 			alert("Reward redeemed successfully!");
+			console.log("Antes del cambio:", originalPoints);
+			console.log("Antes del cambio:", originalQuantities);
+			originalPoints = dataUserPoints;
+			originalQuantities = { ...quantities };
+			console.log("Tras el cambio:", originalPoints);
+			console.log("Tras el cambio:", originalQuantities);
+			cancelBtn.style.display = "none";
+			confirmBtn.style.display = "none";
 		} else {
 			alert("Failed to redeem the reward. Please try again.");
 		}
@@ -713,15 +724,3 @@ confirmBtn.onclick = () => {
 	});
 
 };
-
-/*
-	Para probar: reward
-		id	category	description		imageurl																name		neededpoints	quantity	contributor_id
- 		1	HOME		Holaaaa			hola																	TV samsung	300				100			NULL
- 		2	TECH		reward 2		https://http2.mlstatic.com/D_NQ_NP_624014-MLA52221738197_102022-O.webp	TV phillips	100				100			NULL
- 		3	TECH		hay poco		NULL																	perro		1				1			NULL
-*/
-
-/**
- * =========================================================================================
- */
