@@ -498,7 +498,7 @@ function failureAlert() {
 				<h5 class="accent-100 mb-2">Report Failure</h5>
 				<p>Report a fridge's malfunction</p>
 			</div>
-			<form method="POST" action="/alerts/failure" class="form">
+			<form method="POST" action="/fridge/failure" class="form">
 				<select required value="fridge" class="boton1 inputs" style="width: 100%">
 					<option selected disabled hidden>What happened?</option>
 					<option value="low meal" class="desplegables">Low on meal</option>

@@ -1,7 +1,7 @@
 package org.grupo11.Api;
 
-import org.grupo11.Api.Controllers.AlertsController;
 import org.grupo11.Api.Controllers.ContributionsController;
+import org.grupo11.Api.Controllers.FridgeController;
 import org.grupo11.Api.Controllers.PublicAPI;
 import org.grupo11.Api.Controllers.RenderController;
 import org.grupo11.Api.Controllers.RewardsController;
@@ -14,7 +14,7 @@ public class Router {
         clientRoutes(api);
         userRoutes(api);
         contributionRoutes(api);
-        alertRoutes(api);
+        fridgeRoutes(api);
         publicApi(api);
         rewardRoutes(api);
     }
@@ -46,8 +46,10 @@ public class Router {
         api.get("/api/contributors/recognitions", PublicAPI::handleContributorRecognitions);
     }
 
-    static void alertRoutes(Javalin api) {
-        api.post("/alerts/failure", AlertsController::handleFailureAlert);
+    static void fridgeRoutes(Javalin api) {
+        api.post("/fridge/failure", FridgeController::handleSubmitFailure);
+        api.get("/fridge/subscribe", FridgeController::handleSubscription);
+        api.post("/fridge/unsubscribe", FridgeController::handleUnSubscription);
     }
 
     static void rewardRoutes(Javalin api) {
