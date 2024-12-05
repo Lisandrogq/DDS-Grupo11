@@ -198,10 +198,18 @@ public class FridgeController {
                 }
                 fridgeFullInfo.setMeals(mealsData);
 
-                // Failures
+                // Incidents
                 String incidentsHQL = "FROM Incident i WHERE i.fridge.id = :fridgeId";
+                org.hibernate.query.Query<Incident> incidentsQuery = session.createQuery(incidentsHQL);
+                incidentsQuery.setParameter("fridgeId", fridgeId);
+                List<Incident> incidents = incidentsQuery.getResultList();
+
+                // Failures
+                String failuresHQL = "FROM Failure f WHERE f.fridge.id = :fridgeId";
+
 
                 List<FridgeFullInfo.IncidentsData> incidentsData = new java.util.ArrayList<>();
+
                 fridgeFullInfo.setIncidents(incidentsData);
 
                 ctx.json(fridgeFullInfo);

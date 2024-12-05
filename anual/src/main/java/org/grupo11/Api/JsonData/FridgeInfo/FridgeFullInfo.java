@@ -2,6 +2,10 @@ package org.grupo11.Api.JsonData.FridgeInfo;
 
 import java.util.List;
 
+import org.grupo11.Services.Contributor.Contributor;
+import org.grupo11.Services.Fridge.Incident.AlertType;
+import org.grupo11.Services.Fridge.Incident.Urgency;
+
 public class FridgeFullInfo {
 
     private int fridgeId;
@@ -92,58 +96,38 @@ public class FridgeFullInfo {
     }
 
     public static class IncidentsData {
-        /*
-        Incident
         private Long id;
-        private List<TechnicianVisit> visits;
-        private boolean hasBeenFixed;
+        private String description;
         private long detectedAt;
 
-        Alert
-        private AlertType type;
-        public enum AlertType {
-            TEMPERATUREALERT,
-            FRAUDALERT,
-            CONNECTIONFAIULERALERT,
+        public void setId(Long id) {
+            this.id = id;
         }
 
-        Failure
-        private private Contributor reportedBy;
-        private String description;
-        private Urgency urgency;
-
-        id
-        Description
-        detectedAt
-        fixeado?
-        */
-
-        private Long reportedBy;
-        private String description;
-        private String urgency;
-
-        public void setReportedBy(Long reportedBy) {
-            this.reportedBy = reportedBy;
+        public Long getId() {
+            return id;
         }
 
-        public Long getReportedBy() {
-            return reportedBy;
+        public void setFailureDescription(Contributor reportedBy, Urgency urgencyEnum, String description) {
+            String reporterID = Float.toString(reportedBy.getId());
+            String urgency = urgencyEnum.toString();
+            this.description = description + " (from ID:" + reporterID + " with " + urgency + " urgency)";
         }
 
-        public void setDescription(String description) {
-            this.description = description;
+        public void setAlertDescription(AlertType type) {
+            this.description = "Automatic alert of type: " + type.toString();
         }
 
         public String getDescription() {
             return description;
         }
 
-        public void setUrgency(String urgency) {
-            this.urgency = urgency;
+        public void setDetectedAt(long detectedAt) {
+            this.detectedAt = detectedAt;
         }
 
-        public String getUrgency() {
-            return urgency;
+        public long getDetectedAt() {
+            return detectedAt;
         }
     }
 }

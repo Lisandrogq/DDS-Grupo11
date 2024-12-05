@@ -9,11 +9,11 @@ public enum Urgency {
     public String toString() {
         switch (this) {
             case High:
-                return "High";
+                return "high";
             case Medium:
-                return "Medium";
+                return "medium";
             case Low:
-                return "Low";
+                return "low";
             default:
                 throw new IllegalArgumentException("Unknown urgency: " + this);
         }

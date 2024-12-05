@@ -604,7 +604,6 @@ function updateFridgeModal(data) {
         <tr>
             <td>${meal.id}</td>
             <td>${meal.type}</td>
-            <td>${meal.state}</td>
             <td>${new Date(meal.expirationDate).toLocaleDateString()}</td>
             <td>${meal.weight}g</td>
             <td>${meal.calories}cal</td>
@@ -633,7 +632,6 @@ function updateFridgeModal(data) {
                     <tr>
                         <th>ID</th>
                         <th>Type</th>
-                        <th>Status</th>
                         <th>Expiration date</th>
                         <th>Weight</th>
                         <th>Calories</th>
