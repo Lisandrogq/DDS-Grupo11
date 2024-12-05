@@ -61,12 +61,9 @@ function setup_map() {
  */
 const fridgeModal = (name, meals, temp, reserved, state) => `
 <div id="has_map"class="d-flex flex-column" style="gap: 40px;">
-	<div>
+	<div class="d-flex w-100 justify-content-between align-items-center">
 		<h5 class="accent-100 mb-2">${name} fridge</h5>
-		<div class="d-flex w-100 justify-content-between align-items-center">
-			<p>Contribute donating a meal</p>
-			<button class="btn-primary" style="padding: 10px; font-size: var(--paragraph)">Subscribe</button>
-		</div>
+		<button class="btn-primary" style="padding: 10px; font-size: var(--paragraph)">Subscribe</button>
 	</div>
 
 	<div class="d-flex flex-row justify-content-center align-items-center w-100 flex-wrap"> 
@@ -102,7 +99,7 @@ const setupFridgeListeners = () => {
 
 				// setup listener in report failure to open te modal
 				const reportBtn = document.querySelector("#fridge-view-report");
-				reportBtn.onclick = () => setModalContent(fridgeReport());
+				reportBtn.onclick = () => showFridgeInfo();
 			});
 		};
 	});
@@ -551,6 +548,11 @@ function failureAlert(fridge_id) {
 			</form>
 		</div>
 	`;
+}
+
+function showFridgeInfo() {
+	
+	openModal(fridgeReport());
 }
 
 function fridgeReport() {
