@@ -138,7 +138,9 @@ public class RenderController {
                 List<Reward> results = query.getResultList();
                 System.out.println("results.size(): " + results.size());
                 for (Reward reward : results) {
-                    rewards.add(reward.toMap());
+                    if (reward.getQuantity() > 0) {
+                        rewards.add(reward.toMap());
+                    }
                 }
                 session.close();
 

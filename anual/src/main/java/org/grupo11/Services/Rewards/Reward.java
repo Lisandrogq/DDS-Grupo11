@@ -3,6 +3,7 @@ package org.grupo11.Services.Rewards;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.ObjectUtils.Null;
 import org.grupo11.Services.Contributor.Contributor;
 
 import jakarta.persistence.Entity;
@@ -23,6 +24,7 @@ public class Reward {
     private String imageUrl;
     private float neededPoints;
     private int quantity;
+    private String description;
     @Enumerated(EnumType.STRING)
     private RewardCategory category;
     @ManyToOne
@@ -94,13 +96,27 @@ public class Reward {
         this.quantity = quantity;
     }
 
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public Map<String, Object> toMap() {
         Map<String, Object> reward_map = new HashMap<>();
         String emoji = getCategory() == RewardCategory.TECH ? "💻"
                 : (getCategory() == RewardCategory.COOKING ? "🍴" : "🏡");
-        reward_map.put("emoji", emoji);
+        reward_map.put("id", getId());
         reward_map.put("name", getName());
-        reward_map.put("description", "You can exchange your points for (todo text depending on category)");
+        reward_map.put("emoji", emoji);
+        reward_map.put("category", getCategory().toString());
+        reward_map.put("description", getDescription());
+        reward_map.put("neededPoints", getNeededPoints());
+        reward_map.put("quantity", getQuantity());
+        if (getImageUrl() != null) reward_map.put("imageUrl", getImageUrl());
+            else reward_map.put("imageUrl", "https://images.emojiterra.com/google/android-12l/512px/1f381.png");
         return reward_map;
     }
 }
