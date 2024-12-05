@@ -65,6 +65,9 @@ public class ContributionsController {
             if (fridge == null) {
                 throw new IllegalArgumentException("address inexistente");
             }
+            if (fridge.getIsActive() ==false) {
+                throw new IllegalArgumentException("heladera desactivada");
+            }
             Meal meal = new Meal(type, DateUtils.parseDateString(expirationDate), DateUtils.now(), fridge, "",
                     Integer.parseInt(calories), Integer.parseInt(weight));
             MealDonation mealDonation = new MealDonation(meal, DateUtils.now());
@@ -124,9 +127,19 @@ public class ContributionsController {
 
             Fridge origin_fridge = origin_query.getSingleResult();
             Fridge destiny_fridge = destiny_query.getSingleResult();
-            if (origin_fridge == null || destiny_fridge == null) {
-                throw new IllegalArgumentException("alguna address inexistente");
+            if (origin_fridge == null) {
+                throw new IllegalArgumentException("no existe la heladera de origen");
             }
+            if (destiny_fridge == null) {
+                throw new IllegalArgumentException("no existe la heladera de destino");
+            }
+            if (origin_fridge.getIsActive() ==false) {
+                throw new IllegalArgumentException("heladera de origen desactivada");
+            }
+            if ( destiny_fridge.getIsActive()==false) {
+                throw new IllegalArgumentException("heladera de destino desactivada");
+            }
+          
 
             int i = 0;
             int max = 0;
