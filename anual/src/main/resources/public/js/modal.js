@@ -613,9 +613,10 @@ function updateFridgeModal(data) {
 
 	const failureRows = failures.map(failure => `
         <tr>
-            <td>${failure.reportedBy}</td>
+			<td>${failure.id}</td>
             <td>${failure.description}</td>
-            <td>${failure.urgency}</td>
+            <td>${new Date(failure.detectedAt).toLocaleDateString()}</td>
+            <td>${failure.hasBeenFixed}</td>
         </tr>
     `).join('');
 	console.log(failureRows);
@@ -644,74 +645,15 @@ function updateFridgeModal(data) {
                 <table>
                     <tr>
                         <th>ID</th>
-                        <th>Type</th>
-                        <th>Status</th>
+                        <th>Description</th>
+                        <th>Creation date</th>
+						<th>Fixed</th>
                     </tr>
                     ${failureRows}
                 </table>
             </div>
         </div>
     `;
-
-	/*
-	return `
-		<div class="d-flex flex-column" style="gap: 40px;">
-			<div>
-				<h5 class="accent-100 mb-2">Fridge reports</h5>
-				<p>Report history for this fridge</p>
-			</div>
-			<div>
-				<p class="bold text-200" style="margin-bottom: 10px">Meal history</p>
-				<table>
-					<tr>
-						<th>ID</th>
-						<th>Type</th>
-						<th>Status</th>
-						<th>Expiration date</th>
-						<th>Weight</th>
-						<th>Calories</th>
-					</tr>
-					<tr>
-						<td>01</td>
-						<td>Meat</td>
-						<td>On date</td>
-						<td>10/10/2024</td>
-						<td>200g</td>
-						<td>300cal</td>
-					</tr>
-					<tr>
-						<td>02</td>
-						<td>Vegetables</td>
-						<td>On date</td>
-						<td>10/10/2024</td>
-						<td>200g</td>
-						<td>300cal</td>
-					</tr>
-				</table>	
-			</div>
-			<div>
-				<p class="bold text-200" style="margin-bottom: 10px">Incidents history</p>
-				<table>
-					<tr>
-						<th>ID</th>
-						<th>Type</th>
-						<th>Status</th>
-					</tr>
-					<tr>
-						<td>01</td>
-						<td>low temperature</td>
-						<td>in progress</td>
-					</tr>
-					<tr>
-						<td>02</td>
-						<td>empty</td>
-						<td>not checked</td>
-					</tr>
-				</table>
-			</ div>
-		</div>
-	`;
-	*/
 }
 
 /**

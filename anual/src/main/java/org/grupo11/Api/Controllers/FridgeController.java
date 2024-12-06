@@ -3,26 +3,21 @@ package org.grupo11.Api.Controllers;
 import org.grupo11.DB;
 import org.grupo11.Logger;
 import org.grupo11.Api.Middlewares;
-import org.grupo11.Services.Contributions.MealDonation;
 import org.grupo11.Services.Contributor.Contributor;
-import org.grupo11.Services.Contributor.ContributorsManager;
 import org.grupo11.Utils.DateUtils;
 import java.util.List;
-import org.grupo11.Api.ApiResponse;
-import org.grupo11.Api.JsonData.ExchangeRewards.RedeemRequest;
 import org.grupo11.Api.JsonData.FridgeInfo.FridgeFullInfo;
-import org.grupo11.Services.Rewards.Reward;
 import org.grupo11.Services.Technician.Technician;
 import org.grupo11.Services.Technician.TechnicianVisit;
 import org.grupo11.Utils.FieldValidator;
 import org.hibernate.Session;
+import org.grupo11.Services.Fridge.Incident.Alert;
 import org.grupo11.Services.Fridge.Incident.Failure;
 import org.grupo11.Services.Fridge.Incident.Incident;
 import org.grupo11.Services.Fridge.Incident.Urgency;
 import org.grupo11.Services.Meal;
 import org.grupo11.Services.Fridge.Fridge;
 
-import io.javalin.http.ContentTooLargeResponse;
 import io.javalin.http.Context;
 
 public class FridgeController {
@@ -203,13 +198,25 @@ public class FridgeController {
                 org.hibernate.query.Query<Incident> incidentsQuery = session.createQuery(incidentsHQL);
                 incidentsQuery.setParameter("fridgeId", fridgeId);
                 List<Incident> incidents = incidentsQuery.getResultList();
-
-                // Failures
-                String failuresHQL = "FROM Failure f WHERE f.fridge.id = :fridgeId";
-
-
+                
                 List<FridgeFullInfo.IncidentsData> incidentsData = new java.util.ArrayList<>();
-
+                for (Incident incident : incidents) {
+                    FridgeFullInfo.IncidentsData incidentData = new FridgeFullInfo.IncidentsData();
+                    incidentData.setId(incident.getId());
+                    incidentData.setDetectedAt(incident.getDetectedAt());
+                    incidentData.setHasBeenFixed(incident.hasBeenFixed());
+                    if (incident instanceof Failure) {
+                        Failure failure = (Failure) incident;
+                        incidentData.setFailureDescription(failure.getReportedBy(), failure.getUrgency(), failure.getDescription());
+                    }
+                    else if (incident instanceof Alert) {
+                        Alert alert = (Alert) incident;
+                        incidentData.setAlertDescription(alert.getType());
+                    } else {
+                        Logger.error("Unknown incident type: " + incident.getClass().getName());
+                    }
+                    incidentsData.add(incidentData);
+                }
                 fridgeFullInfo.setIncidents(incidentsData);
 
                 ctx.json(fridgeFullInfo);

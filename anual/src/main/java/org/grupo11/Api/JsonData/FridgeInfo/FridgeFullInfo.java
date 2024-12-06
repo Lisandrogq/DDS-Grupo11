@@ -3,6 +3,8 @@ package org.grupo11.Api.JsonData.FridgeInfo;
 import java.util.List;
 
 import org.grupo11.Services.Contributor.Contributor;
+import org.grupo11.Services.Contributor.Individual;
+import org.grupo11.Services.Contributor.LegalEntity.LegalEntity;
 import org.grupo11.Services.Fridge.Incident.AlertType;
 import org.grupo11.Services.Fridge.Incident.Urgency;
 
@@ -99,6 +101,7 @@ public class FridgeFullInfo {
         private Long id;
         private String description;
         private long detectedAt;
+        private String hasBeenFixed;
 
         public void setId(Long id) {
             this.id = id;
@@ -109,9 +112,18 @@ public class FridgeFullInfo {
         }
 
         public void setFailureDescription(Contributor reportedBy, Urgency urgencyEnum, String description) {
-            String reporterID = Float.toString(reportedBy.getId());
+            String reporterName;
+            if (reportedBy instanceof Individual) {
+                Individual individual = (Individual) reportedBy;
+                reporterName = individual.getName();
+            } else if (reportedBy instanceof LegalEntity) {
+                LegalEntity legalEntity = (LegalEntity) reportedBy;
+                reporterName = legalEntity.getName();
+            } else {
+                reporterName = "Unknown";
+            }
             String urgency = urgencyEnum.toString();
-            this.description = description + " (from ID:" + reporterID + " with " + urgency + " urgency)";
+            this.description = description + " (from " + reporterName + " with " + urgency + " priority)";
         }
 
         public void setAlertDescription(AlertType type) {
@@ -128,6 +140,15 @@ public class FridgeFullInfo {
 
         public long getDetectedAt() {
             return detectedAt;
+        }
+
+        public void setHasBeenFixed(boolean hasBeenFixed) {
+            if(hasBeenFixed) this.hasBeenFixed = "Yes";
+            else this.hasBeenFixed = "No";
+        }
+
+        public String getHasBeenFixed() {
+            return hasBeenFixed;
         }
     }
 }
