@@ -337,7 +337,7 @@ function mealDistribution() {
 					<span  style="color: #136C91" class="clickable-text" onclick="eliminarInput()">Delete meal</span>
 				</div>
 				<div id="input-placeholder"> 
-				<input type="text" id="meal" name="meal_0" required placeholder="ID of meal to distribute..."class="col-12 inputs">
+				<input type="text" id="meal" name="meal_0" required placeholder="Type of meal to distribute..."class="col-12 inputs">
 				</div>
 				<input type="text" id="reason" name="reason" required placeholder="Reason for relocation...">
 				
