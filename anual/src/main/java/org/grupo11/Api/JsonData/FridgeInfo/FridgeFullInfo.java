@@ -123,7 +123,7 @@ public class FridgeFullInfo {
                 reporterName = "Unknown";
             }
             String urgency = urgencyEnum.toString();
-            this.description = description + " (from " + reporterName + " with " + urgency + " priority)";
+            this.description = description + ". Reported by " + reporterName + " with " + urgency + " priority";
         }
 
         public void setAlertDescription(AlertType type) {
