@@ -223,31 +223,45 @@ public class ContributionsController {
             if (!FieldValidator.isBool(isactive)) {
                 throw new IllegalArgumentException("invalid isactive");
             }
+ 
+            try (Session session = DB.getSessionFactory().openSession()) {
+                String leHQL = "SELECT le " +
+                        "FROM LegalEntity le " +
+                        "WHERE le.id = :contributor_id";
+                org.hibernate.query.Query<LegalEntity> leQuery = session.createQuery(leHQL, LegalEntity.class);
+                leQuery.setParameter("contributor_id", contributor.getId());
+                LegalEntity le = leQuery.uniqueResult();
+                if (le == null) {
+                    throw new IllegalArgumentException("You are not a legal entity");
+                }
 
-            Fridge fridge = new Fridge(0, 0, address, name, Integer.parseInt(capacity), 0, new ArrayList<>(), null,
-                    null);
-            LegalEntity le = new LegalEntity(); // this should be retrieved from the db using the contributor that
-                                                // islogged
-            TemperatureSensorManager tManager = new TemperatureSensorManager(fridge, -1, 60);
-            MovementSensorManager mManager = new MovementSensorManager(fridge);
-            fridge.setIsActive(Boolean.parseBoolean(isactive));
-            fridge.setTempManager(tManager);
-            fridge.setMovManager(mManager);
-            tManager.setFridge(fridge);
-            mManager.setFridge(fridge);
-            FridgeAdmin fridgeAdmin = new FridgeAdmin(le, fridge, DateUtils.now());
-            fridgeAdmin.setContributor(contributor);// TODO: only allow this contribution to legalentities
-            List<FridgeOpenLogEntry> entries = ContributorsManager.getInstance().addContributionToContributor(
-                    contributor,
-                    fridgeAdmin);
-            if (entries == null)
-                throw new IllegalArgumentException("no puede contribuir de esta forma");// TODO: validar antes de esto q
-                                                                                        // haya openSolicitude
-            DB.update(contributor);
-            DB.create(le);
-            DB.create(fridge);
-            DB.create(fridgeAdmin);
-            ctx.redirect("/dash/home");
+                Fridge fridge = new Fridge(address, name, Integer.parseInt(capacity), 0, new ArrayList<>(), null, null);
+                TemperatureSensorManager tManager = new TemperatureSensorManager(fridge, -1, 60);
+                MovementSensorManager mManager = new MovementSensorManager(fridge);
+                fridge.setIsActive(Boolean.parseBoolean(isactive));
+                fridge.setTempManager(tManager);
+                fridge.setMovManager(mManager);
+                tManager.setFridge(fridge);
+                mManager.setFridge(fridge);
+                FridgeAdmin fridgeAdmin = new FridgeAdmin(le, fridge, DateUtils.now());
+                fridgeAdmin.setContributor(contributor);
+
+                List<FridgeOpenLogEntry> entries = ContributorsManager.getInstance().addContributionToContributor(
+                        contributor,
+                        fridgeAdmin);
+                if (entries == null)
+                    throw new IllegalArgumentException("no puede contribuir de esta forma");// TODO: validar antes de esto q
+                                                                                            // haya openSolicitude
+                DB.update(contributor);
+                DB.create(fridge);
+                DB.create(fridgeAdmin);
+
+                ctx.redirect("/dash/home");
+            } catch (Exception e) {
+                Logger.error("Exception ", e);
+                ctx.redirect("/dash/home?error=" + e.getMessage());
+                return;
+            }
         } catch (Exception e) {
             Logger.error("Exception ", e);
             ctx.redirect("/dash/home?error=" + e.getMessage());
