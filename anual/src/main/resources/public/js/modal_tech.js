@@ -204,7 +204,7 @@ function mealDonation() {
 						id="fridge_address"
 						name="fridge_address"
 						required
-						placeholder="Fridge Address...(TODO: handle invalid address)"
+						placeholder="Fridge Address..."
 					/>
 				</div>
 				<div class="d-flex justify-content-between w-100 gap">
