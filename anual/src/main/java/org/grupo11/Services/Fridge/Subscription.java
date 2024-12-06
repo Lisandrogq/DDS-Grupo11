@@ -1,5 +1,8 @@
 package org.grupo11.Services.Fridge;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.grupo11.Services.Contributor.Contributor;
 
 import jakarta.persistence.Entity;
@@ -19,8 +22,9 @@ public class Subscription {
     @Enumerated(EnumType.STRING)
     private FridgeNotifications type;
     private int threshold=0;
-
+    private List<String> notifications ;
     public Subscription() {
+        this.notifications = new ArrayList<>();
     }
 
     public Subscription(Contributor contributor, FridgeNotifications fridgeNotificationsPreferences,int threshold) {
@@ -28,7 +32,15 @@ public class Subscription {
         this.type = fridgeNotificationsPreferences;
         this.threshold = threshold;
     }
-
+    public List<String> getNotifications() {
+        return notifications;
+    }
+    public void setNotifications(List<String> notifications) {
+        this.notifications = notifications;
+    }
+    public void addNotification(String notification){
+        notifications.add(notification);
+    }
     public Contributor getContributor() {
         return this.contributor;
     }
