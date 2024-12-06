@@ -1,5 +1,8 @@
 package org.grupo11.Services.Contributions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.grupo11.DB;
 import org.grupo11.Services.Meal;
 import org.grupo11.Services.Contributor.Contributor;
@@ -45,15 +48,17 @@ public class MealDistribution extends Contribution {
     }
 
     @Override
-    public void afterContribution() {
+    public List<FridgeOpenLogEntry> afterContribution() {
         FridgeOpenLogEntry originEntry = new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(),
                 this.contributor.getContributorRegistry());
         FridgeOpenLogEntry destinyEntry = new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(),
                 this.contributor.getContributorRegistry());
-                DB.create(originEntry);
-                DB.create(destinyEntry);
         this.originFridge.addOpenEntry(originEntry);
         this.destinyFridge.addOpenEntry(destinyEntry);
+        List<FridgeOpenLogEntry> entries = new ArrayList<FridgeOpenLogEntry>();
+        entries.add(originEntry);
+        entries.add(destinyEntry);
+        return entries;
     }
 
     public ContributionType getContributionType() {

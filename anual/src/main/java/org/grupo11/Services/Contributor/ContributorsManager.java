@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributions.ContributionsManager;
+import org.grupo11.Services.Fridge.FridgeOpenLogEntry;
 import org.grupo11.Services.Rewards.RewardSystem;
 
 public class ContributorsManager {
@@ -39,17 +40,19 @@ public class ContributorsManager {
         return null;
     }
 
-    public Boolean addContributionToContributor(Contributor contributor, Contribution contribution) {
-        if (contribution.validate(contributor)) {
+    public List<FridgeOpenLogEntry> addContributionToContributor(Contributor contributor, Contribution contribution) {
+       
+       
+        if (contribution.validate(contributor) ) {
             contribution.setContributor(contributor);
             // contributor.addContribution(contribution); //deja de ser necesario pq las
             // contribuciones de un contributor se sacan por FK 
-            contribution.afterContribution();
+            List<FridgeOpenLogEntry> entries = contribution.afterContribution();
             RewardSystem.assignPoints(contributor, contribution);
             contributionsManager.add(contribution);
-            return true;
+            return entries;
         }
-        return false;
+        return null;
     }
 
     public List<Contributor> getContributors() {

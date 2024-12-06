@@ -32,7 +32,6 @@ public class RewardSystem {
 
     public static void assignPoints(Contributor contributor, Contribution contribution) {
         contributor.setPoints(contributor.getPoints() + contribution.getRewardPoints());
-        DB.update(contributor);
     }
 
     /**

@@ -80,6 +80,7 @@ public class Contributor {
         // initialize proxy - no Session"
         // asiq ahora se hace de manera villera
         if (this instanceof Individual) {
+            System.out.println("individiual");
             return contributionType == ContributionType.MEAL_DONATION
                     || contributionType == ContributionType.MEAL_DISTRIBUTION
                     || contributionType == ContributionType.MONEY_DONATION
@@ -92,10 +93,14 @@ public class Contributor {
                     || contributionType == ContributionType.REWARD;
         }
         if (this instanceof LegalEntity) {
+            System.out.println("LegalEntity");
+
             return contributionType == ContributionType.FRIDGE_ADMINISTRATION
                     || contributionType == ContributionType.REWARD
                     || contributionType == ContributionType.MONEY_DONATION;
         }
+        System.out.println("none");
+        
         return false;
     }
 

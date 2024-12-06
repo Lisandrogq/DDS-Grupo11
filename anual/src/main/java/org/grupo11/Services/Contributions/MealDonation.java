@@ -1,5 +1,9 @@
 package org.grupo11.Services.Contributions;
 
+import java.security.KeyStore.Entry;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.grupo11.DB;
 import org.grupo11.Services.Meal;
 import org.grupo11.Services.Contributor.Contributor;
@@ -27,16 +31,20 @@ public class MealDonation extends Contribution {
     @Override
     public boolean validate(Contributor contributor) {
         return (super.validate(contributor)
-                && (true||this.meal.getFridge().hasPermission(contributor.getContributorRegistry().getId())));//TODO: implement open solicitudes with db and front
+                && (true || this.meal.getFridge().hasPermission(contributor.getContributorRegistry().getId())));
+        // TODO: implement open solicitudes with db and front
     }
 
     @Override
-    public void afterContribution() {
+    public List<FridgeOpenLogEntry> afterContribution() {
         FridgeOpenLogEntry entry = new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(),
-                        this.contributor.getContributorRegistry());
-                        DB.create(entry);
+                this.contributor.getContributorRegistry());
+
         this.meal.getFridge()
                 .addOpenEntry(entry);
+        List<FridgeOpenLogEntry> entries = new ArrayList<FridgeOpenLogEntry>();
+        entries.add(entry);
+        return entries;
     }
 
     public ContributionType getContributionType() {
@@ -46,7 +54,7 @@ public class MealDonation extends Contribution {
     @Override
     public void setContributor(Contributor contributor) {
         super.setContributor(contributor);
-        //meal.setContributor(contributor); las bidireccionalidades son re de trolo
+        // meal.setContributor(contributor); las bidireccionalidades son re de trolo
     }
 
     public Meal getMeal() {
