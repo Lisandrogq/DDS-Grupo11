@@ -9,7 +9,11 @@ public class Crypto {
     }
 
     public static Long genId() {
-        return Long.valueOf(String.valueOf(System.nanoTime()).substring(0, 14));
+        String nanoTime = String.valueOf(System.nanoTime());
+        if (nanoTime.length() < 14) {
+            nanoTime = String.format("%-14s", nanoTime).replace(' ', '0');
+        }
+        return Long.valueOf(nanoTime.substring(0, 14));
     }
 
     public static String sha256Hash(byte[] input) {
