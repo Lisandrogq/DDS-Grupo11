@@ -22,7 +22,7 @@ public class Subscription {
     @Enumerated(EnumType.STRING)
     private FridgeNotifications type;
     private int threshold=0;
-    private List<String> notifications ;
+    private List<String> notifications;
     public Subscription() {
         this.notifications = new ArrayList<>();
     }

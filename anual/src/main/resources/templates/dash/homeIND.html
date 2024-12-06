@@ -63,12 +63,12 @@
 							</svg>
 
 							<div class="my-card d-flex flex-column alerts">
-								<#list temperatures as tmp> 
+								<#list notifications as not> 
 									<div class="d-flex flex-row align-items-center" style="gap: 30px">
 										<h4>🚨</h4>
 										<div>
-											<h6>Temperature</h6>
-											<p>The ${tmp.fridge} fridge temperature is higher than usual!</p>
+											<h6>Notification</h6>
+											<p>${not.description}</p>
 										</div>
 									</div>
 								</#list>

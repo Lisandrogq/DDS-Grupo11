@@ -17,6 +17,7 @@ import org.grupo11.Services.Fridge.Incident.Incident;
 import org.grupo11.Services.Fridge.Incident.Urgency;
 import org.grupo11.Services.Meal;
 import org.grupo11.Services.Fridge.Fridge;
+import org.grupo11.Services.Fridge.FridgeNotification;
 import org.grupo11.Services.Fridge.FridgeNotifications;
 import org.grupo11.Services.Fridge.Subscription;
 
@@ -128,10 +129,11 @@ public class FridgeController {
                 throw new IllegalArgumentException("id inexistente");
             }
             Failure failure = new Failure(fridge, contributor, description, Urgency.valueOf(urgency), DateUtils.now());
-            fridge.addIncident(failure);
+            FridgeNotification notification = fridge.addIncident(failure);
             if (Boolean.parseBoolean(set_inactive)) // se chequea pq si no se podría activar una heladera mediante un
                                                     // reporte de falla
                 fridge.setIsActive(false);
+            DB.create(notification);
             DB.create(failure);
             DB.update(fridge);
             ctx.redirect("/dash/home");

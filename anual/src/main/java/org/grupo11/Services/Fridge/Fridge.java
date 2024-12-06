@@ -297,10 +297,11 @@ public class Fridge {
         this.incidents = incidents;
     }
 
-    public void addIncident(Incident incident) {
+    public FridgeNotification addIncident(Incident incident) {
+        FridgeNotification notification = new FridgeNotification(FridgeNotifications.Malfunction, 0, this.name+" fridge is malfunctioning");
         this.incidents.add(incident);
-        this.evaluateSendNotification(
-                new FridgeNotification(FridgeNotifications.Malfunction, 0, "Fridge is full"));
+        this.evaluateSendNotification(notification);
+        return notification;
     }
 
     public List<Subscription> getNotificationSubscription() {
@@ -341,9 +342,9 @@ public class Fridge {
 
                     subscription.getContributor().getContacts().forEach(value -> {
                         this.notificationsSent.add(fridgeNotification);
-                        String message = "Subscription alert" + fridgeNotification.getMessage();
+                        String message = fridgeNotification.getMessage();
                         value.SendNotification("Subscription alert", message);
-                        subscription.addNotification(message);
+                        subscription.addNotification("Subscription alert: "+message);
                     });
                 }
             }

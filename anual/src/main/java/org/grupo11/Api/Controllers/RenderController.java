@@ -17,6 +17,7 @@ import org.grupo11.Services.Contributions.MoneyDonation;
 import org.grupo11.Services.Contributions.PersonRegistration;
 import org.grupo11.Services.Contributions.RewardContribution;
 import org.grupo11.Services.Fridge.Fridge;
+import org.grupo11.Services.Fridge.Subscription;
 import org.grupo11.Services.Rewards.Reward;
 import org.grupo11.Services.Technician.Technician;
 import org.grupo11.Services.Technician.TechnicianVisit;
@@ -96,8 +97,7 @@ public class RenderController {
         user.put("name", name);
         user.put("points", contributor.getPoints());
 
-        // temperature
-        List<Map<String, Object>> temperatures = new ArrayList<>();
+      
 
         // donations
         List<Map<String, Object>> donations = new ArrayList<>();
@@ -222,11 +222,37 @@ public class RenderController {
             ctx.status(500).json(new ApiResponse(500));
             return null;
         }
+
+        // subscriptions
+        List<Map<String, Object>> notifications = new ArrayList<>();
+        
+        try (Session session = DB.getSessionFactory().openSession()) {
+            String hql = "FROM Subscription s WHERE s.contributor = :contributor";
+            Query<Subscription> query = session.createQuery(hql, Subscription.class);
+            query.setParameter("contributor", contributor);
+            List<Subscription> results = query.getResultList();
+            System.out.println("subscriptions.size(): " + results.size());
+
+            for (Subscription subscription : results) {
+                for (String notification_msg : subscription.getNotifications()) {
+                    Map<String, Object> notificacion = new HashMap<>();
+                    notificacion.put("description", notification_msg);
+                    notifications.add(notificacion);                    
+                }
+            }
+            session.close();
+
+        } catch (Exception e) {
+            Logger.error("Could not serve contributor recognitions {}", e);
+            ctx.status(500).json(new ApiResponse(500));
+            return null;
+        }
+
         Map<String, Object> model = new HashMap<>();
-        String error = ctx.queryParam("error");
+        String error = ctx.queryParam("error");        
 
         model.put("user", user);
-        model.put("temperatures", temperatures);
+        model.put("notifications", notifications);
         model.put("donations", donations);
         model.put("fridges", fridges);
         model.put("rewards", rewards);
