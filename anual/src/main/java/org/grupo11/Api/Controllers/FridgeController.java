@@ -202,6 +202,48 @@ public class FridgeController {
     }
     
     public static void handleUnsubscription(Context ctx) {
+        Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
+        if (contributor == null) {
+            ctx.redirect("/register/login");
+            return;
+        }
+
+        String fridgeId = ctx.queryParam("fridgeId");
+    
+        if (fridgeId == null || !FieldValidator.isInt(fridgeId)) {
+            Logger.error("Invalid or missing subscription ID: " + fridgeId);
+            ctx.status(400).result("Invalid or missing subscription ID.");
+            return;
+        }
+    
+        try (Session session = DB.getSessionFactory().openSession()) {
+            session.beginTransaction();
+    
+            Fridge fridge = session.get(Fridge.class, Integer.parseInt(fridgeId));
+            if (fridge == null) {
+                Logger.error("Fridge not found: " + fridgeId);
+                ctx.status(404).result("Fridge not found.");
+                return;
+            }
+            if (!fridge.isSubscribed(contributor)) {
+                Logger.error("User " + contributor.getId() + " is not subscribed to fridge " + fridge.getId());
+                ctx.status(400).result("You are not subscribed to this fridge.");
+                return;
+            }
+
+            fridge.getSubscriptions(contributor).forEach(subscription -> session.delete(subscription));
+            fridge.removeSubscriber(contributor);
+            session.update(fridge);
+
+            session.getTransaction().commit();
+    
+            ctx.status(200).result("Unsubscribed successfully.");
+        } catch (Exception e) {
+            Logger.error("Error while unsubscribing: ", e);
+            ctx.status(500).result("Internal server error. Please try again later.");
+        }
+
+
     }
 
     public static void getFridgeInfo(Context ctx) {

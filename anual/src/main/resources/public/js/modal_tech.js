@@ -63,7 +63,6 @@ const fridgeModal = (name, meals, temp, reserved, state) => `
 <div id="has_map"class="d-flex flex-column" style="gap: 40px;">
 	<div class="d-flex w-100 justify-content-between align-items-center">
 		<h5 class="accent-100 mb-2">${name} fridge</h5>
-		<button class="btn-primary" style="padding: 10px; font-size: var(--paragraph)">Subscribe</button>
 	</div>
 
 	<div class="d-flex flex-row justify-content-center align-items-center w-100 flex-wrap"> 

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.grupo11.Enums.Provinces;
 import org.grupo11.Services.Meal;
+import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Incident.Incident;
 import org.grupo11.Services.Fridge.Sensor.MovementSensorManager;
 import org.grupo11.Services.Fridge.Sensor.SensorManager;
@@ -309,6 +310,18 @@ public class Fridge {
 
     public void removeNotificationSubscription(Subscription subscription) {
         this.notificationSubscriptions.remove(subscription);
+    }
+
+    public boolean isSubscribed(Contributor contributor) {
+        return this.notificationSubscriptions.stream().anyMatch(subscription -> subscription.getContributor().getId().equals(contributor.getId()));
+    }
+
+    public void removeSubscriber(Contributor contributor) {
+        this.notificationSubscriptions.removeIf(subscription -> subscription.getContributor().getId().equals(contributor.getId()));
+    }
+
+    public List<Subscription> getSubscriptions(Contributor contributor) {
+        return this.notificationSubscriptions.stream().filter(subscription -> subscription.getContributor().getId().equals(contributor.getId())).collect(Collectors.toList());
     }
 
     public void evaluateSendNotification(FridgeNotification fridgeNotification) {

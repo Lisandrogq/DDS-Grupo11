@@ -82,10 +82,18 @@
 						</div>
 						<div class="my-card d-flex flex-column" style="gap: 30px; height: 350px">
 							<#list fridges as fridge>
-								<div class="d-flex align-items-center my-card-item" style="gap: 30px" id="fridge"
-									data-fridge-name=${fridge.name} data-fridge-id=${fridge.id}
-									data-fridge-temp=${fridge.temp} data-fridge-reserved=${fridge.reserved}
-									data-fridge-state=${fridge.state} data-fridge-meals=${fridge.meals}>
+								<div
+									class="d-flex align-items-center my-card-item"
+									style="gap: 30px"
+									id="fridge"
+									data-fridge-name=${fridge.name}
+									data-fridge-id=${fridge.id}
+									data-fridge-temp=${fridge.temp}
+									data-fridge-reserved=${fridge.reserved}
+									data-fridge-state=${fridge.state}
+									data-fridge-meals=${fridge.meals}
+									data-fridge-subscribed="${fridge.subscribed}"
+								>
 									<h4>🧊</h4>
 									<div class="w-100">
 										<h6>${fridge.name} fridge</h6>

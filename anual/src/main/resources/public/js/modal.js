@@ -63,7 +63,10 @@ const fridgeModal = (name, meals, temp, reserved, state) => `
 <div id="has_map"class="d-flex flex-column" style="gap: 40px;">
 	<div class="d-flex w-100 justify-content-between align-items-center">
 		<h5 class="accent-100 mb-2">${name} fridge</h5>
-		<button id="suscribeBtn" class="btn-primary" style="padding: 10px; font-size: var(--paragraph)">Subscribe</button>
+		<div class="d-flex flex-row" style="gap: 10px;">
+			<button id="unsubscribeBtn" class="btn-primary" style="padding: 10px; font-size: var(--paragraph)">Unsubscribe</button>
+			<button id="subscribeBtn" class="btn-primary" style="padding: 10px; font-size: var(--paragraph)">Subscribe</button>
+		</div>
 	</div>
 
 	<div class="d-flex flex-row justify-content-center align-items-center w-100 flex-wrap"> 
@@ -82,11 +85,11 @@ const fridgeModal = (name, meals, temp, reserved, state) => `
 </div>
 `;
 
-function handleSuscribe(id) { 
+function handleSubscribe(id) { 
 	return `
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
-				<h5 class="accent-100 mb-2">Suscribe to fridge</h5>
+				<h5 class="accent-100 mb-2">Subscribe to fridge</h5>
 				<p>Get notified about your favorite fridges!!!!!</p>
 			</div>
 			<form method="POST" action="/fridge/subscribe" class="form">
@@ -135,6 +138,28 @@ function handleSuscribe(id) {
 	`;
 }
 
+function handleUnsubscribe(id) {
+
+	fetch(`/fridge/unsubscribe?fridgeId=${encodeURIComponent(id)}`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+	})
+		.then(response => {
+			if (response.ok) {
+				alert("Unsubscribed successfully!");
+				window.location.reload();
+			} else {
+				alert("Failed to unsubscribe. Please try again.");
+			}
+		})
+		.catch(error => {
+			console.error('Error:', error);
+			alert("An error occurred. Please try again.");
+		});
+}
+
 function toggleQuantityField(event) {
 	const selectedValue = event.target.value;
 	const quantityField = document.getElementById("quantity-field");
@@ -156,11 +181,20 @@ const setupFridgeListeners = () => {
 		const temp = fridge.getAttribute("data-fridge-temp");
 		const reserved = fridge.getAttribute("data-fridge-reserved");
 		const state = fridge.getAttribute("data-fridge-state");
+		const subscribed = fridge.getAttribute("data-fridge-subscribed");
 		fridge.onclick = () => {
 			openModal(fridgeModal(name, meals, temp, reserved, state), () => {
-				// setup listener in suscribe button
-				const suscribeBtn = document.querySelector("#suscribeBtn");
-				suscribeBtn.onclick = () => setModalContent(handleSuscribe(id));
+				// setup listener in subscribe button
+				const subscribeBtn = document.querySelector("#subscribeBtn");
+				subscribeBtn.onclick = () => setModalContent(handleSubscribe(id));
+
+				const unsubscribeBtn = document.querySelector("#unsubscribeBtn");
+				if (subscribed === "true") {
+					unsubscribeBtn.style.display = "inline-block";
+					unsubscribeBtn.onclick = () => handleUnsubscribe(id);
+				} else {
+					unsubscribeBtn.style.display = "none";
+				}
 
 				// setup listener in report failure to open te modal
 				const failureBtn = document.querySelector("#fridge-report-failure");

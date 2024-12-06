@@ -117,7 +117,13 @@ public class RenderController {
             List<Fridge> results = query.getResultList();
             System.out.println("results.size(): " + results.size());
             for (Fridge fridge : results) {
-                fridges.add(fridge.toMap());
+                Map<String, Object> fridgeMap = fridge.toMap();
+                if (fridge.isSubscribed(contributor)) {
+                    fridgeMap.put("subscribed", "true");
+                } else {
+                    fridgeMap.put("subscribed", "false");
+                }
+                fridges.add(fridgeMap);
             }
             session.close();
 
