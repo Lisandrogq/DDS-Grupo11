@@ -417,7 +417,7 @@ function fridgeAdministration() {
 				<input type="text" id="address" name="address" required placeholder="Address of the fridge..." />
 				<div class="d-flex justify-content-between w-100 gap">
 					<input
-						type="text"
+						type="number"
 						id="capacity"
 						name="capacity"
 						required
@@ -436,7 +436,7 @@ function fridgeAdministration() {
 				</div>
 			</form>
 		<div>
-		`;
+	`;
 }
 
 function moneyDonation() {
