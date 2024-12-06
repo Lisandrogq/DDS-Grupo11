@@ -371,7 +371,7 @@ function mealDistribution() {
 					<span  style="color: #136C91" class="clickable-text" onclick="eliminarInput()">Delete meal</span>
 				</div>
 				<div id="input-placeholder"> 
-				<input type="text" id="meal" name="meal_0" required placeholder="ID of meal to distribute..."class="col-12 inputs">
+				<input type="text" id="meal" name="meal_0" required placeholder="Type of meal to distribute..."class="col-12 inputs">
 				</div>
 				<input type="text" id="reason" name="reason" required placeholder="Reason for relocation...">
 				
@@ -469,53 +469,33 @@ function personRegistration() {
 			</div>
 
 			<form method="POST" action="/contribution/registration" class="form">
+				
 				<input
 					type="text"
-					id="username"
-					name="username"
-					required
-					placeholder="Username..."
-				/>
-				<input
-					type="password"
-					id="contrasena"
-					name="contrasena"
-					required
-					placeholder="Password..."
-				/>
-				<input
-					type="password"
-					id="contrasenaConfirmada"
-					name="contrasena"
-					required
-					placeholder="Password again..."
-				/>
-				<input
-					type="text"
-					id="nombreYApellido"
-					name="nombreYApellido"
+					id="name"
+					name="name"
 					required
 					placeholder="Full name..."
+				/>
+				<input
+					type="number"
+					id="dni"
+					name="dni"
+					required
+					placeholder="DNI..."
 				/>
 				<p>Birthdate</p>
 				<input
 					type="date"
-					id="fechaDeNacimiento"
-					name="fechaDeNacimiento"
+					id="birth"
+					name="birth"
 					required
 					placeholder="Birthdate..."
 				/>
 				<input
-					type="text"
-					id="idtarjeta"
-					name="idtarjeta"
-					required
-					placeholder="Card ID..."
-				/>
-				<input
 					type="number"
-					id="childrenInCharge"
-					name="childrenInCharge"
+					id="children_count"
+					name="children_count"
 					required
 					min=0
 					placeholder="Number of children in charge..."

@@ -11,6 +11,7 @@ import org.grupo11.Services.Contributions.FridgeAdmin;
 import org.grupo11.Services.Contributions.MealDistribution;
 import org.grupo11.Services.Contributions.MealDonation;
 import org.grupo11.Services.Contributions.MoneyDonation;
+import org.grupo11.Services.Contributions.PersonRegistration;
 import org.grupo11.Services.Contributions.RewardContribution;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Contributor.ContributorsManager;
@@ -19,6 +20,7 @@ import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgeOpenLogEntry;
 import org.grupo11.Services.Fridge.Sensor.MovementSensorManager;
 import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
+import org.grupo11.Services.PersonInNeed.PersonInNeed;
 import org.grupo11.Services.Rewards.Reward;
 import org.grupo11.Services.Rewards.RewardCategory;
 import org.grupo11.Utils.DateUtils;
@@ -263,15 +265,13 @@ public class ContributionsController {
         String message = ctx.formParam("message");
 
         if (!FieldValidator.isInt(amount)) {
-            // see how to show err in client
-            ctx.redirect("/dash/home");
-            return;
+            throw new IllegalArgumentException("invalid amount");
+
         }
         if (!FieldValidator.isString(message)) {
-            // ditto
-            ctx.redirect("/dash/home");
-            return;
+            throw new IllegalArgumentException("invalid message");
         }
+
         try {
             MoneyDonation moneyDonation = new MoneyDonation(Integer.parseInt(amount), DateUtils.now(), message);
             moneyDonation.setContributor(contributor);
@@ -292,6 +292,52 @@ public class ContributionsController {
     }
 
     public static void handlePersonRegistrationContribution(Context ctx) {
+        System.out.println(ctx.body());
+        try {
+
+        Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
+        if (contributor == null) {
+            ctx.redirect("/register/login");
+            return;
+        }
+        String name = ctx.formParam("name");
+        String dni = ctx.formParam("dni");
+        String birth = ctx.formParam("birth");
+        String children_count = ctx.formParam("children_count");
+
+        if (!FieldValidator.isString(name)) {
+            throw new IllegalArgumentException("invalid name");
+
+        }
+        if (!FieldValidator.isDate(birth)) {
+            throw new IllegalArgumentException("invalid birth");
+
+        } if (!FieldValidator.isInt(dni)) {
+            throw new IllegalArgumentException("invalid dni");
+
+        }
+        if (!FieldValidator.isInt(children_count)) {
+            throw new IllegalArgumentException("invalid children_count");
+
+        }
+            PersonInNeed PIN = new PersonInNeed(name,DateUtils.parseDateString(birth),DateUtils.now(),"",Integer.parseInt(dni),Integer.parseInt(children_count),null); 
+            PersonRegistration personRegistration = new PersonRegistration(PIN,DateUtils.now(),contributor);
+            personRegistration.setContributor(contributor);
+            List<FridgeOpenLogEntry> entries = ContributorsManager.getInstance().addContributionToContributor(
+                    contributor,
+                    personRegistration);
+            if (entries == null)
+                throw new IllegalArgumentException("no puede contribuir de esta forma");// TODO: validar antes de esto q
+                                                                                        // haya openSolicitude
+            DB.update(contributor);
+            DB.create(PIN);
+            DB.create(personRegistration);
+            ctx.redirect("/dash/home");
+        } catch (Exception e) {
+            Logger.error("Exception ", e);
+            ctx.redirect("/dash/home?error=" + e.getMessage());
+            return;
+        }
     }
 
     public static void handleRewardContribution(Context ctx) {

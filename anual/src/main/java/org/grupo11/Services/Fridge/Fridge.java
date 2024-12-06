@@ -273,13 +273,14 @@ public class Fridge {
         }
         return false;
     }
+
     public Incident getIncidentById(int incident_id) {
         for (Incident incident : incidents) {
             if (incident.getId() == incident_id) {
-                return incident; 
+                return incident;
             }
         }
-        return null; 
+        return null;
     }
 
     public List<Incident> getIncidents() {
@@ -298,6 +299,8 @@ public class Fridge {
 
     public void addIncident(Incident incident) {
         this.incidents.add(incident);
+        this.evaluateSendNotification(
+                new FridgeNotification(FridgeNotifications.Malfunction, 0, "Fridge is full"));
     }
 
     public List<Subscription> getNotificationSubscription() {
@@ -330,12 +333,17 @@ public class Fridge {
                     && subscription.getThreshold() >= fridgeNotification.getAmmount();
             boolean full_condition = fridgeNotification.getType() == FridgeNotifications.NearFullInventory
                     && subscription.getThreshold() <= fridgeNotification.getAmmount();
-
-            if (low_condition || full_condition || fridgeNotification.getType() == FridgeNotifications.Malfunction) {
+            boolean malfunction_condition = fridgeNotification.getType() == FridgeNotifications.Malfunction;
+            if (low_condition || full_condition || malfunction_condition) {
+                System.out.println("Recorriendo las subscriptions. Tipo Actual: "+subscription.getType().toString());
                 if (subscription.getType() == fridgeNotification.getType()) {
+                System.out.println("entre a la");
+
                     subscription.getContributor().getContacts().forEach(value -> {
                         this.notificationsSent.add(fridgeNotification);
-                        value.SendNotification("Subscription alert", fridgeNotification.getMessage());
+                        String message = "Subscription alert" + fridgeNotification.getMessage();
+                        value.SendNotification("Subscription alert", message);
+                        subscription.addNotification(message);
                     });
                 }
             }

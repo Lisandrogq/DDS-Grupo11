@@ -4,6 +4,7 @@ import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.PersonInNeed.PersonInNeed;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 
@@ -12,7 +13,7 @@ import jakarta.persistence.PrimaryKeyJoinColumn;
 public class PersonRegistration extends Contribution {
     @OneToOne
     private PersonInNeed person;
-    @OneToOne
+    @ManyToOne
     private Contributor givenBy;
 
     public PersonRegistration() {
