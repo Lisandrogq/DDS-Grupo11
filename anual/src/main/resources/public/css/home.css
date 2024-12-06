@@ -24,3 +24,14 @@ body {
 	font-size: large;
 	font-weight: bold;
 }
+
+.error-container > p {
+    cursor: pointer;
+    transition: opacity 0.5s;
+    opacity: 1;
+    height: auto;
+}
+
+.error-container > p.hidden {
+    opacity: 0;
+}

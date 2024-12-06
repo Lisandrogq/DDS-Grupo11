@@ -80,8 +80,7 @@ public class FridgeController {
 
         } catch (Exception e) {
             Logger.error("Exception ", e);
-            // ditto
-            ctx.json("TODO: make front error message - " + e.getMessage());
+            ctx.redirect("/dash/home?error=" + e.getMessage());
             return;
         }
 
@@ -136,8 +135,7 @@ public class FridgeController {
 
         } catch (Exception e) {
             Logger.error("Exception ", e);
-            // ditto
-            ctx.json("TODO: make front error message - " + e.getMessage());
+            ctx.redirect("/dash/home?error=" + e.getMessage());
             return;
         }
     }
@@ -198,7 +196,7 @@ public class FridgeController {
                 org.hibernate.query.Query<Incident> incidentsQuery = session.createQuery(incidentsHQL);
                 incidentsQuery.setParameter("fridgeId", fridgeId);
                 List<Incident> incidents = incidentsQuery.getResultList();
-                
+
                 List<FridgeFullInfo.IncidentsData> incidentsData = new java.util.ArrayList<>();
                 for (Incident incident : incidents) {
                     FridgeFullInfo.IncidentsData incidentData = new FridgeFullInfo.IncidentsData();
@@ -207,9 +205,9 @@ public class FridgeController {
                     incidentData.setHasBeenFixed(incident.hasBeenFixed());
                     if (incident instanceof Failure) {
                         Failure failure = (Failure) incident;
-                        incidentData.setFailureDescription(failure.getReportedBy(), failure.getUrgency(), failure.getDescription());
-                    }
-                    else if (incident instanceof Alert) {
+                        incidentData.setFailureDescription(failure.getReportedBy(), failure.getUrgency(),
+                                failure.getDescription());
+                    } else if (incident instanceof Alert) {
                         Alert alert = (Alert) incident;
                         incidentData.setAlertDescription(alert.getType());
                     } else {
