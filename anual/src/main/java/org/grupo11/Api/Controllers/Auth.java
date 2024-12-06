@@ -33,7 +33,9 @@ enum Type {
 }
 
 public class Auth {
-
+    public static void handleUserLogOut(Context ctx) {
+        ctx.res().addCookie(HttpUtils.createHttpOnlyCookie("access-token", "", 3600));
+    }
     public static void handleUserLogin(Context ctx) {
         try {
             String mail = ctx.formParam("mail");
@@ -215,7 +217,7 @@ public class Auth {
         }
 
         if (!FieldValidator.acceptablePassword(pw)) {
-            sendFormError.accept("Invalid password");
+            sendFormError.accept("Invalid password format.<br> It must include uppercase, lowercase, digit and special character");
             return;
         }
 

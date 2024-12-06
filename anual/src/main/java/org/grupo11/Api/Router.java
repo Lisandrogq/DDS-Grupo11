@@ -28,6 +28,7 @@ public class Router {
     }
 
     static void userRoutes(Javalin api) {
+        api.get("/user/logout", Auth::handleUserLogOut);
         api.post("/user/login", Auth::handleUserLogin);
         api.post("/user/individual", Auth::handleIndividualSignup);
         api.post("/user/legal-entity", Auth::handleLegalEntitySignup);

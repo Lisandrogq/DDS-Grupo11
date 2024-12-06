@@ -79,7 +79,7 @@ public class RenderController {
             ctx.render(page + ".html", model);
         } catch (Exception e) {
             Logger.error("Error while rendering dashboard", e);
-            ctx.status(500);
+            ctx.redirect("/dash/home?error=" + e.getMessage());
         }
     }
 
@@ -102,17 +102,17 @@ public class RenderController {
         // donations
         List<Map<String, Object>> donations = new ArrayList<>();
         Map<String, Object> donatedFridge = new HashMap<>();
-        donatedFridge.put("name", "Medrano");
-        donatedFridge.put("temp", 3);
-        donatedFridge.put("reserved", 40);
-        donatedFridge.put("state", "Active");
-        donatedFridge.put("meals", 120);
+        donatedFridge.put("name", "");
+        donatedFridge.put("temp", 0);
+        donatedFridge.put("reserved", 0);
+        donatedFridge.put("state", "");
+        donatedFridge.put("meals", 0);
 
         // fridges
         List<Map<String, Object>> fridges = new ArrayList<>();
 
         try (Session session = DB.getSessionFactory().openSession()) {
-            String hql = "FROM Fridge f ";// faltaría el where con el userid cuando marquitos haga el sso
+            String hql = "FROM Fridge f ";
             Query<Fridge> query = session.createQuery(hql, Fridge.class);
             List<Fridge> results = query.getResultList();
             System.out.println("results.size(): " + results.size());
@@ -217,11 +217,14 @@ public class RenderController {
             return null;
         }
         Map<String, Object> model = new HashMap<>();
+        String error = ctx.queryParam("error");
+
         model.put("user", user);
         model.put("temperatures", temperatures);
         model.put("donations", donations);
         model.put("fridges", fridges);
         model.put("rewards", rewards);
+        model.put("error", error);
         return model;
     }
 
@@ -250,24 +253,24 @@ public class RenderController {
             return null;
         }
 
-         // fridges
-         List<Map<String, Object>> visits = new ArrayList<>();
+        // fridges
+        List<Map<String, Object>> visits = new ArrayList<>();
 
-         try (Session session = DB.getSessionFactory().openSession()) {
-             String hql = "FROM TechnicianVisit v ";
-             Query<TechnicianVisit> query = session.createQuery(hql, TechnicianVisit.class);
-             List<TechnicianVisit> results = query.getResultList();
-             System.out.println("results.size(): " + results.size());
-             for (TechnicianVisit visit : results) {
-                 visits.add(visit.toMap());
-             }
-             session.close();
- 
-         } catch (Exception e) {
-             Logger.error("Could not serve contributor recognitions {}", e);
-             ctx.status(500).json(new ApiResponse(500));
-             return null;
-         }
+        try (Session session = DB.getSessionFactory().openSession()) {
+            String hql = "FROM TechnicianVisit v ";
+            Query<TechnicianVisit> query = session.createQuery(hql, TechnicianVisit.class);
+            List<TechnicianVisit> results = query.getResultList();
+            System.out.println("results.size(): " + results.size());
+            for (TechnicianVisit visit : results) {
+                visits.add(visit.toMap());
+            }
+            session.close();
+
+        } catch (Exception e) {
+            Logger.error("Could not serve contributor recognitions {}", e);
+            ctx.status(500).json(new ApiResponse(500));
+            return null;
+        }
 
         model.put("user", user);
         model.put("visits", visits);

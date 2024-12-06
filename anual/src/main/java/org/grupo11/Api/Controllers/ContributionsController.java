@@ -92,8 +92,7 @@ public class ContributionsController {
 
         } catch (Exception e) {
             Logger.error("Exception ", e);
-            // ditto
-            ctx.json("TODO: make front error message - " + e.getMessage());
+            ctx.redirect("/dash/home?error=" + e.getMessage());
             return;
         }
     }
@@ -192,16 +191,13 @@ public class ContributionsController {
             ctx.redirect("/dash/home");
 
         } catch (Exception e) {
-            // ditto
-            Logger.error("error:", e);
-            ctx.json("TODO: make front error message - " + e.getMessage());
+            ctx.redirect("/dash/home?error=" + e.getMessage());
             return;
         }
 
     }
 
-    public static void handlFridgeAdministrationContribution(Context ctx) {// TODO: only allow this contribution to
-                                                                           // legal entities
+    public static void handlFridgeAdministrationContribution(Context ctx) {
         Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
         if (contributor == null) {
             ctx.redirect("/register/login");
@@ -252,8 +248,7 @@ public class ContributionsController {
             ctx.redirect("/dash/home");
         } catch (Exception e) {
             Logger.error("Exception ", e);
-            // ditto
-            ctx.json("TODO: make front error message - " + e.getMessage());
+            ctx.redirect("/dash/home?error=" + e.getMessage());
             return;
         }
     }
@@ -291,8 +286,7 @@ public class ContributionsController {
             ctx.redirect("/dash/home");
         } catch (Exception e) {
             Logger.error("Exception ", e);
-            // ditto
-            ctx.json("TODO: make front error message - " + e.getMessage());
+            ctx.redirect("/dash/home?error=" + e.getMessage());
             return;
         }
     }
@@ -346,8 +340,7 @@ public class ContributionsController {
             ctx.redirect("/dash/home");
         } catch (Exception e) {
             Logger.error("Exception ", e);
-            // ditto
-            ctx.json("TODO: make front error message - " + e.getMessage());
+            ctx.redirect("/dash/home?error=" + e.getMessage());
             return;
         }
     }

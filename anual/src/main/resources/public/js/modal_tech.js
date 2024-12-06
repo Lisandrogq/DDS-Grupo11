@@ -204,7 +204,7 @@ function mealDonation() {
 						id="fridge_address"
 						name="fridge_address"
 						required
-						placeholder="Fridge Address...(TODO: handle invalid address)"
+						placeholder="Fridge Address..."
 					/>
 				</div>
 				<div class="d-flex justify-content-between w-100 gap">
@@ -782,3 +782,14 @@ confirmBtn.onclick = () => {
 		});
 
 };
+
+
+async function deleteCookieAndRefresh() {
+    // Delete the 'access-token' cookie by setting its expiration date to a past date
+	document.cookie = "access-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+	await fetch("/user/logout", {
+		method: "GET",
+
+	})
+	window.location.reload();
+}
