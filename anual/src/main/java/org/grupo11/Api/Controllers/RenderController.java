@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.HashMap;
 
 import io.javalin.http.Context;
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 
 public class RenderController {
     public static void renderRegisterPages(Context ctx) {
@@ -95,9 +96,10 @@ public class RenderController {
         // user
         Map<String, Object> user = new HashMap<>();
         user.put("name", name);
-        user.put("points", contributor.getPoints());
-
-      
+        int points = contributor.getPointsAsInt();
+        String pointsAsString = String.valueOf(points);
+        Logger.info("points: " + pointsAsString);
+        user.put("points", pointsAsString);
 
         // donations
         List<Map<String, Object>> donations = new ArrayList<>();

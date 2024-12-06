@@ -755,45 +755,42 @@ function failureAlert(fridge_id) {
 
 // Puntos de usuario
 const userPoints = document.querySelector("#user-points");
-let originalPoints = parseInt(userPoints.getAttribute("data-user-points").replace(/\./g, ""));
-let dataUserPoints = parseInt(userPoints.getAttribute("data-user-points").replace(/\./g, ""));
+let originalPoints = parseInt(userPoints.getAttribute("data-user-points"));
+let dataUserPoints = parseInt(userPoints.getAttribute("data-user-points"));
 
 // Botones de cancelar y confirmar
 const cancelBtn = document.getElementById("cancel-reward-btn");
-const confirmBtn = document.getElementById("confirm-reward-btn");
 cancelBtn.style.display = "none";
+const confirmBtn = document.getElementById("confirm-reward-btn");
 confirmBtn.style.display = "none";
 
 // Botones de reclamar recompensas
 const redeemRewardBtns = document.querySelectorAll("#redeem-reward-btn");
 let originalQuantities = {};
 let quantities = {};
-let idRegister = 1;
 
 redeemRewardBtns.forEach((button) => {
 	const rewardId = button.getAttribute("data-reward-id");
-	// console.log(rewardId);
+	const descriptionElement = button.closest(".d-flex").querySelector("p");
+	const originalQuantity = parseInt(button.getAttribute("data-reward-quantity"));
+	const neededPoints = parseInt(button.getAttribute("data-reward-neededpoints"));
 
-	const originalQuantity = parseInt(button.getAttribute("data-reward-quantity").replace(/\./g, ""));
 	originalQuantities[rewardId] = originalQuantity;
 	quantities[rewardId] = originalQuantity;
-
-	const neededPoints = parseInt(button.getAttribute("data-reward-neededpoints").replace(/\./g, ""));
 
 	button.onclick = () => {
 		if (dataUserPoints >= neededPoints && quantities[rewardId] > 0) {
 			dataUserPoints -= neededPoints;
-			userPoints.textContent = dataUserPoints.toLocaleString('es-ES');
+			userPoints.textContent = dataUserPoints;
 			userPoints.setAttribute("data-user-points", dataUserPoints);
 
 			quantities[rewardId] -= 1;
 			button.setAttribute("data-reward-quantity", quantities[rewardId]);
 
-			const descriptionElement = button.closest(".d-flex").querySelector("p");
 			if (descriptionElement) {
 				const newDescription = descriptionElement.textContent.replace(
 					/\((.*?) remaining\)/,
-					`(${quantities[rewardId].toLocaleString('es-ES')} remaining)`
+					`(${quantities[rewardId]} remaining)`
 				);
 				descriptionElement.textContent = newDescription;
 			}
@@ -801,7 +798,6 @@ redeemRewardBtns.forEach((button) => {
 			cancelBtn.style.display = "inline-block";
 			confirmBtn.style.display = "inline-block";
 
-			// alert("Reward redeemed successfully!");
 		} else if (quantities[rewardId] <= 0) {
 			alert("There are no more rewards available");
 		} else {
@@ -820,11 +816,12 @@ cancelBtn.onclick = () => {
 
 	redeemRewardBtns.forEach((button) => {
 		const rewardId = button.getAttribute("data-reward-id");
-		const originalQuantity = originalQuantities[rewardId]; // Usar el valor original guardado
+		const descriptionElement = button.closest(".d-flex").querySelector("p");
+		const originalQuantity = originalQuantities[rewardId];
+		
 		button.setAttribute("data-reward-quantity", originalQuantity);
 		quantities[rewardId] = originalQuantity;
 
-		const descriptionElement = button.closest(".d-flex").querySelector("p");
 		if (descriptionElement) {
 			const newDescription = descriptionElement.textContent.replace(/\d+ remaining/, `${originalQuantity} remaining`);
 			descriptionElement.textContent = newDescription;
