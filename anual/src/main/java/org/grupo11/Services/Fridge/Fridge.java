@@ -59,7 +59,7 @@ public class Fridge {
     private List<FridgeOpenLogEntry> openedHistory;
     @OneToMany
     private List<Incident> incidents;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     protected List<Subscription> notificationSubscriptions;
     @OneToMany
     private List<FridgeNotification> notificationsSent;

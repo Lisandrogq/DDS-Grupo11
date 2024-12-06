@@ -17,10 +17,13 @@ import org.grupo11.Services.Fridge.Incident.Incident;
 import org.grupo11.Services.Fridge.Incident.Urgency;
 import org.grupo11.Services.Meal;
 import org.grupo11.Services.Fridge.Fridge;
+import org.grupo11.Services.Fridge.FridgeNotifications;
+import org.grupo11.Services.Fridge.Subscription;
 
 import io.javalin.http.Context;
 
 public class FridgeController {
+
     public static void handleAddVisit(Context ctx) {
         System.out.println(ctx.body());
         // Obtengo el Technician
@@ -143,9 +146,64 @@ public class FridgeController {
     }
 
     public static void handleSubscription(Context ctx) {
-    }
 
-    public static void handleUnSubscription(Context ctx) {
+        Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
+        if (contributor == null) {
+            ctx.redirect("/register/login");
+            return;
+        }
+
+        String type = ctx.formParam("type");
+        String quantity = ctx.formParam("quantity");
+        String fridge_id = ctx.formParam("fridge");
+
+        if (type == null || fridge_id == null || (!"Malfunction".equals(type) && (quantity == null || quantity.isEmpty()))) {
+            ctx.status(400).result("Missing or invalid parameters");
+            return;
+        }
+        if (type.equals("Malfunction")) {
+            quantity = "0";
+        }
+
+        try (Session session = DB.getSessionFactory().openSession()) {
+            if (!FieldValidator.isValidEnumValue(FridgeNotifications.class, type)) {
+                throw new IllegalArgumentException("invalid type");
+            }
+            if (!FieldValidator.isInt(fridge_id)) {
+                throw new IllegalArgumentException("invalid fridge_id");
+            }
+            if (!FieldValidator.isInt(quantity)) {
+                throw new IllegalArgumentException("invalid quantity");
+            }
+
+            String hql = "SELECT f " +
+                    "FROM Fridge f " +
+                    "WHERE f.id = :fridge_id";
+            org.hibernate.query.Query<Fridge> query = session.createQuery(hql, Fridge.class);
+            query.setParameter("fridge_id", fridge_id);
+            Fridge fridge = query.uniqueResult();
+            if (fridge == null) {
+                throw new IllegalArgumentException("id inexistente");
+            }
+
+            Subscription subscription = new Subscription();
+            subscription.setContributor(contributor);
+            subscription.setType(FridgeNotifications.valueOf(type));
+            subscription.setThreshold(Integer.parseInt(quantity));
+            fridge.addNotificationSubscription(subscription);
+
+            DB.create(subscription);
+            DB.update(fridge);
+
+            ctx.redirect("/dash/home");
+        } catch (Exception e) {
+            Logger.error("Exception ", e);
+            ctx.json(500).result("Internal server error: " + e.getMessage());
+            return;
+        }
+    }
+    
+    public static void handleUnsubscription(Context ctx) {
     }
 
     public static void getFridgeInfo(Context ctx) {

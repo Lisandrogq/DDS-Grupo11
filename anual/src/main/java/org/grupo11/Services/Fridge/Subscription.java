@@ -19,10 +19,8 @@ public class Subscription {
     @Enumerated(EnumType.STRING)
     private FridgeNotifications type;
     private int threshold=0;
-    @ManyToOne
-    private Fridge fridge;
 
-    public Subscription(int threshold) {
+    public Subscription() {
     }
 
     public Subscription(Contributor contributor, FridgeNotifications fridgeNotificationsPreferences,int threshold) {
@@ -35,12 +33,26 @@ public class Subscription {
         return this.contributor;
     }
 
+    public void setContributor(Contributor contributor) {
+        this.contributor = contributor;
+    }
+
     public FridgeNotifications getType() {
         return this.type;
     }
+
+    public void setType(FridgeNotifications type) {
+        this.type = type;
+    }
+
     public int getThreshold(){
         return this.threshold;
     }
+
+    public void setThreshold(int threshold){
+        this.threshold = threshold;
+    }
+
     public void sendFridgeNotification(String subject, String message) {
         this.contributor.getContacts().get(0).SendNotification(subject, message);
     }

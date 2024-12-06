@@ -63,7 +63,7 @@ const fridgeModal = (name, meals, temp, reserved, state) => `
 <div id="has_map"class="d-flex flex-column" style="gap: 40px;">
 	<div class="d-flex w-100 justify-content-between align-items-center">
 		<h5 class="accent-100 mb-2">${name} fridge</h5>
-		<button class="btn-primary" style="padding: 10px; font-size: var(--paragraph)">Subscribe</button>
+		<button id="suscribeBtn" class="btn-primary" style="padding: 10px; font-size: var(--paragraph)">Subscribe</button>
 	</div>
 
 	<div class="d-flex flex-row justify-content-center align-items-center w-100 flex-wrap"> 
@@ -82,6 +82,71 @@ const fridgeModal = (name, meals, temp, reserved, state) => `
 </div>
 `;
 
+function handleSuscribe(id) { 
+	return `
+		<div class="d-flex flex-column" style="gap: 40px;">
+			<div>
+				<h5 class="accent-100 mb-2">Suscribe to fridge</h5>
+				<p>Get notified about your favorite fridges!!!!!</p>
+			</div>
+			<form method="POST" action="/fridge/subscribe" class="form">
+				<select
+					name="type"
+					required
+					id="subscription-type"
+					onchange="toggleQuantityField(event)"
+				>
+					<option selected disabled hidden>
+						Choose a category of subscription
+					</option>
+					<option value="LowInventory">Low Inventory</option>
+					<option value="NearFullInventory">Near Full Inventory</option>
+					<option value="Malfunction">Malfunction</option>
+				</select>
+
+				<div id="quantity-field" style="display: none;">
+					<input
+						type="number"
+						id="quantity"
+						name="quantity"
+						placeholder="A partir de n cantidad de comidas..."
+					/>
+				</div>
+
+				<input type="hidden" name="fridge" value="${id}">
+
+				<div class="form-btns-container">
+					<button
+						type="reset"
+						class="btn-text w-100"
+						id="modal-close"
+					>
+						Cancel
+					</button>
+					<button
+						type="submit"
+						class="btn-primary w-100"
+					>
+						Submit
+					</button>
+				</div>
+			</form>
+		</div>
+	`;
+}
+
+function toggleQuantityField(event) {
+	const selectedValue = event.target.value;
+	const quantityField = document.getElementById("quantity-field");
+
+	if (selectedValue === "LowInventory" || selectedValue === "NearFullInventory") {
+		quantityField.style.display = "block";
+		quantityField.querySelector("input").required = true;
+	} else {
+		quantityField.style.display = "none";
+	}
+}
+
 const setupFridgeListeners = () => {
 	const fridges = document.querySelectorAll("#fridge");
 	fridges.forEach((fridge) => {
@@ -93,6 +158,10 @@ const setupFridgeListeners = () => {
 		const state = fridge.getAttribute("data-fridge-state");
 		fridge.onclick = () => {
 			openModal(fridgeModal(name, meals, temp, reserved, state), () => {
+				// setup listener in suscribe button
+				const suscribeBtn = document.querySelector("#suscribeBtn");
+				suscribeBtn.onclick = () => setModalContent(handleSuscribe(id));
+
 				// setup listener in report failure to open te modal
 				const failureBtn = document.querySelector("#fridge-report-failure");
 				failureBtn.onclick = () => setModalContent(failureAlert(id));
