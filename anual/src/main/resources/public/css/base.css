@@ -139,6 +139,10 @@ p {
 	background-color: var(--accent-300);
 }
 
+.bg-accent-400 {
+	background-color: var(--accent-400);
+}
+
 .rounded {
 	border-radius: 8px !important;
 }
