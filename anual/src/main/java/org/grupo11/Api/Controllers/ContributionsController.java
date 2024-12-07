@@ -224,7 +224,7 @@ public class ContributionsController {
                 throw new IllegalArgumentException("invalid isactive");
             }
 
-            //----------------------- Version vieja -----------------------//
+            /*----------------------- Version vieja -----------------------//
 
             Fridge fridge = new Fridge(address, name, Integer.parseInt(capacity), 0, new ArrayList<>(), null, null);
             LegalEntity le = new LegalEntity(); // this should be retrieved from the db using the contributor that
@@ -250,9 +250,9 @@ public class ContributionsController {
             DB.create(fridgeAdmin);
             ctx.redirect("/dash/home");
 
-            //----------------------- Version vieja -----------------------//
+            //----------------------- Version vieja -----------------------*/
 
-            /*----------------------- Version nueva -----------------------
+            //----------------------- Version nueva -----------------------
             try (Session session = DB.getSessionFactory().openSession()) {
                 String leHQL = "SELECT le " +
                         "FROM LegalEntity le " +
@@ -299,7 +299,7 @@ public class ContributionsController {
                 Logger.error("Exception ", e);
                 ctx.redirect("/dash/home?error=" + e.getMessage());
                 return;
-            } ----------------------- Version nueva -----------------------*/
+            } //----------------------- Version nueva -----------------------//
 
         } catch (Exception e) {
             Logger.error("Exception ", e);
