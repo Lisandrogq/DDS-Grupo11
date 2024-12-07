@@ -119,6 +119,8 @@ public class Fridge {
         Map<String, Object> fridgeMap = new HashMap<>();
         fridgeMap.put("name", getName());
         fridgeMap.put("id", getId());
+        fridgeMap.put("lat", getLatAsString());
+        fridgeMap.put("lon", getLonAsString());
         fridgeMap.put("temp", getTempManager().getLastTemp());
         fridgeMap.put("reserved", 0);// q pija es esto??
         fridgeMap.put("state", getIsActive() ? "Active" : "Inactive");
@@ -167,12 +169,20 @@ public class Fridge {
         return this.lon;
     }
 
+    public String getLonAsString() {
+        return Double.toString(this.lon);
+    }
+
     public void setLon(double lon) {
         this.lon = lon;
     }
 
     public double getLat() {
         return this.lat;
+    }
+
+    public String getLatAsString() {
+        return Double.toString(this.lat);
     }
 
     public void setLat(double lat) {

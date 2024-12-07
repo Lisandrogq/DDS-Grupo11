@@ -5,7 +5,12 @@ import java.security.NoSuchAlgorithmException;
 
 public class Crypto {
     public static int getRandomId(int length) {
-        return Integer.valueOf(String.valueOf(System.nanoTime()).substring(0, length));
+        // return Integer.valueOf(String.valueOf(System.nanoTime()).substring(0, length));
+        String nanoTime = String.valueOf(System.nanoTime());
+        if (nanoTime.length() < length) {
+            nanoTime = String.format("%-" + length + "s", nanoTime).replace(' ', '0');
+        }
+        return Integer.valueOf(nanoTime.substring(0, length));
     }
 
     public static Long genId() {

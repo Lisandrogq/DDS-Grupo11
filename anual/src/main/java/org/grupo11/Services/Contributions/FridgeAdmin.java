@@ -5,6 +5,8 @@ import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgesManager;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 

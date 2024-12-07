@@ -223,7 +223,36 @@ public class ContributionsController {
             if (!FieldValidator.isBool(isactive)) {
                 throw new IllegalArgumentException("invalid isactive");
             }
- 
+
+            //----------------------- Version vieja -----------------------//
+
+            Fridge fridge = new Fridge(address, name, Integer.parseInt(capacity), 0, new ArrayList<>(), null, null);
+            LegalEntity le = new LegalEntity(); // this should be retrieved from the db using the contributor that
+                                                // islogged
+            TemperatureSensorManager tManager = new TemperatureSensorManager(fridge, -1, 60);
+            MovementSensorManager mManager = new MovementSensorManager(fridge);
+            fridge.setIsActive(Boolean.parseBoolean(isactive));
+            fridge.setTempManager(tManager);
+            fridge.setMovManager(mManager);
+            tManager.setFridge(fridge);
+            mManager.setFridge(fridge);
+            FridgeAdmin fridgeAdmin = new FridgeAdmin(le, fridge, DateUtils.now());
+            fridgeAdmin.setContributor(contributor);// TODO: only allow this contribution to legalentities
+            List<FridgeOpenLogEntry> entries = ContributorsManager.getInstance().addContributionToContributor(
+                    contributor,
+                    fridgeAdmin);
+            if (entries == null)
+                throw new IllegalArgumentException("no puede contribuir de esta forma");// TODO: validar antes de esto q
+                                                                                        // haya openSolicitude
+            DB.update(contributor);
+            DB.create(le);
+            DB.create(fridge);
+            DB.create(fridgeAdmin);
+            ctx.redirect("/dash/home");
+
+            //----------------------- Version vieja -----------------------//
+
+            /*----------------------- Version nueva -----------------------
             try (Session session = DB.getSessionFactory().openSession()) {
                 String leHQL = "SELECT le " +
                         "FROM LegalEntity le " +
@@ -243,6 +272,7 @@ public class ContributionsController {
                 fridge.setMovManager(mManager);
                 tManager.setFridge(fridge);
                 mManager.setFridge(fridge);
+
                 FridgeAdmin fridgeAdmin = new FridgeAdmin(le, fridge, DateUtils.now());
                 fridgeAdmin.setContributor(contributor);
 
@@ -250,10 +280,18 @@ public class ContributionsController {
                         contributor,
                         fridgeAdmin);
                 if (entries == null)
-                    throw new IllegalArgumentException("no puede contribuir de esta forma");// TODO: validar antes de esto q
-                                                                                            // haya openSolicitude
+                    throw new IllegalArgumentException("no puede contribuir de esta forma");// TODO: validar antes de esto q haya openSolicitude
                 DB.update(contributor);
                 DB.create(fridge);
+
+                // Hasta acá funciona bien
+                String hql = "SELECT fa FROM FridgeAdmin fa WHERE fa.business.id = :business_id";
+                org.hibernate.query.Query<FridgeAdmin> query = session.createQuery(hql, FridgeAdmin.class);
+                query.setParameter("business_id", le.getId());
+                if (!query.list().isEmpty()) {
+                    throw new IllegalArgumentException("This business already manages a fridge.");
+                }
+
                 DB.create(fridgeAdmin);
 
                 ctx.redirect("/dash/home");
@@ -261,7 +299,8 @@ public class ContributionsController {
                 Logger.error("Exception ", e);
                 ctx.redirect("/dash/home?error=" + e.getMessage());
                 return;
-            }
+            } ----------------------- Version nueva -----------------------*/
+
         } catch (Exception e) {
             Logger.error("Exception ", e);
             ctx.redirect("/dash/home?error=" + e.getMessage());
