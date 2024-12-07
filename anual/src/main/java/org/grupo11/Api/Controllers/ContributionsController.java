@@ -1,6 +1,12 @@
 package org.grupo11.Api.Controllers;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.List;
+import java.io.File;
 import java.util.List;
 
 import org.grupo11.DB;
@@ -27,7 +33,14 @@ import org.grupo11.Utils.DateUtils;
 import org.grupo11.Utils.FieldValidator;
 import org.hibernate.Session;
 
+import io.javalin.Javalin;
 import io.javalin.http.Context;
+import io.javalin.http.UploadedFile;
+import jakarta.persistence.criteria.CriteriaBuilder.In;
+
+import org.apache.commons.io.FilenameUtils;
+import org.eclipse.jetty.util.log.Log;
+
 
 public class ContributionsController {
     public static void handleMealContribution(Context ctx) {
@@ -405,26 +418,63 @@ public class ContributionsController {
         String description = ctx.formParam("description");
         String points = ctx.formParam("points");
         String category = ctx.formParam("category");
+        UploadedFile picture = ctx.uploadedFile("picture");
+
         if (!FieldValidator.isString(name)) {
             throw new IllegalArgumentException("invalid name");
         }
         if (!FieldValidator.isString(description)) {
             throw new IllegalArgumentException("invalid description");
         }
-        if (!FieldValidator.isInt(stock)) {
+        if (!FieldValidator.isInt(stock) || Integer.parseInt(stock) <= 0) {
             throw new IllegalArgumentException("invalid stock");
         }
-        if (!FieldValidator.isInt(points)) {
+        if (!FieldValidator.isInt(points) || Integer.parseInt(points) <= 0) {
             throw new IllegalArgumentException("invalid points");
-
         }
         if (!FieldValidator.isValidEnumValue(RewardCategory.class, category)) {
             throw new IllegalArgumentException("invalid category");
         }
+        if (picture != null && picture.size() > 0) {
+            Logger.info("No es NULL por alguna razon");
+            if (!picture.contentType().contains("image")) {
+                throw new IllegalArgumentException("invalid picture");
+            }
+            if (picture.size() > 20 * 1024 * 1024) {
+                throw new IllegalArgumentException("Picture size must be less than 20MB");
+            }
+            Logger.info("Uploaded file: " + picture.filename());
+            Logger.info("Uploaded file type: " + picture.contentType());
+            Logger.info("Uploaded file size: " + picture.size());
+            Logger.info("Uploaded file extension: " + picture.extension());
+            Logger.info("Uploaded file content: " + picture.content());
+        }
+
         try {
             Reward reward = new Reward(name, Float.parseFloat(points), "", RewardCategory.valueOf(category));
             reward.setDescription(description);
             reward.setQuantity(Integer.parseInt(stock));
+            
+            if (picture != null && picture.size() > 0) {
+                String folderPath = "src/main/resources/public/rewardImages";
+                File folder = new File(folderPath);
+                if (!folder.exists()) {
+                    folder.mkdirs();
+                }
+
+                String fileName = reward.getName() + "_" + System.currentTimeMillis() + picture.extension();
+                File file = new File(folder, fileName);
+                
+                try (InputStream inputStream = picture.content()) {
+                    Files.copy(inputStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    reward.setImageUrl("/public/rewardImages/" + fileName);
+                    Logger.info("File saved: " + reward.getImageUrl());
+                } catch (IOException e) {
+                    Logger.error("Error while saving uploaded file", e);
+                    throw new RuntimeException("Error while saving uploaded file", e);
+                }
+            }
+            
             RewardContribution rewardContribution = new RewardContribution(reward, DateUtils.now());
             rewardContribution.setContributor(contributor);
             List<FridgeOpenLogEntry> entries = ContributorsManager.getInstance().addContributionToContributor(
@@ -436,6 +486,12 @@ public class ContributionsController {
             DB.update(contributor);
             DB.create(reward);
             DB.create(rewardContribution);
+            // Pausar para dar tiempo a que se actualice la base de datos
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             ctx.redirect("/dash/home");
         } catch (Exception e) {
             Logger.error("Exception ", e);

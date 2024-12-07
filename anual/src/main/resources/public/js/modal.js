@@ -534,7 +534,7 @@ function rewardCollab() {
 				<p>Contribute offering a new reward</p>
 			</div>
 
-			<form method="POST" action="/contribution/reward" class="form">
+			<form method="POST" action="/contribution/reward" class="form" enctype="multipart/form-data">
 			<div class="d-flex justify-content-between w-100 gap">	
 					<input
 					type="text"
@@ -567,27 +567,22 @@ function rewardCollab() {
 						placeholder="Points needed..."
 					/>
 
-					<select
-						name = "category"
-						required
-						value="category"
-					>
-						<option selected disabled hidden>
+					<select name = "category" required value="category">
+						<option value="" selected hidden>
 							Choose a category of reward
 						</option>
 						<option value="TECH">Technology</option>
-						<!-- sujeto a cambios-->
 						<option value="COOKING">Cooking</option>
 						<option value="HOME">Home</option>
 					</select>
 				</div>
 
-				<p>Add a reward picture</p>
+				<p>Add a reward picture (optional)</p>
 				<input
 					type="file"
 					id="picture"
 					name="picture"
-					accept=".png"
+					accept=".png, .jpg, .jpeg"
 				/>
 				<div class="form-btns-container">
 					<button

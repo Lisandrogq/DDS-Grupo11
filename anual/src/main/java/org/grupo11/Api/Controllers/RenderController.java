@@ -59,7 +59,7 @@ public class RenderController {
             Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
             Technician technician = Middlewares.technicianIsAuthenticated(ctx);
             if (contributor == null && technician == null) {
-                Logger.info("Contributor or techinician not found");
+                Logger.info("User not found");
                 ctx.redirect("/register/login");
                 return;
             }
