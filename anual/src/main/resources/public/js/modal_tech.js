@@ -323,7 +323,7 @@ function fridgeAdministration() {
 						class="w-100"
 					/>
 					<select required name="isActive" value="true" class="boton1 inputs" style="width: 100%;">
-						<option selected disabled hidden>Will the fridge be active?</option>
+						<option selected value="" disabled hidden>Will the fridge be active?</option>
 						<option value='true' class="desplegables">Yes</option>
 						<option value='false' class="desplegables">No</option>
 					</select>

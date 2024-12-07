@@ -107,7 +107,7 @@ function handleSubscribe(id) {
 					id="subscription-type"
 					onchange="toggleQuantityField(event)"
 				>
-					<option selected disabled hidden>
+					<option value="" selected disabled hidden>
 						Choose a category of subscription
 					</option>
 					<option value="LowInventory">Low Inventory</option>
@@ -436,8 +436,8 @@ function fridgeAdministration() {
 						placeholder="Capacity of the fridge..."
 						class="w-100"
 					/>
-					<select required name="isActive" value="true" class="boton1 inputs" style="width: 100%;">
-						<option selected disabled hidden>Will the fridge be active?</option>
+					<select required name="isActive" class="boton1 inputs" style="width: 100%;">
+						<option selected disabled hidden value="">Will the fridge be active?</option>
 						<option value='true' class="desplegables">Yes</option>
 						<option value='false' class="desplegables">No</option>
 					</select>
