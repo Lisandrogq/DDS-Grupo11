@@ -296,15 +296,6 @@ public class ContributionsController {
                     throw new IllegalArgumentException("no puede contribuir de esta forma");// TODO: validar antes de esto q haya openSolicitude
                 DB.update(contributor);
                 DB.create(fridge);
-
-                // Hasta acá funciona bien
-                String hql = "SELECT fa FROM FridgeAdmin fa WHERE fa.business.id = :business_id";
-                org.hibernate.query.Query<FridgeAdmin> query = session.createQuery(hql, FridgeAdmin.class);
-                query.setParameter("business_id", le.getId());
-                if (!query.list().isEmpty()) {
-                    throw new IllegalArgumentException("This business already manages a fridge.");
-                }
-
                 DB.create(fridgeAdmin);
 
                 ctx.redirect("/dash/home");
