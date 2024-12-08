@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.HashMap;
 
 import io.javalin.http.Context;
-import jakarta.persistence.criteria.CriteriaBuilder.In;
 
 public class RenderController {
     public static void renderRegisterPages(Context ctx) {
@@ -56,33 +55,42 @@ public class RenderController {
 
     public static void renderDashboardPage(Context ctx) {
         try {
-            Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
-            Technician technician = Middlewares.technicianIsAuthenticated(ctx);
-            if (contributor == null && technician == null) {
-                Logger.info("User not found");
-                ctx.redirect("/register/login");
+            Map<String, Object> model = null;
+
+            if (Middlewares.authenticatedAsAdmin(ctx)) {
+                model = getAdminModel(ctx);
+                renderDashboard(ctx, model, "ADMIN");
                 return;
             }
-            Map<String, Object> model = null;
+
+            Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
             if (contributor != null) {
                 model = getContributorModel(contributor, ctx);
-                if (model == null)
-                    return;// caso de error en la generacion del modelo (TODO: estaría bueno manejar
-                // errores con throw como en ContributionsController pero notime)
-
+                renderDashboard(ctx, model, contributor.isIndividual() ? "IND" : "LE");
+                return;
             }
+
+            Technician technician = Middlewares.technicianIsAuthenticated(ctx);
             if (technician != null) {
                 model = getTechnicianModel(technician, ctx);
-                if (model == null)
-                    return;
+                renderDashboard(ctx, model, "TECH");
+                return;
             }
-            String page = "templates/dash/home"
-                    + (technician != null ? "TECH" : contributor.isIndividual() ? "IND" : "LE");
-            ctx.render(page + ".html", model);
+
+            ctx.redirect("/register/login");
         } catch (Exception e) {
             Logger.error("Error while rendering dashboard", e);
-            ctx.redirect("/dash/home?error=" + e.getMessage());
+            ctx.redirect("/register/login");
         }
+    }
+
+    public static void renderDashboard(Context ctx, Map<String, Object> model, String pageSuffix) {
+        if (model == null) {
+            ctx.redirect("/register/login");
+            return;
+        }
+        String page = "templates/dash/home" + pageSuffix;
+        ctx.render(page + ".html", model);
     }
 
     public static Map<String, Object> getContributorModel(Contributor contributor, Context ctx) {
@@ -93,15 +101,12 @@ public class RenderController {
             name = ((LegalEntity) contributor).getName();
         }
 
-        // user
         Map<String, Object> user = new HashMap<>();
         user.put("name", name);
         int points = contributor.getPointsAsInt();
         String pointsAsString = String.valueOf(points);
-        Logger.info("points: " + pointsAsString);
         user.put("points", pointsAsString);
 
-        // donations
         List<Map<String, Object>> donations = new ArrayList<>();
         Map<String, Object> donatedFridge = new HashMap<>();
         donatedFridge.put("name", "");
@@ -110,9 +115,7 @@ public class RenderController {
         donatedFridge.put("state", "");
         donatedFridge.put("meals", 0);
 
-        // fridges
         List<Map<String, Object>> fridges = new ArrayList<>();
-
         try (Session session = DB.getSessionFactory().openSession()) {
             String hql = "FROM Fridge f ";
             Query<Fridge> query = session.createQuery(hql, Fridge.class);
@@ -135,11 +138,9 @@ public class RenderController {
             return null;
         }
 
-        // rewards
         List<Map<String, Object>> rewards = new ArrayList<>();
-
         try (Session session = DB.getSessionFactory().openSession()) {
-            String hql = "FROM Reward r ";// faltaría el where con el userid cuando marquitos haga el sso
+            String hql = "FROM Reward r ";
             Query<Reward> query = session.createQuery(hql, Reward.class);
             List<Reward> results = query.getResultList();
             System.out.println("results.size(): " + results.size());
@@ -170,8 +171,7 @@ public class RenderController {
 
                 if (contribution instanceof MealDonation) {
                     MealDonation mealDonation = (MealDonation) contribution;
-                    donation.put("emoji", "🍕"); // cambie el emogi pq el otro es muy grande y se coje la alineacion
-                                                 // (🥘)
+                    donation.put("emoji", "🍕");
                     donation.put("type", "Meal Donation");
                     donation.put("desc",
                             "On " + formattedContributionDate + " you have donated "
@@ -204,7 +204,7 @@ public class RenderController {
                 } else if (contribution instanceof PersonRegistration) {
                     PersonRegistration personRegistration = (PersonRegistration) contribution;
                     donation.put("emoji", "👲🏽");
-                    donation.put("type", "Person Registrarion");
+                    donation.put("type", "Person Registration");
                     donation.put("desc", "On " + formattedContributionDate + " you have registered "
                             + personRegistration.getPerson().getName());
                     donation.put("fridge", donatedFridge);
@@ -220,14 +220,12 @@ public class RenderController {
             }
             session.close();
         } catch (Exception e) {
-            Logger.error("Could not serve contributor recognitions {}", e);
-            ctx.status(500).json(new ApiResponse(500));
             return null;
         }
 
         // subscriptions
         List<Map<String, Object>> notifications = new ArrayList<>();
-        
+
         try (Session session = DB.getSessionFactory().openSession()) {
             String hql = "FROM Subscription s WHERE s.contributor = :contributor";
             Query<Subscription> query = session.createQuery(hql, Subscription.class);
@@ -239,19 +237,17 @@ public class RenderController {
                 for (String notification_msg : subscription.getNotifications()) {
                     Map<String, Object> notificacion = new HashMap<>();
                     notificacion.put("description", notification_msg);
-                    notifications.add(notificacion);                    
+                    notifications.add(notificacion);
                 }
             }
             session.close();
 
         } catch (Exception e) {
-            Logger.error("Could not serve contributor recognitions {}", e);
-            ctx.status(500).json(new ApiResponse(500));
             return null;
         }
 
         Map<String, Object> model = new HashMap<>();
-        String error = ctx.queryParam("error");        
+        String error = ctx.queryParam("error");
 
         model.put("user", user);
         model.put("notifications", notifications);
@@ -259,6 +255,7 @@ public class RenderController {
         model.put("fridges", fridges);
         model.put("rewards", rewards);
         model.put("error", error);
+
         return model;
     }
 
@@ -282,8 +279,7 @@ public class RenderController {
             session.close();
 
         } catch (Exception e) {
-            Logger.error("Could not serve contributor recognitions {}", e);
-            ctx.status(500).json(new ApiResponse(500));
+
             return null;
         }
 
@@ -301,14 +297,18 @@ public class RenderController {
             session.close();
 
         } catch (Exception e) {
-            Logger.error("Could not serve contributor recognitions {}", e);
-            ctx.status(500).json(new ApiResponse(500));
             return null;
         }
 
         model.put("user", user);
         model.put("visits", visits);
         model.put("fridges", fridges);
+        return model;
+    }
+
+    public static Map<String, Object> getAdminModel(Context ctx) {
+        Map<String, Object> model = new HashMap<>();
+
         return model;
     }
 }
