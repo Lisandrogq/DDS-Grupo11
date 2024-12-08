@@ -620,7 +620,7 @@ function updateFridgeModal(data) {
 	console.log(mealRows);
 
 	const failureRows = failures.map(failure => `
-        <tr>
+        <tr id="failureRow">
 			<td>${failure.id}</td>
             <td>${failure.description}</td>
             <td>${new Date(failure.detectedAt).toLocaleDateString()}</td>
@@ -663,6 +663,13 @@ function updateFridgeModal(data) {
         </div>
     `;
 }
+
+const failureRow = document.querySelector("#failureRow");
+forEach(failureRow => {
+	failureRow.onclick = () => {
+		console.log("Failure clicked");
+	};
+});
 
 /**
  * ===================================== REWARDS MODAL LOGIC =====================================

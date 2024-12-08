@@ -118,7 +118,7 @@ public class ContributionsController {
                 ctx.redirect("/dash/home?error=The fridge is not active");
                 return;
             }
-            if(fridge.getCapacity() >= fridge.getMeals().size()){
+            if (fridge.getMeals().size() >= fridge.getCapacity()) {
                 ctx.redirect("/dash/home?error=The fridge is full");
                 return;
             }
@@ -222,8 +222,10 @@ public class ContributionsController {
                 ctx.redirect("/dash/home?error=Select at least one meal");
                 return;
             }
-            if (max > destiny_fridge.getCapacity() - destiny_fridge.getMeals().size()) {
-                ctx.redirect("/dash/home?error=The destiny fridge is full");
+            if (destiny_fridge.getMeals().size() + max > destiny_fridge.getCapacity()) {
+                int spacesLeft = destiny_fridge.getCapacity() - destiny_fridge.getMeals().size();
+                if (spacesLeft == 0) {ctx.redirect("/dash/home?error=The destiny fridge is full");}
+                else {ctx.redirect("/dash/home?error=The destiny fridge is full. There are only " + spacesLeft + " spaces left");}
                 return;
             }
             MealDistribution mealDistribution = new MealDistribution(origin_fridge, destiny_fridge, max, reason,
