@@ -18,6 +18,7 @@ import org.grupo11.Services.Contributions.PersonRegistration;
 import org.grupo11.Services.Contributions.RewardContribution;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.Subscription;
+import org.grupo11.Services.Reporter.Report;
 import org.grupo11.Services.Rewards.Reward;
 import org.grupo11.Services.Technician.Technician;
 import org.grupo11.Services.Technician.TechnicianVisit;
@@ -265,9 +266,7 @@ public class RenderController {
         Map<String, Object> user = new HashMap<>();
         user.put("name", technician.getName());
 
-        // fridges
         List<Map<String, Object>> fridges = new ArrayList<>();
-
         try (Session session = DB.getSessionFactory().openSession()) {
             String hql = "FROM Fridge f ";
             Query<Fridge> query = session.createQuery(hql, Fridge.class);
@@ -283,19 +282,15 @@ public class RenderController {
             return null;
         }
 
-        // fridges
         List<Map<String, Object>> visits = new ArrayList<>();
-
         try (Session session = DB.getSessionFactory().openSession()) {
             String hql = "FROM TechnicianVisit v ";
             Query<TechnicianVisit> query = session.createQuery(hql, TechnicianVisit.class);
             List<TechnicianVisit> results = query.getResultList();
-            System.out.println("results.size(): " + results.size());
             for (TechnicianVisit visit : results) {
                 visits.add(visit.toMap());
             }
             session.close();
-
         } catch (Exception e) {
             return null;
         }
@@ -308,6 +303,25 @@ public class RenderController {
 
     public static Map<String, Object> getAdminModel(Context ctx) {
         Map<String, Object> model = new HashMap<>();
+        String error = ctx.queryParam("error");
+        model.put("error", error);
+
+        List<Map<String, Object>> reports = new ArrayList<>();
+        try (Session session = DB.getSessionFactory().openSession()) {
+            String hql = "FROM Report r ";
+            Query<Report> query = session.createQuery(hql, Report.class);
+            List<Report> results = query.getResultList();
+            for (Report report : results) {
+                reports.add(report.toMap());
+            }
+            session.close();
+
+        } catch (Exception e) {
+            Logger.error("ERROR ", e);
+            return null;
+        }
+
+        model.put("reports", reports);
 
         return model;
     }

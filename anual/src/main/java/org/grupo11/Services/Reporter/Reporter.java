@@ -69,10 +69,10 @@ public class Reporter {
         return mealsPerFridgeReport;
     }
 
-    public List<MealPerContributorReportRow> getMealPerCollaboratorReport() {
+    public List<MealsPerContributorReportRow> getMealPerCollaboratorReport() {
         long oneWeekAgoMs = DateUtils.getAWeekAgoFrom(DateUtils.getCurrentTimeInMs());
         // get the meals contribution from a week ago
-        List<MealPerContributorReportRow> mealPerContributorReport = new ArrayList<MealPerContributorReportRow>();
+        List<MealsPerContributorReportRow> mealPerContributorReport = new ArrayList<MealsPerContributorReportRow>();
 
         List<Contributor> contributors = ContributorsManager.getInstance()
                 .getContributors();
@@ -82,7 +82,7 @@ public class Reporter {
                             && contribution.getDate() < oneWeekAgoMs))
                     .map((contribution) -> (MealDonation) contribution)
                     .collect(Collectors.toList());
-            MealPerContributorReportRow row = new MealPerContributorReportRow(contributor, mealDonations);
+            MealsPerContributorReportRow row = new MealsPerContributorReportRow(contributor, mealDonations);
             mealPerContributorReport.add(row);
         }
         return mealPerContributorReport;

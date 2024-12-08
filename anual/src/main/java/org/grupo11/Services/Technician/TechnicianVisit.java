@@ -28,10 +28,12 @@ public class TechnicianVisit {
     private String fridgeAddress;
     private long visitDate;
     private boolean fixedIt;
+
     public TechnicianVisit() {
     }
 
-    public TechnicianVisit(Technician technician, List<String> pictureUrls, String description,String fridgeName,String fridgeAddress,long visitDate,boolean fixedIt) {
+    public TechnicianVisit(Technician technician, List<String> pictureUrls, String description, String fridgeName,
+            String fridgeAddress, long visitDate, boolean fixedIt) {
         this.technician = technician;
         this.pictureUrls = pictureUrls;
         this.description = description;
@@ -70,13 +72,14 @@ public class TechnicianVisit {
     }
 
     public Map<String, Object> toMap() {
-      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // Format for only the date
-        String formattedDate = dateFormat.format(new Date(visitDate));    
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // Format for only the date
+        String formattedDate = dateFormat.format(new Date(visitDate));
         Map<String, Object> fridgeMap = new HashMap<>();
-    
-        fridgeMap.put("emoji", fixedIt?"🔧":"🧳");
-        fridgeMap.put("type", (fixedIt?"Fixed the ":"Visit to ")  +fridgeName+" fridge ");
-        fridgeMap.put("desc", "On " +formattedDate + (fixedIt?" fixed the ":" visited " )+fridgeName+" at "+fridgeAddress);
+
+        fridgeMap.put("emoji", fixedIt ? "🔧" : "🧳");
+        fridgeMap.put("type", (fixedIt ? "Fixed the " : "Visit to ") + fridgeName + " fridge ");
+        fridgeMap.put("desc",
+                "On " + formattedDate + (fixedIt ? " fixed the " : " visited ") + fridgeName + " at " + fridgeAddress);
         return fridgeMap;
     }
 }
