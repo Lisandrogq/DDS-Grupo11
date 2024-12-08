@@ -34,8 +34,11 @@
 				style="max-width: 1280px; margin: auto; gap: 30px; padding: 50px"
 			>
 				<#if error??>
-					<div class="error-container">
-						<p style="color: red">${error}</p>
+					<div class="alert alert-danger alert-dismissible fade show" id="error-alert" role="alert" style="position: absolute; top: 0; left: 0; right: 0; z-index: 1000; margin: auto; margin-top: 10px; width: 50%;">
+						<strong>Oh snap!</strong> ${error}
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
 					</div>
 				</#if>
 				<div
@@ -237,4 +240,6 @@
 	<script src="/public/js/forms.js"></script>
 	<script src="/public/js/modal.js"></script>
 	<script src="/public/js/error.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 </html>
