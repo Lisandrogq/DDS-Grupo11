@@ -2,6 +2,7 @@ package org.grupo11.Api.Controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.grupo11.DB;
 import org.grupo11.Logger;
@@ -138,18 +139,52 @@ public class PublicAPI {
         // TODO(marcos): this should be moved to another file as well, maybe we could
         // have a DTO mapping layer, given the amount of code it takes in java
         class ResponseData {
-            public List<IndividualDTO> individuals;
-            public List<LegalEntityDTO> legalEntities;
+            // public List<IndividualDTO> individuals;
+            // public List<LegalEntityDTO> legalEntities;
+            @SuppressWarnings("unused")
+            public List<Object> recommendedContributors = new ArrayList<>();
 
             public ResponseData(List<IndividualDTO> individuals, List<LegalEntityDTO> legalEntities) {
-                this.individuals = individuals;
-                this.legalEntities = legalEntities;
-            }
+                List<RankedContributor> combinedList = new ArrayList<>();
+                
+                combinedList.addAll(individuals.stream()
+                        .map(individualDTO -> new RankedContributor(individualDTO.points, individualDTO))
+                        .collect(Collectors.toList()));
+                
+                combinedList.addAll(legalEntities.stream()
+                        .map(legalEntityDTO -> new RankedContributor(legalEntityDTO.points, legalEntityDTO))
+                        .collect(Collectors.toList()));
+                
+                combinedList.sort((c1, c2) -> Double.compare(c2.getPoints(), c1.getPoints()));
 
+                if (combinedList.size() > size) {
+                    combinedList = combinedList.subList(0, size);
+                }
+
+                recommendedContributors = combinedList.stream().map(RankedContributor::getContributor).collect(Collectors.toList());
+            }
         }
 
         ctx.json(new ApiResponse(200, new ResponseData(individuals, legalEntities)));
         Logger.info("Contributors recognitions served");
 
+    }
+
+    static class RankedContributor {
+        private double points;
+        private Object contributor;
+
+        public RankedContributor(double points, Object contributor) {
+            this.points = points;
+            this.contributor = contributor;
+        }
+
+        public double getPoints() {
+            return points;
+        }
+
+        public Object getContributor() {
+            return contributor;
+        }
     }
 }

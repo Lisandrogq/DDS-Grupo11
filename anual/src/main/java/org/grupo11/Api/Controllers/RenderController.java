@@ -3,7 +3,31 @@ package org.grupo11.Api.Controllers;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.Map;
+
+import org.grupo11.DB;
+import org.grupo11.Logger;
+import org.grupo11.Api.ApiResponse;
+import org.grupo11.Services.Contributions.Contribution;
+import org.grupo11.Services.Contributions.FridgeAdmin;
+import org.grupo11.Services.Contributions.MealDistribution;
+import org.grupo11.Services.Contributions.MealDonation;
+import org.grupo11.Services.Contributions.MoneyDonation;
+import org.grupo11.Services.Contributions.PersonRegistration;
+import org.grupo11.Services.Contributions.RewardContribution;
+import org.grupo11.Services.Fridge.Fridge;
+import org.grupo11.Services.Fridge.Subscription;
+import org.grupo11.Services.Rewards.Reward;
+import org.grupo11.Services.Technician.Technician;
+import org.grupo11.Services.Technician.TechnicianVisit;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
+import org.grupo11.Api.Middlewares;
+import org.grupo11.Services.Contributor.Contributor;
+import org.grupo11.Services.Contributor.Individual;
+import org.grupo11.Services.Contributor.LegalEntity.LegalEntity;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
@@ -15,9 +39,12 @@ public class RenderController {
         try {
             String filename = ctx.pathParam("filename");
             Path filePath = Paths.get("src/main/resources/templates/register/", filename + ".html");
+            String error = ctx.queryParam("error");
+            Map<String, Object> model = new HashMap<>();
+            model.put("error", error);
 
             if (Files.exists(filePath)) {
-                ctx.render("templates/register/" + filename + ".html");
+                ctx.render("templates/register/" + filename + ".html", model);
             } else {
                 ctx.status(404);
             }
@@ -26,120 +53,260 @@ public class RenderController {
         }
     }
 
-    // TODO(marcos): here we should check if the user is authenticated
-    // otherwise redirect to login
     public static void renderDashboardPage(Context ctx) {
         try {
-            // user
-            Map<String, Object> user = new HashMap<>();
-            user.put("name", "John");
-            user.put("points", 1213);
+            Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
+            Technician technician = Middlewares.technicianIsAuthenticated(ctx);
+            if (contributor == null && technician == null) {
+                Logger.info("Contributor or techinician not found");
+                ctx.redirect("/register/login");
+                return;
+            }
+            Map<String, Object> model = null;
+            if (contributor != null) {
+                model = getContributorModel(contributor, ctx);
+                if (model == null)
+                    return;// caso de error en la generacion del modelo (TODO: estaría bueno manejar
+                // errores con throw como en ContributionsController pero notime)
 
-            // temperature
-            List<Map<String, Object>> temperatures = new ArrayList<>();
-            Map<String, Object> fridge1Temp = new HashMap<>();
-            fridge1Temp.put("fridge", "Medrano");
-            fridge1Temp.put("temp", 10);
-
-            Map<String, Object> fridge2Temp = new HashMap<>();
-            fridge2Temp.put("fridge", "Lugano");
-            fridge2Temp.put("temp", 15);
-
-            temperatures.add(fridge1Temp);
-            temperatures.add(fridge2Temp);
-
-            // donations
-            List<Map<String, Object>> donations = new ArrayList<>();
-            Map<String, Object> donation1 = new HashMap<>();
-            Map<String, Object> donatedFridge = new HashMap<>();
-            donatedFridge.put("name", "Medrano");
-            donatedFridge.put("temp", 3);
-            donatedFridge.put("reserved", 40);
-            donatedFridge.put("state", "Active");
-            donatedFridge.put("meals", 120);
-
-            donation1.put("emoji", "🥘");
-            donation1.put("type", "Food");
-            donation1.put("desc", "You have donated “musaka”");
-            donation1.put("fridge", donatedFridge);
-
-            Map<String, Object> donation2 = new HashMap<>();
-            donation2.put("emoji", "👨");
-            donation2.put("type", "Registered person");
-            donation2.put("desc", "You have registered “valentina” as part of our community");
-            donation2.put("fridge", donatedFridge);
-
-            donations.add(donation1);
-            donations.add(donation2);
-
-            // fridges
-            List<Map<String, Object>> fridges = new ArrayList<>();
-            Map<String, Object> fridge1 = new HashMap<>();
-            fridge1.put("name", "Medrano");
-            fridge1.put("temp", 3);
-            fridge1.put("reserved", 40);
-            fridge1.put("state", "Active");
-            fridge1.put("meals", 120);
-            fridge1.put("food_status_desc", "Medrano fridge needs food");
-            fridge1.put("meal_urgency", "High");
-
-            Map<String, Object> fridge2 = new HashMap<>();
-            fridge2.put("name", "Lugano");
-            fridge2.put("temp", 3);
-            fridge2.put("reserved", 40);
-            fridge2.put("state", "Active");
-            fridge2.put("meals", 120);
-            fridge2.put("food_status_desc", "Lugano fridge needs food");
-            fridge2.put("meal_urgency", "Medium");
-
-            Map<String, Object> fridge3 = new HashMap<>();
-            fridge3.put("name", "Mataderos");
-            fridge3.put("temp", 3);
-            fridge3.put("reserved", 40);
-            fridge3.put("state", "Active");
-            fridge3.put("meals", 120);
-            fridge3.put("food_status_desc", "Lugano fridge needs food");
-            fridge3.put("meal_urgency", "Low");
-
-            fridges.add(fridge1);
-            fridges.add(fridge2);
-            fridges.add(fridge3);
-
-            // rewards
-            List<Map<String, Object>> rewards = new ArrayList<>();
-            Map<String, Object> reward1 = new HashMap<>();
-
-            reward1.put("emoji", "🍴");
-            reward1.put("category", "Cooking");
-            reward1.put("description", "You can exchange your points for useful cooking supplies");
-
-            Map<String, Object> reward2 = new HashMap<>();
-            reward2.put("emoji", "🛋️");
-            reward2.put("category", "Home");
-            reward2.put("description", "You can exchange your points for nice home supplies");
-
-            Map<String, Object> reward3 = new HashMap<>();
-            reward3.put("emoji", "🎮");
-            reward3.put("category", "Technology");
-            reward3.put("description", "You can exchange your points for trendy technological devices");
-
-            rewards.add(reward1);
-            rewards.add(reward2);
-            rewards.add(reward3);
-
-            // final model
-            Map<String, Object> model = new HashMap<>();
-            model.put("user", user);
-            model.put("temperatures", temperatures);
-            model.put("donations", donations);
-            model.put("fridges", fridges);
-            model.put("rewards", rewards);
-
-            ctx.render("templates/dash/home.html", model);
-        } catch (
-
-        Exception e) {
-            ctx.status(500);
+            }
+            if (technician != null) {
+                model = getTechnicianModel(technician, ctx);
+                if (model == null)
+                    return;
+            }
+            String page = "templates/dash/home"
+                    + (technician != null ? "TECH" : contributor.isIndividual() ? "IND" : "LE");
+            ctx.render(page + ".html", model);
+        } catch (Exception e) {
+            Logger.error("Error while rendering dashboard", e);
+            ctx.redirect("/dash/home?error=" + e.getMessage());
         }
+    }
+
+    public static Map<String, Object> getContributorModel(Contributor contributor, Context ctx) {
+        String name;
+        if (contributor instanceof Individual) {
+            name = ((Individual) contributor).getName();
+        } else {
+            name = ((LegalEntity) contributor).getName();
+        }
+
+        // user
+        Map<String, Object> user = new HashMap<>();
+        user.put("name", name);
+        user.put("points", contributor.getPoints());
+
+      
+
+        // donations
+        List<Map<String, Object>> donations = new ArrayList<>();
+        Map<String, Object> donatedFridge = new HashMap<>();
+        donatedFridge.put("name", "");
+        donatedFridge.put("temp", 0);
+        donatedFridge.put("reserved", 0);
+        donatedFridge.put("state", "");
+        donatedFridge.put("meals", 0);
+
+        // fridges
+        List<Map<String, Object>> fridges = new ArrayList<>();
+
+        try (Session session = DB.getSessionFactory().openSession()) {
+            String hql = "FROM Fridge f ";
+            Query<Fridge> query = session.createQuery(hql, Fridge.class);
+            List<Fridge> results = query.getResultList();
+            System.out.println("results.size(): " + results.size());
+            for (Fridge fridge : results) {
+                Map<String, Object> fridgeMap = fridge.toMap();
+                if (fridge.isSubscribed(contributor)) {
+                    fridgeMap.put("subscribed", "true");
+                } else {
+                    fridgeMap.put("subscribed", "false");
+                }
+                fridges.add(fridgeMap);
+            }
+            session.close();
+
+        } catch (Exception e) {
+            Logger.error("Could not serve contributor recognitions {}", e);
+            ctx.status(500).json(new ApiResponse(500));
+            return null;
+        }
+
+        // rewards
+        List<Map<String, Object>> rewards = new ArrayList<>();
+
+        try (Session session = DB.getSessionFactory().openSession()) {
+            String hql = "FROM Reward r ";// faltaría el where con el userid cuando marquitos haga el sso
+            Query<Reward> query = session.createQuery(hql, Reward.class);
+            List<Reward> results = query.getResultList();
+            System.out.println("results.size(): " + results.size());
+            for (Reward reward : results) {
+                if (reward.getQuantity() > 0) {
+                    rewards.add(reward.toMap());
+                }
+            }
+            session.close();
+
+        } catch (Exception e) {
+            Logger.error("Could not serve contributor recognitions {}", e);
+            ctx.status(500).json(new ApiResponse(500));
+            return null;
+        }
+
+        try (Session session = DB.getSessionFactory().openSession()) {
+            String hql = "SELECT c FROM Contribution c WHERE contributor = :contributor";
+            Query<Contribution> query = session.createQuery(hql, Contribution.class);
+            query.setParameter("contributor", contributor);
+            List<Contribution> results = query.getResultList();
+            System.out.println("results.size(): " + results.size());
+            for (Contribution contribution : results) {
+                Map<String, Object> donation = new HashMap<>();
+
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                String formattedContributionDate = sdf.format(contribution.getDate());
+
+                if (contribution instanceof MealDonation) {
+                    MealDonation mealDonation = (MealDonation) contribution;
+                    donation.put("emoji", "🍕"); // cambie el emogi pq el otro es muy grande y se coje la alineacion
+                                                 // (🥘)
+                    donation.put("type", "Meal Donation");
+                    donation.put("desc",
+                            "On " + formattedContributionDate + " you have donated "
+                                    + mealDonation.getMeal().getType() + " to "
+                                    + mealDonation.getMeal().getFridge().getName());
+                    donation.put("fridge", mealDonation.getMeal().getFridge().toMap());
+                } else if (contribution instanceof MealDistribution) {
+                    MealDistribution mealDistribution = (MealDistribution) contribution;
+                    donation.put("emoji", "📦");
+                    donation.put("type", "Meal Distribution");
+                    donation.put("desc",
+                            "On " + formattedContributionDate + " you have moved a meal from "
+                                    + mealDistribution.getOriginFridge().getName() + " to "
+                                    + mealDistribution.getDestinyFridge().getName());
+                    donation.put("fridge", donatedFridge);
+                } else if (contribution instanceof FridgeAdmin) {
+                    FridgeAdmin fridgeAdmin = (FridgeAdmin) contribution;
+                    donation.put("emoji", "🧞‍♂️");
+                    donation.put("type", "Fridge administration");
+                    donation.put("desc", "You are administrating " + fridgeAdmin.getFridge().getName() + " since "
+                            + formattedContributionDate);
+                    donation.put("fridge", fridgeAdmin.getFridge().toMap());
+                } else if (contribution instanceof MoneyDonation) {
+                    MoneyDonation moneyDonation = (MoneyDonation) contribution;
+                    donation.put("emoji", "💰");
+                    donation.put("type", "Money Donation");
+                    donation.put("desc", "On " + formattedContributionDate + " you have donated "
+                            + moneyDonation.getAmount() + "$");
+                    donation.put("fridge", donatedFridge);
+                } else if (contribution instanceof PersonRegistration) {
+                    PersonRegistration personRegistration = (PersonRegistration) contribution;
+                    donation.put("emoji", "👲🏽");
+                    donation.put("type", "Person Registrarion");
+                    donation.put("desc", "On " + formattedContributionDate + " you have registered "
+                            + personRegistration.getPerson().getName());
+                    donation.put("fridge", donatedFridge);
+                } else if (contribution instanceof RewardContribution) {
+                    RewardContribution rewardContribution = (RewardContribution) contribution;
+                    donation.put("emoji", "🏆");
+                    donation.put("type", "Reward Contribution");
+                    donation.put("desc", "On " + formattedContributionDate + " you have offered "
+                            + rewardContribution.getReward().getName() + " as a reward");
+                    donation.put("fridge", donatedFridge);
+                }
+                donations.add(donation);
+            }
+            session.close();
+        } catch (Exception e) {
+            Logger.error("Could not serve contributor recognitions {}", e);
+            ctx.status(500).json(new ApiResponse(500));
+            return null;
+        }
+
+        // subscriptions
+        List<Map<String, Object>> notifications = new ArrayList<>();
+        
+        try (Session session = DB.getSessionFactory().openSession()) {
+            String hql = "FROM Subscription s WHERE s.contributor = :contributor";
+            Query<Subscription> query = session.createQuery(hql, Subscription.class);
+            query.setParameter("contributor", contributor);
+            List<Subscription> results = query.getResultList();
+            System.out.println("subscriptions.size(): " + results.size());
+
+            for (Subscription subscription : results) {
+                for (String notification_msg : subscription.getNotifications()) {
+                    Map<String, Object> notificacion = new HashMap<>();
+                    notificacion.put("description", notification_msg);
+                    notifications.add(notificacion);                    
+                }
+            }
+            session.close();
+
+        } catch (Exception e) {
+            Logger.error("Could not serve contributor recognitions {}", e);
+            ctx.status(500).json(new ApiResponse(500));
+            return null;
+        }
+
+        Map<String, Object> model = new HashMap<>();
+        String error = ctx.queryParam("error");        
+
+        model.put("user", user);
+        model.put("notifications", notifications);
+        model.put("donations", donations);
+        model.put("fridges", fridges);
+        model.put("rewards", rewards);
+        model.put("error", error);
+        return model;
+    }
+
+    public static Map<String, Object> getTechnicianModel(Technician technician, Context ctx) {
+        Map<String, Object> model = new HashMap<>();
+
+        Map<String, Object> user = new HashMap<>();
+        user.put("name", technician.getName());
+
+        // fridges
+        List<Map<String, Object>> fridges = new ArrayList<>();
+
+        try (Session session = DB.getSessionFactory().openSession()) {
+            String hql = "FROM Fridge f ";
+            Query<Fridge> query = session.createQuery(hql, Fridge.class);
+            List<Fridge> results = query.getResultList();
+            System.out.println("results.size(): " + results.size());
+            for (Fridge fridge : results) {
+                fridges.add(fridge.toMap());
+            }
+            session.close();
+
+        } catch (Exception e) {
+            Logger.error("Could not serve contributor recognitions {}", e);
+            ctx.status(500).json(new ApiResponse(500));
+            return null;
+        }
+
+        // fridges
+        List<Map<String, Object>> visits = new ArrayList<>();
+
+        try (Session session = DB.getSessionFactory().openSession()) {
+            String hql = "FROM TechnicianVisit v ";
+            Query<TechnicianVisit> query = session.createQuery(hql, TechnicianVisit.class);
+            List<TechnicianVisit> results = query.getResultList();
+            System.out.println("results.size(): " + results.size());
+            for (TechnicianVisit visit : results) {
+                visits.add(visit.toMap());
+            }
+            session.close();
+
+        } catch (Exception e) {
+            Logger.error("Could not serve contributor recognitions {}", e);
+            ctx.status(500).json(new ApiResponse(500));
+            return null;
+        }
+
+        model.put("user", user);
+        model.put("visits", visits);
+        model.put("fridges", fridges);
+        return model;
     }
 }

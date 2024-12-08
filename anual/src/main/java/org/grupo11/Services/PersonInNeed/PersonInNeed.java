@@ -12,10 +12,11 @@ public class PersonInNeed {
     @Id
     @GeneratedValue
     private Long id;
-    private int birth;
-    private int createdAt;
+    private long birth;
+    private long createdAt;
     private String address = null;
     private int DNI;
+    private String name;
     private int childCount;
     @OneToOne
     private PINRegistry PINRegistry;
@@ -23,7 +24,8 @@ public class PersonInNeed {
     public PersonInNeed() {
     }
 
-    public PersonInNeed(int birth, int createdAt, String address, int DNI, int childCount, PINRegistry PINRegistry) {
+    public PersonInNeed(String name,long birth, long createdAt, String address, int DNI, int childCount, PINRegistry PINRegistry) {
+        this.name = name;
         this.birth = birth;
         this.createdAt = createdAt;
         this.address = address;
@@ -32,19 +34,19 @@ public class PersonInNeed {
         this.PINRegistry = PINRegistry;
     }
 
-    public int getBirth() {
+    public long getBirth() {
         return this.birth;
     }
 
-    public void setBirth(int birth) {
+    public void setBirth(long birth) {
         this.birth = birth;
     }
 
-    public int getCreatedAt() {
+    public long getCreatedAt() {
         return this.createdAt;
     }
 
-    public void setCreatedAt(int createdAt) {
+    public void setCreatedAt(long createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -59,7 +61,9 @@ public class PersonInNeed {
     public int getDNI() {
         return this.DNI;
     }
-
+    public String getName() {
+        return this.name;
+    }
     public void setDNI(int identification) {
         this.DNI = identification;
     }

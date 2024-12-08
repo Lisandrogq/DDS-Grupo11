@@ -2,6 +2,13 @@ package org.grupo11;
 
 import org.slf4j.LoggerFactory;
 
+/**
+ * ## Usage:
+ * 
+ * Logger.info("Your message {} is {} ...", param_1, param_2, ...)
+ * 
+ * Note: `{}` represent a param
+ */
 public class Logger {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Logger.class);
 

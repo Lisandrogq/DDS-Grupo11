@@ -1,5 +1,9 @@
 package org.grupo11.Services.Contributions;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.grupo11.DB;
 import org.grupo11.Services.Meal;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Fridge;
@@ -7,50 +11,54 @@ import org.grupo11.Services.Fridge.FridgeOpenLogEntry;
 import org.grupo11.Utils.DateUtils;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "id")
 public class MealDistribution extends Contribution {
-    @OneToOne
+    @ManyToOne
     private Fridge originFridge;
-    @OneToOne
+    @ManyToOne
     private Fridge destinyFridge;
     private int quantity;
     private String reason;
-    @OneToOne
-    private Meal meal;
 
     public MealDistribution() {
     }
 
     public MealDistribution(Fridge originFridge, Fridge destinyFridge, int quantity,
-            String reason, Meal meal,
+            String reason,
             long distributionDate) {
         super(distributionDate);
         this.originFridge = originFridge;
         this.destinyFridge = destinyFridge;
         this.quantity = quantity;
         this.reason = reason;
-        this.meal = meal;
     }
 
     @Override
     public boolean validate(Contributor contributor) {
-        return (super.validate(contributor) &&
+        return (super.validate(contributor) && (true || //// TODO: implement open solicitudes with db and front
                 this.originFridge.hasPermission(contributor.getContributorRegistry().getId())
-                && this.destinyFridge.hasPermission(contributor.getContributorRegistry().getId()));
+                        && this.destinyFridge.hasPermission(contributor.getContributorRegistry().getId())));
     }
 
     @Override
-    public void afterContribution() {
-        this.originFridge
-                .addOpenEntry(new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(),
-                        this.contributor.getContributorRegistry()));
-        this.destinyFridge
-                .addOpenEntry(new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(),
-                        this.contributor.getContributorRegistry()));
+    public List<FridgeOpenLogEntry> afterContribution() {
+        FridgeOpenLogEntry originEntry = new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(),
+                this.contributor.getContributorRegistry());
+        FridgeOpenLogEntry destinyEntry = new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(),
+                this.contributor.getContributorRegistry());
+        this.originFridge.addOpenEntry(originEntry);
+        this.destinyFridge.addOpenEntry(destinyEntry);
+        List<FridgeOpenLogEntry> entries = new ArrayList<FridgeOpenLogEntry>();
+        entries.add(originEntry);
+        entries.add(destinyEntry);
+        return entries;
     }
 
     public ContributionType getContributionType() {
@@ -89,16 +97,8 @@ public class MealDistribution extends Contribution {
         this.reason = reason;
     }
 
-    public Meal getMeal() {
-        return this.meal;
-    }
-
-    public void setMeal(Meal meal) {
-        this.meal = meal;
-    }
-
     @Override
     public double getRewardPoints() {
-        return 1.5;
+        return 1*quantity;
     }
 }

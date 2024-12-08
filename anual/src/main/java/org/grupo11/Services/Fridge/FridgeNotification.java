@@ -12,7 +12,7 @@ public class FridgeNotification {
     @Id
     @GeneratedValue
     private Long id;
-    private String subject;
+    private int ammount;
     private String message;
     @Enumerated(EnumType.STRING)
     private FridgeNotifications type;
@@ -22,14 +22,14 @@ public class FridgeNotification {
     public FridgeNotification() {
     }
 
-    public FridgeNotification(FridgeNotifications type, String subject, String message) {
-        this.subject = subject;
+    public FridgeNotification(FridgeNotifications type, int ammount, String message) {
+        this.ammount = ammount;
         this.message = message;
         this.type = type;
     }
 
-    public String getSubject() {
-        return this.subject;
+    public int getAmmount() {
+        return this.ammount;
     }
 
     public String getMessage() {

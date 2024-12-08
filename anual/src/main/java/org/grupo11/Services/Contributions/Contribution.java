@@ -1,6 +1,10 @@
 package org.grupo11.Services.Contributions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.grupo11.Services.Contributor.Contributor;
+import org.grupo11.Services.Fridge.FridgeOpenLogEntry;
 import org.grupo11.Utils.Crypto;
 
 import jakarta.persistence.Entity;
@@ -24,15 +28,16 @@ public abstract class Contribution {
     }
 
     public Contribution(long date) {
-        id = Crypto.getRandomId(6);
         this.date = date;
     }
 
     public boolean validate(Contributor contributor) {
+        System.out.println(this.getContributionType());
         return contributor.canContributeIn(this.getContributionType());
     };
 
-    public void afterContribution() {
+    public List<FridgeOpenLogEntry> afterContribution() {
+        return new ArrayList<FridgeOpenLogEntry>();
     }
 
     public abstract ContributionType getContributionType();
@@ -62,5 +67,4 @@ public abstract class Contribution {
     public void setContributor(Contributor contributor) {
         this.contributor = contributor;
     }
-
 }

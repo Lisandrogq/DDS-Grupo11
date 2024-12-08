@@ -1,11 +1,14 @@
 package org.grupo11.Services;
 
+import org.grupo11.Enums.DocumentType;
 import org.grupo11.Services.ActivityRegistry.ContributorRegistry;
 import org.grupo11.Services.Contributions.ContributionType;
 import org.grupo11.Services.Contributions.MealDonation;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Contributor.ContributorsManager;
+import org.grupo11.Services.Contributor.Individual;
 import org.grupo11.Services.Fridge.Fridge;
+import org.grupo11.Services.Fridge.FridgeOpenLogEntry;
 import org.grupo11.Services.Fridge.FridgeSolicitude;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -28,8 +31,8 @@ public class ContributionsTest {
     public void setUp() {
         List<ContributionType> permisos = new ArrayList<ContributionType>();
         permisos.add(ContributionType.MEAL_DONATION);
-        contributor1 = new Contributor("aa", "null", permisos);
-        contributor2 = new Contributor("nb", "null", new ArrayList<ContributionType>());
+        contributor1 = new Individual("name","surname","address","birth",1231,DocumentType.DNI);
+        contributor2 = new Individual("name2","surname2","address","birth",1231,DocumentType.DNI);
         fridge = new Fridge(-74.006, 40.7128, "Caballito", "Fridge A", 100, 2020, null, null, null);
         meal = new Meal("fidios", 0, 0, fridge, "nuevo", 123, 33);
         contributorRegistry = new ContributorRegistry(0, contributor1, new ArrayList<FridgeSolicitude>());
@@ -41,17 +44,17 @@ public class ContributionsTest {
     public void MealsCanBeAddedByContributors() throws InterruptedException {
         contributor1.getContributorRegistry().registerPermission(fridge);
         MealDonation contribution = new MealDonation(meal, 0);
-        Boolean result = ContributorsManager.getInstance().addContributionToContributor(contributor1, contribution);
-        assertTrue("Contributor should be able to contribute if it has permission and register de opening", result);
+        List<FridgeOpenLogEntry> result = ContributorsManager.getInstance().addContributionToContributor(contributor1, contribution);
+        assertTrue("Contributor should be able to contribute if it has permission and register de opening", result!=null);
     }
 
     @Test
-    public void MealsOnlyCantBeAddedByContributorsWithOutRegister() throws InterruptedException {
+    public void MealsCantBeAddedByContributorsWithOutRegister() throws InterruptedException {
        // contributor1.getContributorRegistry().registerPermission(fridge);
 
         MealDonation contribution = new MealDonation(meal, 0);
-        Boolean result = ContributorsManager.getInstance().addContributionToContributor(contributor1, contribution);
-        assertFalse("Contribution should not be allowed without previous register", result);
+        List<FridgeOpenLogEntry> result = ContributorsManager.getInstance().addContributionToContributor(contributor1, contribution);
+        assertFalse("Contribution should not be allowed without previous register", result==null);
     }
 
     @Test
@@ -59,8 +62,8 @@ public class ContributionsTest {
         contributor1.setPossibleContributions(new ArrayList<ContributionType>()); //removing all permissions
         contributor1.getContributorRegistry().registerPermission(fridge);
         MealDonation contribution = new MealDonation(meal, 0);
-        Boolean result = ContributorsManager.getInstance().addContributionToContributor(contributor1, contribution);
-        assertFalse("Contribution should not be allowed without permission", result);
+        List<FridgeOpenLogEntry> result = ContributorsManager.getInstance().addContributionToContributor(contributor1, contribution);
+        assertFalse("Contribution should not be allowed without permission",result==null);
     }
 
 

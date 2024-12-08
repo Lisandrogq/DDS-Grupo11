@@ -97,7 +97,7 @@ public class DataImporter {
 
         switch (contributionType) {
             case DINERO:
-                contribution = new MoneyDonation(quantity, contributionDate);
+                contribution = new MoneyDonation(quantity, contributionDate,"");
                 contributor.addPossibleContribution(ContributionType.MONEY_DONATION);
                 contributorManager.addContributionToContributor(contributor, contribution);
                 break;
@@ -108,7 +108,7 @@ public class DataImporter {
                 contributorManager.addContributionToContributor(contributor, contribution);
                 break;
             case REDISTRIBUCION_VIANDAS:
-                contribution = new MealDistribution(csv_fridge, csv_fridge, quantity, null, csv_meal, contributionDate);
+                contribution = new MealDistribution(csv_fridge, csv_fridge, quantity, "null", contributionDate);
                 contributor.addPossibleContribution(ContributionType.MEAL_DISTRIBUTION);
                 contributor.getContributorRegistry().registerPermission(csv_fridge);// registro para el origen
                 contributor.getContributorRegistry().registerPermission(csv_fridge);// registro para el destino

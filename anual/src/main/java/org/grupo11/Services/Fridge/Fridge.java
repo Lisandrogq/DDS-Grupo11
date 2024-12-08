@@ -1,22 +1,28 @@
 package org.grupo11.Services.Fridge;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.grupo11.Enums.Provinces;
 import org.grupo11.Services.Meal;
+import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Incident.Incident;
 import org.grupo11.Services.Fridge.Sensor.MovementSensorManager;
+import org.grupo11.Services.Fridge.Sensor.SensorManager;
 import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
 import org.grupo11.Utils.Crypto;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Transient;
 
 @Entity
 public class Fridge {
@@ -34,42 +40,32 @@ public class Fridge {
     private int capacity;
     private int commissioningDate;
     @OneToMany
-    private List<Meal> meals;
-    @OneToMany
-    private List<Meal> addedMeals;
-    @OneToMany
-    private List<Meal> removedMeals;
-    @Transient
-    private TemperatureSensorManager tempManager;
-    @Transient
-    private MovementSensorManager movManager;
+    private List<Meal> meals = new ArrayList<Meal>();
+
+    private Integer addedMeals = 0;
+    private Integer removedMeals = 0;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<SensorManager> sensorManagers = new ArrayList<SensorManager>(); // [0] = temp , [1] = mov
+    /*
+     * @OneToOne(cascade = CascadeType.ALL) /// los saque pq se volvio imposible
+     * manejar las dos bidireccionalidades al mismo tiempo
+     * private TemperatureSensorManager tempManager;
+     * 
+     * @OneToOne(cascade = CascadeType.ALL)
+     * private MovementSensorManager movManager;
+     */
     @OneToMany
     private List<FridgeSolicitude> openSolicitudes;
     @OneToMany
     private List<FridgeOpenLogEntry> openedHistory;
     @OneToMany
     private List<Incident> incidents;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     protected List<Subscription> notificationSubscriptions;
     @OneToMany
     private List<FridgeNotification> notificationsSent;
 
     public Fridge() {
-    }
-
-    public Fridge(double lon, double lat, String address, String name, int capacity, int commissioningDate,
-            List<Meal> meals,
-            TemperatureSensorManager tempManager, MovementSensorManager movManager) {
-        this.id = Crypto.getRandomId(6);
-        this.lon = lon;
-        this.lat = lat;
-        this.address = address;
-        this.name = name;
-        this.capacity = capacity;
-        this.commissioningDate = commissioningDate;
-        this.meals = meals;
-        this.tempManager = tempManager;
-        this.movManager = movManager;
         this.openSolicitudes = new ArrayList<>();
         this.openedHistory = new ArrayList<>();
         this.incidents = new ArrayList<>();
@@ -77,13 +73,50 @@ public class Fridge {
         this.notificationsSent = new ArrayList<>();
     }
 
+    public Fridge(double lon, double lat, String address, String name, int capacity, int commissioningDate,
+            List<Meal> meals,
+            TemperatureSensorManager tempManager, MovementSensorManager movManager) {
+        this.lon = lon;
+        this.lat = lat;
+        this.address = address;
+        this.name = name;
+        this.capacity = capacity;
+        this.commissioningDate = commissioningDate;
+        this.meals = meals;
+        this.sensorManagers.add(0, tempManager);
+        this.sensorManagers.add(1, movManager);
+        this.openSolicitudes = new ArrayList<>();
+        this.openedHistory = new ArrayList<>();
+        this.incidents = new ArrayList<>();
+        this.notificationSubscriptions = new ArrayList<>();
+        this.notificationsSent = new ArrayList<>();
+    }
+
+    // Method to convert to a Map
+    public Map<String, Object> toMap() {
+        Map<String, Object> fridgeMap = new HashMap<>();
+        fridgeMap.put("name", getName());
+        fridgeMap.put("id", getId());
+        fridgeMap.put("temp", getTempManager().getLastTemp());
+        fridgeMap.put("reserved", 0);// q pija es esto??
+        fridgeMap.put("state", getIsActive() ? "Active" : "Inactive");
+        fridgeMap.put("meals", getMeals().size());
+        fridgeMap.put("food_status_desc", "located at " + getAddress());
+        int cantIncidentes = getActiveIncidents().size();
+        fridgeMap.put("meal_urgency",
+                cantIncidentes + " Active Incident" + (cantIncidentes == 1 ? "" : "s"));
+        return fridgeMap;
+    }
+
     public void setTempManager(TemperatureSensorManager tempManager) {
-        this.tempManager = tempManager;
+
+        this.sensorManagers.add(0, tempManager);
 
     }
 
     public void setMovManager(MovementSensorManager movManager) {
-        this.movManager = movManager;
+
+        this.sensorManagers.add(1, movManager);
     }
 
     public int getId() {
@@ -158,51 +191,54 @@ public class Fridge {
         return this.meals;
     }
 
-    public void cleanHistory(){
-        this.addedMeals = new ArrayList<Meal>();
-        this.removedMeals = new ArrayList<Meal>();
+    public void cleanHistory() {
+        this.addedMeals = 0;
+        this.removedMeals = 0;
     }
-    public List<Meal> getAddedMeals(){
+
+    public Integer getAddedMeals() {
         return this.addedMeals;
     }
-    public List<Meal> getRemovedMeals(){
+
+    public Integer getRemovedMeals() {
         return this.removedMeals;
     }
+
+    public void setMeals(List<Meal> meals) {
+        this.meals = meals;
+    }
+
     public void addMeal(Meal meal) {
         this.meals.add(meal);
-        this.addedMeals.add(meal);
-        // if the fridge is 90 percent full, send a notification
-        if (meals.size() >= this.capacity * 0.9)
-            this.sendFridgeNotifications(
-                    new FridgeNotification(FridgeNotifications.NearFullInventory, "Fridge almost full",
-                            "Fridge has low inventory with " + meals.size() + " meals"));
+        this.addedMeals++;
+        this.evaluateSendNotification(
+                new FridgeNotification(FridgeNotifications.NearFullInventory, meals.size(), "Fridge almost full"));
     }
 
     public void removeMeal(Meal meal) {
         this.meals.remove(meal);
-        this.removedMeals.add(meal);
-        // if the fridge is 25 percent full, send a notification
-        if (meals.size() >= this.capacity * 0.25)
-            this.sendFridgeNotifications(
-                    new FridgeNotification(FridgeNotifications.NearFullInventory, "Fridge almost full",
-                            "Fridge has low inventory with " + meals.size() + " meals"));
+        this.removedMeals++;
+        this.evaluateSendNotification(
+                new FridgeNotification(FridgeNotifications.LowInventory, meals.size(), "Fridge almost full"));
 
+    }
+
+    public Meal getMealByType(String type) {
+        for (Meal meal : meals) {
+            if (meal.getType().equals(type)) {
+                return meal;
+            }
+        }
+        return null;
     }
 
     public TemperatureSensorManager getTempManager() {
-        return this.tempManager;
-    }
-
-    public void setTemp(TemperatureSensorManager temp) {
-        this.tempManager = temp;
+        return (TemperatureSensorManager) this.sensorManagers.get(0);
     }
 
     public MovementSensorManager getMovManager() {
-        return this.movManager;
-    }
+        return (MovementSensorManager) this.sensorManagers.get(1);
 
-    public void setMov(MovementSensorManager mov) {
-        this.movManager = mov;
     }
 
     public String getMapLocation() {
@@ -238,12 +274,34 @@ public class Fridge {
         return false;
     }
 
+    public Incident getIncidentById(int incident_id) {
+        for (Incident incident : incidents) {
+            if (incident.getId() == incident_id) {
+                return incident;
+            }
+        }
+        return null;
+    }
+
     public List<Incident> getIncidents() {
         return this.incidents;
     }
 
-    public void addIncident(Incident incident) {
+    public List<Incident> getActiveIncidents() {
+        return incidents.stream()
+                .filter(incident -> !incident.hasBeenFixed())
+                .collect(Collectors.toList());
+    }
+
+    public void setIncidents(List<Incident> incidents) {
+        this.incidents = incidents;
+    }
+
+    public FridgeNotification addIncident(Incident incident) {
+        FridgeNotification notification = new FridgeNotification(FridgeNotifications.Malfunction, 0, this.name+" fridge is malfunctioning");
         this.incidents.add(incident);
+        this.evaluateSendNotification(notification);
+        return notification;
     }
 
     public List<Subscription> getNotificationSubscription() {
@@ -258,14 +316,37 @@ public class Fridge {
         this.notificationSubscriptions.remove(subscription);
     }
 
-    public void sendFridgeNotifications(FridgeNotification fridgeNotification) {
-        for (Subscription subscription : this.notificationSubscriptions) {
-            if (subscription.getType() == fridgeNotification.getType()) {
+    public boolean isSubscribed(Contributor contributor) {
+        return this.notificationSubscriptions.stream().anyMatch(subscription -> subscription.getContributor().getId().equals(contributor.getId()));
+    }
 
-                subscription.getContributor().getContacts().forEach(value -> {
-                    this.notificationsSent.add(fridgeNotification);
-                    value.SendNotification(fridgeNotification.getSubject(), fridgeNotification.getMessage());
-                });
+    public void removeSubscriber(Contributor contributor) {
+        this.notificationSubscriptions.removeIf(subscription -> subscription.getContributor().getId().equals(contributor.getId()));
+    }
+
+    public List<Subscription> getSubscriptions(Contributor contributor) {
+        return this.notificationSubscriptions.stream().filter(subscription -> subscription.getContributor().getId().equals(contributor.getId())).collect(Collectors.toList());
+    }
+
+    public void evaluateSendNotification(FridgeNotification fridgeNotification) {
+        for (Subscription subscription : this.notificationSubscriptions) {
+            boolean low_condition = fridgeNotification.getType() == FridgeNotifications.LowInventory
+                    && subscription.getThreshold() >= fridgeNotification.getAmmount();
+            boolean full_condition = fridgeNotification.getType() == FridgeNotifications.NearFullInventory
+                    && subscription.getThreshold() <= fridgeNotification.getAmmount();
+            boolean malfunction_condition = fridgeNotification.getType() == FridgeNotifications.Malfunction;
+            if (low_condition || full_condition || malfunction_condition) {
+                System.out.println("Recorriendo las subscriptions. Tipo Actual: "+subscription.getType().toString());
+                if (subscription.getType() == fridgeNotification.getType()) {
+                System.out.println("entre a la");
+
+                    subscription.getContributor().getContacts().forEach(value -> {
+                        this.notificationsSent.add(fridgeNotification);
+                        String message = fridgeNotification.getMessage();
+                        value.SendNotification("Subscription alert", message);
+                        subscription.addNotification("Subscription alert: "+message);
+                    });
+                }
             }
         }
     }

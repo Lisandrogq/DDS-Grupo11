@@ -27,18 +27,24 @@ const closeModal = () => {
 document.addEventListener("keyup", (e) => {
 	if (e.key == "Escape") closeModal();
 });
-
+var count = 1;
 function agregarInput() {
-	let div = document.createElement("div");
-	div.classList.add("input");
-	div.innerHTML =
-		' <input type="text" id="meal" name="meal" required placeholder="ID of meal to distribute..."class="col-12 inputs">';
-	document.getElementById("input-placeholder").appendChild(div);
+	if (count < 4) {
+		let div = document.createElement("div");
+		div.classList.add("input");
+		div.innerHTML =
+			' <input type="text" id="meal" name="meal_' + count + '" required placeholder="ID of meal to distribute..."class="col-12 inputs">';
+		document.getElementById("input-placeholder").appendChild(div);
+		count++;
+	}
 }
 
 function eliminarInput() {
-	var inputs = document.getElementById("input-placeholder").querySelectorAll(".input");
-	inputs[inputs.length - 1].remove();
+	if (count >= 0) {
+		var inputs = document.getElementById("input-placeholder").querySelectorAll(".input");
+		inputs[inputs.length - 1].remove();
+		count--;
+	}
 }
 
 function setup_map() {
@@ -55,11 +61,11 @@ function setup_map() {
  */
 const fridgeModal = (name, meals, temp, reserved, state) => `
 <div id="has_map"class="d-flex flex-column" style="gap: 40px;">
-	<div>
+	<div class="d-flex w-100 justify-content-between align-items-center">
 		<h5 class="accent-100 mb-2">${name} fridge</h5>
-		<div class="d-flex w-100 justify-content-between align-items-center">
-			<p>Contribute donating a meal</p>
-			<button class="btn-primary" style="padding: 10px; font-size: var(--paragraph)">Subscribe</button>
+		<div class="d-flex flex-row" style="gap: 10px;">
+			<button id="unsubscribeBtn" class="btn-primary" style="padding: 10px; font-size: var(--paragraph)">Unsubscribe</button>
+			<button id="subscribeBtn" class="btn-primary" style="padding: 10px; font-size: var(--paragraph)">Subscribe</button>
 		</div>
 	</div>
 
@@ -74,28 +80,129 @@ const fridgeModal = (name, meals, temp, reserved, state) => `
 
 	<div class="d-flex w-100" style="gap: 10px;">
 		<button id="fridge-report-failure" class="btn-primary w-100">Report failure</button>
-		<button id="fridge-view-report" class="btn-primary w-100">View report</button>
+		<button id="fridge-view-info" class="btn-primary w-100">View info</button>
 	</div>
 </div>
 `;
+
+function handleSubscribe(id) { 
+	return `
+		<div class="d-flex flex-column" style="gap: 40px;">
+			<div>
+				<h5 class="accent-100 mb-2">Subscribe to fridge</h5>
+				<p>Get notified about your favorite fridges!!!!!</p>
+			</div>
+			<form method="POST" action="/fridge/subscribe" class="form">
+				<select
+					name="type"
+					required
+					id="subscription-type"
+					onchange="toggleQuantityField(event)"
+				>
+					<option selected disabled hidden>
+						Choose a category of subscription
+					</option>
+					<option value="LowInventory">Low Inventory</option>
+					<option value="NearFullInventory">Near Full Inventory</option>
+					<option value="Malfunction">Malfunction</option>
+				</select>
+
+				<div id="quantity-field" style="display: none;">
+					<input
+						type="number"
+						id="quantity"
+						name="quantity"
+						placeholder="A partir de n cantidad de comidas..."
+					/>
+				</div>
+
+				<input type="hidden" name="fridge" value="${id}">
+
+				<div class="form-btns-container">
+					<button
+						type="reset"
+						class="btn-text w-100"
+						id="modal-close"
+					>
+						Cancel
+					</button>
+					<button
+						type="submit"
+						class="btn-primary w-100"
+					>
+						Submit
+					</button>
+				</div>
+			</form>
+		</div>
+	`;
+}
+
+function handleUnsubscribe(id) {
+
+	fetch(`/fridge/unsubscribe?fridgeId=${encodeURIComponent(id)}`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+	})
+		.then(response => {
+			if (response.ok) {
+				alert("Unsubscribed successfully!");
+				window.location.reload();
+			} else {
+				alert("Failed to unsubscribe. Please try again.");
+			}
+		})
+		.catch(error => {
+			console.error('Error:', error);
+			alert("An error occurred. Please try again.");
+		});
+}
+
+function toggleQuantityField(event) {
+	const selectedValue = event.target.value;
+	const quantityField = document.getElementById("quantity-field");
+
+	if (selectedValue === "LowInventory" || selectedValue === "NearFullInventory") {
+		quantityField.style.display = "block";
+		quantityField.querySelector("input").required = true;
+	} else {
+		quantityField.style.display = "none";
+	}
+}
 
 const setupFridgeListeners = () => {
 	const fridges = document.querySelectorAll("#fridge");
 	fridges.forEach((fridge) => {
 		const name = fridge.getAttribute("data-fridge-name");
+		const id = fridge.getAttribute("data-fridge-id");
 		const meals = fridge.getAttribute("data-fridge-meals");
 		const temp = fridge.getAttribute("data-fridge-temp");
 		const reserved = fridge.getAttribute("data-fridge-reserved");
 		const state = fridge.getAttribute("data-fridge-state");
+		const subscribed = fridge.getAttribute("data-fridge-subscribed");
 		fridge.onclick = () => {
 			openModal(fridgeModal(name, meals, temp, reserved, state), () => {
-				// setup listener in report failure to open te modal
-				const failureBtn = document.querySelector("#fridge-report-failure");
-				failureBtn.onclick = () => setModalContent(failureAlert());
+				// setup listener in subscribe button
+				const subscribeBtn = document.querySelector("#subscribeBtn");
+				subscribeBtn.onclick = () => setModalContent(handleSubscribe(id));
+
+				const unsubscribeBtn = document.querySelector("#unsubscribeBtn");
+				if (subscribed === "true") {
+					unsubscribeBtn.style.display = "inline-block";
+					unsubscribeBtn.onclick = () => handleUnsubscribe(id);
+				} else {
+					unsubscribeBtn.style.display = "none";
+				}
 
 				// setup listener in report failure to open te modal
-				const reportBtn = document.querySelector("#fridge-view-report");
-				reportBtn.onclick = () => setModalContent(fridgeReport());
+				const failureBtn = document.querySelector("#fridge-report-failure");
+				failureBtn.onclick = () => setModalContent(failureAlert(id));
+
+				// setup listener in report failure to open te modal
+				const infoBtn = document.querySelector("#fridge-view-info");
+				infoBtn.onclick = () => showFridgeInfo(id);
 			});
 		};
 	});
@@ -121,17 +228,27 @@ const modalMapper = {
 const contributionFormBtn = (text, modalDataAttr) =>
 	`<button class="btn-primary" style="flex: 1;" id="contribution-form-btn" data-attr=${modalDataAttr}>${text}</button>`;
 
-const contributeModal = `<div class="d-flex flex-column" style="gap: 40px">
+const contributeModalIND = `<div class="d-flex flex-column" style="gap: 40px">
 		<div>
 			<h5 class="accent-100 mb-2">Contributions</h5>
 			<p>How do you want to collaborate?</p>
 		</div>
 		<div class="d-flex flex-row w-100 flex-wrap justify-content-center align-items-center" style="gap: 20px;">
-			${contributionFormBtn("Meal donation", "meal-donation")}
-			${contributionFormBtn("Meal distribution", "meal-distribution")}
-			${contributionFormBtn("Fridge administration", "fridge-admin")}
-			${contributionFormBtn("Person registration", "person-registration")}
+		${contributionFormBtn("Meal donation", "meal-donation")}
+		${contributionFormBtn("Meal distribution", "meal-distribution")}
+		${contributionFormBtn("Person registration", "person-registration")}
+		${contributionFormBtn("Money donation", "money-donation")}
+		</div>
+	</div>`;
+
+const contributeModalLE = `<div class="d-flex flex-column" style="gap: 40px">
+		<div>
+			<h5 class="accent-100 mb-2">Contributions</h5>
+			<p>How do you want to collaborate?</p>
+		</div>
+		<div class="d-flex flex-row w-100 flex-wrap justify-content-center align-items-center" style="gap: 20px;">
 			${contributionFormBtn("Money donation", "money-donation")}
+			${contributionFormBtn("Fridge administration", "fridge-admin")}
 			${contributionFormBtn("Reward collaboration", "reward-collab")}
 		</div>
 	</div>`;
@@ -147,14 +264,29 @@ const setupListenersContributionsListeners = () => {
 
 const contributeBtn = document.querySelector("#contribute-btn");
 contributeBtn.onclick = () => {
-	openModal(contributeModal);
+	if (document.getElementById('contribute-btn').getAttribute("user-type") == "IND")
+		openModal(contributeModalIND);
+	else
+		openModal(contributeModalLE);
 	setupListenersContributionsListeners();
 };
 
+async function deleteCookieAndRefresh() {
+    // Delete the 'access-token' cookie by setting its expiration date to a past date
+	document.cookie = "access-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+	await fetch("/user/logout", {
+		method: "GET",
+
+	})
+	window.location.reload();
+}
+
 /**
- * ===================================== ACTUAL MODALS =====================================
+ * ===================================== CONTRIBUTION MODALS =====================================
  */
 function mealDonation() {
+	
+
 	return `
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
@@ -180,14 +312,13 @@ function mealDonation() {
 						placeholder="Expiration date..."
 					/>
 
-					<select required value="fridge" class="w-100">
-						<option selected disabled hidden>Choose a fridge</option>
-						<option value="Heladera 1">Heladera 1</option>
-						<!-- sujeto a cambios-->
-						<option value="Heladera 2">Heladera 2</option>
-						<option value="Heladera 3">Heladera 3</option>
-						<option value="Heladera 4">Heladera 4</option>
-					</select>
+					<input
+						type="text"
+						id="fridge_address"
+						name="fridge_address"
+						required
+						placeholder="Fridge Address..."
+					/>
 				</div>
 				<div class="d-flex justify-content-between w-100 gap">
 					<input
@@ -234,39 +365,33 @@ function mealDistribution() {
 				<h5 class="accent-100 mb-2">Meal distribution</h5>
 				<p>Contribute distributing a meal</p>
 			</div>
-			<form method="POST" action="/contribution/meal/distrubution" class="form">
+			<form method="POST" action="/contribution/meal/distribution" class="form">
 				<div>
 					<span id="btnCrearInput" style="color: #136C91;" class="clickable-text" onclick="agregarInput()">Add meal</span> <b>|</b>
 					<span  style="color: #136C91" class="clickable-text" onclick="eliminarInput()">Delete meal</span>
 				</div>
 				<div id="input-placeholder"> 
-				<input type="text" id="meal" name="meal" required placeholder="ID of meal to distribute..."class="col-12 inputs">
+				<input type="text" id="meal" name="meal_0" required placeholder="Type of meal to distribute..."class="col-12 inputs">
 				</div>
 				<input type="text" id="reason" name="reason" required placeholder="Reason for relocation...">
 				
 				<div class="d-flex justify-content-between w-100 gap">
-					<select required value="fridge" class="boton1 inputs" style="width: 100%;">
-						<option selected disabled hidden>Choose origin fridge</option>
-						<option value='Heladera 1' class="desplegables">Heladera 1</option> <!-- sujeto a cambios-->
-						<option value='Heladera 2' class="desplegables">Heladera 2</option>
-						<option value='Heladera 3' class="desplegables">Heladera 3</option>
-						<option value='Heladera 4' class="desplegables">Heladera 4</option>
-					</select>
+						<input
+						type="text"
+						id="origin_address"
+						name="origin_address"
+						required
+						placeholder="Origin fridge Address..."
+					/>
 
-					<select required value="fridge" class="boton1 inputs" style="width: 100%;">
-						<option selected disabled hidden>Choose destiny fridge</option>
-						<option value='Heladera 1' class="desplegables">Heladera 1</option> <!-- sujeto a cambios-->
-						<option value='Heladera 2' class="desplegables">Heladera 2</option>
-						<option value='Heladera 3' class="desplegables">Heladera 3</option>
-						<option value='Heladera 4' class="desplegables">Heladera 4</option>
-					</select>
+						<input
+						type="text"
+						id="destiny_address"
+						name="destiny_address"
+						required
+						placeholder="Destiny fridge Address..."
+					/>
 					
-				</div>
-
-				<p>Date of distribution</p>	
-				<div class="d-flex justify-content-between w-100 gap">
-					<input type="date" id="dateOfDistribution" name="dateOfDistribution" required placeholder="Date of distribution..."
-					class="w-100 inputs">
 				</div>
 
 				<div class="form-btns-container">
@@ -281,14 +406,37 @@ function mealDistribution() {
 
 function fridgeAdministration() {
 	return `
-		<div id="has_map" class="d-flex flex-column" style="gap: 40px;">
+		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
 				<h5 class="accent-100 mb-2">Fridge Administration</h5>
 				<p>Contribute administrating a fridge</p>
-		<div id="map" style="height: 500px;"></div>
-
 			</div>
-		<div>`;
+
+			 <form method="POST" action="/contribution/fridge_admin" class="form">
+				<input type="text" id="name" name="name" required placeholder="Name of the fridge..." />
+				<input type="text" id="address" name="address" required placeholder="Address of the fridge..." />
+				<div class="d-flex justify-content-between w-100 gap">
+					<input
+						type="text"
+						id="capacity"
+						name="capacity"
+						required
+						placeholder="Capacity of the fridge..."
+						class="w-100"
+					/>
+					<select required name="isActive" value="true" class="boton1 inputs" style="width: 100%;">
+						<option selected disabled hidden>Will the fridge be active?</option>
+						<option value='true' class="desplegables">Yes</option>
+						<option value='false' class="desplegables">No</option>
+					</select>
+				</div>
+				<div class="form-btns-container">
+					<button type="reset" class="btn-text w-100" id="modal-close">Cancel</button>
+					<button type="submit" class="btn-primary w-100">Submit</button>
+				</div>
+			</form>
+		<div>
+		`;
 }
 
 function moneyDonation() {
@@ -301,8 +449,7 @@ function moneyDonation() {
 
 			 <form method="POST" action="/contribution/money" class="form">
 				<input type="text" id="amount" name="amount" required placeholder="Amount to donate..." />
-				<input type="text" id="cardID" name="cardID" required placeholder="Your card ID..." />
-				<input type="password" id="cvv" name="cvv" required placeholder="Your card verification value..." />
+				<input type="text" id="message" name="message" required placeholder="Your donation message..." />
 
 				<div class="form-btns-container">
 					<button type="reset" class="btn-text w-100" id="modal-close">Cancel</button>
@@ -322,53 +469,33 @@ function personRegistration() {
 			</div>
 
 			<form method="POST" action="/contribution/registration" class="form">
+				
 				<input
 					type="text"
-					id="username"
-					name="username"
-					required
-					placeholder="Username..."
-				/>
-				<input
-					type="password"
-					id="contrasena"
-					name="contrasena"
-					required
-					placeholder="Password..."
-				/>
-				<input
-					type="password"
-					id="contrasenaConfirmada"
-					name="contrasena"
-					required
-					placeholder="Password again..."
-				/>
-				<input
-					type="text"
-					id="nombreYApellido"
-					name="nombreYApellido"
+					id="name"
+					name="name"
 					required
 					placeholder="Full name..."
+				/>
+				<input
+					type="number"
+					id="dni"
+					name="dni"
+					required
+					placeholder="DNI..."
 				/>
 				<p>Birthdate</p>
 				<input
 					type="date"
-					id="fechaDeNacimiento"
-					name="fechaDeNacimiento"
+					id="birth"
+					name="birth"
 					required
 					placeholder="Birthdate..."
 				/>
 				<input
-					type="text"
-					id="idtarjeta"
-					name="idtarjeta"
-					required
-					placeholder="Card ID..."
-				/>
-				<input
 					type="number"
-					id="childrenInCharge"
-					name="childrenInCharge"
+					id="children_count"
+					name="children_count"
 					required
 					min=0
 					placeholder="Number of children in charge..."
@@ -396,13 +523,22 @@ function rewardCollab() {
 			</div>
 
 			<form method="POST" action="/contribution/reward" class="form">
-				<input
+			<div class="d-flex justify-content-between w-100 gap">	
+					<input
 					type="text"
 					id="name"
 					name="name"
 					required
 					placeholder="Reward name..."
 				/>
+					<input
+					type="number"
+					id="stock"
+					name="stock"
+					required
+					placeholder="Available stock..."
+				/>
+			</div>
 				<input
 					type="text"
 					id="description"
@@ -412,7 +548,7 @@ function rewardCollab() {
 				/>
 				<div class="d-flex justify-content-between w-100 gap">
 					<input
-						type="text"
+						type="number"
 						id="points"
 						name="points"
 						required
@@ -420,16 +556,17 @@ function rewardCollab() {
 					/>
 
 					<select
+						name = "category"
 						required
 						value="category"
 					>
 						<option selected disabled hidden>
 							Choose a category of reward
 						</option>
-						<option value="Technology">Technology</option>
+						<option value="TECH">Technology</option>
 						<!-- sujeto a cambios-->
-						<option value="Cooking">Cooking</option>
-						<option value="Home">Home</option>
+						<option value="COOKING">Cooking</option>
+						<option value="HOME">Home</option>
 					</select>
 				</div>
 
@@ -460,21 +597,128 @@ function rewardCollab() {
 	`;
 }
 
-function failureAlert() {
+/**
+ * ===================================== FRIDGE MODALS =====================================
+ */
+
+function showFridgeInfo(id) {
+	if (!id) {
+		console.error("Invalid fridge ID:", id);
+		alert("Invalid fridge ID. Please try again.");
+		return;
+	}
+
+	const url = `/fridge/info?id=${encodeURIComponent(id)}`;
+	console.log(url);
+
+	fetch(url, {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+		},
+	})
+		.then(response => {
+			if (!response.ok) {
+				console.error('Error:', response);
+				throw new Error("Failed to retrieve fridge info. Please try again.");
+			}
+			return response.json();
+		})
+		.then(data => {
+			console.log("Fridge info retrieved successfully:", data);
+			setModalContent(updateFridgeModal(data));
+		})
+		.catch(error => {
+			console.error('Error:', error);
+			alert("An error occurred. Please try again.");
+		});
+}
+
+function updateFridgeModal(data) {
+	const { fridgeId, meals, failures } = data;
+	console.log("Fridge info:", data);
+
+	const mealRows = meals.map(meal => `
+        <tr>
+            <td>${meal.id}</td>
+            <td>${meal.type}</td>
+            <td>${new Date(meal.expirationDate).toLocaleDateString()}</td>
+            <td>${meal.weight} g</td>
+            <td>${meal.calories} cal</td>
+        </tr>
+    `).join('');
+	console.log(mealRows);
+
+	const failureRows = failures.map(failure => `
+        <tr>
+			<td>${failure.id}</td>
+            <td>${failure.description}</td>
+            <td>${new Date(failure.detectedAt).toLocaleDateString()}</td>
+            <td>${failure.hasBeenFixed}</td>
+        </tr>
+    `).join('');
+	console.log(failureRows);
+	
+	return `
+        <div class="d-flex flex-column" style="gap: 40px;">
+            <div>
+                <h5 class="accent-100 mb-2">Fridge reports</h5>
+                <p>Report history for this fridge</p>
+            </div>
+            <div>
+                <p class="bold text-200" style="margin-bottom: 10px">Meal history</p>
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Type</th>
+                        <th>Expiration date</th>
+                        <th>Weight</th>
+                        <th>Calories</th>
+                    </tr>
+                    ${mealRows}
+                </table>  
+            </div>
+            <div>
+                <p class="bold text-200" style="margin-bottom: 10px">Incidents history</p>
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Description</th>
+                        <th>Creation date</th>
+						<th>Fixed</th>
+                    </tr>
+                    ${failureRows}
+                </table>
+            </div>
+        </div>
+    `;
+}
+
+function failureAlert(fridge_id) {
 	return `
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
 				<h5 class="accent-100 mb-2">Report Failure</h5>
 				<p>Report a fridge's malfunction</p>
 			</div>
-			<form method="POST" action="/alerts/failure" class="form">
-				<select required value="fridge" class="boton1 inputs" style="width: 100%">
-					<option selected disabled hidden>What happened?</option>
-					<option value="low meal" class="desplegables">Low on meal</option>
-					<option value="people" class="desplegables">
-						Too many people
+			<form method="POST" action="/fridge/failure" class="form">
+			<div class="d-flex justify-content-between w-100 gap">
+				<select required name="urgency"  class="boton1 inputs" style="width: 100%">
+					<option value="" selected disabled hidden>Urgency</option>
+					<option value="High" class="desplegables">High Urgency</option>
+					<option value="Medium" class="desplegables">
+						Medium Urgency
+					</option>
+					<option value="Low" class="desplegables">
+						Low Urgency
 					</option>
 				</select>
+				<select required name="set_inactive"  class="boton1 inputs" style="width: 100%">
+					<option value="" selected disabled hidden>Should we disable fridge?</option>
+					<option value="true" class="desplegables">Yes</option>
+					<option value="false" class="desplegables">No</option>
+				</select>
+			</div>
 				<textarea
 					type="textarea"
 					cols="10"
@@ -484,6 +728,7 @@ function failureAlert() {
 					required
 					placeholder="Description..."
 				></textarea>
+				<input type="hidden" name="fridge" value="${fridge_id}">
 				<div class="form-btns-container">
 					<button
 						type="reset"
@@ -504,62 +749,132 @@ function failureAlert() {
 	`;
 }
 
-function fridgeReport() {
-	return `
-		<div class="d-flex flex-column" style="gap: 40px;">
-			<div>
-				<h5 class="accent-100 mb-2">Fridge reports</h5>
-				<p>Report history for this fridge</p>
-			</div>
-			<div>
-				<p class="bold text-200" style="margin-bottom: 10px">Meal history</p>
-				<table>
-					<tr>
-						<th>ID</th>
-						<th>Type</th>
-						<th>Status</th>
-						<th>Expiration date</th>
-						<th>Weight</th>
-						<th>Calories</th>
-					</tr>
-					<tr>
-						<td>01</td>
-						<td>Meat</td>
-						<td>On date</td>
-						<td>10/10/2024</td>
-						<td>200g</td>
-						<td>300cal</td>
-					</tr>
-					<tr>
-						<td>02</td>
-						<td>Vegetables</td>
-						<td>On date</td>
-						<td>10/10/2024</td>
-						<td>200g</td>
-						<td>300cal</td>
-					</tr>
-				</table>	
-			</div>
-			<div>
-				<p class="bold text-200" style="margin-bottom: 10px">Failures history</p>
-				<table>
-					<tr>
-						<th>ID</th>
-						<th>Type</th>
-						<th>Status</th>
-					</tr>
-					<tr>
-						<td>01</td>
-						<td>low temperature</td>
-						<td>in progress</td>
-					</tr>
-					<tr>
-						<td>02</td>
-						<td>empty</td>
-						<td>not checked</td>
-					</tr>
-				</table>
-			</ div>
-		</div>
-	`;
-}
+/**
+ * ===================================== REWARDS MODAL LOGIC =====================================
+ */
+
+// Puntos de usuario
+const userPoints = document.querySelector("#user-points");
+let originalPoints = parseInt(userPoints.getAttribute("data-user-points").replace(/\./g, ""));
+let dataUserPoints = parseInt(userPoints.getAttribute("data-user-points").replace(/\./g, ""));
+
+// Botones de cancelar y confirmar
+const cancelBtn = document.getElementById("cancel-reward-btn");
+const confirmBtn = document.getElementById("confirm-reward-btn");
+cancelBtn.style.display = "none";
+confirmBtn.style.display = "none";
+
+// Botones de reclamar recompensas
+const redeemRewardBtns = document.querySelectorAll("#redeem-reward-btn");
+let originalQuantities = {};
+let quantities = {};
+let idRegister = 1;
+
+redeemRewardBtns.forEach((button) => {
+	const rewardId = button.getAttribute("data-reward-id");
+	// console.log(rewardId);
+
+	const originalQuantity = parseInt(button.getAttribute("data-reward-quantity").replace(/\./g, ""));
+	originalQuantities[rewardId] = originalQuantity;
+	quantities[rewardId] = originalQuantity;
+
+	const neededPoints = parseInt(button.getAttribute("data-reward-neededpoints").replace(/\./g, ""));
+
+	button.onclick = () => {
+		if (dataUserPoints >= neededPoints && quantities[rewardId] > 0) {
+			dataUserPoints -= neededPoints;
+			userPoints.textContent = dataUserPoints.toLocaleString('es-ES');
+			userPoints.setAttribute("data-user-points", dataUserPoints);
+
+			quantities[rewardId] -= 1;
+			button.setAttribute("data-reward-quantity", quantities[rewardId]);
+
+			const descriptionElement = button.closest(".d-flex").querySelector("p");
+			if (descriptionElement) {
+				const newDescription = descriptionElement.textContent.replace(
+					/\((.*?) remaining\)/,
+					`(${quantities[rewardId].toLocaleString('es-ES')} remaining)`
+				);
+				descriptionElement.textContent = newDescription;
+			}
+
+			cancelBtn.style.display = "inline-block";
+			confirmBtn.style.display = "inline-block";
+
+			// alert("Reward redeemed successfully!");
+		} else if (quantities[rewardId] <= 0) {
+			alert("There are no more rewards available");
+		} else {
+			alert("You don't have enough points");
+		}
+	};
+});
+
+cancelBtn.onclick = () => {
+	cancelBtn.style.display = "none";
+	confirmBtn.style.display = "none";
+
+	dataUserPoints = originalPoints;
+	userPoints.textContent = originalPoints;
+	userPoints.setAttribute("data-user-points", originalPoints);
+
+	redeemRewardBtns.forEach((button) => {
+		const rewardId = button.getAttribute("data-reward-id");
+		const originalQuantity = originalQuantities[rewardId]; // Usar el valor original guardado
+		button.setAttribute("data-reward-quantity", originalQuantity);
+		quantities[rewardId] = originalQuantity;
+
+		const descriptionElement = button.closest(".d-flex").querySelector("p");
+		if (descriptionElement) {
+			const newDescription = descriptionElement.textContent.replace(/\d+ remaining/, `${originalQuantity} remaining`);
+			descriptionElement.textContent = newDescription;
+		}
+	});
+};
+
+confirmBtn.onclick = () => {
+
+	// Actualizar BD
+	const data = {
+		userPoints: dataUserPoints,
+		rewards: []
+	};
+
+	redeemRewardBtns.forEach((button) => {
+		const rewardId = button.getAttribute("data-reward-id");
+		if (quantities[rewardId] < originalQuantities[rewardId]) {
+			const quantity = quantities[rewardId];
+			data.rewards.push({ rewardId, quantity });
+		}
+	});
+
+	console.log(data);
+
+	fetch("/rewards", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(data),
+	})
+		.then(response => {
+			if (response.ok) {
+				alert("Reward redeemed successfully!");
+				console.log("Antes del cambio:", originalPoints);
+				console.log("Antes del cambio:", originalQuantities);
+				originalPoints = dataUserPoints;
+				originalQuantities = { ...quantities };
+				console.log("Tras el cambio:", originalPoints);
+				console.log("Tras el cambio:", originalQuantities);
+				cancelBtn.style.display = "none";
+				confirmBtn.style.display = "none";
+			} else {
+				alert("Failed to redeem the reward. Please try again.");
+			}
+		})
+		.catch(error => {
+			console.error('Error:', error);
+			alert("An error occurred. Please try again.");
+		});
+
+};

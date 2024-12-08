@@ -1,13 +1,11 @@
 package org.grupo11.Services;
 
-import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Fridge;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-
 @Entity
 public class Meal {
     @Id
@@ -15,10 +13,10 @@ public class Meal {
     private Long id;
 
     private String type;
-    private int expirationDate;
-    @ManyToOne
-    private Contributor contributor;
-    private int donationDate;
+    private long expirationDate;
+    // @OneToOne //las bidireccionalidades son re de trolo mal
+    // private MealDonation mealDonation;
+    private long donationDate;
     @ManyToOne
     private Fridge fridge;
     private String state;
@@ -28,7 +26,7 @@ public class Meal {
     public Meal() {
     }
 
-    public Meal(String type, int expirationDate, int donationDate, Fridge fridge,
+    public Meal(String type, long expirationDate, long donationDate, Fridge fridge,
             String state, Integer calories, Integer weight) {
         this.type = type;
         this.expirationDate = expirationDate;
@@ -39,19 +37,19 @@ public class Meal {
         this.weight = weight;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getType() {
         return type;
     }
 
-    public int getExpirationDate() {
+    public long getExpirationDate() {
         return expirationDate;
     }
 
-    public Contributor getContributor() {
-        return contributor;
-    }
-
-    public int getDonationDate() {
+    public long getDonationDate() {
         return donationDate;
     }
 
@@ -59,9 +57,9 @@ public class Meal {
         this.fridge = fridge;
     }
 
-    public void setContributor(Contributor contributor) {
-        this.contributor = contributor;
-    }
+/*     public void setContribution(MealDonation mealDonation) {
+        this.mealDonation = mealDonation;
+    } */
 
     public Fridge getFridge() {
         return fridge;

@@ -3,8 +3,8 @@
 
 :root {
 	--landing-bg: #dcf1fc;
-	--nav-link-color: #84d2f8;
-	--hero-bg: #b3e1f8;
+	--nav-link-color: #ffffff;
+	--hero-bg: #67b3da;
 	--hero-desc: #f1f1f1;
 }
 
@@ -69,15 +69,11 @@ nav {
 .nav-link:hover {
 	color: var(--nav-link-color);
 	opacity: 0.8;
+	text-decoration: underline;
 }
 
 .hero-bg {
 	background-color: var(--hero-bg);
-	height: 100vh;
-	width: 1120px;
-	position: absolute;
-	z-index: -1;
-	left: 0;
 }
 
 .hero-btn-left,
@@ -92,7 +88,7 @@ nav {
 }
 
 .hero-btn-left {
-	background-color: #c9e9f9;
+	background-color: #136c91;
 }
 
 .hero-btn-left:hover {
@@ -119,4 +115,90 @@ nav {
 
 .cta-btn:hover {
 	background-color: var(--accent-300);
+}
+
+.hero-section {
+	min-height: 100vh;
+}
+
+@media (max-width: 1400px) {
+    .font-128 {
+        font-size: 80px; 
+        line-height: 91px; 
+    }
+
+    .font-100 {
+        font-size: 30px; 
+        line-height: 91px; 
+    }
+
+    .hero-btn-left,
+    .hero-btn-right {
+        width: 100%;
+        height: 50px; 
+        font-size: 16px; 
+    }
+
+    .cta-btn {
+        font-size: 18px; 
+        width: 250px; 
+        height: 75px; 
+    }
+
+	.cta-header {
+		line-height: 120px;
+	}
+
+    h5 {
+        line-height: 30px; 
+		font-size: 18px;
+    }
+
+    .header-line {
+        width: 100%; 
+    }
+}
+
+
+@media (max-width: 1200px) {
+    .font-128 {
+        font-size: 80px; 
+        line-height: 91px; 
+    }
+
+    .font-100 {
+        font-size: 30px; 
+        line-height: 91px; 
+    }
+
+    .hero-btn-left,
+    .hero-btn-right {
+        width: 100%;
+        height: 50px; 
+        font-size: 16px; 
+    }
+
+    .cta-btn {
+        font-size: 18px; 
+        width: 250px; 
+        height: 75px; 
+    }
+
+	.cta-header {
+		line-height: 60px;
+	}
+
+	.cta-container {
+		flex-wrap: wrap;
+	}
+
+
+    h5 {
+        line-height: 30px; 
+		font-size: 18px;
+    }
+
+    .header-line {
+        width: 100%; 
+    }
 }
