@@ -1,5 +1,6 @@
 package org.grupo11.Api;
 
+import java.util.List;
 import java.util.Map;
 
 import org.grupo11.DB;
@@ -53,8 +54,15 @@ public class HttpUtils {
                     "WHERE entity.id = :owner_id";
             org.hibernate.query.Query<Contributor> query = session.createQuery(hql, Contributor.class);
             query.setParameter("owner_id", owner_id);
-            Contributor contributor = query.getSingleResult();
-            return contributor;
+            List<Contributor> contributors = query.getResultList();
+            if (contributors.isEmpty()) {
+                return null;
+            } else if (contributors.size() > 1) {
+                Logger.error("More than one contributor with the same id.");
+                return null;
+            } else {
+                return contributors.get(0);
+            }
         } catch (Exception e) {
             return null;
         }
@@ -84,8 +92,15 @@ public class HttpUtils {
                     "WHERE t.id = :owner_id";
             org.hibernate.query.Query<Technician> query = session.createQuery(hql, Technician.class);
             query.setParameter("owner_id", owner_id);
-            Technician technician = query.getSingleResult();
-            return technician;
+            List<Technician> technicians = query.getResultList();
+            if (technicians.isEmpty()) {
+                return null;
+            } else if (technicians.size() > 1) {
+                Logger.error("More than one technician with the same id.");
+                return null;
+            } else {
+                return technicians.get(0);
+            }
         } catch (Exception e) {
             Logger.error("An error during jwt decode.", e);
             return null;

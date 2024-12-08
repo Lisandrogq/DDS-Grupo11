@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.grupo11.Enums.Provinces;
@@ -14,6 +15,7 @@ import org.grupo11.Services.Fridge.Sensor.MovementSensorManager;
 import org.grupo11.Services.Fridge.Sensor.SensorManager;
 import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
 import org.grupo11.Utils.Crypto;
+import org.grupo11.Utils.LocationHandler;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -92,20 +94,54 @@ public class Fridge {
         this.notificationsSent = new ArrayList<>();
     }
 
+    public Fridge(String address, String name, int capacity, int commissioningDate,
+            List<Meal> meals,
+            TemperatureSensorManager tempManager, MovementSensorManager movManager) {
+        this.address = address;
+        if (address != null || !address.isEmpty()) {
+            setLatAndLon(address);
+        }
+        this.name = name;
+        this.capacity = capacity;
+        this.commissioningDate = commissioningDate;
+        this.meals = meals;
+        this.sensorManagers.add(0, tempManager);
+        this.sensorManagers.add(1, movManager);
+        this.openSolicitudes = new ArrayList<>();
+        this.openedHistory = new ArrayList<>();
+        this.incidents = new ArrayList<>();
+        this.notificationSubscriptions = new ArrayList<>();
+        this.notificationsSent = new ArrayList<>();
+    }
+
     // Method to convert to a Map
     public Map<String, Object> toMap() {
         Map<String, Object> fridgeMap = new HashMap<>();
         fridgeMap.put("name", getName());
-        fridgeMap.put("id", getId());
-        fridgeMap.put("temp", getTempManager().getLastTemp());
+        fridgeMap.put("id", getIdAsString());
+        fridgeMap.put("lat", getLatAsString());
+        fridgeMap.put("lon", getLonAsString());
+        fridgeMap.put("temp", Double.toString(getTempManager().getLastTemp()));
         fridgeMap.put("reserved", 0);// q pija es esto??
         fridgeMap.put("state", getIsActive() ? "Active" : "Inactive");
-        fridgeMap.put("meals", getMeals().size());
+        fridgeMap.put("meals", Integer.toString(getMeals().size()));
         fridgeMap.put("food_status_desc", "located at " + getAddress());
+        fridgeMap.put("capacity", Integer.toString(getCapacity()));
+        fridgeMap.put("address", getAddress());
         int cantIncidentes = getActiveIncidents().size();
         fridgeMap.put("meal_urgency",
                 cantIncidentes + " Active Incident" + (cantIncidentes == 1 ? "" : "s"));
         return fridgeMap;
+    }
+
+    public void setLatAndLon(String address) {
+        try {
+            double[] coordinates = LocationHandler.getCoordinates(address);
+            this.lat = coordinates[0];
+            this.lon = coordinates[1];
+        } catch (Exception e) {
+            Logger.getLogger("Fridge").severe("Error setting lat and lon for fridge: " + this.name);
+        }
     }
 
     public void setTempManager(TemperatureSensorManager tempManager) {
@@ -123,6 +159,10 @@ public class Fridge {
         return id;
     }
 
+    public String getIdAsString() {
+        return Integer.toString(this.id);
+    }
+
     public boolean getIsActive() {
         return this.isActive;
     }
@@ -135,12 +175,20 @@ public class Fridge {
         return this.lon;
     }
 
+    public String getLonAsString() {
+        return Double.toString(this.lon);
+    }
+
     public void setLon(double lon) {
         this.lon = lon;
     }
 
     public double getLat() {
         return this.lat;
+    }
+
+    public String getLatAsString() {
+        return Double.toString(this.lat);
     }
 
     public void setLat(double lat) {

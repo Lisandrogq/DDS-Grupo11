@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.HashMap;
 
 import io.javalin.http.Context;
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 
 public class RenderController {
     public static void renderRegisterPages(Context ctx) {
@@ -58,7 +59,7 @@ public class RenderController {
             Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
             Technician technician = Middlewares.technicianIsAuthenticated(ctx);
             if (contributor == null && technician == null) {
-                Logger.info("Contributor or techinician not found");
+                Logger.info("User not found");
                 ctx.redirect("/register/login");
                 return;
             }
@@ -95,9 +96,10 @@ public class RenderController {
         // user
         Map<String, Object> user = new HashMap<>();
         user.put("name", name);
-        user.put("points", contributor.getPoints());
-
-      
+        int points = contributor.getPointsAsInt();
+        String pointsAsString = String.valueOf(points);
+        Logger.info("points: " + pointsAsString);
+        user.put("points", pointsAsString);
 
         // donations
         List<Map<String, Object>> donations = new ArrayList<>();
@@ -262,6 +264,7 @@ public class RenderController {
 
     public static Map<String, Object> getTechnicianModel(Technician technician, Context ctx) {
         Map<String, Object> model = new HashMap<>();
+        String error = ctx.queryParam("error"); 
 
         Map<String, Object> user = new HashMap<>();
         user.put("name", technician.getName());
@@ -304,9 +307,11 @@ public class RenderController {
             return null;
         }
 
+
         model.put("user", user);
         model.put("visits", visits);
         model.put("fridges", fridges);
+        model.put("error", error);
         return model;
     }
 }
