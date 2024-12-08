@@ -37,4 +37,16 @@ public class Credentials {
     public UserTypes getUserType() {
         return this.userType;
     }
+
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public void setUserType(UserTypes type) {
+        this.userType = type;
+    }
 }

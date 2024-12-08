@@ -4,5 +4,6 @@ public enum UserTypes {
     PersonInNeed,
     Technician,
     Individual,
-    LegalEntity
+    LegalEntity,
+    Admin,
 }

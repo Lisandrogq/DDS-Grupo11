@@ -37,7 +37,7 @@ import org.grupo11.Services.Fridge.Sensor.MovementSensor;
 import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
 import org.grupo11.Services.PersonInNeed.PersonInNeed;
 import org.grupo11.Services.Reporter.FailureReportRow;
-import org.grupo11.Services.Reporter.MealPerContributorReportRow;
+import org.grupo11.Services.Reporter.MealsPerContributorReportRow;
 import org.grupo11.Services.Reporter.MealsPerFridgeReportRow;
 import org.grupo11.Services.Reporter.Report;
 import org.grupo11.Services.Rewards.Reward;
@@ -59,7 +59,7 @@ public class DB {
                     .setProperty("hibernate.connection.password", Env.getDBPassword())
                     .configure()
                     .addAnnotatedClass(FailureReportRow.class)
-                    .addAnnotatedClass(MealPerContributorReportRow.class)
+                    .addAnnotatedClass(MealsPerContributorReportRow.class)
                     .addAnnotatedClass(MealsPerFridgeReportRow.class)
                     .addAnnotatedClass(Report.class)
                     .addAnnotatedClass(PersonInNeed.class)
