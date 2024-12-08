@@ -24,17 +24,24 @@ public class RewardsController {
 
         // Obtengo los datos del request
         RedeemRequest redeemRequest = ctx.bodyAsClass(RedeemRequest.class);
+        if (redeemRequest == null) {
+            ctx.status(400).json(new ApiResponse(400, "Invalid request data."));
+            return;
+        }
 
         // Valido los datos
         if (redeemRequest.getUserPoints() < 0) {
-            throw new IllegalArgumentException("Invalid user points.");
+            ctx.status(400).json(new ApiResponse(400, "Invalid user points."));
+            return;
         }
         for (RedeemRequest.RewardData reward : redeemRequest.getRewardsData()) {
             if (!FieldValidator.isString(reward.getRewardId())) {
-                throw new IllegalArgumentException("Invalid reward ID: " + reward.getRewardId());
+                ctx.status(400).json(new ApiResponse(400, "Invalid reward ID."));
+                return;
             }
             if (reward.getQuantity() < 0) {
-                throw new IllegalArgumentException("Invalid reward quantity for ID: " + reward.getRewardId());
+                ctx.status(400).json(new ApiResponse(400, "Invalid reward quantity."));
+                return;
             }
         }
 
@@ -50,7 +57,8 @@ public class RewardsController {
             userQuery.setParameter("id", contributor.getId());
             int userUpdateResult = userQuery.executeUpdate();
             if (userUpdateResult == 0) {
-                throw new IllegalArgumentException("User not found.");
+                ctx.status(400).json(new ApiResponse(400, "User not found."));
+                return;
             }
 
             // Actualizo cantidades de las recompensas
@@ -61,7 +69,8 @@ public class RewardsController {
                 rewardQuery.setParameter("id", reward.getRewardId());
                 int rewardUpdateResult = rewardQuery.executeUpdate();
                 if (rewardUpdateResult == 0) {
-                    throw new IllegalArgumentException("Reward not found: " + reward.getRewardId());
+                    ctx.status(400).json(new ApiResponse(400, "Reward not found."));
+                    return;
                 }
             }
 

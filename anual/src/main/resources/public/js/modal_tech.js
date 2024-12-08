@@ -220,7 +220,7 @@ function mealDonation() {
 				</div>
 				<div class="d-flex justify-content-between w-100 gap">
 					<input
-						type="text"
+						type="number"
 						id="calories"
 						name="calories"
 						required
@@ -228,11 +228,11 @@ function mealDonation() {
 						class="w-100"
 					/>
 					<input
-						type="text"
+						type="number"
 						id="weight"
 						name="weight"
 						required
-						placeholder="Weight..."
+						placeholder="Weight in grams..."
 						class="w-100"
 					/>
 				</div>

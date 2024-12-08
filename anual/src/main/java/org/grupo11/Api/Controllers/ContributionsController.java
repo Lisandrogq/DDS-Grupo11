@@ -6,11 +6,13 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.io.File;
 import java.util.List;
 
 import org.grupo11.DB;
 import org.grupo11.Logger;
+import org.grupo11.Api.ApiResponse;
 import org.grupo11.Api.Middlewares;
 import org.grupo11.Services.Meal;
 import org.grupo11.Services.Contributions.FridgeAdmin;
@@ -52,7 +54,7 @@ public class ContributionsController {
             return;
         }
         if (contributor instanceof LegalEntity) {
-            ctx.redirect("/dash/home?error=No puede contribuir de esta forma");
+            ctx.redirect("/dash/home?error=You can't donate meals as a legal entity");
             return;
         }
 
@@ -63,27 +65,38 @@ public class ContributionsController {
         String calories = ctx.formParam("calories");
         String weight = ctx.formParam("weight");
 
+        Consumer<String> sendFormError = (msg) -> {
+            ctx.status(400)
+                    .json(new ApiResponse(400, msg, null));
+            ctx.redirect("/dash/home?error=" + msg);
+        };
+
         if (!FieldValidator.isString(type)) {
-            throw new IllegalArgumentException("invalid type");
+            sendFormError.accept("invalid type");
+            return;
         }
         if (!FieldValidator.isString(fridge_address)) {
-            throw new IllegalArgumentException("invalid fridge_address");
+            sendFormError.accept("invalid fridge_address");
+            return;
         }
         if (!FieldValidator.isDate(expirationDate)) {
-            throw new IllegalArgumentException("invalid expirationDate");
+            sendFormError.accept("invalid expirationDate");
+            return;
         }
         if (!FieldValidator.isInt(calories)) {
-            throw new IllegalArgumentException("invalid calories");
+            sendFormError.accept("invalid calories");
+            return;
         }
         if (!FieldValidator.isInt(weight)) {
-            throw new IllegalArgumentException("invalid weight");
+            sendFormError.accept("invalid weight");
+            return;
         }
         if (Integer.parseInt(weight) <= 0) {
-            ctx.redirect("/dash/home?error=Ingresar un peso válido");
+            ctx.redirect("/dash/home?error=Enter a valid weight amount");
             return;
         }
         if (Integer.parseInt(calories) <= 0) {
-            ctx.redirect("/dash/home?error=Ingresar calorias válidas");
+            ctx.redirect("/dash/home?error=Enter a valid calories amount");
             return;
         }
 
@@ -98,15 +111,15 @@ public class ContributionsController {
             Fridge fridge = query.uniqueResult();
 
             if (fridge == null) {
-                ctx.redirect("/dash/home?error=La heladera no existe");
+                ctx.redirect("/dash/home?error=The fridge does not exist");
                 return;
             }
             if (fridge.getIsActive() == false) {
-                ctx.redirect("/dash/home?error=La heladera esta desactivada");
+                ctx.redirect("/dash/home?error=The fridge is not active");
                 return;
             }
             if(fridge.getCapacity() >= fridge.getMeals().size()){
-                ctx.redirect("/dash/home?error=La heladera esta llena");
+                ctx.redirect("/dash/home?error=The fridge is full");
                 return;
             }
             Meal meal = new Meal(type, DateUtils.parseDateString(expirationDate), DateUtils.now(), fridge, "",
@@ -117,7 +130,7 @@ public class ContributionsController {
                     contributor,
                     mealDonation);
             if (entries == null) {
-                ctx.redirect("/dash/home?error=Algo salio mal");
+                ctx.redirect("/dash/home?error=Somenthing went wrong");
                 return;
             }
             DB.update(contributor);
@@ -149,13 +162,16 @@ public class ContributionsController {
         try (Session session = DB.getSessionFactory().openSession()) {
 
             if (!FieldValidator.isString(reason)) {
-                throw new IllegalArgumentException("invalid reason");
+                ctx.redirect("/dash/home?error=invalid reason");
+                return;
             }
             if (!FieldValidator.isString(origin_address)) {
-                throw new IllegalArgumentException("invalid origin_address");
+                ctx.redirect("/dash/home?error=invalid origin_address");
+                return;
             }
             if (!FieldValidator.isString(destiny_address)) {
-                throw new IllegalArgumentException("invalid destiny_address");
+                ctx.redirect("/dash/home?error=invalid destiny_address");
+                return;
             }
 
             String origin_hql = "SELECT f " +
@@ -172,19 +188,19 @@ public class ContributionsController {
             Fridge origin_fridge = origin_query.getSingleResult();
             Fridge destiny_fridge = destiny_query.getSingleResult();
             if (origin_fridge == null) {
-                ctx.redirect("/dash/home?error=No existe la heladera de origen");
+                ctx.redirect("/dash/home?error=The origin fridge does not exist");
                 return;
             }
             if (destiny_fridge == null) {
-                ctx.redirect("/dash/home?error=No existe la heladera de destino");
+                ctx.redirect("/dash/home?error=The destiny fridge does not exist");
                 return;
             }
             if (origin_fridge.getIsActive() == false) {
-                ctx.redirect("/dash/home?error=La heladera de origen esta desactivada");
+                ctx.redirect("/dash/home?error=The origin fridge is not active");
                 return;
             }
             if (destiny_fridge.getIsActive() == false) {
-                ctx.redirect("/dash/home?error=La heladera de destino esta desactivada");
+                ctx.redirect("/dash/home?error=The destiny fridge is not active");
                 return;
             }
 
@@ -196,18 +212,18 @@ public class ContributionsController {
                 if (meal_type != null) {
                     Meal meal = origin_fridge.getMealByType(meal_type);
                     max++;
-                    if (meal == null) {
-                        ctx.redirect("/dash/home?error=No existe la comida " + meal_type + " en la heladera de origen");
+                    if (meal == null) {;
+                        ctx.redirect("/dash/home?error=The meal " + meal_type + " does not exist in the origin fridge");
                         return;
                     }
                 }
             }
             if (max == 0) {
-                ctx.redirect("/dash/home?error=No se seleccionaron comidas");
+                ctx.redirect("/dash/home?error=Select at least one meal");
                 return;
             }
             if (max > destiny_fridge.getCapacity() - destiny_fridge.getMeals().size()) {
-                ctx.redirect("/dash/home?error=La heladera de destino no tiene capacidad suficiente");
+                ctx.redirect("/dash/home?error=The destiny fridge is full");
                 return;
             }
             MealDistribution mealDistribution = new MealDistribution(origin_fridge, destiny_fridge, max, reason,
@@ -216,7 +232,7 @@ public class ContributionsController {
                     contributor,
                     mealDistribution);
             if (entries == null) {
-                ctx.redirect("/dash/home?error=Algo salio mal");
+                ctx.redirect("/dash/home?error=Somenthing went wrong");
                 return;
             }
             DB.update(contributor); // haya openSolicitude
@@ -263,19 +279,23 @@ public class ContributionsController {
         String isactive = ctx.formParam("isActive");
 
         if (!FieldValidator.isString(name)) {
-            throw new IllegalArgumentException("invalid name");
+            ctx.redirect("/dash/home?error=Enter a valid name");
+            return;
         }
         if (!FieldValidator.isString(address)) {
-            throw new IllegalArgumentException("invalid address");
+            ctx.redirect("/dash/home?error=Enter a valid address");
+            return;
         }
         if (!FieldValidator.isInt(capacity)) {
-            throw new IllegalArgumentException("invalid capacity");
+            ctx.redirect("/dash/home?error=Enter a valid capacity amount");
+            return;
         }
         if (!FieldValidator.isBool(isactive)) {
-            throw new IllegalArgumentException("invalid isactive");
+            ctx.redirect("/dash/home?error=Enter a valid is active value");
+            return;
         }
         if (Integer.parseInt(capacity) <= 0) {
-            ctx.redirect("/dash/home?error=Ingresar una capacidad valida");
+            ctx.redirect("/dash/home?error=Enter a valid capacity amount");
             return;
         }
 
@@ -287,7 +307,8 @@ public class ContributionsController {
             leQuery.setParameter("contributor_id", contributor.getId());
             LegalEntity le = leQuery.uniqueResult();
             if (le == null) {
-                throw new IllegalArgumentException("You are not a legal entity");
+                ctx.redirect("/dash/home?error=You must be a legal entity to create a fridge");
+                return;
             }
 
             Fridge fridge = new Fridge(address, name, Integer.parseInt(capacity), 0, new ArrayList<>(), null, null);
@@ -305,8 +326,10 @@ public class ContributionsController {
             List<FridgeOpenLogEntry> entries = ContributorsManager.getInstance().addContributionToContributor(
                     contributor,
                     fridgeAdmin);
-            if (entries == null)
-                throw new IllegalArgumentException("no puede contribuir de esta forma");// TODO: validar antes de esto q haya openSolicitude
+            if (entries == null) {
+                ctx.redirect("/dash/home?error=Somenthing went wrong");
+                return;
+            }
             DB.update(contributor);
             DB.create(fridge);
             DB.create(fridgeAdmin);
@@ -330,14 +353,16 @@ public class ContributionsController {
         String message = ctx.formParam("message");
 
         if (!FieldValidator.isInt(amount)) {
-            throw new IllegalArgumentException("invalid amount");
+            ctx.redirect("/dash/home?error=Enter a valid amount");
+            return;
 
         }
         if (!FieldValidator.isString(message)) {
-            throw new IllegalArgumentException("invalid message");
+            ctx.redirect("/dash/home?error=Enter a valid message");
+            return;
         }
         if (Integer.parseInt(amount) <= 0) {
-            ctx.redirect("/dash/home?error=Ingresar un monto valido");
+            ctx.redirect("/dash/home?error=Enter a valid amount");
             return;
         }
 
@@ -347,9 +372,10 @@ public class ContributionsController {
             List<FridgeOpenLogEntry> entries = ContributorsManager.getInstance().addContributionToContributor(
                     contributor,
                     moneyDonation);
-            if (entries == null)
-                throw new IllegalArgumentException("no puede contribuir de esta forma");// TODO: validar antes de esto q
-                                                                                        // haya openSolicitude
+            if (entries == null) {
+                ctx.redirect("/dash/home?error=Somenthing went wrong");
+                return;
+            }
             DB.update(contributor);
             DB.create(moneyDonation);
             ctx.redirect("/dash/home");
@@ -374,18 +400,18 @@ public class ContributionsController {
         String children_count = ctx.formParam("children_count");
 
         if (!FieldValidator.isString(name)) {
-            throw new IllegalArgumentException("invalid name");
+            ctx.redirect("Enter a valid name");
+            return;
         }
         if (!FieldValidator.isDate(birth)) {
-            throw new IllegalArgumentException("invalid birth");
+            ctx.redirect("/dash/home?error=Enter a valid birth date");
+            return;
         } if (!FieldValidator.isInt(dni)) {
-            throw new IllegalArgumentException("invalid dni");
+            ctx.redirect("/dash/home?error=Enter a valid dni");
+            return;
         }
-        if (!FieldValidator.isInt(children_count)) {
-            throw new IllegalArgumentException("invalid children_count");
-        }
-        if (Integer.parseInt(children_count) < 0) {
-            ctx.redirect("/dash/home?error=Ingresar una cantidad de hijos valida");
+        if (!FieldValidator.isInt(children_count) || Integer.parseInt(children_count) < 0) {
+            ctx.redirect("/dash/home?error=Enter a valid children count");
             return;
         }
 
@@ -397,9 +423,10 @@ public class ContributionsController {
             List<FridgeOpenLogEntry> entries = ContributorsManager.getInstance().addContributionToContributor(
                     contributor,
                     personRegistration);
-            if (entries == null)
-                throw new IllegalArgumentException("no puede contribuir de esta forma");// TODO: validar antes de esto q
-                                                                                        // haya openSolicitude
+            if (entries == null) {
+                ctx.redirect("/dash/home?error=Somenthing went wrong");
+                return;
+            }
             DB.update(contributor);
             DB.create(PIN);
             DB.create(personRegistration);
@@ -426,33 +453,33 @@ public class ContributionsController {
         UploadedFile picture = ctx.uploadedFile("picture");
 
         if (!FieldValidator.isString(name)) {
-            throw new IllegalArgumentException("invalid name");
+            ctx.redirect("/dash/home?error=Enter a valid name");
+            return;
         }
         if (!FieldValidator.isString(description)) {
-            throw new IllegalArgumentException("invalid description");
+            ctx.redirect("/dash/home?error=Enter a valid description");
+            return;
         }
-        if (!FieldValidator.isInt(stock)) {
-            throw new IllegalArgumentException("invalid stock");
+        if (!FieldValidator.isInt(stock) || Integer.parseInt(stock) < 0) {
+            ctx.redirect("/dash/home?error=Enter a valid stock amount");
+            return;
         }
-        if (Integer.parseInt(stock) <= 0) {
-            ctx.redirect("/dash/home?error=Ingresar un stock valido");
-        }
-        if (!FieldValidator.isInt(points)) {
-            throw new IllegalArgumentException("invalid points");
-        }
-        if (Integer.parseInt(points) <= 0) {
-            ctx.redirect("/dash/home?error=Ingresar una cantidad de puntos valida");
+        if (!FieldValidator.isInt(points) || Integer.parseInt(points) < 0) {
+            ctx.redirect("/dash/home?error=Enter a valid points amount");
+            return;
         }
         if (!FieldValidator.isValidEnumValue(RewardCategory.class, category)) {
-            throw new IllegalArgumentException("invalid category");
+            ctx.redirect("/dash/home?error=Enter a valid category");
+            return;
         }
         if (picture != null && picture.size() > 0) {
-            Logger.info("No es NULL por alguna razon");
             if (!picture.contentType().contains("image")) {
-                throw new IllegalArgumentException("invalid picture");
+                ctx.redirect("/dash/home?error=Invalid file type. Only images are allowed");
+                return;
             }
             if (picture.size() > 20 * 1024 * 1024) {
-                throw new IllegalArgumentException("Picture size must be less than 20MB");
+                ctx.redirect("/dash/home?error=File size exceeds the limit of 20MB");
+                return;
             }
             Logger.info("Uploaded file: " + picture.filename());
             Logger.info("Uploaded file type: " + picture.contentType());
@@ -482,7 +509,8 @@ public class ContributionsController {
                     Logger.info("File saved: " + reward.getImageUrl());
                 } catch (IOException e) {
                     Logger.error("Error while saving uploaded file", e);
-                    throw new RuntimeException("Error while saving uploaded file", e);
+                    ctx.redirect("/dash/home?error=Error while saving uploaded file");
+                    return;
                 }
             }
             
@@ -491,9 +519,10 @@ public class ContributionsController {
             List<FridgeOpenLogEntry> entries = ContributorsManager.getInstance().addContributionToContributor(
                     contributor,
                     rewardContribution);
-            if (entries == null)
-                throw new IllegalArgumentException("no puede contribuir de esta forma");// TODO: validar antes de esto q
-                                                                                        // haya openSolicitude
+            if (entries == null) {
+                ctx.redirect("/dash/home?error=Somenthing went wrong");
+                return;
+            }
             DB.update(contributor);
             DB.create(reward);
             DB.create(rewardContribution);

@@ -35,7 +35,7 @@ function agregarInput() {
 		let div = document.createElement("div");
 		div.classList.add("input");
 		div.innerHTML =
-			' <input type="text" id="meal" name="meal_' + count + '" required placeholder="ID of meal to distribute..."class="col-12 inputs">';
+			' <input type="text" id="meal" name="meal_' + count + '" required placeholder="Type of meal to distribute..."class="col-12 inputs">';
 		document.getElementById("input-placeholder").appendChild(div);
 		count++;
 	}
@@ -334,7 +334,7 @@ function mealDonation() {
 				</div>
 				<div class="d-flex justify-content-between w-100 gap">
 					<input
-						type="text"
+						type="number"
 						id="calories"
 						name="calories"
 						required
@@ -342,11 +342,11 @@ function mealDonation() {
 						class="w-100"
 					/>
 					<input
-						type="text"
+						type="number"
 						id="weight"
 						name="weight"
 						required
-						placeholder="Weight..."
+						placeholder="Weight in grams..."
 						class="w-100"
 					/>
 				</div>
@@ -460,7 +460,7 @@ function moneyDonation() {
 			</div>
 
 			 <form method="POST" action="/contribution/money" class="form">
-				<input type="text" id="amount" name="amount" required placeholder="Amount to donate..." />
+				<input type="number" id="amount" name="amount" required placeholder="Amount to donate..." />
 				<input type="text" id="message" name="message" required placeholder="Your donation message..." />
 
 				<div class="form-btns-container">
@@ -536,14 +536,14 @@ function rewardCollab() {
 
 			<form method="POST" action="/contribution/reward" class="form" enctype="multipart/form-data">
 			<div class="d-flex justify-content-between w-100 gap">	
-					<input
+				<input
 					type="text"
 					id="name"
 					name="name"
 					required
 					placeholder="Reward name..."
 				/>
-					<input
+				<input
 					type="number"
 					id="stock"
 					name="stock"
