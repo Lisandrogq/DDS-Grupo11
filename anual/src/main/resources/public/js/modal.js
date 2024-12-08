@@ -157,15 +157,14 @@ function handleUnsubscribe(id) {
 	})
 		.then(response => {
 			if (response.ok) {
-				alert("Unsubscribed successfully!");
 				window.location.reload();
 			} else {
-				alert("Failed to unsubscribe. Please try again.");
+				alertaError("Failed to unsubscribe. Please try again.");
 			}
 		})
 		.catch(error => {
 			console.error('Error:', error);
-			alert("An error occurred. Please try again.");
+			alertaError("An error occurred. Please try again.");
 		});
 }
 
@@ -647,7 +646,7 @@ function showFridgeInfo(id) {
 		})
 		.catch(error => {
 			console.error('Error:', error);
-			alert("An error occurred. Please try again.");
+			alertaError("An error occurred. Please try again.");
 		});
 }
 
@@ -816,9 +815,9 @@ redeemRewardBtns.forEach((button) => {
 			confirmBtn.style.display = "inline-block";
 
 		} else if (quantities[rewardId] <= 0) {
-			alert("There are no more rewards available");
+			alertaError("There are no more rewards available");
 		} else {
-			alert("You don't have enough points");
+			alertaError("You don't have enough points");
 		}
 	};
 });
@@ -873,7 +872,7 @@ confirmBtn.onclick = () => {
 	})
 		.then(response => {
 			if (response.ok) {
-				alert("Reward redeemed successfully! It will arrive at your address in 3 business days.");
+				alertaSuccess("Reward redeemed successfully! It will arrive at your address in 3 business days.");
 				console.log("Antes del cambio:", originalPoints);
 				console.log("Antes del cambio:", originalQuantities);
 				originalPoints = dataUserPoints;
@@ -883,12 +882,44 @@ confirmBtn.onclick = () => {
 				cancelBtn.style.display = "none";
 				confirmBtn.style.display = "none";
 			} else {
-				alert("Failed to redeem the reward. Please try again.");
+				alertaError("Failed to redeem the reward. Please try again.");
 			}
 		})
 		.catch(error => {
 			console.error('Error:', error);
-			alert("An error occurred. Please try again.");
+			alertaError("An error occurred. Please try again.");
 		});
 
 };
+
+function alertaSuccess(mensaje) {
+	const contenedorAlertas = document.getElementById("contenedorDeAlertas");
+	const alertaSuccess = document.createElement("div");
+	alertaSuccess.classList.add("alert", "alert-success", "alert-dismissible", "fade", "show");
+	alertaSuccess.setAttribute("role", "alert");
+	alertaSuccess.setAttribute("id", "success-alert");
+	alertaSuccess.setAttribute("style", "position: absolute; top: 0; left: 0; right: 0; z-index: 1000; margin: auto; margin-top: 10px; width: 50%;");
+	alertaSuccess.innerHTML = `
+	${mensaje}
+	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	  <span aria-hidden="true">&times;</span>
+	</button>
+  	`;
+	contenedorAlertas.appendChild(alertaSuccess);
+}
+
+function alertaError(mensaje) {
+	const contenedorAlertas = document.getElementById("contenedorDeAlertas");
+	const alertaError = document.createElement("div");
+	alertaError.classList.add("alert", "alert-danger", "alert-dismissible", "fade", "show");
+	alertaError.setAttribute("role", "alert");
+	alertaError.setAttribute("id", "error-alert");
+	alertaError.setAttribute("style", "position: absolute; top: 0; left: 0; right: 0; z-index: 1000; margin: auto; margin-top: 10px; width: 50%;");
+	alertaError.innerHTML = `
+	<strong>Oh snap!</strong> ${mensaje}
+	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	  <span aria-hidden="true">&times;</span>
+	</button>
+  	`;
+	contenedorAlertas.appendChild(alertaError);
+}
