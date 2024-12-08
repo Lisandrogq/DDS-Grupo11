@@ -126,6 +126,8 @@ public class Fridge {
         fridgeMap.put("state", getIsActive() ? "Active" : "Inactive");
         fridgeMap.put("meals", Integer.toString(getMeals().size()));
         fridgeMap.put("food_status_desc", "located at " + getAddress());
+        fridgeMap.put("capacity", Integer.toString(getCapacity()));
+        fridgeMap.put("address", getAddress());
         int cantIncidentes = getActiveIncidents().size();
         fridgeMap.put("meal_urgency",
                 cantIncidentes + " Active Incident" + (cantIncidentes == 1 ? "" : "s"));

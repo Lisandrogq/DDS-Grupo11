@@ -61,7 +61,7 @@ function setup_map(lat, lon) {
 /**
  * ===================================== Fridge Modal Logic =====================================
  */
-const fridgeModal = (name, meals, temp, reserved, state, lat, lon) => `
+const fridgeModal = (name, meals, temp, capacity, state, lat, lon) => `
 <div
 	id="has_map"
 	class="d-flex flex-column"
@@ -72,6 +72,7 @@ const fridgeModal = (name, meals, temp, reserved, state, lat, lon) => `
 	<div class="d-flex w-100 justify-content-between align-items-center">
 		<h5 class="accent-100 mb-2">${name} fridge</h5>
 		<div class="d-flex flex-row" style="gap: 10px;">
+			<button id="MealDonationShortcut" class="btn-primary" style="padding: 10px; font-size: var(--paragraph)">Donate meal</button>
 			<button id="unsubscribeBtn" class="btn-primary" style="padding: 10px; font-size: var(--paragraph)">Unsubscribe</button>
 			<button id="subscribeBtn" class="btn-primary" style="padding: 10px; font-size: var(--paragraph)">Subscribe</button>
 		</div>
@@ -79,7 +80,7 @@ const fridgeModal = (name, meals, temp, reserved, state, lat, lon) => `
 
 	<div class="d-flex flex-row justify-content-center align-items-center w-100 flex-wrap"> 
 		<h5 class="w-50" style="font-weight: 400;">Meals 🍲: <span class="bold">${meals}</span></h5>
-		<h5 class="w-50" style="font-weight: 400;">Reserved ✋: <span class="bold">${reserved}</span><h5>
+		<h5 class="w-50" style="font-weight: 400;">Capacity ✋: <span class="bold">${capacity}</span><h5>
 		<h5 class="w-50" style="font-weight: 400;">Temperature 🌡️:<span class="bold"> ${temp}</span><h5>
 		<h5 class="w-50" style="font-weight: 400;">State 🤞: <span class="bold">${state}</span><h5>
 	</div>	
@@ -183,20 +184,20 @@ function toggleQuantityField(event) {
 const setupFridgeListeners = () => {
 	const fridges = document.querySelectorAll("#fridge");
 	fridges.forEach((fridge) => {
-		console.log("Before: ", fridge.getAttribute("data-fridge-lat"));
 		const name = fridge.getAttribute("data-fridge-name");
 		const id = fridge.getAttribute("data-fridge-id");
 		const lat = fridge.getAttribute("data-fridge-lat").replace(",", ".");
 		const lon = fridge.getAttribute("data-fridge-lon").replace(",", ".");
 		const meals = fridge.getAttribute("data-fridge-meals");
 		const temp = fridge.getAttribute("data-fridge-temp");
-		const reserved = fridge.getAttribute("data-fridge-reserved");
 		const state = fridge.getAttribute("data-fridge-state");
+		const capacity = fridge.getAttribute("data-fridge-capacity");
 		const subscribed = fridge.getAttribute("data-fridge-subscribed");
-		console.log("After: ", lat);
+		const userType = fridge.getAttribute("data-user-type");
+
 		fridge.onclick = () => {
-			openModal(fridgeModal(name, meals, temp, reserved, state, lat, lon), () => {
-				// setup listener in subscribe button
+			openModal(fridgeModal(name, meals, temp, capacity, state, lat, lon), () => {
+				
 				const subscribeBtn = document.querySelector("#subscribeBtn");
 				subscribeBtn.onclick = () => setModalContent(handleSubscribe(id));
 
@@ -206,6 +207,20 @@ const setupFridgeListeners = () => {
 					unsubscribeBtn.onclick = () => handleUnsubscribe(id);
 				} else {
 					unsubscribeBtn.style.display = "none";
+				}
+
+				const mealDonationShortcut = document.querySelector("#MealDonationShortcut");
+				if (userType == "IND") {
+					mealDonationShortcut.style.display = "inline-block";
+					mealDonationShortcut.onclick = () => {
+						const address = fridge.getAttribute("data-fridge-address");
+						setModalContent(mealDonation());
+						const fridgeAddressInput = document.querySelector("#fridge_address");
+						fridgeAddressInput.value = address;
+						fridgeAddressInput.textContent = address;
+					}
+				} else {
+					mealDonationShortcut.style.display = "none";
 				}
 
 				// setup listener in report failure to open te modal
@@ -436,11 +451,6 @@ function fridgeAdministration() {
 						placeholder="Capacity of the fridge..."
 						class="w-100"
 					/>
-					<select required name="isActive" class="boton1 inputs" style="width: 100%;">
-						<option selected disabled hidden value="">Will the fridge be active?</option>
-						<option value='true' class="desplegables">Yes</option>
-						<option value='false' class="desplegables">No</option>
-					</select>
 				</div>
 				<div class="form-btns-container">
 					<button type="reset" class="btn-text w-100" id="modal-close">Cancel</button>

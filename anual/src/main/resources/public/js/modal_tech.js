@@ -61,7 +61,7 @@ function setup_map(lat, lon) {
 /**
  * ===================================== Fridge Modal Logic =====================================
  */
-const fridgeModal = (name, meals, temp, reserved, state, lat, lon) => `
+const fridgeModal = (name, meals, temp, capacity, state, lat, lon) => `
 <div
 	id="has_map"
 	class="d-flex flex-column"
@@ -75,10 +75,10 @@ const fridgeModal = (name, meals, temp, reserved, state, lat, lon) => `
 
 	<div class="d-flex flex-row justify-content-center align-items-center w-100 flex-wrap"> 
 		<h5 class="w-50" style="font-weight: 400;">Meals 🍲: <span class="bold">${meals}</span></h5>
-		<h5 class="w-50" style="font-weight: 400;">Reserved ✋: <span class="bold">${reserved}</span><h5>
+		<h5 class="w-50" style="font-weight: 400;">Capacity ✋: <span class="bold">${capacity}</span><h5>
 		<h5 class="w-50" style="font-weight: 400;">Temperature 🌡️:<span class="bold"> ${temp}</span><h5>
 		<h5 class="w-50" style="font-weight: 400;">State 🤞: <span class="bold">${state}</span><h5>
-	</div>	
+	</div>
 	
 	<div id="map" style="height: 300px;"></div>
 
@@ -92,18 +92,16 @@ const fridgeModal = (name, meals, temp, reserved, state, lat, lon) => `
 const setupFridgeListeners = () => {
 	const fridges = document.querySelectorAll("#fridge");
 	fridges.forEach((fridge) => {
-		console.log("Before: ", fridge.getAttribute("data-fridge-lat"));
 		const name = fridge.getAttribute("data-fridge-name");
 		const id = fridge.getAttribute("data-fridge-id");
 		const lat = fridge.getAttribute("data-fridge-lat").replace(",", ".");
 		const lon = fridge.getAttribute("data-fridge-lon").replace(",", ".");
 		const meals = fridge.getAttribute("data-fridge-meals");
 		const temp = fridge.getAttribute("data-fridge-temp");
-		const reserved = fridge.getAttribute("data-fridge-reserved");
+		const capacity = fridge.getAttribute("data-fridge-capacity");
 		const state = fridge.getAttribute("data-fridge-state");
-		console.log("After: ", lat);
 		fridge.onclick = () => {
-			openModal(fridgeModal(name, meals, temp, reserved, state, lat, lon), () => {
+			openModal(fridgeModal(name, meals, temp, capacity, state, lat, lon), () => {
 				// setup listener in report failure to open te modal
 				const failureBtn = document.querySelector("#fridge-report-failure");
 				failureBtn.onclick = () => setModalContent(addVisit(id));

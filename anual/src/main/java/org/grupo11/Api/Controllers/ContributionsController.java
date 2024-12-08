@@ -287,7 +287,6 @@ public class ContributionsController {
         String name = ctx.formParam("name");
         String address = ctx.formParam("address");
         String capacity = ctx.formParam("capacity");
-        String isactive = ctx.formParam("isActive");
 
         if (!FieldValidator.isString(name)) {
             ctx.redirect("/dash/home?error=Enter a valid name");
@@ -299,10 +298,6 @@ public class ContributionsController {
         }
         if (!FieldValidator.isInt(capacity)) {
             ctx.redirect("/dash/home?error=Enter a valid capacity amount");
-            return;
-        }
-        if (!FieldValidator.isBool(isactive)) {
-            ctx.redirect("/dash/home?error=Enter a valid is active value");
             return;
         }
         if (Integer.parseInt(capacity) <= 0) {
@@ -325,7 +320,7 @@ public class ContributionsController {
             Fridge fridge = new Fridge(address, name, Integer.parseInt(capacity), 0, new ArrayList<>(), null, null);
             TemperatureSensorManager tManager = new TemperatureSensorManager(fridge, -1, 60);
             MovementSensorManager mManager = new MovementSensorManager(fridge);
-            fridge.setIsActive(Boolean.parseBoolean(isactive));
+            fridge.setIsActive(true);
             fridge.setTempManager(tManager);
             fridge.setMovManager(mManager);
             tManager.setFridge(fridge);

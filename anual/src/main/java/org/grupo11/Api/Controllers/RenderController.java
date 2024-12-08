@@ -264,6 +264,7 @@ public class RenderController {
 
     public static Map<String, Object> getTechnicianModel(Technician technician, Context ctx) {
         Map<String, Object> model = new HashMap<>();
+        String error = ctx.queryParam("error"); 
 
         Map<String, Object> user = new HashMap<>();
         user.put("name", technician.getName());
@@ -306,9 +307,11 @@ public class RenderController {
             return null;
         }
 
+
         model.put("user", user);
         model.put("visits", visits);
         model.put("fridges", fridges);
+        model.put("error", error);
         return model;
     }
 }
