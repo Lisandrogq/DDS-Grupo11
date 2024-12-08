@@ -14,14 +14,12 @@ import org.grupo11.Services.Fridge.Incident.Incident;
 import org.grupo11.Services.Fridge.Sensor.MovementSensorManager;
 import org.grupo11.Services.Fridge.Sensor.SensorManager;
 import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
-import org.grupo11.Utils.Crypto;
 import org.grupo11.Utils.LocationHandler;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -346,7 +344,8 @@ public class Fridge {
     }
 
     public FridgeNotification addIncident(Incident incident) {
-        FridgeNotification notification = new FridgeNotification(FridgeNotifications.Malfunction, 0, this.name+" fridge is malfunctioning");
+        FridgeNotification notification = new FridgeNotification(FridgeNotifications.Malfunction, 0,
+                this.name + " fridge is malfunctioning");
         this.incidents.add(incident);
         this.evaluateSendNotification(notification);
         return notification;
@@ -365,15 +364,19 @@ public class Fridge {
     }
 
     public boolean isSubscribed(Contributor contributor) {
-        return this.notificationSubscriptions.stream().anyMatch(subscription -> subscription.getContributor().getId().equals(contributor.getId()));
+        return this.notificationSubscriptions.stream()
+                .anyMatch(subscription -> subscription.getContributor().getId().equals(contributor.getId()));
     }
 
     public void removeSubscriber(Contributor contributor) {
-        this.notificationSubscriptions.removeIf(subscription -> subscription.getContributor().getId().equals(contributor.getId()));
+        this.notificationSubscriptions
+                .removeIf(subscription -> subscription.getContributor().getId().equals(contributor.getId()));
     }
 
     public List<Subscription> getSubscriptions(Contributor contributor) {
-        return this.notificationSubscriptions.stream().filter(subscription -> subscription.getContributor().getId().equals(contributor.getId())).collect(Collectors.toList());
+        return this.notificationSubscriptions.stream()
+                .filter(subscription -> subscription.getContributor().getId().equals(contributor.getId()))
+                .collect(Collectors.toList());
     }
 
     public void evaluateSendNotification(FridgeNotification fridgeNotification) {
@@ -384,15 +387,15 @@ public class Fridge {
                     && subscription.getThreshold() <= fridgeNotification.getAmmount();
             boolean malfunction_condition = fridgeNotification.getType() == FridgeNotifications.Malfunction;
             if (low_condition || full_condition || malfunction_condition) {
-                System.out.println("Recorriendo las subscriptions. Tipo Actual: "+subscription.getType().toString());
+                System.out.println("Recorriendo las subscriptions. Tipo Actual: " + subscription.getType().toString());
                 if (subscription.getType() == fridgeNotification.getType()) {
-                System.out.println("entre a la");
+                    System.out.println("entre a la");
 
                     subscription.getContributor().getContacts().forEach(value -> {
                         this.notificationsSent.add(fridgeNotification);
                         String message = fridgeNotification.getMessage();
                         value.SendNotification("Subscription alert", message);
-                        subscription.addNotification("Subscription alert: "+message);
+                        subscription.addNotification("Subscription alert: " + message);
                     });
                 }
             }

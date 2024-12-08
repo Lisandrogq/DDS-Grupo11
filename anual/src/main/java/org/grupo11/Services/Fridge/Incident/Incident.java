@@ -1,7 +1,9 @@
 package org.grupo11.Services.Fridge.Incident;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Technician.TechnicianVisit;
@@ -57,13 +59,25 @@ public abstract class Incident {
     public long getDetectedAt() {
         return this.detectedAt;
     }
+
     public Fridge getFridge() {
         return fridge;
     }
+
     public void setFridge(Fridge fridge) {
         this.fridge = fridge;
     }
+
     public Long getId() {
         return id;
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        map.put("hasBeenFixed", hasBeenFixed);
+        map.put("detectedAt", detectedAt);
+
+        return map;
     }
 }

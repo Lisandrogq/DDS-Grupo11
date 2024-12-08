@@ -6,6 +6,7 @@ import java.util.Map;
 import org.grupo11.DB;
 import org.grupo11.Logger;
 import org.grupo11.Enums.UserTypes;
+import org.grupo11.Services.Credentials;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Technician.Technician;
 import org.hibernate.Session;
@@ -25,7 +26,7 @@ public class HttpUtils {
         return cookie;
     }
 
-    public static Contributor getContributorFromAccessToken(DecodedJWT token) {
+    public static Credentials getCredentialsFromAccessToken(DecodedJWT token) {
         String payload = new String(java.util.Base64.getDecoder().decode(token.getPayload()));
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> payloadMap;
@@ -34,15 +35,35 @@ public class HttpUtils {
         } catch (Exception e) {
             return null;
         }
-        Long owner_id = Long.valueOf(payloadMap.get("owner_id").toString());
-        UserTypes type = Enum.valueOf(UserTypes.class, payloadMap.get("type").toString());
-        if (type == null) {
+        try {
+            Credentials credentials = new Credentials();
+            String mail = payloadMap.get("mail").toString();
+            Long ownerId = Long.valueOf(payloadMap.get("owner_id").toString());
+            UserTypes type = Enum.valueOf(UserTypes.class, payloadMap.get("type").toString());
+            if (type == null) {
+                return null;
+            }
+
+            credentials.setMail(mail);
+            credentials.setOwnerId(ownerId);
+            credentials.setUserType(type);
+
+            return credentials;
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
+
+    public static Contributor getContributorFromAccessToken(DecodedJWT token) {
+        Credentials credentials = getCredentialsFromAccessToken(token);
+        if (credentials == null) {
             return null;
         }
 
         try (Session session = DB.getSessionFactory().openSession()) {
             String entity;
-            if (type == UserTypes.Individual) {
+            if (credentials.getUserType() == UserTypes.Individual) {
                 entity = "Individual";
             } else {
                 entity = "LegalEntity";
@@ -53,7 +74,7 @@ public class HttpUtils {
                     "JOIN Contributor contr ON entity.id = contr.id " +
                     "WHERE entity.id = :owner_id";
             org.hibernate.query.Query<Contributor> query = session.createQuery(hql, Contributor.class);
-            query.setParameter("owner_id", owner_id);
+            query.setParameter("owner_id", credentials.getOwnerId());
             List<Contributor> contributors = query.getResultList();
             if (contributors.isEmpty()) {
                 return null;
@@ -68,30 +89,19 @@ public class HttpUtils {
         }
     }
 
-
     public static Technician getTechnicianFromAccessToken(DecodedJWT token) {
-        String payload = new String(java.util.Base64.getDecoder().decode(token.getPayload()));
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Object> payloadMap;
-        try {
-            payloadMap = objectMapper.readValue(payload, Map.class);
-        } catch (Exception e) {
-            return null;
-        }
-        Long owner_id = Long.valueOf(payloadMap.get("owner_id").toString());
-        UserTypes type = Enum.valueOf(UserTypes.class, payloadMap.get("type").toString());
-
-        if (type == null) {
+        Credentials credentials = getCredentialsFromAccessToken(token);
+        if (credentials == null) {
             return null;
         }
 
         try (Session session = DB.getSessionFactory().openSession()) {
-            
+
             String hql = "SELECT t " +
                     "FROM Technician t " +
                     "WHERE t.id = :owner_id";
             org.hibernate.query.Query<Technician> query = session.createQuery(hql, Technician.class);
-            query.setParameter("owner_id", owner_id);
+            query.setParameter("owner_id", credentials.getOwnerId());
             List<Technician> technicians = query.getResultList();
             if (technicians.isEmpty()) {
                 return null;

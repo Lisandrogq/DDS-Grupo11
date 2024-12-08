@@ -1,6 +1,9 @@
 package org.grupo11.Services.Reporter;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.Incident.Incident;
@@ -35,6 +38,21 @@ public class FailureReportRow {
 
     public List<Incident> getFailures() {
         return this.failures;
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        List<Map<String, Object>> incidents = new ArrayList<>();
+
+        for (Incident incident : failures) {
+            incidents.add(incident.toMap());
+        }
+
+        map.put("id", id);
+        map.put("fridge", fridge.toMap());
+        map.put("incidents", incidents);
+
+        return map;
     }
 
 }

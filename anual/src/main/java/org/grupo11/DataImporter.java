@@ -97,7 +97,7 @@ public class DataImporter {
 
         switch (contributionType) {
             case DINERO:
-                contribution = new MoneyDonation(quantity, contributionDate,"");
+                contribution = new MoneyDonation(quantity, contributionDate, "");
                 contributor.addPossibleContribution(ContributionType.MONEY_DONATION);
                 contributorManager.addContributionToContributor(contributor, contribution);
                 break;
@@ -121,7 +121,6 @@ public class DataImporter {
                 contributorManager.addContributionToContributor(contributor, contribution);
                 break;
         }
-
     }
 
 }
