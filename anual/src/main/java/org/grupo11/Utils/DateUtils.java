@@ -26,6 +26,12 @@ public class DateUtils {
         return date.getTime();
     }
 
+    public static long parseDateYMDString(String dateString) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = dateFormat.parse(dateString);
+        return date.getTime();
+    }
+
     public static long getCurrentTimeInMs() {
         return System.currentTimeMillis();
     }

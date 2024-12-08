@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -60,7 +61,6 @@ public class ContributionsController {
 
         String type = ctx.formParam("type");
         String expirationDate = ctx.formParam("expirationDate");
-        Logger.info("expirationDate: " + expirationDate);
         String fridge_address = ctx.formParam("fridge_address");
         String calories = ctx.formParam("calories");
         String weight = ctx.formParam("weight");
@@ -99,6 +99,15 @@ public class ContributionsController {
             ctx.redirect("/dash/home?error=Enter a valid calories amount");
             return;
         }
+        try {
+            if (DateUtils.parseDateYMDString(expirationDate) < DateUtils.now()) {
+                ctx.redirect("/dash/home?error=Yout can't donate expired meals");
+                return;
+            }
+        } catch (ParseException e) {
+            ctx.redirect("/dash/home?error=Invalid expiration date format");
+            return;
+        }
 
         System.err.println(ctx.body());
 
@@ -122,7 +131,7 @@ public class ContributionsController {
                 ctx.redirect("/dash/home?error=The fridge is full");
                 return;
             }
-            Meal meal = new Meal(type, DateUtils.parseDateString(expirationDate), DateUtils.now(), fridge, "",
+            Meal meal = new Meal(type, DateUtils.parseDateYMDString(expirationDate), DateUtils.now(), fridge, "",
                     Integer.parseInt(calories), Integer.parseInt(weight));
             MealDonation mealDonation = new MealDonation(meal, DateUtils.now());
             mealDonation.setContributor(contributor);

@@ -118,13 +118,13 @@ public class Fridge {
     public Map<String, Object> toMap() {
         Map<String, Object> fridgeMap = new HashMap<>();
         fridgeMap.put("name", getName());
-        fridgeMap.put("id", getId());
+        fridgeMap.put("id", getIdAsString());
         fridgeMap.put("lat", getLatAsString());
         fridgeMap.put("lon", getLonAsString());
-        fridgeMap.put("temp", getTempManager().getLastTemp());
+        fridgeMap.put("temp", Double.toString(getTempManager().getLastTemp()));
         fridgeMap.put("reserved", 0);// q pija es esto??
         fridgeMap.put("state", getIsActive() ? "Active" : "Inactive");
-        fridgeMap.put("meals", getMeals().size());
+        fridgeMap.put("meals", Integer.toString(getMeals().size()));
         fridgeMap.put("food_status_desc", "located at " + getAddress());
         int cantIncidentes = getActiveIncidents().size();
         fridgeMap.put("meal_urgency",
@@ -155,6 +155,10 @@ public class Fridge {
 
     public int getId() {
         return id;
+    }
+
+    public String getIdAsString() {
+        return Integer.toString(this.id);
     }
 
     public boolean getIsActive() {
