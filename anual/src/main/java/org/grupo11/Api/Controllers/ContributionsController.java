@@ -43,11 +43,16 @@ import org.eclipse.jetty.util.log.Log;
 
 
 public class ContributionsController {
+
     public static void handleMealContribution(Context ctx) {
         System.out.println(ctx.body());
         Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
         if (contributor == null) {
             ctx.redirect("/register/login");
+            return;
+        }
+        if (contributor instanceof LegalEntity) {
+            ctx.redirect("/dash/home?error=No puede contribuir de esta forma");
             return;
         }
 
@@ -58,34 +63,51 @@ public class ContributionsController {
         String calories = ctx.formParam("calories");
         String weight = ctx.formParam("weight");
 
+        if (!FieldValidator.isString(type)) {
+            throw new IllegalArgumentException("invalid type");
+        }
+        if (!FieldValidator.isString(fridge_address)) {
+            throw new IllegalArgumentException("invalid fridge_address");
+        }
+        if (!FieldValidator.isDate(expirationDate)) {
+            throw new IllegalArgumentException("invalid expirationDate");
+        }
+        if (!FieldValidator.isInt(calories)) {
+            throw new IllegalArgumentException("invalid calories");
+        }
+        if (!FieldValidator.isInt(weight)) {
+            throw new IllegalArgumentException("invalid weight");
+        }
+        if (Integer.parseInt(weight) <= 0) {
+            ctx.redirect("/dash/home?error=Ingresar un peso válido");
+            return;
+        }
+        if (Integer.parseInt(calories) <= 0) {
+            ctx.redirect("/dash/home?error=Ingresar calorias válidas");
+            return;
+        }
+
         System.err.println(ctx.body());
+
         try (Session session = DB.getSessionFactory().openSession()) {
-            if (!FieldValidator.isString(type)) {
-                throw new IllegalArgumentException("invalid type");
-            }
-            if (!FieldValidator.isString(fridge_address)) {
-                throw new IllegalArgumentException("invalid fridge_address");
-            }
-            if (!FieldValidator.isDate(expirationDate)) {
-                throw new IllegalArgumentException("invalid expirationDate");
-            }
-            if (!FieldValidator.isInt(calories)) {
-                throw new IllegalArgumentException("invalid calories");
-            }
-            if (!FieldValidator.isInt(weight)) {
-                throw new IllegalArgumentException("invalid weight");
-            }
             String hql = "SELECT f " +
                     "FROM Fridge f " +
                     "WHERE f.address = :fridge_address";
             org.hibernate.query.Query<Fridge> query = session.createQuery(hql, Fridge.class);
             query.setParameter("fridge_address", fridge_address);
             Fridge fridge = query.uniqueResult();
+
             if (fridge == null) {
-                throw new IllegalArgumentException("address inexistente");
+                ctx.redirect("/dash/home?error=La heladera no existe");
+                return;
             }
             if (fridge.getIsActive() == false) {
-                throw new IllegalArgumentException("heladera desactivada");
+                ctx.redirect("/dash/home?error=La heladera esta desactivada");
+                return;
+            }
+            if(fridge.getCapacity() >= fridge.getMeals().size()){
+                ctx.redirect("/dash/home?error=La heladera esta llena");
+                return;
             }
             Meal meal = new Meal(type, DateUtils.parseDateString(expirationDate), DateUtils.now(), fridge, "",
                     Integer.parseInt(calories), Integer.parseInt(weight));
@@ -94,9 +116,10 @@ public class ContributionsController {
             List<FridgeOpenLogEntry> entries = ContributorsManager.getInstance().addContributionToContributor(
                     contributor,
                     mealDonation);
-            if (entries == null)
-                throw new IllegalArgumentException("no puede contribuir de esta forma");// TODO: validar antes de esto q
-                                                                                        // haya openSolicitude
+            if (entries == null) {
+                ctx.redirect("/dash/home?error=Algo salio mal");
+                return;
+            }
             DB.update(contributor);
             DB.create(entries.get(0));
             fridge.addMeal(meal);
@@ -149,16 +172,20 @@ public class ContributionsController {
             Fridge origin_fridge = origin_query.getSingleResult();
             Fridge destiny_fridge = destiny_query.getSingleResult();
             if (origin_fridge == null) {
-                throw new IllegalArgumentException("no existe la heladera de origen");
+                ctx.redirect("/dash/home?error=No existe la heladera de origen");
+                return;
             }
             if (destiny_fridge == null) {
-                throw new IllegalArgumentException("no existe la heladera de destino");
+                ctx.redirect("/dash/home?error=No existe la heladera de destino");
+                return;
             }
             if (origin_fridge.getIsActive() == false) {
-                throw new IllegalArgumentException("heladera de origen desactivada");
+                ctx.redirect("/dash/home?error=La heladera de origen esta desactivada");
+                return;
             }
             if (destiny_fridge.getIsActive() == false) {
-                throw new IllegalArgumentException("heladera de destino desactivada");
+                ctx.redirect("/dash/home?error=La heladera de destino esta desactivada");
+                return;
             }
 
             int i = 0;
@@ -170,17 +197,28 @@ public class ContributionsController {
                     Meal meal = origin_fridge.getMealByType(meal_type);
                     max++;
                     if (meal == null) {
-                        throw new IllegalArgumentException(meal_type + " no existe en la heladera de origen");
+                        ctx.redirect("/dash/home?error=No existe la comida " + meal_type + " en la heladera de origen");
+                        return;
                     }
                 }
+            }
+            if (max == 0) {
+                ctx.redirect("/dash/home?error=No se seleccionaron comidas");
+                return;
+            }
+            if (max > destiny_fridge.getCapacity() - destiny_fridge.getMeals().size()) {
+                ctx.redirect("/dash/home?error=La heladera de destino no tiene capacidad suficiente");
+                return;
             }
             MealDistribution mealDistribution = new MealDistribution(origin_fridge, destiny_fridge, max, reason,
                     DateUtils.now());
             List<FridgeOpenLogEntry> entries = ContributorsManager.getInstance().addContributionToContributor(
                     contributor,
                     mealDistribution);
-            if (entries == null)
-                throw new IllegalArgumentException("no puede contribuir de esta forma");// TODO: validar antes de esto q
+            if (entries == null) {
+                ctx.redirect("/dash/home?error=Algo salio mal");
+                return;
+            }
             DB.update(contributor); // haya openSolicitude
             DB.create(entries.get(0));// origin entry
             DB.create(entries.get(1));// destiny entry
@@ -223,25 +261,36 @@ public class ContributionsController {
         String address = ctx.formParam("address");
         String capacity = ctx.formParam("capacity");
         String isactive = ctx.formParam("isActive");
-        try {
-            if (!FieldValidator.isString(name)) {
-                throw new IllegalArgumentException("invalid name");
-            }
-            if (!FieldValidator.isString(address)) {
-                throw new IllegalArgumentException("invalid address");
-            }
-            if (!FieldValidator.isInt(capacity)) {
-                throw new IllegalArgumentException("invalid capacity");
-            }
-            if (!FieldValidator.isBool(isactive)) {
-                throw new IllegalArgumentException("invalid isactive");
-            }
 
-            /*----------------------- Version vieja -----------------------//
+        if (!FieldValidator.isString(name)) {
+            throw new IllegalArgumentException("invalid name");
+        }
+        if (!FieldValidator.isString(address)) {
+            throw new IllegalArgumentException("invalid address");
+        }
+        if (!FieldValidator.isInt(capacity)) {
+            throw new IllegalArgumentException("invalid capacity");
+        }
+        if (!FieldValidator.isBool(isactive)) {
+            throw new IllegalArgumentException("invalid isactive");
+        }
+        if (Integer.parseInt(capacity) <= 0) {
+            ctx.redirect("/dash/home?error=Ingresar una capacidad valida");
+            return;
+        }
+
+        try (Session session = DB.getSessionFactory().openSession()) {
+            String leHQL = "SELECT le " +
+                    "FROM LegalEntity le " +
+                    "WHERE le.id = :contributor_id";
+            org.hibernate.query.Query<LegalEntity> leQuery = session.createQuery(leHQL, LegalEntity.class);
+            leQuery.setParameter("contributor_id", contributor.getId());
+            LegalEntity le = leQuery.uniqueResult();
+            if (le == null) {
+                throw new IllegalArgumentException("You are not a legal entity");
+            }
 
             Fridge fridge = new Fridge(address, name, Integer.parseInt(capacity), 0, new ArrayList<>(), null, null);
-            LegalEntity le = new LegalEntity(); // this should be retrieved from the db using the contributor that
-                                                // islogged
             TemperatureSensorManager tManager = new TemperatureSensorManager(fridge, -1, 60);
             MovementSensorManager mManager = new MovementSensorManager(fridge);
             fridge.setIsActive(Boolean.parseBoolean(isactive));
@@ -249,67 +298,26 @@ public class ContributionsController {
             fridge.setMovManager(mManager);
             tManager.setFridge(fridge);
             mManager.setFridge(fridge);
+
             FridgeAdmin fridgeAdmin = new FridgeAdmin(le, fridge, DateUtils.now());
-            fridgeAdmin.setContributor(contributor);// TODO: only allow this contribution to legalentities
+            fridgeAdmin.setContributor(contributor);
+
             List<FridgeOpenLogEntry> entries = ContributorsManager.getInstance().addContributionToContributor(
                     contributor,
                     fridgeAdmin);
             if (entries == null)
-                throw new IllegalArgumentException("no puede contribuir de esta forma");// TODO: validar antes de esto q
-                                                                                        // haya openSolicitude
+                throw new IllegalArgumentException("no puede contribuir de esta forma");// TODO: validar antes de esto q haya openSolicitude
             DB.update(contributor);
-            DB.create(le);
             DB.create(fridge);
             DB.create(fridgeAdmin);
+
             ctx.redirect("/dash/home");
-
-            //----------------------- Version vieja -----------------------*/
-
-            //----------------------- Version nueva -----------------------
-            try (Session session = DB.getSessionFactory().openSession()) {
-                String leHQL = "SELECT le " +
-                        "FROM LegalEntity le " +
-                        "WHERE le.id = :contributor_id";
-                org.hibernate.query.Query<LegalEntity> leQuery = session.createQuery(leHQL, LegalEntity.class);
-                leQuery.setParameter("contributor_id", contributor.getId());
-                LegalEntity le = leQuery.uniqueResult();
-                if (le == null) {
-                    throw new IllegalArgumentException("You are not a legal entity");
-                }
-
-                Fridge fridge = new Fridge(address, name, Integer.parseInt(capacity), 0, new ArrayList<>(), null, null);
-                TemperatureSensorManager tManager = new TemperatureSensorManager(fridge, -1, 60);
-                MovementSensorManager mManager = new MovementSensorManager(fridge);
-                fridge.setIsActive(Boolean.parseBoolean(isactive));
-                fridge.setTempManager(tManager);
-                fridge.setMovManager(mManager);
-                tManager.setFridge(fridge);
-                mManager.setFridge(fridge);
-
-                FridgeAdmin fridgeAdmin = new FridgeAdmin(le, fridge, DateUtils.now());
-                fridgeAdmin.setContributor(contributor);
-
-                List<FridgeOpenLogEntry> entries = ContributorsManager.getInstance().addContributionToContributor(
-                        contributor,
-                        fridgeAdmin);
-                if (entries == null)
-                    throw new IllegalArgumentException("no puede contribuir de esta forma");// TODO: validar antes de esto q haya openSolicitude
-                DB.update(contributor);
-                DB.create(fridge);
-                DB.create(fridgeAdmin);
-
-                ctx.redirect("/dash/home");
-            } catch (Exception e) {
-                Logger.error("Exception ", e);
-                ctx.redirect("/dash/home?error=" + e.getMessage());
-                return;
-            } //----------------------- Version nueva -----------------------//
-
         } catch (Exception e) {
             Logger.error("Exception ", e);
             ctx.redirect("/dash/home?error=" + e.getMessage());
             return;
         }
+
     }
 
     public static void handleMoneyContribution(Context ctx) {
@@ -327,6 +335,10 @@ public class ContributionsController {
         }
         if (!FieldValidator.isString(message)) {
             throw new IllegalArgumentException("invalid message");
+        }
+        if (Integer.parseInt(amount) <= 0) {
+            ctx.redirect("/dash/home?error=Ingresar un monto valido");
+            return;
         }
 
         try {
@@ -350,13 +362,12 @@ public class ContributionsController {
 
     public static void handlePersonRegistrationContribution(Context ctx) {
         System.out.println(ctx.body());
-        try {
-
         Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
         if (contributor == null) {
             ctx.redirect("/register/login");
             return;
         }
+
         String name = ctx.formParam("name");
         String dni = ctx.formParam("dni");
         String birth = ctx.formParam("birth");
@@ -364,19 +375,22 @@ public class ContributionsController {
 
         if (!FieldValidator.isString(name)) {
             throw new IllegalArgumentException("invalid name");
-
         }
         if (!FieldValidator.isDate(birth)) {
             throw new IllegalArgumentException("invalid birth");
-
         } if (!FieldValidator.isInt(dni)) {
             throw new IllegalArgumentException("invalid dni");
-
         }
         if (!FieldValidator.isInt(children_count)) {
             throw new IllegalArgumentException("invalid children_count");
-
         }
+        if (Integer.parseInt(children_count) < 0) {
+            ctx.redirect("/dash/home?error=Ingresar una cantidad de hijos valida");
+            return;
+        }
+
+        try {
+
             PersonInNeed PIN = new PersonInNeed(name,DateUtils.parseDateString(birth),DateUtils.now(),"",Integer.parseInt(dni),Integer.parseInt(children_count),null); 
             PersonRegistration personRegistration = new PersonRegistration(PIN,DateUtils.now(),contributor);
             personRegistration.setContributor(contributor);
@@ -417,11 +431,17 @@ public class ContributionsController {
         if (!FieldValidator.isString(description)) {
             throw new IllegalArgumentException("invalid description");
         }
-        if (!FieldValidator.isInt(stock) || Integer.parseInt(stock) <= 0) {
+        if (!FieldValidator.isInt(stock)) {
             throw new IllegalArgumentException("invalid stock");
         }
-        if (!FieldValidator.isInt(points) || Integer.parseInt(points) <= 0) {
+        if (Integer.parseInt(stock) <= 0) {
+            ctx.redirect("/dash/home?error=Ingresar un stock valido");
+        }
+        if (!FieldValidator.isInt(points)) {
             throw new IllegalArgumentException("invalid points");
+        }
+        if (Integer.parseInt(points) <= 0) {
+            ctx.redirect("/dash/home?error=Ingresar una cantidad de puntos valida");
         }
         if (!FieldValidator.isValidEnumValue(RewardCategory.class, category)) {
             throw new IllegalArgumentException("invalid category");

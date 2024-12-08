@@ -863,7 +863,7 @@ confirmBtn.onclick = () => {
 	})
 		.then(response => {
 			if (response.ok) {
-				alert("Reward redeemed successfully!");
+				alert("Reward redeemed successfully! It will arrive at your address in 3 business days.");
 				console.log("Antes del cambio:", originalPoints);
 				console.log("Antes del cambio:", originalQuantities);
 				originalPoints = dataUserPoints;
