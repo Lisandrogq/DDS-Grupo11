@@ -29,7 +29,6 @@ public class Fridge {
     @Id
     @GeneratedValue
     private int id;
-
     private boolean isActive;
     private double lon;
     private double lat;
@@ -41,7 +40,6 @@ public class Fridge {
     private int commissioningDate;
     @OneToMany
     private List<Meal> meals = new ArrayList<Meal>();
-
     private Integer addedMeals = 0;
     private Integer removedMeals = 0;
     @OneToMany(cascade = CascadeType.ALL)

@@ -13,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
@@ -27,6 +28,7 @@ public abstract class Incident {
     private boolean hasBeenFixed;
     private long detectedAt;
     @ManyToOne
+    @JoinColumn(name = "fridge_id")
     protected Fridge fridge;
 
     public Incident() {

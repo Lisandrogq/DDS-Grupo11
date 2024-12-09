@@ -1,10 +1,8 @@
 package org.grupo11.Services.Contributions;
 
-import java.security.KeyStore.Entry;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.grupo11.DB;
 import org.grupo11.Services.Meal;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.FridgeOpenLogEntry;
