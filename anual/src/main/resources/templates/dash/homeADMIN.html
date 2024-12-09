@@ -33,9 +33,12 @@
 				style="max-width: 1280px; margin: auto; gap: 30px; padding: 50px"
 			>
 				<#if error??>
-					<div class="error-container">
-						<p style="color: red">${error}</p>
-					</div>
+                    <div class="alert alert-danger alert-dismissible fade show" id="error-alert" role="alert" style="position: absolute; top: 0; left: 0; right: 0; z-index: 1000; margin: auto; margin-top: 10px; width: 50%;">
+                        <strong>Oh snap!</strong> ${error}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
 				</#if>
 				<div
 					class="d-flex flex-row justify-content-between align-items-center w-100"
@@ -77,7 +80,39 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="d-flex flex-column w-100" style="gap: 100px">
+                    <div class="d-flex flex-row w-100 flex-wrap" style="gap: 50px">
+                        <div class="d-flex flex-column flex-grow-1" style="min-width: 300px">
+                            <div class="mb-3">
+                                <h4>Import data</h4>
+                                <p>Upload a CSV file to import data</p>
+                            </div>
+                            <form action="/admin/importData" method="post" enctype="multipart/form-data">
+                                <div class="my-card d-flex flex-column" style="gap: 30px">
+                                    <div class="form-group">
+                                        <label for="file">Select a file</label>
+                                        <input
+                                            type="file"
+                                            name="CSVfile"
+                                            class="form-control-file"
+                                            id="CSVfile"
+                                            required
+                                            accept=".csv"
+                                        />
+                                    </div>
+                                    <div class="d-flex flex-row justify-content-end">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 </html>

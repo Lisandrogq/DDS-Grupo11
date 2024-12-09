@@ -506,7 +506,7 @@ public class ContributionsController {
                     folder.mkdirs();
                 }
 
-                String fileName = reward.getName() + "_" + System.currentTimeMillis() + picture.extension();
+                String fileName = reward.getId() + "_" + System.currentTimeMillis() + picture.extension();
                 File file = new File(folder, fileName);
                 
                 try (InputStream inputStream = picture.content()) {
