@@ -142,11 +142,11 @@ public class ContributionsController {
                 ctx.redirect("/dash/home?error=Somenthing went wrong");
                 return;
             }
-            DB.update(contributor);
-            DB.create(entries.get(0));
-            fridge.addMeal(meal);
             DB.create(meal);
             DB.create(mealDonation);
+            DB.create(entries.get(0));
+            DB.update(contributor);
+            fridge.addMeal(meal);
             DB.update(fridge);
             ctx.redirect("/dash/home");
 
@@ -246,10 +246,9 @@ public class ContributionsController {
                 ctx.redirect("/dash/home?error=Somenthing went wrong");
                 return;
             }
-            DB.update(contributor); // haya openSolicitude
-            DB.create(entries.get(0));// origin entry
-            DB.create(entries.get(1));// destiny entry
-            for (i = 0; i < max; i++) { // luego se realiza el movimiento.
+            DB.create(entries.get(0));
+            DB.create(entries.get(1));
+            for (i = 0; i < max; i++) {
                 String meal_type = ctx.formParam("meal_" + i);
                 if (meal_type != null) {
                     Meal meal = origin_fridge.getMealByType(meal_type);
@@ -264,9 +263,9 @@ public class ContributionsController {
             }
             DB.update(origin_fridge);
             DB.update(destiny_fridge);
-
             mealDistribution.setContributor(contributor);
             DB.create(mealDistribution);
+            DB.update(contributor);
 
             ctx.redirect("/dash/home");
 
@@ -336,9 +335,9 @@ public class ContributionsController {
                 ctx.redirect("/dash/home?error=Somenthing went wrong");
                 return;
             }
-            DB.update(contributor);
             DB.create(fridge);
             DB.create(fridgeAdmin);
+            DB.update(contributor);
 
             ctx.redirect("/dash/home");
         } catch (Exception e) {
@@ -382,8 +381,8 @@ public class ContributionsController {
                 ctx.redirect("/dash/home?error=Somenthing went wrong");
                 return;
             }
-            DB.update(contributor);
             DB.create(moneyDonation);
+            DB.update(contributor);
             ctx.redirect("/dash/home");
         } catch (Exception e) {
             Logger.error("Exception ", e);
@@ -433,9 +432,9 @@ public class ContributionsController {
                 ctx.redirect("/dash/home?error=Somenthing went wrong");
                 return;
             }
-            DB.update(contributor);
             DB.create(PIN);
             DB.create(personRegistration);
+            DB.update(contributor);
             ctx.redirect("/dash/home");
         } catch (Exception e) {
             Logger.error("Exception ", e);
@@ -529,9 +528,9 @@ public class ContributionsController {
                 ctx.redirect("/dash/home?error=Somenthing went wrong");
                 return;
             }
-            DB.update(contributor);
             DB.create(reward);
             DB.create(rewardContribution);
+            DB.update(contributor);
             // Pausar para dar tiempo a que se actualice la base de datos
             try {
                 Thread.sleep(500);

@@ -12,13 +12,10 @@ import org.grupo11.Services.Contributions.ContributionType;
 import org.grupo11.Services.Contributions.MealDonation;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Contributor.Individual;
-import org.grupo11.Services.Contributor.LegalEntity.LegalEntity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 
 @Entity
 public class MealsPerContributorReportRow {

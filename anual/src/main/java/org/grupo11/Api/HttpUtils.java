@@ -9,6 +9,7 @@ import org.grupo11.Enums.UserTypes;
 import org.grupo11.Services.Credentials;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Technician.Technician;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -62,12 +63,7 @@ public class HttpUtils {
         }
 
         try (Session session = DB.getSessionFactory().openSession()) {
-            String entity;
-            if (credentials.getUserType() == UserTypes.Individual) {
-                entity = "Individual";
-            } else {
-                entity = "LegalEntity";
-            }
+            String entity = credentials.getUserType() == UserTypes.Individual ? "Individual" : "LegalEntity";
 
             String hql = "SELECT entity " +
                     "FROM " + entity + " entity " +
@@ -82,7 +78,9 @@ public class HttpUtils {
                 Logger.error("More than one contributor with the same id.");
                 return null;
             } else {
-                return contributors.get(0);
+                Contributor contributor = contributors.get(0);
+                Hibernate.initialize(contributor.getContributions());
+                return contributor;
             }
         } catch (Exception e) {
             return null;

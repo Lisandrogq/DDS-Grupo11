@@ -33,22 +33,6 @@ public class FridgesManager {
         fridges.remove(fridge);
     }
 
-    public List<Fridge> getFridges() {
-        try (Session session = DB.getSessionFactory().openSession()) {
-            String hql = "SELECT f FROM Fridge f JOIN FETCH f.incidents i";
-            org.hibernate.query.Query<Fridge> query = session.createQuery(hql, Fridge.class);
-            List<Fridge> fridges = query.getResultList();
-            for (Fridge fridge : fridges) {
-                fridge.getIncidents();
-            }
-            session.close();
-            return fridges;
-        } catch (Exception e) {
-            Logger.error("Could not create report", e);
-            return new ArrayList<>();
-        }
-    }
-
     public void setFridges(List<Fridge> fridges) {
         this.fridges = fridges;
     }

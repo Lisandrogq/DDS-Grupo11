@@ -47,8 +47,7 @@ public class ContributorsManager {
 
         if (contribution.validate(contributor)) {
             contribution.setContributor(contributor);
-            // contributor.addContribution(contribution); //deja de ser necesario pq las
-            // contribuciones de un contributor se sacan por FK
+            contributor.addContribution(contribution);
             List<FridgeOpenLogEntry> entries = contribution.afterContribution();
             RewardSystem.assignPoints(contributor, contribution);
             contributionsManager.add(contribution);
