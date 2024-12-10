@@ -1,6 +1,11 @@
 package org.grupo11.Services.Reporter;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.grupo11.Utils.DateUtils;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,40 +17,62 @@ public class Report {
     @Id
     @GeneratedValue
     private Long id;
-    private long createdAt;
+    private long lastCreatedAt;
+    private long createdAt; // Time
     @OneToMany
-    private List<FailureReportRow> failuresPerFridge;
+    private List<FridgeReportRow> fridgeReportRows;
     @OneToMany
-    private List<MealsPerFridgeReportRow> mealsPerFridgeReport;
-    @OneToMany
-    private List<MealPerContributorReportRow> mealsPerContributor;
+    private List<MealsPerContributorReportRow> contributorReportRows;
 
     public Report() {
     }
 
-    public Report(long createdAt, List<FailureReportRow> failuresPerFridge,
-            List<MealsPerFridgeReportRow> mealsPerFridgeReport,
-            List<MealPerContributorReportRow> mealsPerContributor) {
+    public Report(long createdAt, long lastCreatedAt,
+                List<FridgeReportRow> fridgeReportRows,
+                List<MealsPerContributorReportRow> contributorReportRows) {
         this.createdAt = createdAt;
-        this.failuresPerFridge = failuresPerFridge;
-        this.mealsPerFridgeReport = mealsPerFridgeReport;
-        this.mealsPerContributor = mealsPerContributor;
+        this.lastCreatedAt = lastCreatedAt;
+        this.fridgeReportRows = fridgeReportRows;
+        this.contributorReportRows = contributorReportRows;
     }
 
     public long getCreatedAt() {
-        return this.createdAt;
+        return createdAt;
     }
 
-    public List<FailureReportRow> getFailuresPerFridge() {
-        return this.failuresPerFridge;
+    public List<FridgeReportRow> getFridgeReportRows() {
+        return fridgeReportRows;
     }
 
-    public List<MealsPerFridgeReportRow> getMealsPerFridgeReport() {
-        return this.mealsPerFridgeReport;
-    }
+    public Map<String, Object> toMap() {
+        String date = DateUtils.epochToDate(createdAt).toString();
+        String lastDate = DateUtils.epochToDate(lastCreatedAt).toString();
+        Map<String, Object> map = new HashMap<>();
 
-    public List<MealPerContributorReportRow> getMealsPerContributor() {
-        return this.mealsPerContributor;
+        map.put("id", Long.toString(id));
+        map.put("emoji", "🖨️");
+        map.put("created_at", date);
+        map.put("last_created_at", lastDate);
+        /*
+        List<Map<String, Object>> failuresPerFridgeReports = new ArrayList<>();
+        List<Map<String, Object>> mealsPerFridgeReports = new ArrayList<>();
+        List<Map<String, Object>> mealsPerContributorReports = new ArrayList<>();
+
+        for (FridgeReportRow row : failuresPerFridge) {
+            failuresPerFridgeReports.add(row.toMap());
+        }
+        for (MealsPerFridgeReportRow row : mealsPerFridge) {
+            mealsPerFridgeReports.add(row.toMap());
+        }
+        for (MealsPerContributorReportRow row : mealsPerContributor) {
+            mealsPerContributorReports.add(row.toMap());
+        }
+        map.put("failures_per_fridge", failuresPerFridgeReports);
+        map.put("failures_per_fridge", mealsPerFridgeReports);
+        map.put("failures_per_contributor", mealsPerContributorReports);
+        */
+
+        return map;
     }
 
 }

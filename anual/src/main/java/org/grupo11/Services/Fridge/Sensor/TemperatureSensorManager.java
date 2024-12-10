@@ -40,6 +40,10 @@ public class TemperatureSensorManager extends SensorManager{
         return this.minTemp;
     }
 
+    public int getMinTempAsInt() {
+        return (int) this.minTemp;
+    }
+
     public void setMinTemp(double minTemp) {
         this.minTemp = minTemp;
     }
@@ -48,12 +52,20 @@ public class TemperatureSensorManager extends SensorManager{
         return this.maxTemp;
     }
 
+    public int getMaxTempAsInt() {
+        return (int) this.maxTemp;
+    }
+
     public void setMaxTemp(double maxTemp) {
         this.maxTemp = maxTemp;
     }
 
     public double getLastTemp() {
         return this.lastTemp;
+    }
+
+    public int getLastTempAsInt() {
+        return (int) this.lastTemp;
     }
 
     public void setLastTemp(double lastTemp) {

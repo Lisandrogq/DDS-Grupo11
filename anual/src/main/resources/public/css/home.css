@@ -26,6 +26,7 @@ body {
 }
 
 .error-container > p {
+	color: #da0016;
     cursor: pointer;
     transition: opacity 0.5s;
     opacity: 1;

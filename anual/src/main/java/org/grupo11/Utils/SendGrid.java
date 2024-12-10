@@ -2,6 +2,7 @@ package org.grupo11.Utils;
 
 import java.io.IOException;
 
+import org.grupo11.Logger;
 import org.grupo11.Config.Env;
 
 import com.sendgrid.Method;
@@ -18,7 +19,7 @@ public class SendGrid {
 
         Mail mail = new Mail(from, subject, to, content);
 
-        com.sendgrid.SendGrid sg = new  com.sendgrid.SendGrid(Env.getSendGridApiKey());
+        com.sendgrid.SendGrid sg = new com.sendgrid.SendGrid(Env.getSendGridApiKey());
         Request request = new Request();
 
         try {
@@ -26,13 +27,12 @@ public class SendGrid {
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
             Response response = sg.api(request);
+            Logger.info("Mail sent {}", response.getStatusCode());
             return response;
-        } 
-        catch (IOException ex) {
+        } catch (IOException ex) {
             ex.printStackTrace();
+            Logger.error("Error while sending mail", ex);
             return null;
         }
     }
-
-
 }

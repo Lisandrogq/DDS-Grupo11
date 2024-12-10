@@ -39,19 +39,24 @@ public class FridgeController {
         String description = ctx.formParam("description");
         String fridge_id = ctx.formParam("fridge");
 
+        if (!FieldValidator.isInt(incident_id)) {
+            ctx.redirect("/dash/home?error=Invalid incident_id");
+            return;
+        }
+        if (!FieldValidator.isBool(is_fixed)) {
+            ctx.redirect("/dash/home?error=Invalid is_fixed");
+            return;
+        }
+        if (!FieldValidator.isString(description)) {
+            ctx.redirect("/dash/home?error=Invalid description");
+            return;
+        }
+        if (!FieldValidator.isInt(fridge_id)) {
+            ctx.redirect("/dash/home?error=Invalid fridge_id");
+            return;
+        }
+
         try (Session session = DB.getSessionFactory().openSession()) {
-            if (!FieldValidator.isInt(incident_id)) {
-                throw new IllegalArgumentException("invalid incident_id");
-            }
-            if (!FieldValidator.isBool(is_fixed)) {
-                throw new IllegalArgumentException("invalid is_fixed");
-            }
-            if (!FieldValidator.isString(description)) {
-                throw new IllegalArgumentException("invalid description");
-            }
-            if (!FieldValidator.isInt(fridge_id)) {
-                throw new IllegalArgumentException("invalid fridge_id");
-            }
 
             String hql = "SELECT f " +
                     "FROM Fridge f " +
@@ -60,11 +65,13 @@ public class FridgeController {
             query.setParameter("fridge_id", fridge_id);
             Fridge fridge = query.uniqueResult();
             if (fridge == null) {
-                throw new IllegalArgumentException("fridge_id inexistente");
+                ctx.redirect("/dash/home?error=Invalid fridge_id");
+                return;
             }
             Incident incident = fridge.getIncidentById(Integer.parseInt(incident_id));
             if (incident == null || incident.hasBeenFixed() == true) {
-                throw new IllegalArgumentException("incident_id inexistente o ya arreglado");
+                ctx.redirect("/dash/home?error=Invalid incident");
+                return;
             }
             TechnicianVisit visit = new TechnicianVisit(technician, null, description, fridge.getName(),
                     fridge.getAddress(), DateUtils.now(), Boolean.parseBoolean(is_fixed));
@@ -107,16 +114,20 @@ public class FridgeController {
         System.err.println(ctx.body());
         try (Session session = DB.getSessionFactory().openSession()) {
             if (!FieldValidator.isValidEnumValue(Urgency.class, urgency)) {
-                throw new IllegalArgumentException("invalid urgency");
+                ctx.redirect("/dash/home?error=Invalid urgency");
+                return;
             }
             if (!FieldValidator.isInt(fridge_id)) {
-                throw new IllegalArgumentException("invalid fridge_id");
+                ctx.redirect("/dash/home?error=Invalid fridge_id");
+                return;
             }
             if (!FieldValidator.isString(description)) {
-                throw new IllegalArgumentException("invalid description");
+                ctx.redirect("/dash/home?error=Invalid description");
+                return;
             }
             if (!FieldValidator.isBool(set_inactive)) {
-                throw new IllegalArgumentException("invalid set_inactive");
+                ctx.redirect("/dash/home?error=Invalid set_inactive");
+                return;
             }
 
             String hql = "SELECT f " +
@@ -126,7 +137,8 @@ public class FridgeController {
             query.setParameter("fridge_id", fridge_id);
             Fridge fridge = query.uniqueResult();
             if (fridge == null) {
-                throw new IllegalArgumentException("id inexistente");
+                ctx.redirect("/dash/home?error=Invalid fridge_id");
+                return;
             }
             Failure failure = new Failure(fridge, contributor, description, Urgency.valueOf(urgency), DateUtils.now());
             FridgeNotification notification = fridge.addIncident(failure);
@@ -164,17 +176,20 @@ public class FridgeController {
         if (type.equals("Malfunction")) {
             quantity = "0";
         }
+        if (!FieldValidator.isValidEnumValue(FridgeNotifications.class, type)) {
+            ctx.status(400).result("Invalid type");
+            return;
+        }
+        if (!FieldValidator.isInt(fridge_id)) {
+            ctx.status(400).result("Invalid fridge_id");
+            return;
+        }
+        if (!FieldValidator.isInt(quantity)) {
+            ctx.status(400).result("Invalid quantity");
+            return;
+        }
 
         try (Session session = DB.getSessionFactory().openSession()) {
-            if (!FieldValidator.isValidEnumValue(FridgeNotifications.class, type)) {
-                throw new IllegalArgumentException("invalid type");
-            }
-            if (!FieldValidator.isInt(fridge_id)) {
-                throw new IllegalArgumentException("invalid fridge_id");
-            }
-            if (!FieldValidator.isInt(quantity)) {
-                throw new IllegalArgumentException("invalid quantity");
-            }
 
             String hql = "SELECT f " +
                     "FROM Fridge f " +
@@ -183,7 +198,8 @@ public class FridgeController {
             query.setParameter("fridge_id", fridge_id);
             Fridge fridge = query.uniqueResult();
             if (fridge == null) {
-                throw new IllegalArgumentException("id inexistente");
+                ctx.status(404).result("Fridge not found");
+                return;
             }
 
             Subscription subscription = new Subscription();

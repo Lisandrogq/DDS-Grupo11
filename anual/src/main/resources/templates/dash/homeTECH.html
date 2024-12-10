@@ -21,8 +21,11 @@
 	<div class="fullscreen overflow-auto" style="max-height: 100vh">
 		<div class="d-flex flex-column w-100" style="max-width: 1280px; margin: auto; gap: 30px; padding: 50px">
 			<#if error??>
-				<div class="error-container">
-					<p style="color: red">${error}</p>
+				<div class="alert alert-danger alert-dismissible fade show" id="error-alert" role="alert" style="position: absolute; top: 0; left: 0; right: 0; z-index: 1000; margin: auto; margin-top: 10px; width: 50%;">
+					<strong>Oh snap!</strong> ${error}
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
 				</div>
 			</#if>
 			<div class="d-flex flex-row justify-content-between align-items-center w-100" style="margin-bottom: 20px">
@@ -70,9 +73,15 @@
 						<div class="my-card d-flex flex-column" style="gap: 30px; height: 350px">
 							<#list fridges as fridge>
 								<div class="d-flex align-items-center my-card-item" style="gap: 30px" id="fridge"
-									data-fridge-name=${fridge.name} data-fridge-id=${fridge.id}
-									data-fridge-temp=${fridge.temp} data-fridge-reserved=${fridge.reserved}
-									data-fridge-state=${fridge.state} data-fridge-meals=${fridge.meals}>
+									data-fridge-name=${fridge.name}
+									data-fridge-id=${fridge.id}
+									data-fridge-lat=${fridge.lat}
+									data-fridge-lon=${fridge.lon}
+									data-fridge-temp=${fridge.temp}
+									data-fridge-reserved=${fridge.reserved}
+									data-fridge-state=${fridge.state}
+									data-fridge-capacity="${fridge.capacity}"
+									data-fridge-meals=${fridge.meals}>
 									<h4>🧊</h4>
 									<div class="w-100">
 										<h6>${fridge.name} fridge</h6>
@@ -107,5 +116,8 @@
 
 <script src="/public/js/forms.js"></script>
 <script src="/public/js/modal_tech.js"></script>
+<script src="/public/js/error.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
 </html>
