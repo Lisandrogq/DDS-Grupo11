@@ -6,6 +6,10 @@ OS := $(shell uname -s)
 help:
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
+__JAVA_SERVER__:
+setup_env:
+	cp src/main/resources/.env.dev src/main/resources/.env
+
 compile: ## Compiles the project
 	mvn package -DskipTests
 
