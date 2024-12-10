@@ -3,11 +3,22 @@ package org.grupo11.Api.Controllers;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 
+import org.grupo11.DB;
 import org.grupo11.DataImporter;
 import org.grupo11.Logger;
+import org.grupo11.Api.JsonData.FridgeInfo.FridgeFullInfo;
+import org.grupo11.Services.Meal;
 import org.grupo11.Services.Contributions.ContributionsManager;
 import org.grupo11.Services.Contributor.ContributorsManager;
+import org.grupo11.Services.Fridge.Fridge;
+import org.grupo11.Services.Fridge.Incident.Alert;
+import org.grupo11.Services.Fridge.Incident.Failure;
+import org.grupo11.Services.Fridge.Incident.Incident;
+import org.grupo11.Services.Reporter.Report;
+import org.hibernate.Hibernate;
+import org.hibernate.Session;
 
 import io.javalin.http.Context;
 import io.javalin.http.UploadedFile;
@@ -46,5 +57,38 @@ public class AdminController {
             ctx.status(500).result("Error al procesar el archivo");
         }
         */
+    }
+
+    public static void getReportData(Context ctx) {
+
+        String reportIdParam = ctx.queryParam("id");
+
+        if (reportIdParam == null) {
+            ctx.status(400).result("Missing 'id' query parameter");
+            return;
+        }
+
+        try {
+            int reportId = Integer.parseInt(reportIdParam);
+
+            try (Session session = DB.getSessionFactory().openSession()) {
+
+                Report report = session.get(Report.class, reportId);
+
+                if (report == null) {
+                    ctx.status(404).result("Report not found");
+                    return;
+                }
+
+                ctx.json(report);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                ctx.status(500).result("Internal server error: " + e.getMessage());
+            }
+
+        } catch (NumberFormatException e) {
+            ctx.status(400).result("Invalid 'id' query parameter");
+        }
     }
 }

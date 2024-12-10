@@ -9,20 +9,21 @@ import org.grupo11.Utils.DateUtils;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
 @Entity
 public class Report {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private long lastCreatedAt;
     private long createdAt; // Time
     @OneToMany
-    private List<FridgeReportRow> fridgeReportRows;
+    private List<FridgeReportRow> fridgeReportRows = new ArrayList<>();
     @OneToMany
-    private List<MealsPerContributorReportRow> contributorReportRows;
+    private List<MealsPerContributorReportRow> contributorReportRows = new ArrayList<>();
 
     public Report() {
     }
@@ -36,12 +37,24 @@ public class Report {
         this.contributorReportRows = contributorReportRows;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public long getLastCreatedAt() {
+        return lastCreatedAt;
+    }
+
     public long getCreatedAt() {
         return createdAt;
     }
 
     public List<FridgeReportRow> getFridgeReportRows() {
         return fridgeReportRows;
+    }
+
+    public List<MealsPerContributorReportRow> getContributorReportRows() {
+        return contributorReportRows;
     }
 
     public Map<String, Object> toMap() {

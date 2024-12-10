@@ -27,6 +27,9 @@ public class MealsPerContributorReportRow {
     private int donatedMeals;
     private int totalDonatedMeals;
 
+    public MealsPerContributorReportRow() {
+    }
+
     public MealsPerContributorReportRow(Individual contributor, Long lastReport) {
         this.contributorId = contributor.getId();
         this.contributorName = contributor.getName();
@@ -44,6 +47,26 @@ public class MealsPerContributorReportRow {
                     .size();
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public Long getContributorId() {
+        return contributorId;
+    }
+
+    public String getContributorName() {
+        return contributorName;
+    }
+
+    public int getDonatedMeals() {
+        return donatedMeals;
+    }
+
+    public int getTotalDonatedMeals() {
+        return totalDonatedMeals;
+    }
+    
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
 

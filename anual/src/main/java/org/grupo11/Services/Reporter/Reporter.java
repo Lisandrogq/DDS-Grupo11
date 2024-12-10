@@ -33,7 +33,7 @@ public class Reporter {
     public void setupReporter() {
         updateLastReport();
         Runnable task = () -> this.genReport();
-        scheduler.scheduleAtFixedRate(task, 0, genReportsEvery, TimeUnit.MINUTES);
+        scheduler.scheduleAtFixedRate(task, genReportsEvery, genReportsEvery, TimeUnit.MINUTES);
     }
 
     public void updateLastReport() {
@@ -42,7 +42,7 @@ public class Reporter {
             org.hibernate.query.Query<Report> origin_query = session.createQuery(hql, Report.class);
             List<Report> reports = origin_query.getResultList();
             if (reports.size() == 0) {
-                lastReport = 0;
+                lastReport = DateUtils.now();
             } else {
                 lastReport = reports.get(0).getCreatedAt();
             }
@@ -79,12 +79,7 @@ public class Reporter {
             DB.create(report);
             this.reports.add(report);
             lastReport = now;
-            /*
-             * Falta que se guarden las contribuciones en el contribuidor
-             * Mapeo de reportes
-             * Render controller que mande la data
-             * Front end para ver reportes
-             */
+            session.close();
 
         } catch (Exception e) {
             Logger.error("Could not create report", e);

@@ -83,6 +83,38 @@ public class FridgeReportRow {
         }
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public int getFridgeId() {
+        return fridgeId;
+    }
+
+    public int getTotalFailures() {
+        return totalFailures;
+    }
+
+    public int getFailures() {
+        return failures;
+    }
+
+    public int getTotalAddedMeals() {
+        return totalAddedMeals;
+    }
+
+    public int getAddedMeals() {
+        return addedMeals;
+    }
+
+    public int getTotalRemovedMeals() {
+        return totalRemovedMeals;
+    }
+
+    public int getRemovedMeals() {
+        return removedMeals;
+    }
+
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("id", Long.toString(id));

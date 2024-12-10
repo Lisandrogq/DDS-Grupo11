@@ -36,6 +36,7 @@ import java.util.HashMap;
 import io.javalin.http.Context;
 
 public class RenderController {
+
     public static void renderRegisterPages(Context ctx) {
         try {
             String filename = ctx.pathParam("filename");
@@ -310,22 +311,27 @@ public class RenderController {
         model.put("error", error);
 
         List<Map<String, Object>> reports = new ArrayList<>();
+
         try (Session session = DB.getSessionFactory().openSession()) {
             String hql = "FROM Report r ";
             Query<Report> query = session.createQuery(hql, Report.class);
             List<Report> results = query.getResultList();
+
             for (Report report : results) {
-                reports.add(report.toMap());
+                Map<String, Object> map = new HashMap<>();
+                map.put("reportId", Long.toString(report.getId()));
+                map.put("fromDate", Long.toString(report.getLastCreatedAt()));
+                map.put("toDate", Long.toString(report.getCreatedAt()));
+                reports.add(map);
             }
             session.close();
-
         } catch (Exception e) {
             Logger.error("ERROR ", e);
             return null;
         }
 
         model.put("reports", reports);
-
+        model.put("Reportsemoji", "🖨️");
         return model;
     }
 }

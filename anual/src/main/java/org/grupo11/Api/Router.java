@@ -63,5 +63,6 @@ public class Router {
 
     static void adminRoutes(Javalin api) {
         api.post("/admin/importData", AdminController::handleImportData);
+        api.get("/admin/report", AdminController::getReportData);
     }
 }
