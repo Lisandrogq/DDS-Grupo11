@@ -35,3 +35,4 @@ jobs:
       - name: Deploy new code
         working-directory: anual
         run: make deploy-upgrade HOST=fridgebridge
+  
