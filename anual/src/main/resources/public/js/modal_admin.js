@@ -45,7 +45,7 @@ function eliminarInput() {
 }
 
 /**
- * ===================================== Reports Modal Logic =====================================
+ * ===================================== Reports Info Modal =====================================
  */
 
 const reports = document.querySelectorAll("#report");
@@ -104,7 +104,9 @@ function showReportInfo(data) {
 	const { id, lastCreatedAt, createdAt, fridgeReportRows, contributorReportRows } = data;
 	console.log("Report info:", data);
 
-	const fridgeRecent = fridgeReportRows.map(fridge => `
+	const fridgeRecent = fridgeReportRows
+    .sort((a, b) => a.fridgeId - b.fridgeId)
+    .map(fridge => `
         <tr>
             <td>${fridge.fridgeId}</td>
             <td>${fridge.addedMeals}</td>
@@ -114,7 +116,9 @@ function showReportInfo(data) {
     `).join('');
 	console.log("Frige recent:", fridgeRecent);
 
-    const fridgeTotal = fridgeReportRows.map(fridge => `
+    const fridgeTotal = fridgeReportRows
+    .sort((a, b) => a.fridgeId - b.fridgeId)
+    .map(fridge => `
         <tr>
             <td>${fridge.fridgeId}</td>
             <td>${fridge.totalAddedMeals}</td>
@@ -124,7 +128,9 @@ function showReportInfo(data) {
     `).join('');
     console.log("Frige total:", fridgeTotal);
 
-    const contributorRecent = contributorReportRows.map(contributor => `
+    const contributorRecent = contributorReportRows
+    .sort((a, b) => a.contributorId - b.contributorId)
+    .map(contributor => `
         <tr>
             <td>${contributor.contributorId}</td>
             <td>${contributor.contributorName}</td>
@@ -133,7 +139,9 @@ function showReportInfo(data) {
     `).join('');
     console.log("Contributor recent:", contributorRecent);
 
-    const contributorTotal = contributorReportRows.map(contributor => `
+    const contributorTotal = contributorReportRows
+    .sort((a, b) => a.contributorId - b.contributorId)
+    .map(contributor => `
         <tr>
             <td>${contributor.contributorId}</td>
             <td>${contributor.contributorName}</td>
@@ -258,14 +266,32 @@ function downloadPDF() {
     closeButton.style.display = "";
 }
 
+/**
+ * ===================================== Reports Buttons ========================================
+ */
+
+const createReportBtn = document.querySelector("#create-report-btn");
+
+createReportBtn.onclick = () => {
+    console.log("Create report button clicked");
+    // SEGUIR ACA
+}
+
+const newFrequencyBtn = document.querySelector("#new-frequency-btn");
+
+newFrequencyBtn.onclick = () => {
+    console.log("New frequency button clicked");
+    // SEGUIR ACA
+}
+
+/**
+ * ===================================== Extra ===================================================
+ */
+
 function formatDate (milliseconds) {
     const date = new Date(Number(milliseconds)).toLocaleString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit" });
     return date;
 }
-
-/**
- * ===================================== Alerts Modal Logic =====================================
- */
 
 function alertaSuccess(mensaje) {
 	const contenedorAlertas = document.getElementById("contenedorDeAlertas");
@@ -297,4 +323,14 @@ function alertaError(mensaje) {
 	</button>
   	`;
 	contenedorAlertas.appendChild(alertaError);
+}
+
+async function deleteCookieAndRefresh() {
+    // Delete the 'access-token' cookie by setting its expiration date to a past date
+	document.cookie = "access-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+	await fetch("/user/logout", {
+		method: "GET",
+
+	})
+	window.location.reload();
 }

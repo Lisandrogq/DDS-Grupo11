@@ -9,7 +9,11 @@ import org.grupo11.DB;
 import org.grupo11.DataImporter;
 import org.grupo11.Logger;
 import org.grupo11.Api.JsonData.FridgeInfo.FridgeFullInfo;
+import org.grupo11.Enums.UserTypes;
+import org.grupo11.Services.Credentials;
 import org.grupo11.Services.Meal;
+import org.grupo11.Services.Contact.Contact;
+import org.grupo11.Services.Contact.EmailContact;
 import org.grupo11.Services.Contributions.ContributionsManager;
 import org.grupo11.Services.Contributor.ContributorsManager;
 import org.grupo11.Services.Fridge.Fridge;
@@ -17,6 +21,7 @@ import org.grupo11.Services.Fridge.Incident.Alert;
 import org.grupo11.Services.Fridge.Incident.Failure;
 import org.grupo11.Services.Fridge.Incident.Incident;
 import org.grupo11.Services.Reporter.Report;
+import org.grupo11.Utils.Crypto;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 
@@ -89,6 +94,30 @@ public class AdminController {
 
         } catch (NumberFormatException e) {
             ctx.status(400).result("Invalid 'id' query parameter");
+        }
+    }
+
+    public static void handleAdminSignup(Context ctx) {
+        String email = ctx.formParam("email");
+        String password = ctx.formParam("password");
+
+        if (email == null || password == null) {
+            ctx.status(400).result("Missing 'username' or 'password' form parameter");
+            return;
+        }
+
+        String hashedPassword = Crypto.sha256Hash(password.getBytes());
+
+        try (Session session = DB.getSessionFactory().openSession()) {
+            session.beginTransaction();
+            Credentials credentials = new Credentials(email, hashedPassword, UserTypes.Admin, Crypto.genId());
+            DB.create(credentials);
+            session.getTransaction().commit();
+            ctx.status(200).result("Admin created successfully");
+            ctx.redirect("/dash/home");
+        } catch (Exception e) {
+            e.printStackTrace();
+            ctx.status(500).result("Internal server error: " + e.getMessage());
         }
     }
 }
