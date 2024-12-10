@@ -1,0 +1,33 @@
+name: Snyk Monitor new prod code
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  security_scan:
+    name: Monitor new prod code with snyk
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' 
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Snyk CLI
+        run: npm install -g snyk
+
+      - name: Run Snyk test and monitor
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          cd anual 
+          make snyk_monitor
