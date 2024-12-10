@@ -79,3 +79,20 @@ deploy: ## Deploys fridgebridge to given host
 
 deploy-upgrade: ## Updates fridgebridge codebase in a host
 	infra/scripts/upgrade.sh $(HOST)
+
+SNYK_PATH?=$(HOME)/bin/
+install_snyk: ## Installs snyk at SNYK_PATH
+	curl --compressed https://downloads.snyk.io/cli/stable/snyk-macos -o snyk
+	chmod +x ./snyk
+	mv ./snyk $(SNYK_PATH)
+
+uninstall_snyk: ## Uninstalls snyk
+	rm $(SNYK_PATH)
+
+snyk_monitor: ## Runs snyk monitor
+	snyk monitor --all-projects --org=4a00c9bc-1491-4a6c-ac88-8a56fc4355a2 	
+
+snyk_test: ## Runs snyk code test
+	snyk code test --org=4a00c9bc-1491-4a6c-ac88-8a56fc4355a2 
+
+run_snyk: snyk_monitor snyk_test
