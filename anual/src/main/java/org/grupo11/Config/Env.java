@@ -64,4 +64,8 @@ public class Env {
     public static String getJWTPrivateKey() {
         return properties.getProperty("JWT_PRIV_KEY");
     }
+
+    public static String getGoogleOAuthClientId() {
+        return properties.getProperty("GOOGLE_OAUTH_CLIENT_ID");
+    }
 }

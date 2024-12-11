@@ -9,6 +9,8 @@ import org.grupo11.DB;
 import org.grupo11.Logger;
 import org.grupo11.Api.ApiResponse;
 import org.grupo11.Api.HttpUtils;
+import org.grupo11.Api.Middlewares;
+import org.grupo11.Enums.AuthProviders;
 import org.grupo11.Enums.DocumentType;
 import org.grupo11.Enums.UserTypes;
 import org.grupo11.Services.Credentials;
@@ -24,6 +26,7 @@ import org.grupo11.Utils.Crypto;
 import org.grupo11.Utils.DateUtils;
 import org.grupo11.Utils.FieldValidator;
 import org.grupo11.Utils.JWTService;
+import org.grupo11.Utils.OAuth.OAuthValidateResponse;
 import org.hibernate.Session;
 
 import io.javalin.http.Context;
@@ -39,12 +42,12 @@ public class Auth {
     }
 
     public static void handleUserLogin(Context ctx) {
+        BiConsumer<String, HttpStatus> sendFormError = (msg, status) -> {
+            ctx.status(status).redirect("/register/login?error=" + msg);
+        };
         try {
             String mail = ctx.formParam("mail");
             String pw = ctx.formParam("password");
-            BiConsumer<String, HttpStatus> sendFormError = (msg, status) -> {
-                ctx.status(status).redirect("/register/login?error=" + msg);
-            };
 
             if (!FieldValidator.isEmail(mail)) {
                 sendFormError.accept("Invalid email", HttpStatus.BAD_REQUEST);
@@ -85,7 +88,7 @@ public class Auth {
                 sendFormError.accept("Invalid credentials", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
             }
         } catch (Exception e) {
-            ctx.status(500);
+            sendFormError.accept("Invalid credentials", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         }
     }
 
@@ -263,18 +266,112 @@ public class Auth {
         }
     }
 
-    // todo: add provider to the credentials (validate mail and user with jwt)
     public static void handleNewAuthProvider(Context ctx) {
-        // query credentials by jwt id
-        // get mail and compare it with the one of the req
-        // if equal add provider
-        // otherwise return error
+        Credentials credentials = Middlewares.authenticated(ctx);
+        if (credentials == null) {
+            ctx.status(401).json(new ApiResponse(401));
+            return;
+        }
+
+        String provider = ctx.formParam("provider");
+        String tokenId = ctx.formParam("token_id");
+
+        if (!FieldValidator.isValidEnumValue(AuthProviders.class, provider)) {
+            ctx.status(400).json(new ApiResponse(400, "Invalid provider, possible values: google, github.", null));
+            return;
+        }
+        if (!FieldValidator.isString(tokenId)) {
+            ctx.status(400).json(new ApiResponse(400, "Invalid token_id.", null));
+            return;
+        }
+
+        AuthProviders authProvider = Enum.valueOf(AuthProviders.class, provider);
+
+        // Verify it isn't already created
+        if (credentials.getProvidersByValue(AuthProviders.Google) != null) {
+            ctx.status(400).json(new ApiResponse(400, "Provider already added.", null));
+        }
+
+        OAuthValidateResponse validationRes = authProvider.validateToken(tokenId);
+        if (validationRes == null) {
+            ctx.status(401).json(new ApiResponse(401, "Token validation invalid."));
+            return;
+        }
+        if (credentials.getMail() != validationRes.getEmail()) {
+            ctx.status(401).json(new ApiResponse(401, "Mail must be the same."));
+            return;
+        }
+
+        try (Session session = DB.getSessionFactory().openSession()) {
+            String hql = "SELECT c " +
+                    "FROM Credentials c " +
+                    "WHERE c.mail = :mail";
+            org.hibernate.query.Query<Credentials> query = session.createQuery(hql, Credentials.class);
+            query.setParameter("mail", validationRes.getEmail());
+
+            if (query.uniqueResult() == null) {
+                ctx.status(400).json(new ApiResponse(400, "Mail isn't registered."));
+                return;
+            }
+
+            credentials.addProvider(authProvider);
+            DB.update(credentials);
+        } catch (Exception e) {
+            Logger.error("Unexpected error while authenticating user", e);
+            ctx.status(500).json(new ApiResponse(500));
+        }
     }
 
-    // todo: search user, verify token with google, gen jwt
     public static void handleProviderLogin(Context ctx) {
-        // search user by mail
-        // verify token with provider api
-        // gen jwt
+        String provider = ctx.formParam("provider");
+        String tokenId = ctx.formParam("token_id");
+
+        if (!FieldValidator.isValidEnumValue(AuthProviders.class, provider)) {
+            ctx.status(400).json(new ApiResponse(400, "Invalid provider, possible values: google, github.", null));
+            return;
+        }
+        if (!FieldValidator.isString(tokenId)) {
+            ctx.status(400).json(new ApiResponse(400, "Invalid token_id.", null));
+            return;
+        }
+
+        AuthProviders authProvider = Enum.valueOf(AuthProviders.class, provider);
+
+        OAuthValidateResponse validationRes = authProvider.validateToken(tokenId);
+        if (validationRes == null) {
+            ctx.status(401).json(new ApiResponse(401, "Token validation invalid."));
+            return;
+        }
+
+        try (Session session = DB.getSessionFactory().openSession()) {
+            String hql = "SELECT c " +
+                    "FROM Credentials c " +
+                    "WHERE c.mail = :mail";
+            org.hibernate.query.Query<Credentials> query = session.createQuery(hql, Credentials.class);
+            query.setParameter("mail", validationRes.getEmail());
+
+            if (query.uniqueResult() == null) {
+                ctx.status(400).json(new ApiResponse(400, "Mail isn't registered."));
+                return;
+            }
+
+            Credentials credentials = query.getSingleResult();
+            if (credentials.getProvidersByValue(authProvider) == null) {
+                credentials.addProvider(authProvider);
+                DB.update(credentials);
+            }
+
+            Map<String, String> payload = new HashMap<>();
+            payload.put("mail", credentials.getMail());
+            payload.put("owner_id", credentials.getOwnerId().toString());
+            payload.put("type", credentials.getUserType().toString());
+
+            String jwtToken = JWTService.generate(payload, 3600);
+            ctx.res().addCookie(HttpUtils.createHttpOnlyCookie("access-token", jwtToken, 3600));
+            ctx.redirect("/dash/home");
+        } catch (Exception e) {
+            Logger.error("Unexpected error while authenticating user", e);
+            ctx.status(500).redirect("/register/login?error=Unexpected error");
+        }
     }
 }

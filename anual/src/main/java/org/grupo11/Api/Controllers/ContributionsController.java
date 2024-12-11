@@ -38,7 +38,6 @@ import org.hibernate.Session;
 import io.javalin.http.Context;
 import io.javalin.http.UploadedFile;
 
-
 public class ContributionsController {
 
     public static void handleMealContribution(Context ctx) {
@@ -215,7 +214,8 @@ public class ContributionsController {
                 if (meal_type != null) {
                     Meal meal = origin_fridge.getMealByType(meal_type);
                     max++;
-                    if (meal == null) {;
+                    if (meal == null) {
+                        ;
                         ctx.redirect("/dash/home?error=The meal " + meal_type + " does not exist in the origin fridge");
                         return;
                     }
@@ -227,8 +227,12 @@ public class ContributionsController {
             }
             if (destiny_fridge.getMeals().size() + max > destiny_fridge.getCapacity()) {
                 int spacesLeft = destiny_fridge.getCapacity() - destiny_fridge.getMeals().size();
-                if (spacesLeft == 0) {ctx.redirect("/dash/home?error=The destiny fridge is full");}
-                else {ctx.redirect("/dash/home?error=The destiny fridge is full. There are only " + spacesLeft + " spaces left");}
+                if (spacesLeft == 0) {
+                    ctx.redirect("/dash/home?error=The destiny fridge is full");
+                } else {
+                    ctx.redirect("/dash/home?error=The destiny fridge is full. There are only " + spacesLeft
+                            + " spaces left");
+                }
                 return;
             }
             MealDistribution mealDistribution = new MealDistribution(origin_fridge, destiny_fridge, max, reason,
@@ -405,7 +409,8 @@ public class ContributionsController {
         if (!FieldValidator.isDate(birth)) {
             ctx.redirect("/dash/home?error=Enter a valid birth date");
             return;
-        } if (!FieldValidator.isInt(dni)) {
+        }
+        if (!FieldValidator.isInt(dni)) {
             ctx.redirect("/dash/home?error=Enter a valid dni");
             return;
         }
@@ -416,8 +421,9 @@ public class ContributionsController {
 
         try {
             Logger.info(birth);
-            PersonInNeed PIN = new PersonInNeed(name,DateUtils.parseDateYMDString(birth),DateUtils.now(),"",Integer.parseInt(dni),Integer.parseInt(children_count),null); 
-            PersonRegistration personRegistration = new PersonRegistration(PIN,DateUtils.now(),contributor);
+            PersonInNeed PIN = new PersonInNeed(name, DateUtils.parseDateYMDString(birth), DateUtils.now(), "",
+                    Integer.parseInt(dni), Integer.parseInt(children_count), null);
+            PersonRegistration personRegistration = new PersonRegistration(PIN, DateUtils.now(), contributor);
             personRegistration.setContributor(contributor);
             List<FridgeOpenLogEntry> entries = ContributorsManager.getInstance().addContributionToContributor(
                     contributor,
@@ -491,7 +497,7 @@ public class ContributionsController {
             Reward reward = new Reward(name, Float.parseFloat(points), "", RewardCategory.valueOf(category));
             reward.setDescription(description);
             reward.setQuantity(Integer.parseInt(stock));
-            
+
             if (picture != null && picture.size() > 0) {
                 String folderPath = "src/main/resources/public/rewardImages";
                 File folder = new File(folderPath);
@@ -501,7 +507,7 @@ public class ContributionsController {
 
                 String fileName = reward.getId() + "_" + System.currentTimeMillis() + picture.extension();
                 File file = new File(folder, fileName);
-                
+
                 try (InputStream inputStream = picture.content()) {
                     Files.copy(inputStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
                     reward.setImageUrl("/public/rewardImages/" + fileName);
@@ -512,7 +518,7 @@ public class ContributionsController {
                     return;
                 }
             }
-            
+
             RewardContribution rewardContribution = new RewardContribution(reward, DateUtils.now());
             rewardContribution.setContributor(contributor);
             List<FridgeOpenLogEntry> entries = ContributorsManager.getInstance().addContributionToContributor(

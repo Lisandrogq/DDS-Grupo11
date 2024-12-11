@@ -58,4 +58,20 @@ public class Middlewares {
             return false;
         }
     }
+
+    public static Credentials authenticated(Context ctx) {
+        String token = ctx.cookie("access-token");
+        if (token == null || token.isEmpty()) {
+            return null;
+        }
+
+        try {
+            DecodedJWT decoded = JWTService.validate(token);
+            Credentials credentials = HttpUtils.getCredentialsFromAccessToken(decoded);
+            return credentials;
+        } catch (Exception e) {
+            Logger.error("An error during jwt decode.", e);
+            return null;
+        }
+    }
 }

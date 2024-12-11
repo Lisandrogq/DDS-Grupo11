@@ -1,5 +1,6 @@
 package org.grupo11.Services;
 
+import java.security.AuthProvider;
 import java.util.List;
 
 import org.grupo11.Enums.AuthProviders;
@@ -45,6 +46,19 @@ public class Credentials {
         return this.userType;
     }
 
+    public List<AuthProviders> getProviders() {
+        return this.providers;
+    }
+
+    public AuthProviders getProvidersByValue(AuthProviders provider) {
+        for (AuthProviders x : providers) {
+            if (x.compareTo(provider) == 0) {
+                return x;
+            }
+        }
+        return null;
+    }
+
     public void setMail(String mail) {
         this.mail = mail;
     }
@@ -55,5 +69,9 @@ public class Credentials {
 
     public void setUserType(UserTypes type) {
         this.userType = type;
+    }
+
+    public void addProvider(AuthProviders provider) {
+        this.providers.add(provider);
     }
 }
