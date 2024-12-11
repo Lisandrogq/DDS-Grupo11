@@ -17,6 +17,7 @@ import org.grupo11.Services.Contributions.MoneyDonation;
 import org.grupo11.Services.Contributions.PersonRegistration;
 import org.grupo11.Services.Contributions.RewardContribution;
 import org.grupo11.Services.Fridge.Fridge;
+import org.grupo11.Services.Fridge.FridgeNotifications;
 import org.grupo11.Services.Fridge.Subscription;
 import org.grupo11.Services.Reporter.Report;
 import org.grupo11.Services.Reporter.Reporter;
@@ -177,19 +178,19 @@ public class RenderController {
                     MealDonation mealDonation = (MealDonation) contribution;
                     donation.put("emoji", "🍕");
                     donation.put("type", "Meal Donation");
-                    
+
                     if (mealDonation.getMeal().getFridge() != null) {
                         Logger.info("No esta null");
                         donation.put("desc",
-                        "On " + formattedContributionDate + " you have donated "
-                                + mealDonation.getMeal().getType() + " to "
-                                + mealDonation.getMeal().getFridge().getName());
+                                "On " + formattedContributionDate + " you have donated "
+                                        + mealDonation.getMeal().getType() + " to "
+                                        + mealDonation.getMeal().getFridge().getName());
                         // donation.put("fridge", mealDonation.getMeal().getFridge().toMap());
                     } else {
                         Logger.info("Esta null");
                         donation.put("desc",
-                        "On " + formattedContributionDate + " you have donated "
-                                + mealDonation.getMeal().getType());
+                                "On " + formattedContributionDate + " you have donated "
+                                        + mealDonation.getMeal().getType());
                     }
 
                 } else if (contribution instanceof MealDistribution) {
@@ -200,15 +201,17 @@ public class RenderController {
 
                     if (mealDistribution.getDestinyFridge() != null && mealDistribution.getOriginFridge() != null) {
                         donation.put("desc",
-                        "On " + formattedContributionDate + " you have moved " + mealDistribution.getQuantity() + " meals from "
-                                + mealDistribution.getOriginFridge().getName() + " to "
-                                + mealDistribution.getDestinyFridge().getName());
+                                "On " + formattedContributionDate + " you have moved " + mealDistribution.getQuantity()
+                                        + " meals from "
+                                        + mealDistribution.getOriginFridge().getName() + " to "
+                                        + mealDistribution.getDestinyFridge().getName());
                         // donation.put("fridge", donatedFridge);
                     } else {
                         donation.put("desc",
-                        "On " + formattedContributionDate + " you have moved " + mealDistribution.getQuantity() + " meals");
+                                "On " + formattedContributionDate + " you have moved " + mealDistribution.getQuantity()
+                                        + " meals");
                     }
-                    
+
                 } else if (contribution instanceof FridgeAdmin) {
 
                     FridgeAdmin fridgeAdmin = (FridgeAdmin) contribution;
@@ -239,7 +242,7 @@ public class RenderController {
                     } else {
                         donation.put("desc", "On " + formattedContributionDate + " you have registered a person");
                     }
-                    
+
                 } else if (contribution instanceof RewardContribution) {
                     RewardContribution rewardContribution = (RewardContribution) contribution;
                     donation.put("emoji", "🏆");
@@ -267,11 +270,32 @@ public class RenderController {
             Logger.info("Subscriptions results.size(): " + results.size());
 
             for (Subscription subscription : results) {
-                for (String notification_msg : subscription.getNotifications()) {
-                    Map<String, Object> notificacion = new HashMap<>();
-                    notificacion.put("description", notification_msg);
-                    notifications.add(notificacion);
+                Map<String, Object> notificacion = new HashMap<>();
+                switch (subscription.getType()) {
+                    case LowInventory:
+                        if (subscription.getThreshold() >= subscription.getFridge().getMeals().size()) {
+                            notificacion.put("description",
+                                    subscription.getFridge().getName() + " Fridge almost empty");
+                            notifications.add(notificacion);
+                        }
+                        break;
+                    case NearFullInventory:
+                        if (subscription.getThreshold() <= subscription.getFridge().getMeals().size()) {
+                            notificacion.put("description", subscription.getFridge().getName() + " Fridge almost full");
+                            notifications.add(notificacion);
+                        }
+                        break;
+                    case Malfunction:
+                        if (subscription.getFridge().getActiveIncidents().size() > 0) {
+                            notificacion.put("description",
+                                    subscription.getFridge().getName() + " fridge is malfunctioning");
+                            notifications.add(notificacion);
+                        }
+                        break;
+                    default:
+                        break;
                 }
+
             }
             session.close();
 
@@ -294,7 +318,7 @@ public class RenderController {
 
     public static Map<String, Object> getTechnicianModel(Technician technician, Context ctx) {
         Map<String, Object> model = new HashMap<>();
-        String error = ctx.queryParam("error"); 
+        String error = ctx.queryParam("error");
 
         Map<String, Object> user = new HashMap<>();
         user.put("name", technician.getName());
@@ -327,7 +351,7 @@ public class RenderController {
             return null;
         }
         List<String> alerts = technician.getNotifications();
-
+        System.err.println("teta" + alerts);
 
         model.put("user", user);
         model.put("visits", visits);

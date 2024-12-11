@@ -265,7 +265,7 @@ public class Fridge {
     public FridgeNotification removeMeal(Meal meal) {
         this.meals.remove(meal);
         this.removedMeals++;
-        FridgeNotification notification = new FridgeNotification(FridgeNotifications.LowInventory, meals.size(), name + " Fridge almost full");
+        FridgeNotification notification = new FridgeNotification(FridgeNotifications.LowInventory, meals.size(), name + " Fridge almost empty");
         this.evaluateSendNotification(notification);
         return notification;
 
@@ -401,7 +401,7 @@ public class Fridge {
                         this.notificationsSent.add(fridgeNotification);
                         String message = fridgeNotification.getMessage();
                         value.SendNotification("Subscription alert", message);
-                        subscription.addNotification("Subscription alert: " + message);
+                        //subscription.addNotification("Subscription alert: " + message); la alerta en el front se "calcula" en el renderController
                     });
                 }
             }

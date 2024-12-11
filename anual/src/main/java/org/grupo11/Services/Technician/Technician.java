@@ -34,10 +34,10 @@ public class Technician {
     private Contact contact;
     @OneToOne
     private Credentials credentials;
-    private List<String> alerts;
+    private List<String> alerts= new ArrayList<>();
 
     public Technician() {
-        alerts = new ArrayList<String>();
+        alerts = new ArrayList<>();
     }
 
     public Technician(String name, String surname, TechnicianType type, int DNI, String cuil,

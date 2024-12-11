@@ -215,8 +215,9 @@ public class FridgeController {
             subscription.setType(FridgeNotifications.valueOf(type));
             subscription.setThreshold(Integer.parseInt(quantity));
             fridge.addNotificationSubscription(subscription);
-
+            subscription.setFridge(fridge);
             DB.create(subscription);
+
             DB.update(fridge);
 
             ctx.redirect("/dash/home");
