@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.grupo11.Logger;
+import org.grupo11.Enums.ContributionTypeField;
 import org.grupo11.Enums.DocumentType;
 
 public class CSVImput {
