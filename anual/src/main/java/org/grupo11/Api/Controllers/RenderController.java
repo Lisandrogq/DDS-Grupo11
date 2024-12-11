@@ -80,6 +80,7 @@ public class RenderController {
                 return;
             }
 
+            Logger.error("No user authenticated");
             ctx.redirect("/register/login");
         } catch (Exception e) {
             Logger.error("Error while rendering dashboard", e);
@@ -123,7 +124,7 @@ public class RenderController {
             String hql = "FROM Fridge f ";
             Query<Fridge> query = session.createQuery(hql, Fridge.class);
             List<Fridge> results = query.getResultList();
-            System.out.println("results.size(): " + results.size());
+            Logger.info("Fridges results.size(): " + results.size());
             for (Fridge fridge : results) {
                 Map<String, Object> fridgeMap = fridge.toMap();
                 if (fridge.isSubscribed(contributor)) {
@@ -146,7 +147,7 @@ public class RenderController {
             String hql = "FROM Reward r ";
             Query<Reward> query = session.createQuery(hql, Reward.class);
             List<Reward> results = query.getResultList();
-            System.out.println("results.size(): " + results.size());
+            Logger.info("Rewards results.size(): " + results.size());
             for (Reward reward : results) {
                 if (reward.getQuantity() > 0) {
                     rewards.add(reward.toMap());
@@ -165,7 +166,7 @@ public class RenderController {
             Query<Contribution> query = session.createQuery(hql, Contribution.class);
             query.setParameter("contributor", contributor);
             List<Contribution> results = query.getResultList();
-            System.out.println("results.size(): " + results.size());
+            Logger.info("Contributions results.size(): " + results.size());
             for (Contribution contribution : results) {
                 Map<String, Object> donation = new HashMap<>();
 
@@ -176,51 +177,80 @@ public class RenderController {
                     MealDonation mealDonation = (MealDonation) contribution;
                     donation.put("emoji", "🍕");
                     donation.put("type", "Meal Donation");
-                    donation.put("desc",
-                            "On " + formattedContributionDate + " you have donated "
-                                    + mealDonation.getMeal().getType() + " to "
-                                    + mealDonation.getMeal().getFridge().getName());
-                    donation.put("fridge", mealDonation.getMeal().getFridge().toMap());
+                    
+                    if (mealDonation.getMeal().getFridge() != null) {
+                        Logger.info("No esta null");
+                        donation.put("desc",
+                        "On " + formattedContributionDate + " you have donated "
+                                + mealDonation.getMeal().getType() + " to "
+                                + mealDonation.getMeal().getFridge().getName());
+                        // donation.put("fridge", mealDonation.getMeal().getFridge().toMap());
+                    } else {
+                        Logger.info("Esta null");
+                        donation.put("desc",
+                        "On " + formattedContributionDate + " you have donated "
+                                + mealDonation.getMeal().getType());
+                    }
+
                 } else if (contribution instanceof MealDistribution) {
+
                     MealDistribution mealDistribution = (MealDistribution) contribution;
                     donation.put("emoji", "📦");
                     donation.put("type", "Meal Distribution");
-                    donation.put("desc",
-                            "On " + formattedContributionDate + " you have moved a meal from "
-                                    + mealDistribution.getOriginFridge().getName() + " to "
-                                    + mealDistribution.getDestinyFridge().getName());
-                    donation.put("fridge", donatedFridge);
+
+                    if (mealDistribution.getDestinyFridge() != null && mealDistribution.getOriginFridge() != null) {
+                        donation.put("desc",
+                        "On " + formattedContributionDate + " you have moved " + mealDistribution.getQuantity() + " meals from "
+                                + mealDistribution.getOriginFridge().getName() + " to "
+                                + mealDistribution.getDestinyFridge().getName());
+                        // donation.put("fridge", donatedFridge);
+                    } else {
+                        donation.put("desc",
+                        "On " + formattedContributionDate + " you have moved " + mealDistribution.getQuantity() + " meals");
+                    }
+                    
                 } else if (contribution instanceof FridgeAdmin) {
+
                     FridgeAdmin fridgeAdmin = (FridgeAdmin) contribution;
                     donation.put("emoji", "🧞‍♂️");
                     donation.put("type", "Fridge administration");
                     donation.put("desc", "You are administrating " + fridgeAdmin.getFridge().getName() + " since "
                             + formattedContributionDate);
-                    donation.put("fridge", fridgeAdmin.getFridge().toMap());
+                    // donation.put("fridge", fridgeAdmin.getFridge().toMap());
+
                 } else if (contribution instanceof MoneyDonation) {
+
                     MoneyDonation moneyDonation = (MoneyDonation) contribution;
                     donation.put("emoji", "💰");
                     donation.put("type", "Money Donation");
                     donation.put("desc", "On " + formattedContributionDate + " you have donated "
                             + moneyDonation.getAmount() + "$");
-                    donation.put("fridge", donatedFridge);
+                    // donation.put("fridge", donatedFridge);
+
                 } else if (contribution instanceof PersonRegistration) {
+
                     PersonRegistration personRegistration = (PersonRegistration) contribution;
                     donation.put("emoji", "👲🏽");
                     donation.put("type", "Person Registration");
-                    donation.put("desc", "On " + formattedContributionDate + " you have registered "
-                            + personRegistration.getPerson().getName());
-                    donation.put("fridge", donatedFridge);
+                    if (personRegistration.getPerson() != null) {
+                        donation.put("desc", "On " + formattedContributionDate + " you have registered "
+                                + personRegistration.getPerson().getName());
+                        // donation.put("fridge", donatedFridge);
+                    } else {
+                        donation.put("desc", "On " + formattedContributionDate + " you have registered a person");
+                    }
+                    
                 } else if (contribution instanceof RewardContribution) {
                     RewardContribution rewardContribution = (RewardContribution) contribution;
                     donation.put("emoji", "🏆");
                     donation.put("type", "Reward Contribution");
                     donation.put("desc", "On " + formattedContributionDate + " you have offered "
                             + rewardContribution.getReward().getName() + " as a reward");
-                    donation.put("fridge", donatedFridge);
+                    // donation.put("fridge", donatedFridge);
                 }
                 donations.add(donation);
             }
+            Logger.info("Hasta aca no llego");
             session.close();
         } catch (Exception e) {
             return null;
@@ -234,7 +264,7 @@ public class RenderController {
             Query<Subscription> query = session.createQuery(hql, Subscription.class);
             query.setParameter("contributor", contributor);
             List<Subscription> results = query.getResultList();
-            System.out.println("subscriptions.size(): " + results.size());
+            Logger.info("Subscriptions results.size(): " + results.size());
 
             for (Subscription subscription : results) {
                 for (String notification_msg : subscription.getNotifications()) {
@@ -274,7 +304,6 @@ public class RenderController {
             String hql = "FROM Fridge f ";
             Query<Fridge> query = session.createQuery(hql, Fridge.class);
             List<Fridge> results = query.getResultList();
-            System.out.println("results.size(): " + results.size());
             for (Fridge fridge : results) {
                 fridges.add(fridge.toMap());
             }

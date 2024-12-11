@@ -48,6 +48,7 @@ public class Router {
     }
 
     static void publicApi(Javalin api) {
+        api.get("/api/contributors", PublicAPI::renderFilterContributors);
         api.get("/api/contributors/recognitions", PublicAPI::handleContributorRecognitions);
     }
 
