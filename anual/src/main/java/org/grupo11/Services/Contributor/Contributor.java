@@ -178,6 +178,10 @@ public class Contributor {
         return this.points;
     }
 
+    public int getPointsAsInt() {
+        return (int) this.points;
+    }
+
     public void setPoints(double points) {
         this.points = points;
     }

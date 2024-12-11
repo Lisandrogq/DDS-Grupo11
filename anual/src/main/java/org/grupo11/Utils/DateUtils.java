@@ -26,6 +26,12 @@ public class DateUtils {
         return date.getTime();
     }
 
+    public static long parseDateYMDString(String dateString) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = dateFormat.parse(dateString);
+        return date.getTime();
+    }
+
     public static long getCurrentTimeInMs() {
         return System.currentTimeMillis();
     }
@@ -33,6 +39,11 @@ public class DateUtils {
     public static long getAWeekAgoFrom(long currentTimeMs) {
         long oneWeekMs = 7L * 24 * 60 * 60 * 1000;
         return currentTimeMs - oneWeekMs;
+    }
+
+    public static long getAWeewAheadFrom(long currentTimeMs) {
+        long oneWeekMs = 7L * 24 * 60 * 60 * 1000;
+        return currentTimeMs + oneWeekMs;
     }
 
     public static long getHoursInTheFutureInMs(int hours) {

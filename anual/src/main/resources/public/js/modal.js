@@ -8,7 +8,9 @@ const setupModalClosers = () => {
 const setModalContent = (children) => {
 	modalContent.innerHTML = children;
 	if (document.getElementById("has_map") != null) {
-		setup_map();
+		const lat = document.getElementById("has_map").getAttribute("data-lat");
+		const lon = document.getElementById("has_map").getAttribute("data-lon");
+		setup_map(lat, lon);
 	}
 	setupModalClosers();
 };
@@ -33,7 +35,7 @@ function agregarInput() {
 		let div = document.createElement("div");
 		div.classList.add("input");
 		div.innerHTML =
-			' <input type="text" id="meal" name="meal_' + count + '" required placeholder="ID of meal to distribute..."class="col-12 inputs">';
+			' <input type="text" id="meal" name="meal_' + count + '" required placeholder="Type of meal to distribute..."class="col-12 inputs">';
 		document.getElementById("input-placeholder").appendChild(div);
 		count++;
 	}
@@ -47,23 +49,30 @@ function eliminarInput() {
 	}
 }
 
-function setup_map() {
-	var map = L.map("map").setView([-34.5978833, -58.4199385], 13);
+function setup_map(lat, lon) {
+	var map = L.map("map").setView([lat, lon], 13);
 	L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
 		maxZoom: 19,
 		attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 	}).addTo(map);
-	L.marker([-34.5978833, -58.4199385]).addTo(map);
+	L.marker([lat, lon]).addTo(map);
 }
 
 /**
  * ===================================== Fridge Modal Logic =====================================
  */
-const fridgeModal = (name, meals, temp, reserved, state) => `
-<div id="has_map"class="d-flex flex-column" style="gap: 40px;">
+const fridgeModal = (name, meals, temp, capacity, state, lat, lon) => `
+<div
+	id="has_map"
+	class="d-flex flex-column"
+	style="gap: 40px;"
+	data-lat=${lat}
+	data-lon=${lon}
+>
 	<div class="d-flex w-100 justify-content-between align-items-center">
 		<h5 class="accent-100 mb-2">${name} fridge</h5>
 		<div class="d-flex flex-row" style="gap: 10px;">
+			<button id="MealDonationShortcut" class="btn-primary" style="padding: 10px; font-size: var(--paragraph)">Donate meal</button>
 			<button id="unsubscribeBtn" class="btn-primary" style="padding: 10px; font-size: var(--paragraph)">Unsubscribe</button>
 			<button id="subscribeBtn" class="btn-primary" style="padding: 10px; font-size: var(--paragraph)">Subscribe</button>
 		</div>
@@ -71,7 +80,7 @@ const fridgeModal = (name, meals, temp, reserved, state) => `
 
 	<div class="d-flex flex-row justify-content-center align-items-center w-100 flex-wrap"> 
 		<h5 class="w-50" style="font-weight: 400;">Meals 🍲: <span class="bold">${meals}</span></h5>
-		<h5 class="w-50" style="font-weight: 400;">Reserved ✋: <span class="bold">${reserved}</span><h5>
+		<h5 class="w-50" style="font-weight: 400;">Capacity ✋: <span class="bold">${capacity}</span><h5>
 		<h5 class="w-50" style="font-weight: 400;">Temperature 🌡️:<span class="bold"> ${temp}</span><h5>
 		<h5 class="w-50" style="font-weight: 400;">State 🤞: <span class="bold">${state}</span><h5>
 	</div>	
@@ -99,7 +108,7 @@ function handleSubscribe(id) {
 					id="subscription-type"
 					onchange="toggleQuantityField(event)"
 				>
-					<option selected disabled hidden>
+					<option value="" selected disabled hidden>
 						Choose a category of subscription
 					</option>
 					<option value="LowInventory">Low Inventory</option>
@@ -148,15 +157,14 @@ function handleUnsubscribe(id) {
 	})
 		.then(response => {
 			if (response.ok) {
-				alert("Unsubscribed successfully!");
 				window.location.reload();
 			} else {
-				alert("Failed to unsubscribe. Please try again.");
+				alertaError("Failed to unsubscribe. Please try again.");
 			}
 		})
 		.catch(error => {
 			console.error('Error:', error);
-			alert("An error occurred. Please try again.");
+			alertaError("An error occurred. Please try again.");
 		});
 }
 
@@ -177,14 +185,18 @@ const setupFridgeListeners = () => {
 	fridges.forEach((fridge) => {
 		const name = fridge.getAttribute("data-fridge-name");
 		const id = fridge.getAttribute("data-fridge-id");
+		const lat = fridge.getAttribute("data-fridge-lat").replace(",", ".");
+		const lon = fridge.getAttribute("data-fridge-lon").replace(",", ".");
 		const meals = fridge.getAttribute("data-fridge-meals");
 		const temp = fridge.getAttribute("data-fridge-temp");
-		const reserved = fridge.getAttribute("data-fridge-reserved");
 		const state = fridge.getAttribute("data-fridge-state");
+		const capacity = fridge.getAttribute("data-fridge-capacity");
 		const subscribed = fridge.getAttribute("data-fridge-subscribed");
+		const userType = fridge.getAttribute("data-user-type");
+
 		fridge.onclick = () => {
-			openModal(fridgeModal(name, meals, temp, reserved, state), () => {
-				// setup listener in subscribe button
+			openModal(fridgeModal(name, meals, temp, capacity, state, lat, lon), () => {
+				
 				const subscribeBtn = document.querySelector("#subscribeBtn");
 				subscribeBtn.onclick = () => setModalContent(handleSubscribe(id));
 
@@ -194,6 +206,20 @@ const setupFridgeListeners = () => {
 					unsubscribeBtn.onclick = () => handleUnsubscribe(id);
 				} else {
 					unsubscribeBtn.style.display = "none";
+				}
+
+				const mealDonationShortcut = document.querySelector("#MealDonationShortcut");
+				if (userType == "IND") {
+					mealDonationShortcut.style.display = "inline-block";
+					mealDonationShortcut.onclick = () => {
+						const address = fridge.getAttribute("data-fridge-address");
+						setModalContent(mealDonation());
+						const fridgeAddressInput = document.querySelector("#fridge_address");
+						fridgeAddressInput.value = address;
+						fridgeAddressInput.textContent = address;
+					}
+				} else {
+					mealDonationShortcut.style.display = "none";
 				}
 
 				// setup listener in report failure to open te modal
@@ -322,7 +348,7 @@ function mealDonation() {
 				</div>
 				<div class="d-flex justify-content-between w-100 gap">
 					<input
-						type="text"
+						type="number"
 						id="calories"
 						name="calories"
 						required
@@ -330,11 +356,11 @@ function mealDonation() {
 						class="w-100"
 					/>
 					<input
-						type="text"
+						type="number"
 						id="weight"
 						name="weight"
 						required
-						placeholder="Weight..."
+						placeholder="Weight in grams..."
 						class="w-100"
 					/>
 				</div>
@@ -417,18 +443,13 @@ function fridgeAdministration() {
 				<input type="text" id="address" name="address" required placeholder="Address of the fridge..." />
 				<div class="d-flex justify-content-between w-100 gap">
 					<input
-						type="text"
+						type="number"
 						id="capacity"
 						name="capacity"
 						required
 						placeholder="Capacity of the fridge..."
 						class="w-100"
 					/>
-					<select required name="isActive" value="true" class="boton1 inputs" style="width: 100%;">
-						<option selected disabled hidden>Will the fridge be active?</option>
-						<option value='true' class="desplegables">Yes</option>
-						<option value='false' class="desplegables">No</option>
-					</select>
 				</div>
 				<div class="form-btns-container">
 					<button type="reset" class="btn-text w-100" id="modal-close">Cancel</button>
@@ -436,7 +457,7 @@ function fridgeAdministration() {
 				</div>
 			</form>
 		<div>
-		`;
+	`;
 }
 
 function moneyDonation() {
@@ -448,7 +469,7 @@ function moneyDonation() {
 			</div>
 
 			 <form method="POST" action="/contribution/money" class="form">
-				<input type="text" id="amount" name="amount" required placeholder="Amount to donate..." />
+				<input type="number" id="amount" name="amount" required placeholder="Amount to donate..." />
 				<input type="text" id="message" name="message" required placeholder="Your donation message..." />
 
 				<div class="form-btns-container">
@@ -522,16 +543,16 @@ function rewardCollab() {
 				<p>Contribute offering a new reward</p>
 			</div>
 
-			<form method="POST" action="/contribution/reward" class="form">
+			<form method="POST" action="/contribution/reward" class="form" enctype="multipart/form-data">
 			<div class="d-flex justify-content-between w-100 gap">	
-					<input
+				<input
 					type="text"
 					id="name"
 					name="name"
 					required
 					placeholder="Reward name..."
 				/>
-					<input
+				<input
 					type="number"
 					id="stock"
 					name="stock"
@@ -555,27 +576,22 @@ function rewardCollab() {
 						placeholder="Points needed..."
 					/>
 
-					<select
-						name = "category"
-						required
-						value="category"
-					>
-						<option selected disabled hidden>
+					<select name = "category" required value="category">
+						<option value="" selected hidden>
 							Choose a category of reward
 						</option>
 						<option value="TECH">Technology</option>
-						<!-- sujeto a cambios-->
 						<option value="COOKING">Cooking</option>
 						<option value="HOME">Home</option>
 					</select>
 				</div>
 
-				<p>Add a reward picture</p>
+				<p>Add a reward picture (optional)</p>
 				<input
 					type="file"
 					id="picture"
 					name="picture"
-					accept=".png"
+					accept=".png, .jpg, .jpeg"
 				/>
 				<div class="form-btns-container">
 					<button
@@ -630,7 +646,7 @@ function showFridgeInfo(id) {
 		})
 		.catch(error => {
 			console.error('Error:', error);
-			alert("An error occurred. Please try again.");
+			alertaError("An error occurred. Please try again.");
 		});
 }
 
@@ -755,45 +771,42 @@ function failureAlert(fridge_id) {
 
 // Puntos de usuario
 const userPoints = document.querySelector("#user-points");
-let originalPoints = parseInt(userPoints.getAttribute("data-user-points").replace(/\./g, ""));
-let dataUserPoints = parseInt(userPoints.getAttribute("data-user-points").replace(/\./g, ""));
+let originalPoints = parseInt(userPoints.getAttribute("data-user-points"));
+let dataUserPoints = parseInt(userPoints.getAttribute("data-user-points"));
 
 // Botones de cancelar y confirmar
 const cancelBtn = document.getElementById("cancel-reward-btn");
-const confirmBtn = document.getElementById("confirm-reward-btn");
 cancelBtn.style.display = "none";
+const confirmBtn = document.getElementById("confirm-reward-btn");
 confirmBtn.style.display = "none";
 
 // Botones de reclamar recompensas
 const redeemRewardBtns = document.querySelectorAll("#redeem-reward-btn");
 let originalQuantities = {};
 let quantities = {};
-let idRegister = 1;
 
 redeemRewardBtns.forEach((button) => {
 	const rewardId = button.getAttribute("data-reward-id");
-	// console.log(rewardId);
+	const descriptionElement = button.closest(".d-flex").querySelector("p");
+	const originalQuantity = parseInt(button.getAttribute("data-reward-quantity"));
+	const neededPoints = parseInt(button.getAttribute("data-reward-neededpoints"));
 
-	const originalQuantity = parseInt(button.getAttribute("data-reward-quantity").replace(/\./g, ""));
 	originalQuantities[rewardId] = originalQuantity;
 	quantities[rewardId] = originalQuantity;
-
-	const neededPoints = parseInt(button.getAttribute("data-reward-neededpoints").replace(/\./g, ""));
 
 	button.onclick = () => {
 		if (dataUserPoints >= neededPoints && quantities[rewardId] > 0) {
 			dataUserPoints -= neededPoints;
-			userPoints.textContent = dataUserPoints.toLocaleString('es-ES');
+			userPoints.textContent = dataUserPoints;
 			userPoints.setAttribute("data-user-points", dataUserPoints);
 
 			quantities[rewardId] -= 1;
 			button.setAttribute("data-reward-quantity", quantities[rewardId]);
 
-			const descriptionElement = button.closest(".d-flex").querySelector("p");
 			if (descriptionElement) {
 				const newDescription = descriptionElement.textContent.replace(
 					/\((.*?) remaining\)/,
-					`(${quantities[rewardId].toLocaleString('es-ES')} remaining)`
+					`(${quantities[rewardId]} remaining)`
 				);
 				descriptionElement.textContent = newDescription;
 			}
@@ -801,11 +814,10 @@ redeemRewardBtns.forEach((button) => {
 			cancelBtn.style.display = "inline-block";
 			confirmBtn.style.display = "inline-block";
 
-			// alert("Reward redeemed successfully!");
 		} else if (quantities[rewardId] <= 0) {
-			alert("There are no more rewards available");
+			alertaError("There are no more rewards available");
 		} else {
-			alert("You don't have enough points");
+			alertaError("You don't have enough points");
 		}
 	};
 });
@@ -820,11 +832,12 @@ cancelBtn.onclick = () => {
 
 	redeemRewardBtns.forEach((button) => {
 		const rewardId = button.getAttribute("data-reward-id");
-		const originalQuantity = originalQuantities[rewardId]; // Usar el valor original guardado
+		const descriptionElement = button.closest(".d-flex").querySelector("p");
+		const originalQuantity = originalQuantities[rewardId];
+		
 		button.setAttribute("data-reward-quantity", originalQuantity);
 		quantities[rewardId] = originalQuantity;
 
-		const descriptionElement = button.closest(".d-flex").querySelector("p");
 		if (descriptionElement) {
 			const newDescription = descriptionElement.textContent.replace(/\d+ remaining/, `${originalQuantity} remaining`);
 			descriptionElement.textContent = newDescription;
@@ -859,7 +872,7 @@ confirmBtn.onclick = () => {
 	})
 		.then(response => {
 			if (response.ok) {
-				alert("Reward redeemed successfully!");
+				alertaSuccess("Reward redeemed successfully! It will arrive at your address in 3 business days.");
 				console.log("Antes del cambio:", originalPoints);
 				console.log("Antes del cambio:", originalQuantities);
 				originalPoints = dataUserPoints;
@@ -869,12 +882,44 @@ confirmBtn.onclick = () => {
 				cancelBtn.style.display = "none";
 				confirmBtn.style.display = "none";
 			} else {
-				alert("Failed to redeem the reward. Please try again.");
+				alertaError("Failed to redeem the reward. Please try again.");
 			}
 		})
 		.catch(error => {
 			console.error('Error:', error);
-			alert("An error occurred. Please try again.");
+			alertaError("An error occurred. Please try again.");
 		});
 
 };
+
+function alertaSuccess(mensaje) {
+	const contenedorAlertas = document.getElementById("contenedorDeAlertas");
+	const alertaSuccess = document.createElement("div");
+	alertaSuccess.classList.add("alert", "alert-success", "alert-dismissible", "fade", "show");
+	alertaSuccess.setAttribute("role", "alert");
+	alertaSuccess.setAttribute("id", "success-alert");
+	alertaSuccess.setAttribute("style", "position: absolute; top: 0; left: 0; right: 0; z-index: 1000; margin: auto; margin-top: 10px; width: 50%;");
+	alertaSuccess.innerHTML = `
+	${mensaje}
+	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	  <span aria-hidden="true">&times;</span>
+	</button>
+  	`;
+	contenedorAlertas.appendChild(alertaSuccess);
+}
+
+function alertaError(mensaje) {
+	const contenedorAlertas = document.getElementById("contenedorDeAlertas");
+	const alertaError = document.createElement("div");
+	alertaError.classList.add("alert", "alert-danger", "alert-dismissible", "fade", "show");
+	alertaError.setAttribute("role", "alert");
+	alertaError.setAttribute("id", "error-alert");
+	alertaError.setAttribute("style", "position: absolute; top: 0; left: 0; right: 0; z-index: 1000; margin: auto; margin-top: 10px; width: 50%;");
+	alertaError.innerHTML = `
+	<strong>Oh snap!</strong> ${mensaje}
+	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	  <span aria-hidden="true">&times;</span>
+	</button>
+  	`;
+	contenedorAlertas.appendChild(alertaError);
+}

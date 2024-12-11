@@ -5,6 +5,7 @@ import org.grupo11.Api.Controllers.FridgeController;
 import org.grupo11.Api.Controllers.PublicAPI;
 import org.grupo11.Api.Controllers.RenderController;
 import org.grupo11.Api.Controllers.RewardsController;
+import org.grupo11.Api.Controllers.AdminController;
 import org.grupo11.Api.Controllers.Auth;
 
 import io.javalin.Javalin;
@@ -17,6 +18,7 @@ public class Router {
         fridgeRoutes(api);
         publicApi(api);
         rewardRoutes(api);
+        adminRoutes(api);
     }
 
     static void clientRoutes(Javalin api) {
@@ -57,5 +59,13 @@ public class Router {
 
     static void rewardRoutes(Javalin api) {
         api.post("/rewards", RewardsController::handleUpdateRewards);
+    }
+
+    static void adminRoutes(Javalin api) {
+        api.post("/admin/importData", AdminController::handleImportData);
+        api.get("/admin/report", AdminController::getReportData);
+        api.post("/admin/report/create", AdminController::handleCreateReport);
+        api.post("/admin/report/updateFrequency", AdminController::handleUpdateReportFrequency);
+        api.post("/admin/signAdmin", AdminController::handleAdminSignup);
     }
 }

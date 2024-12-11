@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.grupo11.Config.Env;
+import org.grupo11.Utils.SendGrid;
 
 import jakarta.persistence.Entity;
 
@@ -21,8 +22,7 @@ public class EmailContact extends Contact {
     }
 
     public void SendNotification(String subject, String message) {
-        System.out.println(Env.getCompanyMail());
-        // SendGrid.SendMail(Env.getCompanyMail(), mail, subject, message);
+        SendGrid.SendMail(Env.getCompanyMail(), mail, subject, message);
         notifications.add(message);
     }
 

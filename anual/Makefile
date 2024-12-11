@@ -6,6 +6,10 @@ OS := $(shell uname -s)
 help:
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
+__JAVA_SERVER__:
+setup_env:
+	cp src/main/resources/.env.dev src/main/resources/.env
+
 compile: ## Compiles the project
 	mvn package -DskipTests
 
@@ -79,3 +83,23 @@ deploy: ## Deploys fridgebridge to given host
 
 deploy-upgrade: ## Updates fridgebridge codebase in a host
 	infra/scripts/upgrade.sh $(HOST)
+
+SNYK_PATH?=$(HOME)/bin/
+install_snyk: ## Installs snyk at SNYK_PATH
+	curl --compressed https://downloads.snyk.io/cli/stable/snyk-macos -o snyk
+	chmod +x ./snyk
+	mv ./snyk $(SNYK_PATH)
+
+uninstall_snyk: ## Uninstalls snyk
+	rm $(SNYK_PATH)
+
+snyk_monitor: ## Runs snyk monitor
+	snyk monitor --all-projects --org=4a00c9bc-1491-4a6c-ac88-8a56fc4355a2 	
+
+snyk_test: ## Runs snyk code test
+	snyk code test --org=4a00c9bc-1491-4a6c-ac88-8a56fc4355a2 
+
+run_snyk: snyk_monitor snyk_test
+
+gen_jwt_ecdsa_keys:
+	@./scripts/gen-jwt-ecdsa.sh

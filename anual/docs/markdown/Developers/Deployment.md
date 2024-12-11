@@ -34,7 +34,11 @@ Next, change the [json deploy configuration](https://vscode.dev/github/Lisandrog
   "postgres_user": "",
   "postgres_password": "",
   "rabbitmq_user": "",
-  "rabbitmq_password": ""
+  "rabbitmq_password": "",
+  "jwt_pub_key": "",
+  "jwt_priv_key": "",
+  "sendgrid_api_key": "",
+  "company_mail": ""
 }
 ```
 
@@ -45,6 +49,7 @@ Next, change the [json deploy configuration](https://vscode.dev/github/Lisandrog
 > - `user`: refers to the host machine user.
 > - `domain_name`: the domain that is pointing to the host machine, for example: `fridgebridge.simplecharity.com`.
 > - `email`: this email is used when setting the certificate. You'll receive notifications about the state of your site certification here.
+> - You can generate a pair of `jwt` keys by running: `make gen_jwt_ecdsa_keys`
 
 Once you have modified the config file, from the project root run:
 

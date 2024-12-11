@@ -1,13 +1,17 @@
 {
-  "host": "<YOUR_HOST>",
-  "host_ansible": "<ANSIBLE_HOST_NAME>",
-  "user": "<HOST_USER>",
-  "email": "<MAIL>",
-  "domain_name": "<YOUR_DOMAIN_NAME>",
-  "postgres_url": "",
-  "postgres_db": "",
-  "postgres_user": "",
-  "postgres_password": "",
-  "rabbitmq_user": "",
-  "rabbitmq_password": ""
+    "host": "<YOUR_HOST>",
+    "host_ansible": "<ANSIBLE_HOST_NAME>",
+    "user": "<HOST_USER>",
+    "email": "<MAIL>",
+    "domain_name": "<YOUR_DOMAIN_NAME>",
+    "postgres_url": "",
+    "postgres_db": "",
+    "postgres_user": "",
+    "postgres_password": "",
+    "rabbitmq_user": "",
+    "rabbitmq_password": "",
+    "jwt_pub_key": "",
+    "jwt_priv_key": "",
+    "sendgrid_api_key": "",
+    "company_mail": ""
 }
