@@ -27,7 +27,6 @@ public class SendGrid {
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
             Response response = sg.api(request);
-            Logger.info("Mail sent {}", response.getStatusCode());
             return response;
         } catch (IOException ex) {
             ex.printStackTrace();

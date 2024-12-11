@@ -57,7 +57,11 @@ public class Env {
         return properties.getProperty("RABBIT_PASSWORD");
     }
 
-    public static String getJWTSecret() {
-        return properties.getProperty("JWT_SECRET");
+    public static String getJWTPublicKey() {
+        return properties.getProperty("JWT_PUB_KEY");
+    }
+
+    public static String getJWTPrivateKey() {
+        return properties.getProperty("JWT_PRIV_KEY");
     }
 }

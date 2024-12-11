@@ -1,37 +1,37 @@
 package org.grupo11.Utils;
 
+import java.security.interfaces.ECPrivateKey;
+import java.security.interfaces.ECPublicKey;
 import java.util.Date;
 import java.util.Map;
 
-import org.grupo11.Logger;
 import org.grupo11.Config.Env;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTCreationException;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 public class JWTService {
     public static DecodedJWT validate(String token) {
         DecodedJWT decodedJWT;
         try {
-            Algorithm algorithm = Algorithm.HMAC256(Env.getJWTSecret());
+            ECPublicKey publicKey = Crypto.loadPublicKey(Env.getJWTPublicKey());
+            Algorithm algorithm = Algorithm.ECDSA256(publicKey);
             JWTVerifier verifier = JWT.require(algorithm)
                     .withIssuer("fridge-bridge")
                     .build();
-
             decodedJWT = verifier.verify(token);
             return decodedJWT;
-        } catch (JWTVerificationException exception) {
-            throw exception;
+        } catch (Exception exception) {
+            throw new Error("Invalid jwt");
         }
     }
 
     public static String generate(Map<String, ?> payload, long expirationTimeInSeconds) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(Env.getJWTSecret());
+            ECPrivateKey privateKey = Crypto.loadPrivateKey(Env.getJWTPrivateKey());
+            Algorithm algorithm = Algorithm.ECDSA256(privateKey);
             long expirationTimeMillis = System.currentTimeMillis() + expirationTimeInSeconds * 1000;
             Date expirationDate = new Date(expirationTimeMillis);
             String token = JWT.create()
@@ -40,8 +40,8 @@ public class JWTService {
                     .withExpiresAt(expirationDate)
                     .sign(algorithm);
             return token;
-        } catch (JWTCreationException exception) {
-            throw exception;
+        } catch (Exception exception) {
+            throw new Error("Could not generate jwt");
         }
     }
 }
