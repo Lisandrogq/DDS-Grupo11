@@ -12,7 +12,6 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 import org.apache.commons.codec.DecoderException;
-import org.grupo11.Logger;
 
 public class Crypto {
     public static int getRandomId(int length) {
@@ -51,7 +50,6 @@ public class Crypto {
         KeyFactory kf = KeyFactory.getInstance("EC");
         EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decoded);
         ECPrivateKey privateKey = (ECPrivateKey) kf.generatePrivate(keySpec);
-        Logger.info("PRIVATE {}", privKey);
         return privateKey;
     }
 
