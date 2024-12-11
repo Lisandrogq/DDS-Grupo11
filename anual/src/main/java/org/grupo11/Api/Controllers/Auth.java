@@ -261,4 +261,19 @@ public class Auth {
             sendFormError.accept("Unexpected error, try again...");
         }
     }
+
+    // todo: add provider to the credentials (validate mail and user with jwt)
+    public static void handleNewAuthProvider(Context ctx) {
+        // query credentials by jwt id
+        // get mail and compare it with the one of the req
+        // if equal add provider
+        // otherwise return error
+    }
+
+    // todo: search user, verify token with google, gen jwt
+    public static void handleProviderLogin(Context ctx) {
+        // search user by mail
+        // verify token with provider api
+        // gen jwt
+    }
 }

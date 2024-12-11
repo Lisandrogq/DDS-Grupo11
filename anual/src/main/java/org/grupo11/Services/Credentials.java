@@ -1,7 +1,11 @@
 package org.grupo11.Services;
 
+import java.util.List;
+
+import org.grupo11.Enums.AuthProviders;
 import org.grupo11.Enums.UserTypes;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -15,6 +19,9 @@ public class Credentials {
     Long ownerId;
     @Enumerated(EnumType.STRING)
     UserTypes userType;
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    List<AuthProviders> providers;
 
     public Credentials(String mail, String password, UserTypes userType, Long ownerId) {
         this.mail = mail;
