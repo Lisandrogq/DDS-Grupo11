@@ -59,11 +59,19 @@
                     <div class="d-flex align-items-center justify-content-between" style="gap: 30px">
                         <div class="mb-3">
                             <h4>Reports</h4>
-                            <p>A history list of all the reports</p>
+                            <p>A history list of all the reports. This list is updated every ${reportsFrequency.frequency} ${reportsFrequency.unit}.</p>
                         </div>
                         <div>
                             <button type="button" class="btn btn-primary" id="create-report-btn">Create report</button>
-                            <button type="button" class="btn btn-primary" id="new-frequency-btn">New frequency</button>
+                            <button
+                                type="button"
+                                class="btn btn-primary"
+                                id="new-frequency-btn"
+                                actual-frequency="${reportsFrequency.frequency}"
+                                actual-unit="${reportsFrequency.unit}"
+                            >
+                                Update generation frequency
+                            </button>
                         </div>
                     </div>
                     <div

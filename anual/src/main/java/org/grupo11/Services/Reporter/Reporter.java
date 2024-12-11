@@ -16,7 +16,8 @@ import org.hibernate.Session;
 public class Reporter {
     private List<Report> reports;
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private Integer genReportsEvery = 5; // in minutes
+    private Integer genReportsEvery = 7;
+    private TimeUnit genReportsEveryUnit = TimeUnit.DAYS;
     private static Reporter instance = null;
     private long lastReport = 0;
 
@@ -33,7 +34,7 @@ public class Reporter {
     public void setupReporter() {
         updateLastReport();
         Runnable task = () -> this.genReport();
-        scheduler.scheduleAtFixedRate(task, genReportsEvery, genReportsEvery, TimeUnit.MINUTES);
+        scheduler.scheduleAtFixedRate(task, genReportsEvery, genReportsEvery, genReportsEveryUnit);
     }
 
     public void updateLastReport() {
@@ -86,9 +87,37 @@ public class Reporter {
         }
     }
 
-    public void newReportInterval(int days) {
-        this.genReportsEvery = days;
-        // Se debería cancelar el scheduler anterior y crear uno nuevo con el nuevo
+    public void newReportInterval(int frequency, String unit) {
+        switch (unit) {
+            case "MINUTES":
+                this.genReportsEveryUnit = TimeUnit.MINUTES;
+                break;
+            case "HOURS":
+                this.genReportsEveryUnit = TimeUnit.HOURS;
+                break;
+            case "DAYS":
+                this.genReportsEveryUnit = TimeUnit.DAYS;
+                break;
+            case "WEEKS":
+                this.genReportsEveryUnit = TimeUnit.DAYS;
+                frequency = frequency * 7;
+                break;
+            default:
+                this.genReportsEveryUnit = TimeUnit.DAYS;
+                break;
+        }
+        this.genReportsEvery = frequency;
+        scheduler.shutdown();
+        scheduler = Executors.newScheduledThreadPool(1);
+        setupReporter();
+    }
+
+    public String getGenReportsEvery() {
+        return genReportsEvery.toString();
+    }
+
+    public String getGenReportsEveryUnit() {
+        return genReportsEveryUnit.toString();
     }
 }
 

@@ -19,6 +19,7 @@ import org.grupo11.Services.Contributions.RewardContribution;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.Subscription;
 import org.grupo11.Services.Reporter.Report;
+import org.grupo11.Services.Reporter.Reporter;
 import org.grupo11.Services.Rewards.Reward;
 import org.grupo11.Services.Technician.Technician;
 import org.grupo11.Services.Technician.TechnicianVisit;
@@ -330,8 +331,15 @@ public class RenderController {
             return null;
         }
 
+        Map<String, Object> reportsFrequency = new HashMap<>();
+        reportsFrequency.put("frequency", Reporter.getInstance().getGenReportsEvery());
+        reportsFrequency.put("unit", Reporter.getInstance().getGenReportsEveryUnit());
+        Logger.info("Frequency: " + Reporter.getInstance().getGenReportsEvery());
+        Logger.info("Unit: " + Reporter.getInstance().getGenReportsEveryUnit());
+
         model.put("reports", reports);
         model.put("Reportsemoji", "🖨️");
+        model.put("reportsFrequency", reportsFrequency);
         return model;
     }
 }

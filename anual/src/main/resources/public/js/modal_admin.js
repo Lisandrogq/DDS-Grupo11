@@ -274,14 +274,62 @@ const createReportBtn = document.querySelector("#create-report-btn");
 
 createReportBtn.onclick = () => {
     console.log("Create report button clicked");
-    // SEGUIR ACA
-}
+    const url = "/admin/report/create";
+
+    fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            console.error('Error:', response);
+            alertaError("An error occurred. Please try again.");
+            throw new Error('Network response was not ok');
+        }
+        return response.text(); // Leer el mensaje como texto
+    })
+    .then(message => {
+        console.log("Server response:", message);
+        alertaSuccess(message || "Report created successfully");
+    })
+    .catch(error => {
+        alertaError("An error occurred. Please try again.");
+        console.error('Error:', error);
+    });
+};
 
 const newFrequencyBtn = document.querySelector("#new-frequency-btn");
 
 newFrequencyBtn.onclick = () => {
-    console.log("New frequency button clicked");
-    // SEGUIR ACA
+    const actualFrequency = newFrequencyBtn.getAttribute("actual-frequency");
+    const actualUnit = newFrequencyBtn.getAttribute("actual-unit");
+    console.log("Actual frequency:", actualFrequency);
+    console.log("Actual unit:", actualUnit);
+    openModal(`
+            <div class="d-flex flex-column" style="gap: 20px;">
+                <h5 class="accent-100 mb-2">New Frequency</h5>
+                <form action="/admin/report/updateFrequency" method="POST">
+                    <div class="form-group">
+                        <label for="frequency">Report frequency</label>
+                        <input type="number" id="frequency" name="frequency" class="form-control" value="${actualFrequency}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="unit">Unit</label>
+                        <select id="unit" name="unit" class="form-control" required>
+                            <option value="MINUTES" ${actualUnit === "MINUTES" ? "selected" : ""}>Minutes</option>
+                            <option value="HOURS" ${actualUnit === "HOURS" ? "selected" : ""}>Hours</option>
+                            <option value="DAYS" ${actualUnit === "DAYS" ? "selected" : ""}>Days</option>
+                            <option value="WEEKS" ${actualUnit === "WEEKS" ? "selected" : ""}>Weeks</option>
+                        </select>
+                    </div>
+                    <div align="right">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+    `, () => { });
 }
 
 /**
