@@ -25,6 +25,7 @@ import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Contributor.ContributorsManager;
 import org.grupo11.Services.Contributor.LegalEntity.LegalEntity;
 import org.grupo11.Services.Fridge.Fridge;
+import org.grupo11.Services.Fridge.FridgeNotification;
 import org.grupo11.Services.Fridge.FridgeOpenLogEntry;
 import org.grupo11.Services.Fridge.Sensor.MovementSensorManager;
 import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
@@ -139,7 +140,8 @@ public class ContributionsController {
             DB.create(mealDonation);
             DB.create(entries.get(0));
             DB.update(contributor);
-            fridge.addMeal(meal);
+            FridgeNotification notification = fridge.addMeal(meal);
+            DB.create(notification);
             DB.update(fridge);
             ctx.redirect("/dash/home");
 
@@ -252,8 +254,10 @@ public class ContributionsController {
                     Meal meal = origin_fridge.getMealByType(meal_type);
                     System.out.println("adad: " + meal_type + " - " + meal.getType());
 
-                    origin_fridge.removeMeal(meal);
-                    destiny_fridge.addMeal(meal);
+                    FridgeNotification notification_ori = origin_fridge.removeMeal(meal);
+                    FridgeNotification notification_des = destiny_fridge.addMeal(meal);
+                    DB.create(notification_ori);
+                    DB.create(notification_des);
                     meal.setFridge(destiny_fridge);
                     DB.update(meal);
 

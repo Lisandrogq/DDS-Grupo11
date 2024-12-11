@@ -252,18 +252,20 @@ public class Fridge {
         this.meals = meals;
     }
 
-    public void addMeal(Meal meal) {
+    public FridgeNotification addMeal(Meal meal) {
         this.meals.add(meal);
         this.addedMeals++;
-        this.evaluateSendNotification(
-                new FridgeNotification(FridgeNotifications.NearFullInventory, meals.size(), "Fridge almost full"));
+        FridgeNotification notification = new FridgeNotification(FridgeNotifications.NearFullInventory, meals.size(), name + "Fridge almost full");
+        this.evaluateSendNotification(notification);
+        return notification;
     }
 
-    public void removeMeal(Meal meal) {
+    public FridgeNotification removeMeal(Meal meal) {
         this.meals.remove(meal);
         this.removedMeals++;
-        this.evaluateSendNotification(
-                new FridgeNotification(FridgeNotifications.LowInventory, meals.size(), "Fridge almost full"));
+        FridgeNotification notification = new FridgeNotification(FridgeNotifications.LowInventory, meals.size(), name + " Fridge almost full");
+        this.evaluateSendNotification(notification);
+        return notification;
 
     }
 

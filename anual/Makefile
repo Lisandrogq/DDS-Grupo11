@@ -22,7 +22,7 @@ docker-down: ## Stops and removes docker containers
 docker-rm-volumes: ## Removes all docker volumes related to fridbridge 
 	docker volume rm fridge-bridge_postgres_data
 
-docker_clean: docker-down docker-rm-volumes ## Removes containers and volumes related to fridgebridge
+docker-clean: docker-down docker-rm-volumes ## Removes containers and volumes related to fridgebridge
 
 docker-clean_all: docker-down docker-rm-volumes ## Remove containers, images and volumes related to fridgebridge
 	docker rmi postgres rabbitmq adminer
