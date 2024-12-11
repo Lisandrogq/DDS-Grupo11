@@ -5,26 +5,40 @@ googleBtn.onclick = () => {};
 
 var googleUser = {};
 const startApp = () => {
-    gapi.load("auth2", function () {
-        auth2 = gapi.auth2.init({
-            client_id: "933613917422-bb9a9ptfqof8saqbc5ub1gr5mtpoohh2.apps.googleusercontent.com",
-            cookiepolicy: "single_host_origin",
-        });
-        attachSignin(document.getElementById("#google-connect-btn"));
-    });
+	gapi.load("auth2", function () {
+		auth2 = gapi.auth2.init({
+			client_id: "933613917422-bb9a9ptfqof8saqbc5ub1gr5mtpoohh2.apps.googleusercontent.com",
+			cookiepolicy: "single_host_origin",
+		});
+		attachSignin(document.getElementById("#google-connect-btn"));
+	});
 };
 
 const attachSignin = (element) => {
-    auth2.attachClickHandler(
-        element,
-        {},
-        (googleUser) => {
-            // TODO send request to server to add social account with token
-            document.getElementById("name").innerText =
-                "Signed in: " + googleUser.getBasicProfile().getName();
-        },
-        (error) => {}
-    );
+	auth2.attachClickHandler(
+		element,
+		{},
+		async (googleUser) => {
+			const id_token = googleUser.getAuthResponse().id_token;
+			const req = await fetch("/user/provider/", {
+				method: "POST",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ id_token, provider: "google" }),
+			});
+			const res = await req.json();
+
+			if (res?.status != 200) {
+				alert(`Could not add login provider: ${res?.message}`);
+			}
+			alert("Google account connected!");
+		},
+		(error) => {
+			alert(`Could not add login provider: ${error}`);
+		}
+	);
 };
 
 startApp();
