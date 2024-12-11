@@ -14,6 +14,8 @@ import org.grupo11.Services.Fridge.Incident.Incident;
 import org.grupo11.Services.Fridge.Sensor.MovementSensorManager;
 import org.grupo11.Services.Fridge.Sensor.SensorManager;
 import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
+import org.grupo11.Services.Technician.Technician;
+import org.grupo11.Services.Technician.TechnicianManager;
 import org.grupo11.Utils.LocationHandler;
 
 import jakarta.persistence.CascadeType;
@@ -343,12 +345,16 @@ public class Fridge {
         this.incidents = incidents;
     }
 
-    public FridgeNotification addIncident(Incident incident) {
+    public Map<String, Object> addIncident(Incident incident) {
         FridgeNotification notification = new FridgeNotification(FridgeNotifications.Malfunction, 0,
                 this.name + " fridge is malfunctioning");
+        Technician selectedTechnician =TechnicianManager.getInstance().selectTechnician(this);
         this.incidents.add(incident);
         this.evaluateSendNotification(notification);
-        return notification;
+        Map<String, Object> return_map = new HashMap<>();//esto es medio villerito pero sirve para no tener q hacer el create/update aca de ambas cosas
+        return_map.put("fridge_notification",notification);
+        return_map.put("selected_technician",selectedTechnician);
+        return return_map;
     }
 
     public List<Subscription> getNotificationSubscription() {

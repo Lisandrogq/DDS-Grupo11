@@ -46,7 +46,7 @@ public class IncidentTest {
                 Provinces.CABA, tech_contact1);
         technician2 = new Technician("pepe", "gomez", TechnicianType.ELECTRICIAN, 123123, "null",
                 Provinces.ZonaSur, tech_contact2);
-        TechnicianManager.getInstance().add(technician1);
+        //TechnicianManager.getInstance().add(technician1);
         List<Meal> meals = new ArrayList<Meal>();
         fridge = new Fridge(-74.006, 40.7128, "Caballito", "Fridge A", 100, 2020, meals, null, null);
         tempManager = new TemperatureSensorManager(fridge, 2, 24);

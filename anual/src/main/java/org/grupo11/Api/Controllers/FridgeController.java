@@ -6,11 +6,14 @@ import org.grupo11.Api.Middlewares;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Utils.DateUtils;
 import java.util.List;
+import java.util.Map;
+
 import org.grupo11.Api.JsonData.FridgeInfo.FridgeFullInfo;
 import org.grupo11.Services.Technician.Technician;
 import org.grupo11.Services.Technician.TechnicianVisit;
 import org.grupo11.Utils.FieldValidator;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.grupo11.Services.Fridge.Incident.Alert;
 import org.grupo11.Services.Fridge.Incident.Failure;
 import org.grupo11.Services.Fridge.Incident.Incident;
@@ -133,7 +136,7 @@ public class FridgeController {
             String hql = "SELECT f " +
                     "FROM Fridge f " +
                     "WHERE f.id = :fridge_id";
-            org.hibernate.query.Query<Fridge> query = session.createQuery(hql, Fridge.class);
+            Query<Fridge> query = session.createQuery(hql, Fridge.class);
             query.setParameter("fridge_id", fridge_id);
             Fridge fridge = query.uniqueResult();
             if (fridge == null) {
@@ -141,10 +144,14 @@ public class FridgeController {
                 return;
             }
             Failure failure = new Failure(fridge, contributor, description, Urgency.valueOf(urgency), DateUtils.now());
-            FridgeNotification notification = fridge.addIncident(failure);
+            Map<String, Object> return_map = fridge.addIncident(failure);
+            FridgeNotification notification = (FridgeNotification) return_map.get("fridge_notification");
+            Technician technician = (Technician) return_map.get("selected_technician");
             if (Boolean.parseBoolean(set_inactive)) // se chequea pq si no se podría activar una heladera mediante un
                                                     // reporte de falla
                 fridge.setIsActive(false);
+            if (technician != null)
+                DB.update(technician);
             DB.create(notification);
             DB.create(failure);
             DB.update(fridge);
@@ -169,7 +176,8 @@ public class FridgeController {
         String quantity = ctx.formParam("quantity");
         String fridge_id = ctx.formParam("fridge");
 
-        if (type == null || fridge_id == null || (!"Malfunction".equals(type) && (quantity == null || quantity.isEmpty()))) {
+        if (type == null || fridge_id == null
+                || (!"Malfunction".equals(type) && (quantity == null || quantity.isEmpty()))) {
             ctx.status(400).result("Missing or invalid parameters");
             return;
         }
@@ -218,7 +226,7 @@ public class FridgeController {
             return;
         }
     }
-    
+
     public static void handleUnsubscription(Context ctx) {
         Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
         if (contributor == null) {
@@ -227,16 +235,16 @@ public class FridgeController {
         }
 
         String fridgeId = ctx.queryParam("fridgeId");
-    
+
         if (fridgeId == null || !FieldValidator.isInt(fridgeId)) {
             Logger.error("Invalid or missing subscription ID: " + fridgeId);
             ctx.status(400).result("Invalid or missing subscription ID.");
             return;
         }
-    
+
         try (Session session = DB.getSessionFactory().openSession()) {
             session.beginTransaction();
-    
+
             Fridge fridge = session.get(Fridge.class, Integer.parseInt(fridgeId));
             if (fridge == null) {
                 Logger.error("Fridge not found: " + fridgeId);
@@ -254,13 +262,12 @@ public class FridgeController {
             session.update(fridge);
 
             session.getTransaction().commit();
-    
+
             ctx.status(200).result("Unsubscribed successfully.");
         } catch (Exception e) {
             Logger.error("Error while unsubscribing: ", e);
             ctx.status(500).result("Internal server error. Please try again later.");
         }
-
 
     }
 

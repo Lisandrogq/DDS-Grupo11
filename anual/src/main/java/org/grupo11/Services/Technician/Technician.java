@@ -34,6 +34,8 @@ public class Technician {
     private Contact contact;
     @OneToOne
     private Credentials credentials;
+    private List<String> notifications;
+
     public Technician() {
     }
 
@@ -51,6 +53,17 @@ public class Technician {
         this.visits = new ArrayList<>();
     }
 
+    public List<String> getNotifications() {
+        return notifications;
+    }
+    public void setNotifications(List<String> notifications) {
+        this.notifications = notifications;
+    }
+    
+    public void addNotification (String notification) {
+        notifications.add(notification);
+    }
+    
     public Long getId() {
         return id;
     }

@@ -44,7 +44,6 @@ public class MovementSensorManager extends SensorManager {
     @Override
     public void fireAlert() {
         fridge.addIncident(new Alert(AlertType.FRAUDALERT, DateUtils.getCurrentTimeInMs()));
-        Technician selected = TechnicianManager.getInstance().selectTechnician(fridge);
         // send a message to the subscribers
         fridge.evaluateSendNotification(
                 new FridgeNotification(FridgeNotifications.Malfunction, 0,
