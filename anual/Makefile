@@ -100,3 +100,6 @@ snyk_test: ## Runs snyk code test
 	snyk code test --org=4a00c9bc-1491-4a6c-ac88-8a56fc4355a2 
 
 run_snyk: snyk_monitor snyk_test
+
+gen_jwt_ecdsa_keys:
+	@./scripts/gen-jwt-ecdsa.sh
