@@ -326,12 +326,14 @@ public class RenderController {
         } catch (Exception e) {
             return null;
         }
+        List<String> alerts = technician.getNotifications();
 
 
         model.put("user", user);
         model.put("visits", visits);
         model.put("fridges", fridges);
         model.put("error", error);
+        model.put("alerts", alerts);
         return model;
     }
 

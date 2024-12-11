@@ -61,6 +61,5 @@ public class TechnicianManager {
         technician.addNotification(message);
         technician.getContact().SendNotification("WE NEED YOU", message);
         return technician;
-        
     }
 }
