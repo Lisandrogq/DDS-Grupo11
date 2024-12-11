@@ -3,18 +3,13 @@ package org.grupo11.Services.Contributions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.grupo11.DB;
-import org.grupo11.Services.Meal;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgeOpenLogEntry;
 import org.grupo11.Utils.DateUtils;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 
 @Entity

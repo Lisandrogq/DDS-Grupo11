@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.io.File;
-import java.util.List;
 
 import org.grupo11.DB;
 import org.grupo11.Logger;
@@ -36,13 +35,8 @@ import org.grupo11.Utils.DateUtils;
 import org.grupo11.Utils.FieldValidator;
 import org.hibernate.Session;
 
-import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.UploadedFile;
-import jakarta.persistence.criteria.CriteriaBuilder.In;
-
-import org.apache.commons.io.FilenameUtils;
-import org.eclipse.jetty.util.log.Log;
 
 
 public class ContributionsController {
@@ -421,8 +415,8 @@ public class ContributionsController {
         }
 
         try {
-
-            PersonInNeed PIN = new PersonInNeed(name,DateUtils.parseDateString(birth),DateUtils.now(),"",Integer.parseInt(dni),Integer.parseInt(children_count),null); 
+            Logger.info(birth);
+            PersonInNeed PIN = new PersonInNeed(name,DateUtils.parseDateYMDString(birth),DateUtils.now(),"",Integer.parseInt(dni),Integer.parseInt(children_count),null); 
             PersonRegistration personRegistration = new PersonRegistration(PIN,DateUtils.now(),contributor);
             personRegistration.setContributor(contributor);
             List<FridgeOpenLogEntry> entries = ContributorsManager.getInstance().addContributionToContributor(

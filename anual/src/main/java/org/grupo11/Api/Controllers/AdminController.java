@@ -1,41 +1,28 @@
 package org.grupo11.Api.Controllers;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.grupo11.DB;
 import org.grupo11.Logger;
-import org.grupo11.Api.JsonData.FridgeInfo.FridgeFullInfo;
 import org.grupo11.Enums.UserTypes;
 import org.grupo11.Services.Credentials;
 import org.grupo11.Services.Meal;
 import org.grupo11.Services.Contact.Contact;
 import org.grupo11.Services.Contact.EmailContact;
-import org.grupo11.Services.Contributions.ContributionType;
-import org.grupo11.Services.Contributions.ContributionsManager;
 import org.grupo11.Services.Contributions.MealDistribution;
 import org.grupo11.Services.Contributions.MealDonation;
 import org.grupo11.Services.Contributions.MoneyDonation;
 import org.grupo11.Services.Contributions.PersonRegistration;
-import org.grupo11.Services.Contributor.ContributorsManager;
 import org.grupo11.Services.Contributor.Individual;
-import org.grupo11.Services.Fridge.Fridge;
-import org.grupo11.Services.Fridge.Incident.Alert;
-import org.grupo11.Services.Fridge.Incident.Failure;
-import org.grupo11.Services.Fridge.Incident.Incident;
 import org.grupo11.Services.Reporter.Report;
 import org.grupo11.Services.Reporter.Reporter;
 import org.grupo11.Services.Rewards.RewardSystem;
 import org.grupo11.Utils.CSVImput;
-import org.grupo11.Utils.ContributionTypeField;
 import org.grupo11.Utils.Crypto;
 import org.grupo11.Utils.DataImporter;
 import org.grupo11.Utils.DateUtils;
 import org.grupo11.Utils.FieldValidator;
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
 
 import io.javalin.http.Context;
@@ -161,10 +148,11 @@ public class AdminController {
                                 .findFirst().orElse(null);
 
                     if (individual == null) {
-                        individual = new Individual(csvImput.getName() + " " + csvImput.getSurname(), "", "", "", csvImput.getDocument(), csvImput.getDocumentType());
+                        Long birth = csvImput.getContributionDate() - 20 * 365 * 24 * 60 * 60 * 1000;
+                        individual = new Individual(csvImput.getName() + " " + csvImput.getSurname(), "", "", birth, csvImput.getDocument(), csvImput.getDocumentType());
                         Contact contact = new EmailContact(csvImput.getMail());
                         individual.addContact(contact);
-                        Credentials credentials = new Credentials(csvImput.getMail(), null, UserTypes.Individual, individual.getId());
+                        Credentials credentials = new Credentials(csvImput.getMail(), Crypto.sha256Hash(Integer.toString(individual.getDocument()).getBytes()), UserTypes.Individual, individual.getId());
                         individual.setCredentials(credentials);
                         DB.create(contact);
                         DB.create(credentials);

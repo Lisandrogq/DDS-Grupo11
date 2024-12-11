@@ -21,6 +21,7 @@ import org.grupo11.Services.Contributor.LegalEntity.LegalEntityType;
 import org.grupo11.Services.Technician.Technician;
 import org.grupo11.Services.Technician.TechnicianType;
 import org.grupo11.Utils.Crypto;
+import org.grupo11.Utils.DateUtils;
 import org.grupo11.Utils.FieldValidator;
 import org.grupo11.Utils.JWTService;
 import org.hibernate.Session;
@@ -156,7 +157,7 @@ public class Auth {
             Contact contact = new EmailContact(mail);
             if (Type.valueOf(type) == Type.Contributor) {
 
-                Individual individual = new Individual(name, "", "", birthdate, Integer.parseInt(document),
+                Individual individual = new Individual(name, "", "", DateUtils.parseDateYMDString(birthdate), Integer.parseInt(document),
                         DocumentType.DNI);
                 Credentials credentials = new Credentials(mail, hashedPassword, UserTypes.Individual,
                         individual.getId());

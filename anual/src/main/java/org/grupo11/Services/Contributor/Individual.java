@@ -19,7 +19,7 @@ public class Individual extends Contributor {
     private DocumentType documentType;
     private String name;
     private String surname;
-    private String birth;
+    private Long birth;
     @OneToOne
     private Credentials credentials;
 
@@ -33,7 +33,7 @@ public class Individual extends Contributor {
         this.setPossibleContributions(possibleContributions);
     }
 
-    public Individual(String name, String surname, String address, String birth, int document,
+    public Individual(String name, String surname, String address, Long birth, int document,
             DocumentType documentType) {
         super(name, address, new ArrayList<>());
         List<ContributionType> possibleContributions = new ArrayList<ContributionType>();
@@ -64,11 +64,11 @@ public class Individual extends Contributor {
         this.surname = surname;
     }
 
-    public String getBirth() {
+    public Long getBirth() {
         return this.birth;
     }
 
-    public void setBirth(String birth) {
+    public void setBirth(Long birth) {
         this.birth = birth;
     }
 
