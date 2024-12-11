@@ -13,6 +13,8 @@
 		<link rel="stylesheet" href="/public/css/base.css" />
 		<link rel="stylesheet" href="/public/css/forms.css" />
 		<script src="/public/js/forms.js"></script>
+		<meta name="google-signin-client_id" content="933613917422-bb9a9ptfqof8saqbc5ub1gr5mtpoohh2.apps.googleusercontent.com">
+		<script src="https://apis.google.com/js/platform.js" async defer></script>
 	</head>
 
 	<body class="fullscreen d-flex align-items-center">
@@ -47,6 +49,7 @@
 					<a href="/register/signup" class="btn-text w-100">Sign up</a>
 					<button type="submit" class="btn-primary w-100">Log in</button>
 				</div>
+				<div class="g-signin2" data-onsuccess="onSignIn"></div>
 			</form>
 		</div>
 	</body>
