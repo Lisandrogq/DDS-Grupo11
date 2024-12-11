@@ -100,6 +100,7 @@ public class Auth {
         String name = ctx.formParam("name");
         String birthdate = ctx.formParam("birthdate");
         String document = ctx.formParam("document");
+        String address = ctx.formParam("address");
 
         Consumer<String> sendFormError = (msg) -> {
             ctx.status(400)
@@ -138,6 +139,11 @@ public class Auth {
             return;
         }
 
+        if (!FieldValidator.isString(address)) {
+            sendFormError.accept("Invalid address");
+            return;
+        }
+
         try {
             // check there isn't a registered account for that mail
             try (Session session = DB.getSessionFactory().openSession()) {
@@ -160,7 +166,7 @@ public class Auth {
             Contact contact = new EmailContact(mail);
             if (Type.valueOf(type) == Type.Contributor) {
 
-                Individual individual = new Individual(name, "", "", DateUtils.parseDateYMDString(birthdate), Integer.parseInt(document),
+                Individual individual = new Individual(name, "", address, DateUtils.parseDateYMDString(birthdate), Integer.parseInt(document),
                         DocumentType.DNI);
                 Credentials credentials = new Credentials(mail, hashedPassword, UserTypes.Individual,
                         individual.getId());
@@ -171,7 +177,7 @@ public class Auth {
                 DB.create(individual);
             } else {
                 Technician technician = new Technician(name, "", TechnicianType.ELECTRICIAN, Integer.parseInt(document),
-                        "", null, contact);
+                        "", address, contact);
 
                 Credentials credentials = new Credentials(mail, hashedPassword, UserTypes.Technician,
                         technician.getId());

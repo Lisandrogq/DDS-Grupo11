@@ -26,8 +26,7 @@ public class Technician {
     private TechnicianType type;
     private int DNI;
     private String cuil;
-    @Enumerated(EnumType.STRING)
-    private Provinces areasOfWork;
+    private String address;
     @OneToMany
     private List<TechnicianVisit> visits;
     @OneToOne
@@ -41,7 +40,7 @@ public class Technician {
     }
 
     public Technician(String name, String surname, TechnicianType type, int DNI, String cuil,
-            Provinces areasOfWork,
+            String address,
             Contact contact) {
         this.id = Crypto.genId();
         this.name = name;
@@ -49,7 +48,7 @@ public class Technician {
         this.type = type;
         this.DNI = DNI;
         this.cuil = cuil;
-        this.areasOfWork = areasOfWork;
+        this.address = address;
         this.contact = contact;
         this.visits = new ArrayList<>();
     }
@@ -122,12 +121,12 @@ public class Technician {
         this.cuil = cuil;
     }
 
-    public Provinces getAreasOfWork() {
-        return this.areasOfWork;
+    public String getAddress() {
+        return this.address;
     }
 
-    public void setAreasOfWork(Provinces areasOfWork) {
-        this.areasOfWork = areasOfWork;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public List<TechnicianVisit> getVisits() {

@@ -1,4 +1,4 @@
-package org.grupo11.Utils;
+package org.grupo11.Enums;
 
 public enum ContributionTypeField {
     DINERO,
