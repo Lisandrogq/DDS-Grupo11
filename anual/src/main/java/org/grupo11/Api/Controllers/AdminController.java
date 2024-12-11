@@ -23,6 +23,7 @@ import org.grupo11.Services.Fridge.Incident.Incident;
 import org.grupo11.Services.Reporter.Report;
 import org.grupo11.Services.Reporter.Reporter;
 import org.grupo11.Utils.Crypto;
+import org.grupo11.Utils.FieldValidator;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 
@@ -149,8 +150,13 @@ public class AdminController {
         String email = ctx.formParam("email");
         String password = ctx.formParam("password");
 
-        if (email == null || password == null) {
-            ctx.status(400).result("Missing 'username' or 'password' form parameter");
+        if (!FieldValidator.isEmail(email)) {
+            ctx.redirect("/dash/home?error=Invalid email");
+            return;
+        }
+
+        if (!FieldValidator.acceptablePassword(password)) {
+            ctx.redirect("/dash/home?error=Invalid password format. It must include uppercase, lowercase, digit and special character");
             return;
         }
 

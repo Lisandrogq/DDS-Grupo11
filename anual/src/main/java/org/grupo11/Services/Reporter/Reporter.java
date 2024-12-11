@@ -109,6 +109,7 @@ public class Reporter {
         this.genReportsEvery = frequency;
         scheduler.shutdown();
         scheduler = Executors.newScheduledThreadPool(1);
+        genReport();
         setupReporter();
     }
 
