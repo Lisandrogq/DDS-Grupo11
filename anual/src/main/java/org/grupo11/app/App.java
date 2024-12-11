@@ -1,8 +1,8 @@
 package org.grupo11.app;
 
+import org.grupo11.Utils.DataImporter;
 import org.grupo11.Utils.PasswordValidator;
 import org.grupo11.DB;
-import org.grupo11.DataImporter;
 import org.grupo11.Logger;
 import org.grupo11.Metrics;
 import org.grupo11.Api.Api;
@@ -78,9 +78,5 @@ public class App {
             return;
         }
         System.out.println("Password is valid");
-    }
-
-    public void bulkContributionsImport(String cvsFileName) {
-        new DataImporter(contributionsManager, contributorsManager).loadContributors(cvsFileName);
     }
 }

@@ -41,6 +41,11 @@ public class DateUtils {
         return currentTimeMs - oneWeekMs;
     }
 
+    public static long getAWeewAheadFrom(long currentTimeMs) {
+        long oneWeekMs = 7L * 24 * 60 * 60 * 1000;
+        return currentTimeMs + oneWeekMs;
+    }
+
     public static long getHoursInTheFutureInMs(int hours) {
         long hoursInMs = hours * 60 * 1000;
         return DateUtils.getCurrentTimeInMs() + hoursInMs;

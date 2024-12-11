@@ -3,10 +3,10 @@ package org.grupo11.Api.Controllers;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.grupo11.DB;
-import org.grupo11.DataImporter;
 import org.grupo11.Logger;
 import org.grupo11.Api.JsonData.FridgeInfo.FridgeFullInfo;
 import org.grupo11.Enums.UserTypes;
@@ -14,15 +14,26 @@ import org.grupo11.Services.Credentials;
 import org.grupo11.Services.Meal;
 import org.grupo11.Services.Contact.Contact;
 import org.grupo11.Services.Contact.EmailContact;
+import org.grupo11.Services.Contributions.ContributionType;
 import org.grupo11.Services.Contributions.ContributionsManager;
+import org.grupo11.Services.Contributions.MealDistribution;
+import org.grupo11.Services.Contributions.MealDonation;
+import org.grupo11.Services.Contributions.MoneyDonation;
+import org.grupo11.Services.Contributions.PersonRegistration;
 import org.grupo11.Services.Contributor.ContributorsManager;
+import org.grupo11.Services.Contributor.Individual;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.Incident.Alert;
 import org.grupo11.Services.Fridge.Incident.Failure;
 import org.grupo11.Services.Fridge.Incident.Incident;
 import org.grupo11.Services.Reporter.Report;
 import org.grupo11.Services.Reporter.Reporter;
+import org.grupo11.Services.Rewards.RewardSystem;
+import org.grupo11.Utils.CSVImput;
+import org.grupo11.Utils.ContributionTypeField;
 import org.grupo11.Utils.Crypto;
+import org.grupo11.Utils.DataImporter;
+import org.grupo11.Utils.DateUtils;
 import org.grupo11.Utils.FieldValidator;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
@@ -113,11 +124,6 @@ public class AdminController {
     }
 
     public static void handleImportData(Context ctx) {
-
-        ctx.redirect("/dash/home?error=Importing data is not available yet");
-        return;
-
-        /*
         UploadedFile file = ctx.uploadedFile("CSVfile");
         if (file == null) {
             ctx.redirect("/dash/home?error=No file was uploaded");
@@ -129,21 +135,102 @@ public class AdminController {
         Logger.info("Uploaded file extension: " + file.extension());
         Logger.info("Uploaded file content: " + file.content());
 
+        DataImporter dataImporter = new DataImporter();
         try {
-            ContributionsManager contributionsManager = ContributionsManager.getInstance();
-            ContributorsManager contributorManager = ContributorsManager.getInstance();
-            DataImporter dataImporter = new DataImporter(contributionsManager, contributorManager);
-
-            // dataImporter.loadContributors(file.filename());
-
-
-
+            List<String> fields = dataImporter.readCSV(file);
+            List<CSVImput> csvImputs = new ArrayList<>();
+            for (String field : fields) {
+                Logger.info("Processing field: " + field);
+                CSVImput csvImput = CSVImput.processField(field);
+                if (csvImput == null) {
+                    ctx.redirect("/dash/home?error=Error importing data");
+                    return;
+                }
+                csvImputs.add(csvImput);
+            }
             
-            ctx.status(200).result("Archivo CSV procesado exitosamente");
-        } catch (IOException e) {
-            ctx.status(500).result("Error al procesar el archivo");
+            try (Session session = DB.getSessionFactory().openSession()) {
+                session.beginTransaction();
+
+                List<Individual> individuals = session.createQuery("from Individual", Individual.class).list();
+                Logger.info("Individuals from DB: " + individuals.size());
+
+                for (CSVImput csvImput : csvImputs) {
+                    Individual individual = individuals.stream()
+                                .filter(i -> i.getCredentials().getMail() == csvImput.getMail())
+                                .findFirst().orElse(null);
+
+                    if (individual == null) {
+                        individual = new Individual(csvImput.getName() + " " + csvImput.getSurname(), "", "", "", csvImput.getDocument(), csvImput.getDocumentType());
+                        Contact contact = new EmailContact(csvImput.getMail());
+                        individual.addContact(contact);
+                        Credentials credentials = new Credentials(csvImput.getMail(), null, UserTypes.Individual, individual.getId());
+                        individual.setCredentials(credentials);
+                        DB.create(contact);
+                        DB.create(credentials);
+                        DB.create(individual);
+                        // Send email to set password (FALTA)
+                        // contact.SendNotification("Registered as new user", "You have registered in fridge bridge services!");
+                    }
+                    switch (csvImput.getContributionType()) {
+
+                        case DINERO:
+                            MoneyDonation moneyDonation = new MoneyDonation(csvImput.getQuantity(), csvImput.getContributionDate(), "To help the community");
+                            moneyDonation.setContributor(individual);
+                            individual.addContribution(moneyDonation);
+                            RewardSystem.assignPoints(individual, moneyDonation);
+                            DB.create(moneyDonation);
+                            break;
+
+                        case DONACION_VIANDAS:
+                            for (int i = 0; i < csvImput.getQuantity(); i++) {
+                                Meal meal = new Meal("Food", DateUtils.getAWeewAheadFrom(csvImput.getContributionDate()), csvImput.getContributionDate(), null, "", 400, 200);
+                                MealDonation mealDonation = new MealDonation(meal, csvImput.getContributionDate());
+                                mealDonation.setContributor(individual);
+                                individual.addContribution(mealDonation);
+                                RewardSystem.assignPoints(individual, mealDonation);
+                                DB.create(meal);
+                                DB.create(mealDonation);
+                            }
+                            break;
+
+                        case REDISTRIBUCION_VIANDAS:
+                            MealDistribution mealDistribution = new MealDistribution(null, null, csvImput.getQuantity(), 
+                                "To help the community", csvImput.getContributionDate());
+                            mealDistribution.setContributor(individual);
+                            individual.addContribution(mealDistribution);
+                            RewardSystem.assignPoints(individual, mealDistribution);
+                            DB.create(mealDistribution);
+                            break;
+
+                        case ENTREGA_TARJETAS:
+                            for (int i = 0; i < csvImput.getQuantity(); i++) {
+                                PersonRegistration personRegistration = new PersonRegistration(null, csvImput.getContributionDate(), individual);
+                                personRegistration.setContributor(individual);
+                                individual.addContribution(personRegistration);
+                                RewardSystem.assignPoints(individual, personRegistration);
+                                DB.create(personRegistration);
+                            }
+                            break;
+                    }
+                    DB.update(individual);
+                }
+
+                session.getTransaction().commit();
+            } catch (Exception e) {
+                e.printStackTrace();
+                ctx.redirect("/dash/home?error=Error importing data into database");
+                return;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            ctx.redirect("/dash/home?error=Error importing data");
+            return;
         }
-        */
+    
+        ctx.status(200).result("Data imported successfully");
+        ctx.redirect("/dash/home");
     }
 
     public static void handleAdminSignup(Context ctx) {
