@@ -430,6 +430,16 @@ function mealDistribution() {
 		<div>`;
 }
 
+function generateCities() {
+	var cities = ["CABA", "La Plata", "Rosario", "Córdoba", "Mendoza", "Salta", "Mar del Plata", "San Juan", "Santa Fe"];
+    var options = '<option name ="city" selected value="" disabled hidden>City of the fridge</option>';
+    
+    for (var i = 0; i < cities.length; i++) {
+        options += `<option value="${cities[i]}" class="desplegables">${cities[i]}</option>`;
+    }
+    
+    return options;
+}
 function fridgeAdministration() {
 	return `
 		<div class="d-flex flex-column" style="gap: 40px;">
@@ -440,7 +450,12 @@ function fridgeAdministration() {
 
 			 <form method="POST" action="/contribution/fridge_admin" class="form">
 				<input type="text" id="fridgeName" name="fridgeName" required placeholder="Name of the fridge..." />
-				<input type="text" id="address" name="address" required placeholder="Address of the fridge..." />
+				<div class="d-flex justify-content-between w-100 gap">
+				<input  style="width: 50%" type="text" id="address" name="address" required placeholder="Address of the fridge..." />
+				<select name="city" required value="" style="width: 50%">
+                        ${generateCities()}
+                </select>
+				</div>
 				<div class="d-flex justify-content-between w-100 gap">
 					<input
 						type="number"

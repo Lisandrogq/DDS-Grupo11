@@ -284,11 +284,11 @@ public class ContributionsController {
             ctx.redirect("/register/login");
             return;
         }
-
+        Logger.info(ctx.body());
         String name = ctx.formParam("fridgeName");
         String address = ctx.formParam("address");
         String capacity = ctx.formParam("capacity");
-
+        String city = ctx.formParam("city");
         if (!FieldValidator.isString(name)) {
             ctx.redirect("/dash/home?error=Enter a valid name");
             return;
@@ -305,9 +305,13 @@ public class ContributionsController {
             ctx.redirect("/dash/home?error=Enter a valid capacity amount");
             return;
         }
+        if (!FieldValidator.isString(city)) {
+            ctx.redirect("/dash/home?error=Enter a valid city");
+            return;
+        }
 
+        address = address + ", "+city+", Argentina ";//this is done so the map always work with real addresses in argentina 
         try (Session session = DB.getSessionFactory().openSession()) {
-            
             String hql = "SELECT f " +
                     "FROM Fridge f " +
                     "WHERE f.address = :address";

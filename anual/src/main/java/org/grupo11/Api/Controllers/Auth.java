@@ -235,7 +235,6 @@ public class Auth {
             return;
         }
 
-        System.out.println("NAME:"+name);
         if (!FieldValidator.isString(name)) {
             sendFormError.accept("Invalid name");
             return;
