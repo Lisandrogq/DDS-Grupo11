@@ -28,8 +28,6 @@ import org.grupo11.Utils.FieldValidator;
 import org.grupo11.Utils.JWTService;
 import org.grupo11.Utils.OAuth.OAuthValidateResponse;
 import org.hibernate.Session;
-import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
