@@ -6,7 +6,7 @@ const setupModalClosers = () => {
 };
 
 const setModalContent = (children) => {
-	modalContent.innerHTML = children;
+	modalContent.innerHTML = DOMPurify.sanitize(children);
 	if (document.getElementById("has_map") != null) {
 		const lat = document.getElementById("has_map").getAttribute("data-lat");
 		const lon = document.getElementById("has_map").getAttribute("data-lon");
@@ -61,7 +61,7 @@ function setup_map(lat, lon) {
 /**
  * ===================================== Fridge Modal Logic =====================================
  */
-const fridgeModal = (name, meals, temp, capacity, state, lat, lon) => `
+const fridgeModal = (name, meals, temp, capacity, state, lat, lon) => DOMPurify.sanitize( `
 <div
 	id="has_map"
 	class="d-flex flex-column"
@@ -92,10 +92,10 @@ const fridgeModal = (name, meals, temp, capacity, state, lat, lon) => `
 		<button id="fridge-view-info" class="btn-primary w-100">View info</button>
 	</div>
 </div>
-`;
+`);
 
 function handleSubscribe(id) { 
-	return `
+	return DOMPurify.sanitize(`
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
 				<h5 class="accent-100 mb-2">Subscribe to fridge</h5>
@@ -144,7 +144,7 @@ function handleSubscribe(id) {
 				</div>
 			</form>
 		</div>
-	`;
+	`);
 }
 
 function handleUnsubscribe(id) {
@@ -252,9 +252,9 @@ const modalMapper = {
 
 // base button component
 const contributionFormBtn = (text, modalDataAttr) =>
-	`<button class="btn-primary" style="flex: 1;" id="contribution-form-btn" data-attr=${modalDataAttr}>${text}</button>`;
+	DOMPurify.sanitize(`<button class="btn-primary" style="flex: 1;" id="contribution-form-btn" data-attr=${modalDataAttr}>${text}</button>`);
 
-const contributeModalIND = `<div class="d-flex flex-column" style="gap: 40px">
+const contributeModalIND = DOMPurify.sanitize(`<div class="d-flex flex-column" style="gap: 40px">
 		<div>
 			<h5 class="accent-100 mb-2">Contributions</h5>
 			<p>How do you want to collaborate?</p>
@@ -265,9 +265,9 @@ const contributeModalIND = `<div class="d-flex flex-column" style="gap: 40px">
 		${contributionFormBtn("Person registration", "person-registration")}
 		${contributionFormBtn("Money donation", "money-donation")}
 		</div>
-	</div>`;
+	</div>`);
 
-const contributeModalLE = `<div class="d-flex flex-column" style="gap: 40px">
+const contributeModalLE = DOMPurify.sanitize(`<div class="d-flex flex-column" style="gap: 40px">
 		<div>
 			<h5 class="accent-100 mb-2">Contributions</h5>
 			<p>How do you want to collaborate?</p>
@@ -277,7 +277,7 @@ const contributeModalLE = `<div class="d-flex flex-column" style="gap: 40px">
 			${contributionFormBtn("Fridge administration", "fridge-admin")}
 			${contributionFormBtn("Reward collaboration", "reward-collab")}
 		</div>
-	</div>`;
+	</div>`);
 
 // sets up the btn on click listener to open its respective modal by taking the data-attr tag.
 const setupListenersContributionsListeners = () => {
@@ -313,7 +313,7 @@ async function deleteCookieAndRefresh() {
 function mealDonation() {
 	
 
-	return `
+	return DOMPurify.sanitize(`
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
 				<h5 class="accent-100 mb-2">Meal Donation</h5>
@@ -381,11 +381,11 @@ function mealDonation() {
 					</button>
 				</div>
 			</form>
-		<div>`;
+		<div>`);
 }
 
 function mealDistribution() {
-	return `
+	return DOMPurify.sanitize(`
 		<div  class="d-flex flex-column" style="gap: 40px;">
 			<div>
 				<h5 class="accent-100 mb-2">Meal distribution</h5>
@@ -427,11 +427,11 @@ function mealDistribution() {
 			</form>
 
 		
-		<div>`;
+		<div>`);
 }
 
 function fridgeAdministration() {
-	return `
+	return DOMPurify.sanitize(`
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
 				<h5 class="accent-100 mb-2">Fridge Administration</h5>
@@ -457,11 +457,11 @@ function fridgeAdministration() {
 				</div>
 			</form>
 		<div>
-	`;
+	`);
 }
 
 function moneyDonation() {
-	return `
+	return DOMPurify.sanitize(`
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
 				<h5 class="accent-100 mb-2">Money Donation</h5>
@@ -478,11 +478,11 @@ function moneyDonation() {
 				</div>
 			</form>
 		<div>
-	`;
+	`);
 }
 
 function personRegistration() {
-	return `
+	return DOMPurify.sanitize(`
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
 				<h5 class="accent-100 mb-2">Register Person in Need</h5>
@@ -532,11 +532,11 @@ function personRegistration() {
 				</div>
 			</form>
 		<div>
-	`;
+	`);
 }
 
 function rewardCollab() {
-	return `
+	return DOMPurify.sanitize(`
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
 				<h5 class="accent-100 mb-2">Reward collaboration</h5>
@@ -610,7 +610,7 @@ function rewardCollab() {
 				</div>
 			</form>
 		<div>
-	`;
+	`);
 }
 
 /**
@@ -675,7 +675,7 @@ function updateFridgeModal(data) {
     `).join('');
 	console.log(failureRows);
 	
-	return `
+	return DOMPurify.sanitize(`
         <div class="d-flex flex-column" style="gap: 40px;">
             <div>
                 <h5 class="accent-100 mb-2">Fridge reports</h5>
@@ -707,11 +707,11 @@ function updateFridgeModal(data) {
                 </table>
             </div>
         </div>
-    `;
+    `);
 }
 
 function failureAlert(fridge_id) {
-	return `
+	return DOMPurify.sanitize(`
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
 				<h5 class="accent-100 mb-2">Report Failure</h5>
@@ -762,7 +762,7 @@ function failureAlert(fridge_id) {
 				</div>
 			</form>
 		</div>
-	`;
+	`);
 }
 
 /**

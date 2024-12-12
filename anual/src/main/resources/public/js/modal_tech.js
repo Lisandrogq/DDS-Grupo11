@@ -6,7 +6,7 @@ const setupModalClosers = () => {
 };
 
 const setModalContent = (children) => {
-	modalContent.innerHTML = children;
+	modalContent.innerHTML = DOMPurify.sanitize(children);
 	if (document.getElementById("has_map") != null) {
 		const lat = document.getElementById("has_map").getAttribute("data-lat");
 		const lon = document.getElementById("has_map").getAttribute("data-lon");
@@ -34,8 +34,8 @@ function agregarInput() {
 	if (count < 4) {
 		let div = document.createElement("div");
 		div.classList.add("input");
-		div.innerHTML =
-			' <input type="text" id="meal" name="meal_' + count + '" required placeholder="ID of meal to distribute..."class="col-12 inputs">';
+		div.innerHTML = DOMPurify.sanitize(
+			' <input type="text" id="meal" name="meal_' + count + '" required placeholder="ID of meal to distribute..."class="col-12 inputs">');
 		document.getElementById("input-placeholder").appendChild(div);
 		count++;
 	}
@@ -61,7 +61,7 @@ function setup_map(lat, lon) {
 /**
  * ===================================== Fridge Modal Logic =====================================
  */
-const fridgeModal = (name, meals, temp, capacity, state, lat, lon) => `
+const fridgeModal = (name, meals, temp, capacity, state, lat, lon) => DOMPurify.sanitize( `
 <div
 	id="has_map"
 	class="d-flex flex-column"
@@ -87,7 +87,7 @@ const fridgeModal = (name, meals, temp, capacity, state, lat, lon) => `
 		<button id="fridge-view-info" class="btn-primary w-100">View info</button>
 	</div>
 </div>
-`;
+` ) ;
 
 const setupFridgeListeners = () => {
 	const fridges = document.querySelectorAll("#fridge");
@@ -121,7 +121,7 @@ setupFridgeListeners();
  */
 
 function addVisit(fridge_id) {
-	return `
+	return DOMPurify.sanitize( `
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
 				<h5 class="accent-100 mb-2">Add Visit</h5>
@@ -169,7 +169,7 @@ function addVisit(fridge_id) {
 				</div>
 			</form>
 		</div>
-	`;
+	` ) ;
 }
 
 /**
@@ -239,7 +239,7 @@ function updateFridgeModal(data) {
     `).join('');
 	console.log(failureRows);
 	
-	return `
+	return DOMPurify.sanitize( `
         <div class="d-flex flex-column" style="gap: 40px;">
             <div>
                 <h5 class="accent-100 mb-2">Fridge reports</h5>
@@ -271,7 +271,7 @@ function updateFridgeModal(data) {
                 </table>
             </div>
         </div>
-    `;
+    ` ) ;
 }
 
 function setAddVisitShortcut(id) {

@@ -6,7 +6,7 @@ const setupModalClosers = () => {
 };
 
 const setModalContent = (children) => {
-	modalContent.innerHTML = children;
+	modalContent.innerHTML = DOMPurify.sanitize(children);;
 	setupModalClosers();
 };
 
@@ -29,8 +29,8 @@ function agregarInput() {
 	if (count < 4) {
 		let div = document.createElement("div");
 		div.classList.add("input");
-		div.innerHTML =
-			' <input type="text" id="meal" name="meal_' + count + '" required placeholder="Type of meal to distribute..."class="col-12 inputs">';
+		div.innerHTML = DOMPurify.sanitize(
+			' <input type="text" id="meal" name="meal_' + count + '" required placeholder="Type of meal to distribute..."class="col-12 inputs">');
 		document.getElementById("input-placeholder").appendChild(div);
 		count++;
 	}
@@ -150,7 +150,7 @@ function showReportInfo(data) {
     `).join('');
     console.log("Contributor total:", contributorTotal);
 	
-	return `
+	return DOMPurify.sanitize( `
         <div class="d-flex flex-column" style="gap: 40px;">
 
             <div class="d-flex justify-content-between align-items-center">
@@ -250,7 +250,7 @@ function showReportInfo(data) {
             </div>
 
         </div>
-    `;
+    ` ) ;
 }
 
 function downloadPDF() {
@@ -307,7 +307,7 @@ newFrequencyBtn.onclick = () => {
     const actualUnit = newFrequencyBtn.getAttribute("actual-unit");
     console.log("Actual frequency:", actualFrequency);
     console.log("Actual unit:", actualUnit);
-    openModal(`
+    openModal( DOMPurify.sanitize( `
             <div class="d-flex flex-column" style="gap: 20px;">
                 <h5 class="accent-100 mb-2">New Frequency</h5>
                 <form action="/admin/report/updateFrequency" method="POST">
@@ -329,7 +329,7 @@ newFrequencyBtn.onclick = () => {
                     </div>
                 </form>
             </div>
-    `, () => { });
+    ` ) , () => { });
 }
 
 /**
@@ -348,12 +348,12 @@ function alertaSuccess(mensaje) {
 	alertaSuccess.setAttribute("role", "alert");
 	alertaSuccess.setAttribute("id", "success-alert");
 	alertaSuccess.setAttribute("style", "position: absolute; top: 0; left: 0; right: 0; z-index: 1000; margin: auto; margin-top: 10px; width: 50%;");
-	alertaSuccess.innerHTML = `
+	alertaSuccess.innerHTML = DOMPurify.sanitize( `
 	${mensaje}
 	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 	  <span aria-hidden="true">&times;</span>
 	</button>
-  	`;
+  	` ) ;
 	contenedorAlertas.appendChild(alertaSuccess);
 }
 
@@ -364,12 +364,12 @@ function alertaError(mensaje) {
 	alertaError.setAttribute("role", "alert");
 	alertaError.setAttribute("id", "error-alert");
 	alertaError.setAttribute("style", "position: absolute; top: 0; left: 0; right: 0; z-index: 1000; margin: auto; margin-top: 10px; width: 50%;");
-	alertaError.innerHTML = `
+	alertaError.innerHTML = DOMPurify.sanitize( `
 	<strong>Oh snap!</strong> ${mensaje}
 	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 	  <span aria-hidden="true">&times;</span>
 	</button>
-  	`;
+  	` ) ;
 	contenedorAlertas.appendChild(alertaError);
 }
 
