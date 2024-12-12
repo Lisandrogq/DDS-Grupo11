@@ -1,6 +1,29 @@
 const googleBtn = document.querySelector("#google-connect-btn");
 const githubBtn = document.querySelector("#github-connect-btn");
 
+const handleResponse = async (googleUser) => {
+	console.log("GOOGLE USER", googleUser);
+	const token = googleUser.credential;
+	const req = await fetch("/user/provider/", {
+		method: "POST",
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			provider: "Google",
+			token,
+		}),
+	});
+	const res = await req.json();
+
+	if (res?.status == 200) {
+		alert("Provider added successfully!");
+	} else {
+		alert(`Could not add login provider: ${res?.message}`);
+	}
+};
+
 const startApp = () => {
 	window.onGoogleLibraryLoad = () => {
 		google.accounts.id.initialize({
@@ -16,24 +39,6 @@ const startApp = () => {
 			googleLoginWrapperButton.click();
 		};
 	};
-};
-
-const handleResponse = async (googleUser) => {
-	console.log("GOOGLE USER", googleUser);
-	// const id_token = googleUser.getAuthResponse().id_token;
-	// const req = await fetch("/user/provider/", {
-	// 	method: "POST",
-	// 	headers: {
-	// 		Accept: "application/json",
-	// 		"Content-Type": "application/json",
-	// 	},
-	// 	body: JSON.stringify({ id_token, provider: "google" }),
-	// });
-	// const res = await req.json();
-
-	// if (res?.status != 200) {
-	// 	alert(`Could not add login provider: ${res?.message}`);
-	// }
 };
 
 startApp();

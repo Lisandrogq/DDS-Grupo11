@@ -37,19 +37,21 @@ public class HttpUtils {
             return null;
         }
         try {
-            Credentials credentials = new Credentials();
-            String mail = payloadMap.get("mail").toString();
             Long ownerId = Long.valueOf(payloadMap.get("owner_id").toString());
-            UserTypes type = Enum.valueOf(UserTypes.class, payloadMap.get("type").toString());
-            if (type == null) {
+            Session session = DB.getSessionFactory().openSession();
+            try {
+                Credentials res = session.find(Credentials.class, ownerId);
+                if (res == null) {
+                    return null;
+                }
+
+                // load providers
+                res.getProviders();
+
+                return res;
+            } catch (Throwable e) {
                 return null;
             }
-
-            credentials.setMail(mail);
-            credentials.setOwnerId(ownerId);
-            credentials.setUserType(type);
-
-            return credentials;
         } catch (Exception e) {
             return null;
         }

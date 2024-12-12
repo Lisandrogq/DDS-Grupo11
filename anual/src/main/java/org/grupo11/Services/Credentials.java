@@ -1,6 +1,6 @@
 package org.grupo11.Services;
 
-import java.security.AuthProvider;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.grupo11.Enums.AuthProviders;
@@ -22,7 +22,7 @@ public class Credentials {
     UserTypes userType;
     @ElementCollection
     @Enumerated(EnumType.STRING)
-    List<AuthProviders> providers;
+    List<AuthProviders> providers = new ArrayList<>();
 
     public Credentials(String mail, String password, UserTypes userType, Long ownerId) {
         this.mail = mail;

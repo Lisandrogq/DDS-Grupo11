@@ -36,6 +36,30 @@ enum Type {
     Contributor, Technician
 }
 
+class AuthProviderRequest {
+    private String provider;
+    private String token;
+
+    public AuthProviderRequest() {
+    }
+
+    public String getProvider() {
+        return this.provider;
+    }
+
+    public String getToken() {
+        return this.token;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+}
+
 public class Auth {
     public static void handleUserLogOut(Context ctx) {
         ctx.res().addCookie(HttpUtils.createHttpOnlyCookie("access-token", "", 3600));
@@ -235,7 +259,7 @@ public class Auth {
             return;
         }
 
-        System.out.println("NAME:"+name);
+        System.out.println("NAME:" + name);
         if (!FieldValidator.isString(name)) {
             sendFormError.accept("Invalid name");
             return;
@@ -292,8 +316,13 @@ public class Auth {
             return;
         }
 
-        String provider = ctx.formParam("provider");
-        String tokenId = ctx.formParam("token_id");
+        AuthProviderRequest body = ctx.bodyAsClass(AuthProviderRequest.class);
+        if (body == null) {
+            ctx.status(400).json(new ApiResponse(400, "Invalid bod."));
+            return;
+        }
+        String provider = body.getProvider();
+        String tokenId = body.getToken();
 
         if (!FieldValidator.isValidEnumValue(AuthProviders.class, provider)) {
             ctx.status(400).json(new ApiResponse(400, "Invalid provider, possible values: google, github.", null));
@@ -309,6 +338,7 @@ public class Auth {
         // Verify it isn't already created
         if (credentials.getProvidersByValue(AuthProviders.Google) != null) {
             ctx.status(400).json(new ApiResponse(400, "Provider already added.", null));
+            return;
         }
 
         OAuthValidateResponse validationRes = authProvider.validateToken(tokenId);
@@ -316,7 +346,7 @@ public class Auth {
             ctx.status(401).json(new ApiResponse(401, "Token validation invalid."));
             return;
         }
-        if (credentials.getMail() != validationRes.getEmail()) {
+        if (credentials.getMail().compareTo(validationRes.getEmail()) != 0) {
             ctx.status(401).json(new ApiResponse(401, "Mail must be the same."));
             return;
         }
@@ -335,6 +365,7 @@ public class Auth {
 
             credentials.addProvider(authProvider);
             DB.update(credentials);
+            ctx.status(200).json(new ApiResponse(200));
         } catch (Exception e) {
             Logger.error("Unexpected error while authenticating user", e);
             ctx.status(500).json(new ApiResponse(500));
