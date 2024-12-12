@@ -28,6 +28,8 @@ import org.grupo11.Utils.FieldValidator;
 import org.grupo11.Utils.JWTService;
 import org.grupo11.Utils.OAuth.OAuthValidateResponse;
 import org.hibernate.Session;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
@@ -394,51 +396,58 @@ public class Auth {
     }
 
     public static void handleChangePassword(Context ctx) {
-        String email = ctx.formParam("mail");
-        String oldPw = ctx.formParam("oldPassword");
-        String newPw = ctx.formParam("password");
-
-        Consumer<String> sendFormError = (msg) -> {
-            ctx.status(400)
-                    .json(new ApiResponse(400, msg, null));
-            ctx.redirect("/register/changePassword?error=" + msg);
+        BiConsumer<String, HttpStatus> sendFormError = (msg, status) -> {
+            ctx.status(status).redirect("/register/changePassword?error=" + msg);
         };
+        
+        String mail = ctx.formParam("mail");
+        String pw = ctx.formParam("oldPassword");
 
-        if (!FieldValidator.acceptablePassword(newPw)) {
-            sendFormError.accept(
-                    "Invalid password format.<br> It must include uppercase, lowercase, digit and special character");
+        if (!FieldValidator.isEmail(mail)) {
+            sendFormError.accept("Invalid email", HttpStatus.BAD_REQUEST);
+            return;
+        }
+        if (!FieldValidator.isString(pw)) {
+            sendFormError.accept("Invalid password", HttpStatus.BAD_REQUEST);
             return;
         }
 
         try (Session session = DB.getSessionFactory().openSession()) {
+            String hashedPassword = Crypto.sha256Hash(pw.getBytes());
             String hql = "SELECT c " +
                     "FROM Credentials c " +
-                    "WHERE c.mail = :mail";
+                    "WHERE c.password = :password AND c.mail = :mail";
+
             org.hibernate.query.Query<Credentials> query = session.createQuery(hql, Credentials.class);
-            query.setParameter("mail", email);
+            query.setParameter("mail", mail);
+            query.setParameter("password", hashedPassword);
 
             Credentials credentials = query.getSingleResult();
 
             if (credentials == null) {
-                sendFormError.accept("Invalid credentials");
+                sendFormError.accept("Invalid credentials", HttpStatus.UNAUTHORIZED);
                 return;
             }
+            
+            String newPw = ctx.formParam("password");
 
-            String hashedOldPassword = Crypto.sha256Hash(oldPw.getBytes());
-            if (!credentials.getPassword().equals(hashedOldPassword)) {
-                sendFormError.accept("Invalid old password");
+            if (!FieldValidator.acceptablePassword(newPw)) {
+                sendFormError.accept(
+                        "Invalid password format.<br> It must include uppercase, lowercase, digit and special character", HttpStatus.BAD_REQUEST);
                 return;
             }
 
             String hashedNewPassword = Crypto.sha256Hash(newPw.getBytes());
             credentials.setPassword(hashedNewPassword);
             DB.update(credentials);
+
+            ctx.redirect("/register/login");
+
         } catch (Exception e) {
             Logger.error("Unexpected error while authenticating user", e);
-            sendFormError.accept("Unexpected error, try again...");
+            sendFormError.accept("Invalid credentials", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
             return;
         }
 
-        ctx.redirect("/register/login");
     }
 }
