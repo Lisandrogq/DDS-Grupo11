@@ -92,7 +92,9 @@ function showReportModal(id) {
     .then(data => {
         console.log("Fridge info retrieved successfully");
         openModal(showReportInfo(data), () => {
-        });
+            const downloadButton = document.querySelector("#download-pdf");
+            downloadButton.onclick = downloadPDF;
+        } );
     })
     .catch(error => {
         alertaError("An error occurred. Please try again.");
@@ -158,7 +160,6 @@ function showReportInfo(data) {
                 <button
                     class="btn btn-primary"
                     id="download-pdf"
-                    onclick="downloadPDF()"
                 >
                     Download PDF
                 </button>
