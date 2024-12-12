@@ -9,7 +9,6 @@ import java.util.Map;
 import org.grupo11.DB;
 import org.grupo11.Logger;
 import org.grupo11.Api.ApiResponse;
-import org.grupo11.Api.HttpUtils;
 import org.grupo11.Services.Credentials;
 import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributions.FridgeAdmin;
@@ -19,7 +18,6 @@ import org.grupo11.Services.Contributions.MoneyDonation;
 import org.grupo11.Services.Contributions.PersonRegistration;
 import org.grupo11.Services.Contributions.RewardContribution;
 import org.grupo11.Services.Fridge.Fridge;
-import org.grupo11.Services.Fridge.FridgeNotifications;
 import org.grupo11.Services.Fridge.Subscription;
 import org.grupo11.Services.Reporter.Report;
 import org.grupo11.Services.Reporter.Reporter;
@@ -30,7 +28,7 @@ import org.grupo11.Utils.GetNearestTech;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.grupo11.Api.Middlewares;
-import org.grupo11.Enums.AuthProviders;
+import org.grupo11.Enums.AuthProvider;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Contributor.Individual;
 import org.grupo11.Services.Contributor.LegalEntity.LegalEntity;
@@ -109,20 +107,33 @@ public class RenderController {
 
     public static List<Map<String, Object>> getProvidersModel(Context ctx) {
         Credentials credentials = Middlewares.authenticated(ctx);
-        List<AuthProviders> connectedProviders = credentials.getProviders();
+        try (Session session = DB.getSessionFactory().openSession()) {
+            String hql = "Select c.provider FROM Credentials c WHERE c.ownerId = :ownerId";
+            Query<AuthProvider> query = session.createQuery(hql, AuthProvider.class);
+            query.setParameter("ownerId", credentials.getOwnerId());
 
-        List<AuthProviders> allProviders = Arrays.asList(AuthProviders.values());
+            List<AuthProvider> connectedProviders = query.getResultList();
+            List<AuthProvider> allProviders = Arrays.asList(AuthProvider.values());
 
-        List<Map<String, Object>> providers = new ArrayList<>();
-        for (AuthProviders authProvider : allProviders) {
-            Map<String, Object> provider = new HashMap<>();
-            provider.put("provider", authProvider.toString());
-            provider.put("connected", connectedProviders.contains(authProvider));
-            provider.put("img", "/public/assets/brands/" + authProvider.toString().toLowerCase() + ".png");
-            providers.add(provider);
+            List<Map<String, Object>> providers = new ArrayList<>();
+            for (AuthProvider authProvider : allProviders) {
+                if (authProvider.equals(AuthProvider.FridgeBridge))
+                    continue;
+
+                Map<String, Object> provider = new HashMap<>();
+                provider.put("provider", authProvider.toString());
+                provider.put("connected", connectedProviders.contains(authProvider));
+                provider.put("img", "/public/assets/brands/" + authProvider.toString().toLowerCase() + ".png");
+                providers.add(provider);
+            }
+
+            return providers;
+
+        } catch (Exception e) {
+            Logger.error("Could not serve contributor recognitions {}", e);
+            ctx.status(500).json(new ApiResponse(500));
+            return null;
         }
-
-        return providers;
     }
 
     public static Map<String, Object> getContributorModel(Contributor contributor, Context ctx) {

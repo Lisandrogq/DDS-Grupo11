@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.grupo11.DB;
 import org.grupo11.Logger;
+import org.grupo11.Enums.AuthProvider;
 import org.grupo11.Enums.UserTypes;
 import org.grupo11.Services.Credentials;
 import org.grupo11.Services.Meal;
@@ -90,11 +91,10 @@ public class AdminController {
             return;
         }
 
-        if (!unitParam.equals("MINUTES") && 
-            !unitParam.equals("HOURS") && 
-            !unitParam.equals("DAYS") && 
-            !unitParam.equals("WEEKS"))
-        {
+        if (!unitParam.equals("MINUTES") &&
+                !unitParam.equals("HOURS") &&
+                !unitParam.equals("DAYS") &&
+                !unitParam.equals("WEEKS")) {
             ctx.status(400).result("Invalid 'unit' form parameter");
             return;
         }
@@ -135,7 +135,7 @@ public class AdminController {
                 }
                 csvImputs.add(csvImput);
             }
-            
+
             try (Session session = DB.getSessionFactory().openSession()) {
                 session.beginTransaction();
 
@@ -144,26 +144,31 @@ public class AdminController {
 
                 for (CSVImput csvImput : csvImputs) {
                     Individual individual = individuals.stream()
-                                .filter(i -> i.getCredentials().getMail() == csvImput.getMail())
-                                .findFirst().orElse(null);
+                            .filter(i -> i.getName() == csvImput.getName())
+                            .findFirst().orElse(null);
 
                     if (individual == null) {
                         Long birth = csvImput.getContributionDate() - 20 * 365 * 24 * 60 * 60 * 1000;
-                        individual = new Individual(csvImput.getName() + " " + csvImput.getSurname(), "", "", birth, csvImput.getDocument(), csvImput.getDocumentType());
+                        individual = new Individual(csvImput.getName() + " " + csvImput.getSurname(), "", "", birth,
+                                csvImput.getDocument(), csvImput.getDocumentType());
                         Contact contact = new EmailContact(csvImput.getMail());
                         individual.addContact(contact);
-                        Credentials credentials = new Credentials(csvImput.getMail(), Crypto.sha256Hash(Integer.toString(individual.getDocument()).getBytes()), UserTypes.Individual, individual.getId());
-                        individual.setCredentials(credentials);
+                        Credentials credentials = new Credentials(csvImput.getMail(),
+                                Crypto.sha256Hash(Integer.toString(individual.getDocument()).getBytes()),
+                                UserTypes.Individual, individual.getId(), AuthProvider.FridgeBridge);
+                        individual.addCredentials(credentials);
                         DB.create(contact);
                         DB.create(credentials);
                         DB.create(individual);
-                        contact.SendNotification("Welcome to Fridge Bridge", "You have been registered as a contributor to the community. " +
-                            "You can log in with your email and document number as password. Please change your password before continuing.");
+                        contact.SendNotification("Welcome to Fridge Bridge",
+                                "You have been registered as a contributor to the community. " +
+                                        "You can log in with your email and document number as password. Please change your password before continuing.");
                     }
                     switch (csvImput.getContributionType()) {
 
                         case DINERO:
-                            MoneyDonation moneyDonation = new MoneyDonation(csvImput.getQuantity(), csvImput.getContributionDate(), "To help the community");
+                            MoneyDonation moneyDonation = new MoneyDonation(csvImput.getQuantity(),
+                                    csvImput.getContributionDate(), "To help the community");
                             moneyDonation.setContributor(individual);
                             individual.addContribution(moneyDonation);
                             RewardSystem.assignPoints(individual, moneyDonation);
@@ -172,7 +177,9 @@ public class AdminController {
 
                         case DONACION_VIANDAS:
                             for (int i = 0; i < csvImput.getQuantity(); i++) {
-                                Meal meal = new Meal("Food", DateUtils.getAWeewAheadFrom(csvImput.getContributionDate()), csvImput.getContributionDate(), null, "", 400, 200);
+                                Meal meal = new Meal("Food",
+                                        DateUtils.getAWeewAheadFrom(csvImput.getContributionDate()),
+                                        csvImput.getContributionDate(), null, "", 400, 200);
                                 MealDonation mealDonation = new MealDonation(meal, csvImput.getContributionDate());
                                 mealDonation.setContributor(individual);
                                 individual.addContribution(mealDonation);
@@ -183,8 +190,8 @@ public class AdminController {
                             break;
 
                         case REDISTRIBUCION_VIANDAS:
-                            MealDistribution mealDistribution = new MealDistribution(null, null, csvImput.getQuantity(), 
-                                "To help the community", csvImput.getContributionDate());
+                            MealDistribution mealDistribution = new MealDistribution(null, null, csvImput.getQuantity(),
+                                    "To help the community", csvImput.getContributionDate());
                             mealDistribution.setContributor(individual);
                             individual.addContribution(mealDistribution);
                             RewardSystem.assignPoints(individual, mealDistribution);
@@ -193,7 +200,8 @@ public class AdminController {
 
                         case ENTREGA_TARJETAS:
                             for (int i = 0; i < csvImput.getQuantity(); i++) {
-                                PersonRegistration personRegistration = new PersonRegistration(null, csvImput.getContributionDate(), individual);
+                                PersonRegistration personRegistration = new PersonRegistration(null,
+                                        csvImput.getContributionDate(), individual);
                                 personRegistration.setContributor(individual);
                                 individual.addContribution(personRegistration);
                                 RewardSystem.assignPoints(individual, personRegistration);
@@ -216,7 +224,7 @@ public class AdminController {
             ctx.redirect("/dash/home?error=Error importing data");
             return;
         }
-    
+
         ctx.status(200).result("Data imported successfully");
         ctx.redirect("/dash/home");
     }
@@ -231,7 +239,8 @@ public class AdminController {
         }
 
         if (!FieldValidator.acceptablePassword(password)) {
-            ctx.redirect("/dash/home?error=Invalid password format. It must include uppercase, lowercase, digit and special character");
+            ctx.redirect(
+                    "/dash/home?error=Invalid password format. It must include uppercase, lowercase, digit and special character");
             return;
         }
 
@@ -239,7 +248,8 @@ public class AdminController {
         Contact contact = new EmailContact(email);
         try (Session session = DB.getSessionFactory().openSession()) {
             session.beginTransaction();
-            Credentials credentials = new Credentials(email, hashedPassword, UserTypes.Admin, Crypto.genId());
+            Credentials credentials = new Credentials(email, hashedPassword, UserTypes.Admin, Crypto.genId(),
+                    AuthProvider.FridgeBridge);
             DB.create(credentials);
             DB.create(contact);
             session.getTransaction().commit();

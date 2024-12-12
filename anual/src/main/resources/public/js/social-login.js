@@ -3,17 +3,19 @@ const githubBtn = document.querySelector("#github-connect-btn");
 
 const handleResponse = async (googleUser) => {
 	const token = googleUser.credential;
-	const response = await fetch("/user/login/provider", {
+
+	const formData = new FormData();
+	formData.append("provider", "Google");
+	formData.append("token", token);
+
+	const response = await fetch("/user/login/", {
 		method: "POST",
 		headers: {
 			Accept: "application/json",
-			"Content-Type": "application/json",
 		},
-		body: JSON.stringify({
-			provider: "Google",
-			token,
-		}),
+		body: formData,
 	});
+
 	if (response.redirected) {
 		window.location.href = response.url;
 	}
