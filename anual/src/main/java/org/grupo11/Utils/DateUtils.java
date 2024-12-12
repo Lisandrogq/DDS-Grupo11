@@ -51,4 +51,10 @@ public class DateUtils {
         return DateUtils.getCurrentTimeInMs() + hoursInMs;
     }
 
+    public static Boolean isOver18(long milliseconds) {
+        LocalDateTime date = epochToDate(milliseconds);
+        LocalDateTime now = LocalDateTime.now();
+        return now.minusYears(18).isAfter(date);
+    }
+
 }

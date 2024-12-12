@@ -307,6 +307,18 @@ public class ContributionsController {
         }
 
         try (Session session = DB.getSessionFactory().openSession()) {
+            
+            String hql = "SELECT f " +
+                    "FROM Fridge f " +
+                    "WHERE f.address = :address";
+            org.hibernate.query.Query<Fridge> query = session.createQuery(hql, Fridge.class);
+            query.setParameter("address", address);
+            Fridge fridge = query.uniqueResult();
+            if (fridge != null) {
+                ctx.redirect("/dash/home?error=There is already a fridge with that address");
+                return;
+            }
+
             String leHQL = "SELECT le " +
                     "FROM LegalEntity le " +
                     "WHERE le.id = :contributor_id";
@@ -318,7 +330,7 @@ public class ContributionsController {
                 return;
             }
 
-            Fridge fridge = new Fridge(address, name, Integer.parseInt(capacity), 0, new ArrayList<>(), null, null);
+            fridge = new Fridge(address, name, Integer.parseInt(capacity), 0, new ArrayList<>(), null, null);
             TemperatureSensorManager tManager = new TemperatureSensorManager(fridge, -1, 60);
             MovementSensorManager mManager = new MovementSensorManager(fridge);
             fridge.setIsActive(true);

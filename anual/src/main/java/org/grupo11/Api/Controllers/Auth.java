@@ -145,6 +145,17 @@ public class Auth {
         }
 
         try {
+            Long birth = DateUtils.parseDateYMDString(birthdate);
+            if (birth == null || !DateUtils.isOver18(birth)) {
+                sendFormError.accept("Invalid birthdate, you must be at least 18 years old");
+                return;
+            }
+        } catch (Exception e) {
+            Logger.error("Unexpected error while creating user", e);
+            sendFormError.accept("Unexpected error, try again...");
+        }
+
+        try {
             // check there isn't a registered account for that mail
             try (Session session = DB.getSessionFactory().openSession()) {
                 String hql = "SELECT c " +

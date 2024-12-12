@@ -66,10 +66,12 @@
                 />
                 <input
                     type="password"
+                    id="confirmedPassword"
                     required
                     placeholder="Your password again..."
                     class="inputs"
                 />
+                
                 <p>Birth date</p>
                 <input
                     type="date"
@@ -87,12 +89,13 @@
                     placeholder="Your address..."
                     class="inputs"
                 />
-
+                
+                <div id="error-message" style="color: red; display: none;"></div>
                 <#if error??>
                     <div style="color: red">${error}</div>
                 </#if>
                 <div class="d-flex w-100 gap" style="margin-top: 20px">
-                    <button type="submit" class="btn-text w-100" onclick="validar()">Accept</button>
+                    <button type="button" class="btn-text w-100" onclick="validar()">Accept</button>
                 </div>
             </form>
         </div>
