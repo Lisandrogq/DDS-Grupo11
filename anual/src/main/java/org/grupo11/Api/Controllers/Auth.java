@@ -392,4 +392,53 @@ public class Auth {
             ctx.status(500).redirect("/register/login?error=Unexpected error");
         }
     }
+
+    public static void handleChangePassword(Context ctx) {
+        String email = ctx.formParam("mail");
+        String oldPw = ctx.formParam("oldPassword");
+        String newPw = ctx.formParam("password");
+
+        Consumer<String> sendFormError = (msg) -> {
+            ctx.status(400)
+                    .json(new ApiResponse(400, msg, null));
+            ctx.redirect("/register/changePassword?error=" + msg);
+        };
+
+        if (!FieldValidator.acceptablePassword(newPw)) {
+            sendFormError.accept(
+                    "Invalid password format.<br> It must include uppercase, lowercase, digit and special character");
+            return;
+        }
+
+        try (Session session = DB.getSessionFactory().openSession()) {
+            String hql = "SELECT c " +
+                    "FROM Credentials c " +
+                    "WHERE c.mail = :mail";
+            org.hibernate.query.Query<Credentials> query = session.createQuery(hql, Credentials.class);
+            query.setParameter("mail", email);
+
+            Credentials credentials = query.getSingleResult();
+
+            if (credentials == null) {
+                sendFormError.accept("Invalid credentials");
+                return;
+            }
+
+            String hashedOldPassword = Crypto.sha256Hash(oldPw.getBytes());
+            if (!credentials.getPassword().equals(hashedOldPassword)) {
+                sendFormError.accept("Invalid old password");
+                return;
+            }
+
+            String hashedNewPassword = Crypto.sha256Hash(newPw.getBytes());
+            credentials.setPassword(hashedNewPassword);
+            DB.update(credentials);
+        } catch (Exception e) {
+            Logger.error("Unexpected error while authenticating user", e);
+            sendFormError.accept("Unexpected error, try again...");
+            return;
+        }
+
+        ctx.redirect("/register/login");
+    }
 }

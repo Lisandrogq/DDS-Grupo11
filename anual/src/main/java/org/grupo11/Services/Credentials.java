@@ -74,4 +74,12 @@ public class Credentials {
     public void addProvider(AuthProviders provider) {
         this.providers.add(provider);
     }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
