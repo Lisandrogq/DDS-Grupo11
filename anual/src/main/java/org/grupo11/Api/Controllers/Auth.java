@@ -373,15 +373,20 @@ public class Auth {
     }
 
     public static void handleProviderLogin(Context ctx) {
-        String provider = ctx.formParam("provider");
-        String tokenId = ctx.formParam("token_id");
+        AuthProviderRequest body = ctx.bodyAsClass(AuthProviderRequest.class);
+        if (body == null) {
+            ctx.status(400).json(new ApiResponse(400, "Invalid bod."));
+            return;
+        }
+        String provider = body.getProvider();
+        String tokenId = body.getToken();
 
         if (!FieldValidator.isValidEnumValue(AuthProviders.class, provider)) {
-            ctx.status(400).json(new ApiResponse(400, "Invalid provider, possible values: google, github.", null));
+            ctx.redirect("/register/login?error=Invalid provider, possible values: Google, Github.");
             return;
         }
         if (!FieldValidator.isString(tokenId)) {
-            ctx.status(400).json(new ApiResponse(400, "Invalid token_id.", null));
+            ctx.redirect("/register/login?error=Invalid token_id.");
             return;
         }
 
@@ -389,7 +394,7 @@ public class Auth {
 
         OAuthValidateResponse validationRes = authProvider.validateToken(tokenId);
         if (validationRes == null) {
-            ctx.status(401).json(new ApiResponse(401, "Token validation invalid."));
+            ctx.redirect("/register/login?error=Token validation invalid.");
             return;
         }
 
@@ -401,11 +406,12 @@ public class Auth {
             query.setParameter("mail", validationRes.getEmail());
 
             if (query.uniqueResult() == null) {
-                ctx.status(400).json(new ApiResponse(400, "Mail isn't registered."));
+                ctx.redirect("/register/login?error=Mail isn't registered.");
                 return;
             }
 
             Credentials credentials = query.getSingleResult();
+            credentials.getProviders();
             if (credentials.getProvidersByValue(authProvider) == null) {
                 credentials.addProvider(authProvider);
                 DB.update(credentials);
@@ -418,7 +424,7 @@ public class Auth {
 
             String jwtToken = JWTService.generate(payload, 3600);
             ctx.res().addCookie(HttpUtils.createHttpOnlyCookie("access-token", jwtToken, 3600));
-            ctx.redirect("/dash/home");
+            ctx.status(302).redirect("/dash/home");
         } catch (Exception e) {
             Logger.error("Unexpected error while authenticating user", e);
             ctx.status(500).redirect("/register/login?error=Unexpected error");

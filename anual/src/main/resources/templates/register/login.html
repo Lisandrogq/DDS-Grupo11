@@ -13,8 +13,7 @@
 		<link rel="stylesheet" href="/public/css/base.css" />
 		<link rel="stylesheet" href="/public/css/forms.css" />
 		<script src="/public/js/forms.js"></script>
-		<meta name="google-signin-client_id" content="933613917422-bb9a9ptfqof8saqbc5ub1gr5mtpoohh2.apps.googleusercontent.com">
-		<script src="https://apis.google.com/js/platform.js" async defer></script>
+		<script src="https://accounts.google.com/gsi/client" async defer></script>
 	</head>
 
 	<body class="fullscreen d-flex align-items-center">
@@ -50,7 +49,8 @@
 					<button type="submit" class="btn-primary w-100">Log in</button>
 				</div>
 				<div class="d-flex flex-row w-100" style="gap: 10px;">
-					<div class="d-flex flex-row align-items-center provider-btn w-100" id="google-connect-btn" style="gap: 30px">
+					<div class="d-flex flex-row align-items-center provider-btn w-100" id="google-connect-btn" onclick="handleGoogleConnection()" style="gap: 30px">
+						<div id="google-btn-wrapper" style="display: none;"></div>
 						<img src="/public/assets/brands/google.png" height="48" width ="48" />
 						<div>
 							<p>Login with Google</p>
@@ -66,4 +66,5 @@
 			</form>
 		</div>
 	</body>
+	<script src="/public/js/social-login.js"></script>
 </html>

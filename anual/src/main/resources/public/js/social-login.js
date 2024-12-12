@@ -3,7 +3,7 @@ const githubBtn = document.querySelector("#github-connect-btn");
 
 const handleResponse = async (googleUser) => {
 	const token = googleUser.credential;
-	const req = await fetch("/user/provider/", {
+	const response = await fetch("/user/login/provider", {
 		method: "POST",
 		headers: {
 			Accept: "application/json",
@@ -14,12 +14,8 @@ const handleResponse = async (googleUser) => {
 			token,
 		}),
 	});
-	const res = await req.json();
-
-	if (res?.status == 200) {
-		alert("Provider added successfully!");
-	} else {
-		alert(`Could not add login provider: ${res?.message}`);
+	if (response.redirected) {
+		window.location.href = response.url;
 	}
 };
 
