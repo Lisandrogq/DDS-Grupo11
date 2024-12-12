@@ -216,11 +216,11 @@ const setupFridgeListeners = () => {
 				if (userType == "IND") {
 					mealDonationShortcut.style.display = "inline-block";
 					mealDonationShortcut.onclick = () => {
-						const address = fridge.getAttribute("data-fridge-address");
+						const id = fridge.getAttribute("data-fridge-id");
 						setModalContent(mealDonation());
-						const fridgeAddressInput = document.querySelector("#fridge_address");
-						fridgeAddressInput.value = address;
-						fridgeAddressInput.textContent = address;
+						const fridgeAddressInput = document.querySelector("#fridge_id");
+						fridgeAddressInput.value = id;
+						fridgeAddressInput.textContent = id;
 					}
 				} else {
 					mealDonationShortcut.style.display = "none";
