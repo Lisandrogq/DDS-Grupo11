@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.checkerframework.checker.units.qual.t;
 import org.grupo11.DB;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Utils.GetNearestTech;
@@ -57,9 +58,14 @@ public class TechnicianManager {
     public Technician selectTechnician(Fridge fridge) {
         HashMap<String,Object> map = GetNearestTech.getNearestTechnician(fridge.getLat(),fridge.getLon());
         Technician technician =  (Technician)map.get("technician");
-        int distance = (int) map.get("distance"); 
-        String message = fridge.getName() + " fridge is malfunctioning, its " + distance + "mts away";
-        technician.getContact().SendNotification("WE NEED YOU", message);
-        return technician;
+        Double Ddistance = (Double) map.get("distance");
+        int distance = Ddistance.intValue();
+        if (technician == null) {
+            return null;
+        } else {
+            String message = fridge.getName() + " fridge is malfunctioning, its " + distance + "mts away";
+            technician.getContact().SendNotification("WE NEED YOU", message);
+            return technician;
+        }
     }
 }
