@@ -335,14 +335,15 @@ public class RenderController {
             session.close();
 
         } catch (Exception e) {
-
             return null;
         }
 
         List<Map<String, Object>> visits = new ArrayList<>();
         try (Session session = DB.getSessionFactory().openSession()) {
-            String hql = "FROM TechnicianVisit v ";
+            String hql = "FROM TechnicianVisit v WHERE v.technician = :technician";
             Query<TechnicianVisit> query = session.createQuery(hql, TechnicianVisit.class);
+            query.setParameter("technician", technician);
+            
             List<TechnicianVisit> results = query.getResultList();
             for (TechnicianVisit visit : results) {
                 visits.add(visit.toMap());
