@@ -292,8 +292,8 @@ public class ContributionsController {
             ctx.redirect("/dash/home?error=Enter a valid name");
             return;
         }
-        if (!FieldValidator.isString(address)) {
-            ctx.redirect("/dash/home?error=Enter a valid address");
+        if (!FieldValidator.isValidAddress(address)) {
+            ctx.redirect("/dash/home?error=Enter a valid address (it must be like 'Street 1234')");
             return;
         }
         if (!FieldValidator.isInt(capacity)) {
@@ -308,6 +308,7 @@ public class ContributionsController {
             ctx.redirect("/dash/home?error=Enter a valid city");
             return;
         }
+        
 
         address = address + ", "+city+", Argentina ";//this is done so the map always work with real addresses in argentina 
         try (Session session = DB.getSessionFactory().openSession()) {
