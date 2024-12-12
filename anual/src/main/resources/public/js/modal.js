@@ -524,7 +524,7 @@ function personRegistration() {
 				<input
 					type="text"
 					id="personName"
-					name="name"
+					name="personName"
 					required
 					placeholder="Full name..."
 				/>

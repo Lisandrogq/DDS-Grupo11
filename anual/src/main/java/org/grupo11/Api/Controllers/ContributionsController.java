@@ -423,7 +423,7 @@ public class ContributionsController {
         String children_count = ctx.formParam("children_count");
 
         if (!FieldValidator.isString(name)) {
-            ctx.redirect("Enter a valid name");
+            ctx.redirect("/dash/home?error=Enter a valid name");
             return;
         }
         if (!FieldValidator.isDate(birth)) {
