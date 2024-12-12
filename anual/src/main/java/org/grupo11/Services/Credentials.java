@@ -1,34 +1,33 @@
 package org.grupo11.Services;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.grupo11.Enums.AuthProviders;
+import org.grupo11.Enums.AuthProvider;
 import org.grupo11.Enums.UserTypes;
 
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
 @Entity
 public class Credentials {
+    @Id
+    @GeneratedValue
+    private Long id;
+    public Long ownerId;
     String mail;
     String password;
-    @Id
-    Long ownerId;
     @Enumerated(EnumType.STRING)
     UserTypes userType;
-    @ElementCollection
     @Enumerated(EnumType.STRING)
-    List<AuthProviders> providers = new ArrayList<>();
+    AuthProvider provider;
 
-    public Credentials(String mail, String password, UserTypes userType, Long ownerId) {
+    public Credentials(String mail, String password, UserTypes userType, Long ownerId, AuthProvider provider) {
         this.mail = mail;
         this.password = password;
         this.ownerId = ownerId;
         this.userType = userType;
+        this.provider = provider;
     }
 
     public Credentials() {
@@ -46,17 +45,8 @@ public class Credentials {
         return this.userType;
     }
 
-    public List<AuthProviders> getProviders() {
-        return this.providers;
-    }
-
-    public AuthProviders getProvidersByValue(AuthProviders provider) {
-        for (AuthProviders x : providers) {
-            if (x.compareTo(provider) == 0) {
-                return x;
-            }
-        }
-        return null;
+    public AuthProvider getProvider() {
+        return this.provider;
     }
 
     public void setMail(String mail) {
@@ -71,7 +61,7 @@ public class Credentials {
         this.userType = type;
     }
 
-    public void addProvider(AuthProviders provider) {
-        this.providers.add(provider);
+    public void setProvider(AuthProvider provider) {
+        this.provider = provider;
     }
 }
