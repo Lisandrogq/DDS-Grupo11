@@ -271,9 +271,9 @@ public class Fridge {
 
     }
 
-    public Meal getMealByType(String type) {
+    public Meal getMealByID(Long id) {
         for (Meal meal : meals) {
-            if (meal.getType().equals(type)) {
+            if (meal.getId().equals(id)) {
                 return meal;
             }
         }

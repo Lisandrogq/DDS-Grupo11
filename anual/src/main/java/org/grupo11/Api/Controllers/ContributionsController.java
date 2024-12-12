@@ -212,13 +212,13 @@ public class ContributionsController {
             int max = 0;
             for (i = 0; i < 10; i++) { // primero se valida que todas las comidas estén . se podría hacer con
                                        // transacciones pero notiempo
-                String meal_type = ctx.formParam("meal_" + i);
-                if (meal_type != null) {
-                    Meal meal = origin_fridge.getMealByType(meal_type);
+                String meal_id = ctx.formParam("meal_" + i);
+                if (meal_id != null) {
+                    Meal meal = origin_fridge.getMealByID(Long.parseLong(meal_id));
                     max++;
                     if (meal == null) {
                         ;
-                        ctx.redirect("/dash/home?error=The meal " + meal_type + " does not exist in the origin fridge");
+                        ctx.redirect("/dash/home?error=The meal " + meal_id + " does not exist in the origin fridge");
                         return;
                     }
                 }
@@ -249,11 +249,10 @@ public class ContributionsController {
             DB.create(entries.get(0));
             DB.create(entries.get(1));
             for (i = 0; i < max; i++) {
-                String meal_type = ctx.formParam("meal_" + i);
-                if (meal_type != null) {
-                    Meal meal = origin_fridge.getMealByType(meal_type);
-                    System.out.println("adad: " + meal_type + " - " + meal.getType());
-
+                String meal_id = ctx.formParam("meal_" + i);
+                if (meal_id != null) {
+                    Meal meal = origin_fridge.getMealByID(Long.parseLong(meal_id));
+                    System.out.println("adad: " + meal_id + " - " + meal.getId());
                     FridgeNotification notification_ori = origin_fridge.removeMeal(meal);
                     FridgeNotification notification_des = destiny_fridge.addMeal(meal);
                     DB.create(notification_ori);

@@ -29,13 +29,14 @@ const closeModal = () => {
 document.addEventListener("keyup", (e) => {
 	if (e.key == "Escape") closeModal();
 });
+
 var count = 1;
 function agregarInput() {
 	if (count < 4) {
 		let div = document.createElement("div");
 		div.classList.add("input");
 		div.innerHTML =
-			' <input type="text" id="meal" name="meal_' + count + '" required placeholder="Type of meal to distribute..."class="col-12 inputs">';
+			' <input type="number" id="meal" name="meal_' + count + '" required placeholder="ID of meal to distribute..."class="col-12 inputs">';
 		document.getElementById("input-placeholder").appendChild(div);
 		count++;
 	}
@@ -291,7 +292,13 @@ const setupListenersContributionsListeners = () => {
 	const btns = document.querySelectorAll("#contribution-form-btn");
 	btns.forEach((btn) => {
 		const modalDataAttr = btn.getAttribute("data-attr");
-		btn.onclick = () => setModalContent(modalMapper[modalDataAttr]);
+		btn.onclick = () => {
+			setModalContent(modalMapper[modalDataAttr])
+			if (modalDataAttr === "meal-distribution") {
+				document.querySelector("#btnCrearInput").onclick = agregarInput;
+				document.querySelector("#btnEliminarInput").onclick = eliminarInput;
+			}
+		};
 	});
 };
 
@@ -346,7 +353,7 @@ function mealDonation() {
 					/>
 
 					<input
-						type="numeric"
+						type="number"
 						id="fridge_id"
 						name="fridge_id"
 						required
@@ -400,11 +407,12 @@ function mealDistribution() {
 			</div>
 			<form method="POST" action="/contribution/meal/distribution" class="form">
 				<div>
-					<span id="btnCrearInput" style="color: #136C91;" class="clickable-text" onclick="agregarInput()">Add meal</span> <b>|</b>
-					<span  style="color: #136C91" class="clickable-text" onclick="eliminarInput()">Delete meal</span>
+					<span id="btnCrearInput" style="color: #136C91;" class="clickable-text">Add meal</span>
+					<b>|</b>
+					<span id="btnEliminarInput" style="color: #136C91" class="clickable-text">Delete meal</span>
 				</div>
 				<div id="input-placeholder"> 
-				<input type="text" id="meal" name="meal_0" required placeholder="Type of meal to distribute..."class="col-12 inputs">
+					<input type="number" id="meal" name="meal_0" required placeholder="ID of meal to distribute..."class="col-12 inputs">
 				</div>
 				<input type="text" id="reason" name="reason" required placeholder="Reason for relocation...">
 				
