@@ -14,6 +14,15 @@ public class FieldValidator {
         }
     }
 
+    
+    public static boolean isValidAddress(String address) {
+            if(FieldValidator.isString(address) && address.matches("[a-zA-ZÀ-ÿ\\s]+\\s\\d+")) //valida que sea un nombre(con/sin espacios) seguido de un numero
+            {
+                return true;
+            }
+            return false;
+    }
+    
     public static boolean isInt(String value) {
         try {
             Integer.parseInt(value);
