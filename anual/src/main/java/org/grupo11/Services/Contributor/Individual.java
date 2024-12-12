@@ -10,7 +10,7 @@ import org.grupo11.Services.Contributions.ContributionType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Individual extends Contributor {
@@ -20,8 +20,8 @@ public class Individual extends Contributor {
     private String name;
     private String surname;
     private Long birth;
-    @OneToOne
-    private Credentials credentials;
+    @OneToMany(mappedBy = "ownerId")
+    private List<Credentials> credentials = new ArrayList<>();
 
     public Individual() {
         super();
@@ -88,10 +88,11 @@ public class Individual extends Contributor {
         this.documentType = documentType;
     }
 
-    public void setCredentials(Credentials credentials) {
-        this.credentials = credentials;
+    public void addCredentials(Credentials credentials) {
+        this.credentials.add(credentials);
     }
-    public Credentials getCredentials() {
+
+    public List<Credentials> getCredentials() {
         return credentials;
     }
 }

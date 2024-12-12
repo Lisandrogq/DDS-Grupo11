@@ -219,7 +219,7 @@ public class Auth {
 
                 Credentials credentials = new Credentials(mail, hashedPassword, UserTypes.Technician,
                         technician.getId(), AuthProvider.FridgeBridge);
-                technician.setCredentials(credentials);
+                technician.addCredentials(credentials);
                 DB.create(contact);
                 DB.create(credentials);
                 DB.create(technician);
@@ -298,7 +298,7 @@ public class Auth {
             Credentials credentials = new Credentials(mail, hashedPassword, UserTypes.LegalEntity, legalEntity.getId(),
                     AuthProvider.FridgeBridge);
             legalEntity.addContact(contact);
-            legalEntity.setCredentials(credentials);
+            legalEntity.addCredentials(credentials);
 
             DB.create(contact);
             DB.create(credentials);
