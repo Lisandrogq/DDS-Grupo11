@@ -61,7 +61,7 @@ function setup_map(lat, lon) {
 /**
  * ===================================== Fridge Modal Logic =====================================
  */
-const fridgeModal = (name, meals, temp, capacity, state, lat, lon) => DOMPurify.sanitize( `
+const fridgeModal = (id,name, meals, temp, capacity, state, lat, lon) => DOMPurify.sanitize( `
 <div
 	id="has_map"
 	class="d-flex flex-column"
@@ -70,7 +70,11 @@ const fridgeModal = (name, meals, temp, capacity, state, lat, lon) => DOMPurify.
 	data-lon=${lon}
 >
 	<div class="d-flex w-100 justify-content-between align-items-center">
-		<h5 class="accent-100 mb-2">${name} fridge</h5>
+	<div style="margin-top:20px">
+		<h4 class="accent-100 mb-2">${name} fridge
+		<h6 style="color: #28334d;display: inline;margin-left: 5px;" >(ID: ${id})</h6>
+		</h4>
+	</div>
 		<div class="d-flex flex-row" style="gap: 10px;">
 			<button id="MealDonationShortcut" class="btn-primary" style="padding: 10px; font-size: var(--paragraph)">Donate meal</button>
 			<button id="unsubscribeBtn" class="btn-primary" style="padding: 10px; font-size: var(--paragraph)">Unsubscribe</button>
@@ -195,7 +199,7 @@ const setupFridgeListeners = () => {
 		const userType = fridge.getAttribute("data-user-type");
 
 		fridge.onclick = () => {
-			openModal(fridgeModal(name, meals, temp, capacity, state, lat, lon), () => {
+			openModal(fridgeModal(id,name, meals, temp, capacity, state, lat, lon), () => {
 				
 				const subscribeBtn = document.querySelector("#subscribeBtn");
 				subscribeBtn.onclick = () => setModalContent(handleSubscribe(id));
@@ -339,11 +343,11 @@ function mealDonation() {
 					/>
 
 					<input
-						type="text"
-						id="fridge_address"
-						name="fridge_address"
+						type="numeric"
+						id="fridge_id"
+						name="fridge_id"
 						required
-						placeholder="Fridge Address..."
+						placeholder="Fridge Id..."
 					/>
 				</div>
 				<div class="d-flex justify-content-between w-100 gap">
@@ -403,19 +407,19 @@ function mealDistribution() {
 				
 				<div class="d-flex justify-content-between w-100 gap">
 						<input
-						type="text"
-						id="origin_address"
-						name="origin_address"
+						type="number"
+						id="origin_id"
+						name="origin_id"
 						required
-						placeholder="Origin fridge Address..."
+						placeholder="Origin fridge Id..."
 					/>
 
 						<input
-						type="text"
-						id="destiny_address"
-						name="destiny_address"
+						type="number"
+						id="destiny_id"
+						name="destiny_id"
 						required
-						placeholder="Destiny fridge Address..."
+						placeholder="Destiny fridge Id..."
 					/>
 					
 				</div>

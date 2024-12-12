@@ -55,7 +55,7 @@ public class ContributionsController {
 
         String type = ctx.formParam("type");
         String expirationDate = ctx.formParam("expirationDate");
-        String fridge_address = ctx.formParam("fridge_address");
+        String fridge_id = ctx.formParam("fridge_id");
         String calories = ctx.formParam("calories");
         String weight = ctx.formParam("weight");
 
@@ -69,7 +69,7 @@ public class ContributionsController {
             sendFormError.accept("invalid type");
             return;
         }
-        if (!FieldValidator.isString(fridge_address)) {
+        if (!FieldValidator.isInt(fridge_id)) {
             sendFormError.accept("invalid fridge_address");
             return;
         }
@@ -108,9 +108,9 @@ public class ContributionsController {
         try (Session session = DB.getSessionFactory().openSession()) {
             String hql = "SELECT f " +
                     "FROM Fridge f " +
-                    "WHERE f.address = :fridge_address";
+                    "WHERE f.id = :fridge_id";
             org.hibernate.query.Query<Fridge> query = session.createQuery(hql, Fridge.class);
-            query.setParameter("fridge_address", fridge_address);
+            query.setParameter("fridge_id", fridge_id);
             Fridge fridge = query.uniqueResult();
 
             if (fridge == null) {
@@ -160,8 +160,8 @@ public class ContributionsController {
         }
 
         String reason = ctx.formParam("reason");
-        String origin_address = ctx.formParam("origin_address");
-        String destiny_address = ctx.formParam("destiny_address");
+        String origin_id = ctx.formParam("origin_id");
+        String destiny_id = ctx.formParam("destiny_id");
 
         try (Session session = DB.getSessionFactory().openSession()) {
 
@@ -169,25 +169,25 @@ public class ContributionsController {
                 ctx.redirect("/dash/home?error=invalid reason");
                 return;
             }
-            if (!FieldValidator.isString(origin_address)) {
-                ctx.redirect("/dash/home?error=invalid origin_address");
+            if (!FieldValidator.isInt(origin_id)) {
+                ctx.redirect("/dash/home?error=invalid origin_id");
                 return;
             }
-            if (!FieldValidator.isString(destiny_address)) {
-                ctx.redirect("/dash/home?error=invalid destiny_address");
+            if (!FieldValidator.isInt(destiny_id)) {
+                ctx.redirect("/dash/home?error=invalid destiny_id");
                 return;
             }
 
             String origin_hql = "SELECT f " +
                     "FROM Fridge f " +
-                    "WHERE f.address = :origin_address";
+                    "WHERE f.id = :origin_id";
             org.hibernate.query.Query<Fridge> origin_query = session.createQuery(origin_hql, Fridge.class);
-            origin_query.setParameter("origin_address", origin_address);
+            origin_query.setParameter("origin_id", origin_id);
             String destiny_hql = "SELECT f " +
                     "FROM Fridge f " +
-                    "WHERE f.address = :destiny_address";
+                    "WHERE f.id = :destiny_id";
             org.hibernate.query.Query<Fridge> destiny_query = session.createQuery(destiny_hql, Fridge.class);
-            destiny_query.setParameter("destiny_address", destiny_address);
+            destiny_query.setParameter("destiny_id", destiny_id);
 
             Fridge origin_fridge = origin_query.getSingleResult();
             Fridge destiny_fridge = destiny_query.getSingleResult();
