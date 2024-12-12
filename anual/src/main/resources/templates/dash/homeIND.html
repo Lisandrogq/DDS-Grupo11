@@ -25,7 +25,7 @@
 			integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
 			crossorigin=""
 		></script>
-		<script src="https://apis.google.com/js/platform.js" async defer></script>
+		<script src="https://accounts.google.com/gsi/client" async defer></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
 	</head>
 
@@ -88,6 +88,11 @@
 								<path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
 							</svg>
 							<div class="my-card d-flex flex-column hover-modal">
+								<div id="g_id_onload"
+									data-client_id="933613917422-bb9a9ptfqof8saqbc5ub1gr5mtpoohh2.apps.googleusercontent.com"
+									data-callback="handleResponse">
+								</div>
+
 								<div class="d-flex flex-row align-items-center social-login-item" id="google-connect-btn" style="gap: 30px">
 									<img src="/public/assets/brands/google.png" height="48" width ="48" />
 									<div>
@@ -262,6 +267,7 @@
 	<script src="/public/js/forms.js"></script>
 	<script src="/public/js/modal.js"></script>
 	<script src="/public/js/error.js"></script>
+	<script src="/public/js/social-connection.js"></script>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 </html>
