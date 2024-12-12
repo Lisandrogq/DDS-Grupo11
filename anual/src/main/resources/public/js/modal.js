@@ -110,7 +110,6 @@ function handleSubscribe(id) {
 					name="type"
 					required
 					id="subscription-type"
-					onchange="toggleQuantityField(event)"
 				>
 					<option value="" selected disabled hidden>
 						Choose a category of subscription
@@ -202,7 +201,11 @@ const setupFridgeListeners = () => {
 			openModal(fridgeModal(id,name, meals, temp, capacity, state, lat, lon), () => {
 				
 				const subscribeBtn = document.querySelector("#subscribeBtn");
-				subscribeBtn.onclick = () => setModalContent(handleSubscribe(id));
+				subscribeBtn.onclick = () => {
+					setModalContent(handleSubscribe(id));
+					const subscriptionType = document.querySelector("#subscription-type");
+					subscriptionType.onchange = toggleQuantityField;
+				};
 
 				const unsubscribeBtn = document.querySelector("#unsubscribeBtn");
 				if (subscribed === "true") {
