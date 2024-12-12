@@ -1,13 +1,14 @@
 package org.grupo11.Services.Technician;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.grupo11.DB;
 import org.grupo11.Services.Fridge.Fridge;
+import org.grupo11.Utils.GetNearestTech;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-
 public class TechnicianManager {
     private List<Technician> technicians;
     private static TechnicianManager instance = null;
@@ -54,11 +55,10 @@ public class TechnicianManager {
     }
 
     public Technician selectTechnician(Fridge fridge) {
-
-        Technician technician = technicians.get(0);// TODO: calculate distance between addresses
-        int distance = 0;
+        HashMap<String,Object> map = GetNearestTech.getNearestTechnician(fridge.getLat(),fridge.getLon());
+        Technician technician =  (Technician)map.get("technician");
+        int distance = (int) map.get("distance"); 
         String message = fridge.getName() + " fridge is malfunctioning, its " + distance + "mts away";
-        technician.addNotification(message);
         technician.getContact().SendNotification("WE NEED YOU", message);
         return technician;
     }

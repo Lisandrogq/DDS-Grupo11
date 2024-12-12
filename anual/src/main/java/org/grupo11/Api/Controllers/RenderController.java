@@ -24,6 +24,7 @@ import org.grupo11.Services.Reporter.Reporter;
 import org.grupo11.Services.Rewards.Reward;
 import org.grupo11.Services.Technician.Technician;
 import org.grupo11.Services.Technician.TechnicianVisit;
+import org.grupo11.Utils.GetNearestTech;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.grupo11.Api.Middlewares;
@@ -350,8 +351,28 @@ public class RenderController {
         } catch (Exception e) {
             return null;
         }
-        List<String> alerts = technician.getNotifications();
-        System.err.println("teta" + alerts);
+
+        List<String> alerts = new ArrayList<String>();
+        try (Session session = DB.getSessionFactory().openSession()) {
+            String hql = "FROM Fridge f ";
+            Query<Fridge> query = session.createQuery(hql, Fridge.class);
+            List<Fridge> results = query.getResultList();
+            Logger.info("Fridges results.size(): " + results.size());
+            for (Fridge fridge : results) {
+                HashMap<String,Object> map = GetNearestTech.getNearestTechnician(fridge.getLat(), fridge.getLon());
+                Technician nearest_technician = (Technician) map.get("technician");
+                int distance = ((Double) map.get("distance")).intValue();
+                if (fridge.getActiveIncidents().size() > 0 && nearest_technician.getId().equals(technician.getId())) {
+                    alerts.add(fridge.getName() + " fridge is malfunctioning, its " + distance + "mts away");
+                }
+            }
+            session.close();
+
+        } catch (Exception e) {
+            Logger.error("Could not serve contributor recognitions {}", e);
+            ctx.status(500).json(new ApiResponse(500));
+            return null;
+        }
 
         model.put("user", user);
         model.put("visits", visits);

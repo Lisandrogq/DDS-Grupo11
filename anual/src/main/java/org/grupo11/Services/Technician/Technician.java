@@ -33,10 +33,8 @@ public class Technician {
     private Contact contact;
     @OneToOne
     private Credentials credentials;
-    private List<String> alerts= new ArrayList<>();
 
     public Technician() {
-        alerts = new ArrayList<>();
     }
 
     public Technician(String name, String surname, TechnicianType type, int DNI, String cuil,
@@ -53,17 +51,8 @@ public class Technician {
         this.visits = new ArrayList<>();
     }
 
-    public List<String> getNotifications() {
-            return alerts;
-    }
 
-    public void setNotifications(List<String> alerts) {
-        this.alerts = alerts;
-    }
 
-    public void addNotification(String notification) {
-        alerts.add(notification);
-    }
 
     public Long getId() {
         return id;
