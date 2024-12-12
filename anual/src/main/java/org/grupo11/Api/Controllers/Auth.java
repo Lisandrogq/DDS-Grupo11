@@ -97,7 +97,7 @@ public class Auth {
         String mail = ctx.formParam("mail");
         String type = ctx.formParam("type");
         String pw = ctx.formParam("password");
-        String name = ctx.formParam("name");
+        String name = ctx.formParam("personName");
         String birthdate = ctx.formParam("birthdate");
         String document = ctx.formParam("document");
         String address = ctx.formParam("address");
@@ -208,7 +208,7 @@ public class Auth {
 
     public static void handleLegalEntitySignup(Context ctx) {
         String mail = ctx.formParam("mail");
-        String name = ctx.formParam("name");
+        String name = ctx.formParam("personName");
         String type = ctx.formParam("org-type");
         String category = ctx.formParam("org-category");
         String pw = ctx.formParam("password");

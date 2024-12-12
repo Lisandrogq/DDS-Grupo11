@@ -157,8 +157,8 @@ public class AdminController {
                         DB.create(contact);
                         DB.create(credentials);
                         DB.create(individual);
-                        // Send email to set password (FALTA)
-                        // contact.SendNotification("Registered as new user", "You have registered in fridge bridge services!");
+                        contact.SendNotification("Welcome to Fridge Bridge", "You have been registered as a contributor to the community. " +
+                            "You can log in with your email and document number as password. Please change your password before continuing.");
                     }
                     switch (csvImput.getContributionType()) {
 
@@ -236,17 +236,19 @@ public class AdminController {
         }
 
         String hashedPassword = Crypto.sha256Hash(password.getBytes());
-
+        Contact contact = new EmailContact(email);
         try (Session session = DB.getSessionFactory().openSession()) {
             session.beginTransaction();
             Credentials credentials = new Credentials(email, hashedPassword, UserTypes.Admin, Crypto.genId());
             DB.create(credentials);
+            DB.create(contact);
             session.getTransaction().commit();
-            ctx.status(200).result("Admin created successfully");
-            ctx.redirect("/dash/home");
         } catch (Exception e) {
             e.printStackTrace();
             ctx.status(500).result("Internal server error: " + e.getMessage());
         }
+        contact.SendNotification("You have been registered as an admin", "You can log in with your email and password");
+        ctx.status(200).result("Admin created successfully");
+        ctx.redirect("/dash/home");
     }
 }

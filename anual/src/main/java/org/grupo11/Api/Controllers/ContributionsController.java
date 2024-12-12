@@ -285,7 +285,7 @@ public class ContributionsController {
             return;
         }
 
-        String name = ctx.formParam("name");
+        String name = ctx.formParam("fridgeName");
         String address = ctx.formParam("address");
         String capacity = ctx.formParam("capacity");
 
@@ -413,7 +413,7 @@ public class ContributionsController {
             return;
         }
 
-        String name = ctx.formParam("name");
+        String name = ctx.formParam("personName");
         String dni = ctx.formParam("dni");
         String birth = ctx.formParam("birth");
         String children_count = ctx.formParam("children_count");
@@ -466,7 +466,7 @@ public class ContributionsController {
             return;
         }
 
-        String name = ctx.formParam("name");
+        String name = ctx.formParam("rewardName");
         String stock = ctx.formParam("stock");
         String description = ctx.formParam("description");
         String points = ctx.formParam("points");

@@ -313,7 +313,7 @@ async function deleteCookieAndRefresh() {
 function mealDonation() {
 	
 
-	return DOMPurify.sanitize(`
+	return `
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
 				<h5 class="accent-100 mb-2">Meal Donation</h5>
@@ -381,11 +381,11 @@ function mealDonation() {
 					</button>
 				</div>
 			</form>
-		<div>`);
+		<div>`;
 }
 
 function mealDistribution() {
-	return DOMPurify.sanitize(`
+	return `
 		<div  class="d-flex flex-column" style="gap: 40px;">
 			<div>
 				<h5 class="accent-100 mb-2">Meal distribution</h5>
@@ -427,11 +427,11 @@ function mealDistribution() {
 			</form>
 
 		
-		<div>`);
+		<div>`;
 }
 
 function fridgeAdministration() {
-	return DOMPurify.sanitize(`
+	return `
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
 				<h5 class="accent-100 mb-2">Fridge Administration</h5>
@@ -439,7 +439,7 @@ function fridgeAdministration() {
 			</div>
 
 			 <form method="POST" action="/contribution/fridge_admin" class="form">
-				<input type="text" id="name" name="name" required placeholder="Name of the fridge..." />
+				<input type="text" id="fridgeName" name="fridgeName" required placeholder="Name of the fridge..." />
 				<input type="text" id="address" name="address" required placeholder="Address of the fridge..." />
 				<div class="d-flex justify-content-between w-100 gap">
 					<input
@@ -457,11 +457,11 @@ function fridgeAdministration() {
 				</div>
 			</form>
 		<div>
-	`);
+	`;
 }
 
 function moneyDonation() {
-	return DOMPurify.sanitize(`
+	return `
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
 				<h5 class="accent-100 mb-2">Money Donation</h5>
@@ -478,11 +478,11 @@ function moneyDonation() {
 				</div>
 			</form>
 		<div>
-	`);
+	`;
 }
 
 function personRegistration() {
-	return DOMPurify.sanitize(`
+	return `
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
 				<h5 class="accent-100 mb-2">Register Person in Need</h5>
@@ -493,7 +493,7 @@ function personRegistration() {
 				
 				<input
 					type="text"
-					id="name"
+					id="personName"
 					name="name"
 					required
 					placeholder="Full name..."
@@ -532,11 +532,11 @@ function personRegistration() {
 				</div>
 			</form>
 		<div>
-	`);
+	`;
 }
 
 function rewardCollab() {
-	return DOMPurify.sanitize(`
+	return `
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
 				<h5 class="accent-100 mb-2">Reward collaboration</h5>
@@ -547,8 +547,8 @@ function rewardCollab() {
 			<div class="d-flex justify-content-between w-100 gap">	
 				<input
 					type="text"
-					id="name"
-					name="name"
+					id="rewardName"
+					name="rewardName"
 					required
 					placeholder="Reward name..."
 				/>
@@ -610,7 +610,7 @@ function rewardCollab() {
 				</div>
 			</form>
 		<div>
-	`);
+	`;
 }
 
 /**
@@ -906,6 +906,7 @@ function alertaSuccess(mensaje) {
 	</button>
   	`;
 	contenedorAlertas.appendChild(alertaSuccess);
+	cerrarAlertas();
 }
 
 function alertaError(mensaje) {
@@ -922,4 +923,18 @@ function alertaError(mensaje) {
 	</button>
   	`;
 	contenedorAlertas.appendChild(alertaError);
+	cerrarAlertas();
 }
+
+function cerrarAlertas() {
+	// Que se cierren luego de 3 segundos. Puede haber muchas
+	const alertasSuccess = document.querySelectorAll("#success-alert");
+	const alertasError = document.querySelectorAll("#error-alert");
+
+	setTimeout(() => {
+		alertasSuccess.forEach((alert) => alert.remove());
+		alertasError.forEach((alert) => alert.remove());
+	}, 5000);
+}
+
+cerrarAlertas();
