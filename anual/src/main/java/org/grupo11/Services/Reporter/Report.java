@@ -18,8 +18,8 @@ public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    private long lastCreatedAt;
-    private long createdAt; // Time
+    private long fromDate;
+    private long toDate;
     @OneToMany
     private List<FridgeReportRow> fridgeReportRows = new ArrayList<>();
     @OneToMany
@@ -28,11 +28,11 @@ public class Report {
     public Report() {
     }
 
-    public Report(long createdAt, long lastCreatedAt,
+    public Report(long fromDate, long toDate,
                 List<FridgeReportRow> fridgeReportRows,
                 List<MealsPerContributorReportRow> contributorReportRows) {
-        this.createdAt = createdAt;
-        this.lastCreatedAt = lastCreatedAt;
+        this.fromDate = fromDate;
+        this.toDate = toDate;
         this.fridgeReportRows = fridgeReportRows;
         this.contributorReportRows = contributorReportRows;
     }
@@ -41,12 +41,12 @@ public class Report {
         return id;
     }
 
-    public long getLastCreatedAt() {
-        return lastCreatedAt;
+    public long getFromDate() {
+        return fromDate;
     }
 
-    public long getCreatedAt() {
-        return createdAt;
+    public long getToDate() {
+        return toDate;
     }
 
     public List<FridgeReportRow> getFridgeReportRows() {
@@ -56,36 +56,4 @@ public class Report {
     public List<MealsPerContributorReportRow> getContributorReportRows() {
         return contributorReportRows;
     }
-
-    public Map<String, Object> toMap() {
-        String date = DateUtils.epochToDate(createdAt).toString();
-        String lastDate = DateUtils.epochToDate(lastCreatedAt).toString();
-        Map<String, Object> map = new HashMap<>();
-
-        map.put("id", Long.toString(id));
-        map.put("emoji", "🖨️");
-        map.put("created_at", date);
-        map.put("last_created_at", lastDate);
-        /*
-        List<Map<String, Object>> failuresPerFridgeReports = new ArrayList<>();
-        List<Map<String, Object>> mealsPerFridgeReports = new ArrayList<>();
-        List<Map<String, Object>> mealsPerContributorReports = new ArrayList<>();
-
-        for (FridgeReportRow row : failuresPerFridge) {
-            failuresPerFridgeReports.add(row.toMap());
-        }
-        for (MealsPerFridgeReportRow row : mealsPerFridge) {
-            mealsPerFridgeReports.add(row.toMap());
-        }
-        for (MealsPerContributorReportRow row : mealsPerContributor) {
-            mealsPerContributorReports.add(row.toMap());
-        }
-        map.put("failures_per_fridge", failuresPerFridgeReports);
-        map.put("failures_per_fridge", mealsPerFridgeReports);
-        map.put("failures_per_contributor", mealsPerContributorReports);
-        */
-
-        return map;
-    }
-
 }

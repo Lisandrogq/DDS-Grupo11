@@ -127,7 +127,7 @@ public class ContributionsController {
             }
             Meal meal = new Meal(type, DateUtils.parseDateYMDString(expirationDate), DateUtils.now(), fridge, "",
                     Integer.parseInt(calories), Integer.parseInt(weight));
-            MealDonation mealDonation = new MealDonation(meal, DateUtils.now());
+            MealDonation mealDonation = new MealDonation(meal, DateUtils.now(), fridge);
             mealDonation.setContributor(contributor);
             List<FridgeOpenLogEntry> entries = ContributorsManager.getInstance().addContributionToContributor(
                     contributor,

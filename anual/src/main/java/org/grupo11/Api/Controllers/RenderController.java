@@ -180,12 +180,12 @@ public class RenderController {
                     donation.put("emoji", "🍕");
                     donation.put("type", "Meal Donation");
 
-                    if (mealDonation.getMeal().getFridge() != null) {
+                    if (mealDonation.getFridge() != null) {
                         Logger.info("No esta null");
                         donation.put("desc",
                                 "On " + formattedContributionDate + " you have donated "
                                         + mealDonation.getMeal().getType() + " to "
-                                        + mealDonation.getMeal().getFridge().getName());
+                                        + mealDonation.getFridge().getName());
                         // donation.put("fridge", mealDonation.getMeal().getFridge().toMap());
                     } else {
                         Logger.info("Esta null");
@@ -398,8 +398,8 @@ public class RenderController {
             for (Report report : results) {
                 Map<String, Object> map = new HashMap<>();
                 map.put("reportId", Long.toString(report.getId()));
-                map.put("fromDate", Long.toString(report.getLastCreatedAt()));
-                map.put("toDate", Long.toString(report.getCreatedAt()));
+                map.put("fromDate", Long.toString(report.getFromDate()));
+                map.put("toDate", Long.toString(report.getToDate()));
                 reports.add(map);
             }
             session.close();
