@@ -25,6 +25,7 @@ import org.grupo11.Utils.DataImporter;
 import org.grupo11.Utils.DateUtils;
 import org.grupo11.Utils.FieldValidator;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import io.javalin.http.Context;
 import io.javalin.http.UploadedFile;
@@ -68,7 +69,6 @@ public class AdminController {
         Reporter reporter = Reporter.getInstance();
         reporter.regenerateReports();
         ctx.redirect("/dash/home");
-        ctx.status(200).result("Reports updated successfully");
     }
 
     public static void handleUpdateReportFrequency(Context ctx) {
@@ -138,15 +138,26 @@ public class AdminController {
             }
 
             try (Session session = DB.getSessionFactory().openSession()) {
-                session.beginTransaction();
 
-                List<Individual> individuals = session.createQuery("from Individual", Individual.class).list();
-                Logger.info("Individuals from DB: " + individuals.size());
+                Logger.info("Arranca");
 
                 for (CSVImput csvImput : csvImputs) {
-                    Individual individual = individuals.stream()
-                            .filter(i -> i.getName() == csvImput.getName())
-                            .findFirst().orElse(null);
+
+                    // Transaction
+                    Transaction transaction = session.beginTransaction();
+
+                    Logger.info("Processing CSV input: " + csvImput.toString());
+
+                    String hql = "SELECT i FROM Individual i WHERE i.credentials.mail = :mail";
+                    List<Individual> individuals = session.createQuery(hql, Individual.class)
+                        .setParameter("mail", csvImput.getMail())
+                        .getResultList();
+                    
+                    Individual individual = individuals.size() > 0 ? individuals.get(0) : null;
+
+                    if (individuals.size() > 1) {
+                        throw new Exception("Multiple individuals with the same email");
+                    }
 
                     if (individual == null) {
                         Long birth = csvImput.getContributionDate() - 20 * 365 * 24 * 60 * 60 * 1000;
@@ -165,6 +176,9 @@ public class AdminController {
                                 "You have been registered as a contributor to the community. " +
                                         "You can log in with your email and document number as password. Please change your password before continuing.");
                     }
+
+                    Logger.info("Llega al switch");
+
                     switch (csvImput.getContributionType()) {
 
                         case DINERO:
@@ -211,9 +225,10 @@ public class AdminController {
                             break;
                     }
                     DB.update(individual);
+
+                    transaction.commit();
                 }
 
-                session.getTransaction().commit();
             } catch (Exception e) {
                 e.printStackTrace();
                 ctx.redirect("/dash/home?error=Error importing data into database");
