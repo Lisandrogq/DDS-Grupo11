@@ -33,6 +33,7 @@ public class Router {
         api.get("/user/logout", Auth::handleUserLogOut);
         api.post("/user/login", Auth::handleUserLogin);
         api.get("/user/login/github/", Auth::handleUserLoginWithGithub);
+        api.post("/user/change_password", Auth::handleChangePassword);
         api.post("/user/individual", Auth::handleIndividualSignup);
         api.post("/user/legal-entity", Auth::handleLegalEntitySignup);
         api.post("/user/provider/google", Auth::handleAddGoogleProvider);

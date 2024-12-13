@@ -14,8 +14,6 @@ public class Meal {
 
     private String type;
     private long expirationDate;
-    // @OneToOne //las bidireccionalidades son re de trolo mal
-    // private MealDonation mealDonation;
     private long donationDate;
     @ManyToOne
     private Fridge fridge;
@@ -56,10 +54,6 @@ public class Meal {
     public void setFridge(Fridge fridge) {
         this.fridge = fridge;
     }
-
-/*     public void setContribution(MealDonation mealDonation) {
-        this.mealDonation = mealDonation;
-    } */
 
     public Fridge getFridge() {
         return fridge;

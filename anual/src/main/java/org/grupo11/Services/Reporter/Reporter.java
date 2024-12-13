@@ -1,6 +1,7 @@
 package org.grupo11.Services.Reporter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -33,27 +34,54 @@ public class Reporter {
 
     public void setupReporter() {
         updateLastReport();
-        Runnable task = () -> this.genReport();
-        scheduler.scheduleAtFixedRate(task, genReportsEvery, genReportsEvery, genReportsEveryUnit);
+        
+        while (lastReport <= ( DateUtils.now() - intervalMillis() )) {
+            long fromDate = lastReport;
+            long toDate = lastReport + intervalMillis();
+            genReport(fromDate, toDate);
+        }
+
+        Runnable task = () -> this.genReport(lastReport, DateUtils.now());
+        long initialDelay = Math.max(0, intervalMillis() - (DateUtils.now() - lastReport));
+        scheduler.scheduleAtFixedRate(task, initialDelay, genReportsEvery, genReportsEveryUnit);
     }
 
     public void updateLastReport() {
         try (Session session = DB.getSessionFactory().openSession()) {
-            String hql = "SELECT r FROM Report r ORDER BY r.createdAt DESC";
-            org.hibernate.query.Query<Report> origin_query = session.createQuery(hql, Report.class);
-            List<Report> reports = origin_query.getResultList();
-            if (reports.size() == 0) {
-                lastReport = DateUtils.now();
-            } else {
-                lastReport = reports.get(0).getCreatedAt();
-            }
+            
+            String hql = "SELECT MAX(r.toDate) FROM Report r";
+            Long lastReportDate = session.createQuery(hql, Long.class).uniqueResult();
+    
+            lastReport = (lastReportDate != null) ? lastReportDate : getFirstDataDate();
         } catch (Exception e) {
-            Logger.error("Could not get last report", e);
+            Logger.error("Could not update last report", e);
+            lastReport = getFirstDataDate();
         }
     }
 
-    public void genReport() {
-        Logger.info("Generating reports");
+    public long getFirstDataDate() {
+        try (Session session = DB.getSessionFactory().openSession()) {
+
+            String incidentHql = "SELECT MIN(i.detectedAt) FROM Incident i";
+            Long firstIncidentDate = session.createQuery(incidentHql, Long.class).uniqueResult();
+    
+            String contributionHql = "SELECT MIN(c.date) FROM Contribution c";
+            Long firstContributionDate = session.createQuery(contributionHql, Long.class).uniqueResult();
+    
+            long now = DateUtils.now();
+            long earliestIncident = (firstIncidentDate != null) ? firstIncidentDate : now;
+            long earliestContribution = (firstContributionDate != null) ? firstContributionDate : now;
+    
+            return Math.min(earliestIncident, earliestContribution);
+        } catch (Exception e) {
+            Logger.error("Could not get first data date", e);
+            return DateUtils.now();
+        }
+    }
+
+    public void genReport(long fromDate, long toDate) {
+
+        Logger.info("Generating report from " + DateUtils.epochToDate(fromDate) + " to " + DateUtils.epochToDate(toDate));
 
         try (Session session = DB.getSessionFactory().openSession()) {
             
@@ -61,7 +89,7 @@ public class Reporter {
             List<Fridge> fridges = session.createQuery(hql, Fridge.class).getResultList();
             List<FridgeReportRow> fridgeReportRows = new ArrayList<FridgeReportRow>(); // 1
             for (Fridge fridge : fridges) {
-                FridgeReportRow row = new FridgeReportRow(fridge, lastReport);
+                FridgeReportRow row = new FridgeReportRow(fridge, fromDate, toDate);
                 DB.create(row);
                 fridgeReportRows.add(row);
             }
@@ -70,17 +98,15 @@ public class Reporter {
             List<Individual> contributors = session.createQuery(hql2, Individual.class).getResultList();
             List<MealsPerContributorReportRow> contributorReportRows = new ArrayList<MealsPerContributorReportRow>(); // 2
             for (Individual contributor : contributors) {
-                MealsPerContributorReportRow row = new MealsPerContributorReportRow(contributor, lastReport);
+                MealsPerContributorReportRow row = new MealsPerContributorReportRow(contributor, fromDate, toDate);
                 DB.create(row);
                 contributorReportRows.add(row);
             }
 
-            Long now = DateUtils.now();
-            Report report = new Report(now, lastReport, fridgeReportRows, contributorReportRows);
+            Report report = new Report(fromDate, toDate, fridgeReportRows, contributorReportRows);
             DB.create(report);
             this.reports.add(report);
-            lastReport = now;
-            session.close();
+            lastReport = toDate;
 
         } catch (Exception e) {
             Logger.error("Could not create report", e);
@@ -88,29 +114,68 @@ public class Reporter {
     }
 
     public void newReportInterval(int frequency, String unit) {
-        switch (unit) {
-            case "MINUTES":
-                this.genReportsEveryUnit = TimeUnit.MINUTES;
-                break;
-            case "HOURS":
-                this.genReportsEveryUnit = TimeUnit.HOURS;
-                break;
-            case "DAYS":
-                this.genReportsEveryUnit = TimeUnit.DAYS;
-                break;
-            case "WEEKS":
-                this.genReportsEveryUnit = TimeUnit.DAYS;
-                frequency = frequency * 7;
-                break;
-            default:
-                this.genReportsEveryUnit = TimeUnit.DAYS;
-                break;
+
+        if (frequency <= 0) {
+            throw new IllegalArgumentException("Frequency must be greater than 0.");
         }
-        this.genReportsEvery = frequency;
-        scheduler.shutdown();
-        scheduler = Executors.newScheduledThreadPool(1);
-        genReport();
+        if (!Arrays.asList("MINUTES", "HOURS", "DAYS", "WEEKS").contains(unit)) {
+            throw new IllegalArgumentException("Invalid unit. Allowed values are: MINUTES, HOURS, DAYS, WEEKS.");
+        }
+
+        try {
+            scheduler.shutdown();
+            scheduler = Executors.newScheduledThreadPool(1);
+
+            switch (unit) {
+                case "MINUTES":
+                    this.genReportsEveryUnit = TimeUnit.MINUTES;
+                    break;
+                case "HOURS":
+                    this.genReportsEveryUnit = TimeUnit.HOURS;
+                    break;
+                case "DAYS":
+                    this.genReportsEveryUnit = TimeUnit.DAYS;
+                    break;
+                case "WEEKS":
+                    this.genReportsEveryUnit = TimeUnit.DAYS;
+                    frequency = frequency * 7;
+                    break;
+                default:
+                    this.genReportsEveryUnit = TimeUnit.DAYS;
+                    break;
+            }
+
+            this.genReportsEvery = frequency;
+
+            cleanReports();
+            setupReporter();
+
+        } catch (Exception e) {
+            Logger.error("Could not change report interval", e);
+            return;
+        }
+    }
+
+    public void cleanReports() {
+        try (Session session = DB.getSessionFactory().openSession()) {
+            session.beginTransaction();
+
+            String hql = "DELETE FROM Report";
+            session.createQuery(hql).executeUpdate();
+            
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            Logger.error("Could not delete reports", e);
+        }
         setupReporter();
+    }
+
+    public void regenerateReports() {
+        newReportInterval(genReportsEvery, genReportsEveryUnit.toString());
+    }
+
+    public long intervalMillis() {
+        return genReportsEveryUnit.toMillis(genReportsEvery);
     }
 
     public String getGenReportsEvery() {

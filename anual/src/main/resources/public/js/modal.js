@@ -29,13 +29,14 @@ const closeModal = () => {
 document.addEventListener("keyup", (e) => {
 	if (e.key == "Escape") closeModal();
 });
+
 var count = 1;
 function agregarInput() {
 	if (count < 4) {
 		let div = document.createElement("div");
 		div.classList.add("input");
 		div.innerHTML =
-			' <input type="text" id="meal" name="meal_' + count + '" required placeholder="Type of meal to distribute..."class="col-12 inputs">';
+			' <input type="number" id="meal" name="meal_' + count + '" required placeholder="ID of meal to distribute..."class="col-12 inputs">';
 		document.getElementById("input-placeholder").appendChild(div);
 		count++;
 	}
@@ -61,7 +62,7 @@ function setup_map(lat, lon) {
 /**
  * ===================================== Fridge Modal Logic =====================================
  */
-const fridgeModal = (name, meals, temp, capacity, state, lat, lon) => DOMPurify.sanitize( `
+const fridgeModal = (id,name, meals, temp, capacity, state, lat, lon) => DOMPurify.sanitize( `
 <div
 	id="has_map"
 	class="d-flex flex-column"
@@ -70,7 +71,11 @@ const fridgeModal = (name, meals, temp, capacity, state, lat, lon) => DOMPurify.
 	data-lon=${lon}
 >
 	<div class="d-flex w-100 justify-content-between align-items-center">
-		<h5 class="accent-100 mb-2">${name} fridge</h5>
+	<div style="margin-top:20px">
+		<h4 class="accent-100 mb-2">${name} fridge
+		<h6 style="color: #28334d;display: inline;margin-left: 5px;" >(ID: ${id})</h6>
+		</h4>
+	</div>
 		<div class="d-flex flex-row" style="gap: 10px;">
 			<button id="MealDonationShortcut" class="btn-primary" style="padding: 10px; font-size: var(--paragraph)">Donate meal</button>
 			<button id="unsubscribeBtn" class="btn-primary" style="padding: 10px; font-size: var(--paragraph)">Unsubscribe</button>
@@ -106,7 +111,6 @@ function handleSubscribe(id) {
 					name="type"
 					required
 					id="subscription-type"
-					onchange="toggleQuantityField(event)"
 				>
 					<option value="" selected disabled hidden>
 						Choose a category of subscription
@@ -195,10 +199,14 @@ const setupFridgeListeners = () => {
 		const userType = fridge.getAttribute("data-user-type");
 
 		fridge.onclick = () => {
-			openModal(fridgeModal(name, meals, temp, capacity, state, lat, lon), () => {
+			openModal(fridgeModal(id,name, meals, temp, capacity, state, lat, lon), () => {
 				
 				const subscribeBtn = document.querySelector("#subscribeBtn");
-				subscribeBtn.onclick = () => setModalContent(handleSubscribe(id));
+				subscribeBtn.onclick = () => {
+					setModalContent(handleSubscribe(id));
+					const subscriptionType = document.querySelector("#subscription-type");
+					subscriptionType.onchange = toggleQuantityField;
+				};
 
 				const unsubscribeBtn = document.querySelector("#unsubscribeBtn");
 				if (subscribed === "true") {
@@ -212,11 +220,11 @@ const setupFridgeListeners = () => {
 				if (userType == "IND") {
 					mealDonationShortcut.style.display = "inline-block";
 					mealDonationShortcut.onclick = () => {
-						const address = fridge.getAttribute("data-fridge-address");
+						const id = fridge.getAttribute("data-fridge-id");
 						setModalContent(mealDonation());
-						const fridgeAddressInput = document.querySelector("#fridge_address");
-						fridgeAddressInput.value = address;
-						fridgeAddressInput.textContent = address;
+						const fridgeAddressInput = document.querySelector("#fridge_id");
+						fridgeAddressInput.value = id;
+						fridgeAddressInput.textContent = id;
 					}
 				} else {
 					mealDonationShortcut.style.display = "none";
@@ -284,7 +292,13 @@ const setupListenersContributionsListeners = () => {
 	const btns = document.querySelectorAll("#contribution-form-btn");
 	btns.forEach((btn) => {
 		const modalDataAttr = btn.getAttribute("data-attr");
-		btn.onclick = () => setModalContent(modalMapper[modalDataAttr]);
+		btn.onclick = () => {
+			setModalContent(modalMapper[modalDataAttr])
+			if (modalDataAttr === "meal-distribution") {
+				document.querySelector("#btnCrearInput").onclick = agregarInput;
+				document.querySelector("#btnEliminarInput").onclick = eliminarInput;
+			}
+		};
 	});
 };
 
@@ -339,11 +353,11 @@ function mealDonation() {
 					/>
 
 					<input
-						type="text"
-						id="fridge_address"
-						name="fridge_address"
+						type="number"
+						id="fridge_id"
+						name="fridge_id"
 						required
-						placeholder="Fridge Address..."
+						placeholder="Fridge Id..."
 					/>
 				</div>
 				<div class="d-flex justify-content-between w-100 gap">
@@ -393,29 +407,30 @@ function mealDistribution() {
 			</div>
 			<form method="POST" action="/contribution/meal/distribution" class="form">
 				<div>
-					<span id="btnCrearInput" style="color: #136C91;" class="clickable-text" onclick="agregarInput()">Add meal</span> <b>|</b>
-					<span  style="color: #136C91" class="clickable-text" onclick="eliminarInput()">Delete meal</span>
+					<span id="btnCrearInput" style="color: #136C91;" class="clickable-text">Add meal</span>
+					<b>|</b>
+					<span id="btnEliminarInput" style="color: #136C91" class="clickable-text">Delete meal</span>
 				</div>
 				<div id="input-placeholder"> 
-				<input type="text" id="meal" name="meal_0" required placeholder="Type of meal to distribute..."class="col-12 inputs">
+					<input type="number" id="meal" name="meal_0" required placeholder="ID of meal to distribute..."class="col-12 inputs">
 				</div>
 				<input type="text" id="reason" name="reason" required placeholder="Reason for relocation...">
 				
 				<div class="d-flex justify-content-between w-100 gap">
 						<input
-						type="text"
-						id="origin_address"
-						name="origin_address"
+						type="number"
+						id="origin_id"
+						name="origin_id"
 						required
-						placeholder="Origin fridge Address..."
+						placeholder="Origin fridge Id..."
 					/>
 
 						<input
-						type="text"
-						id="destiny_address"
-						name="destiny_address"
+						type="number"
+						id="destiny_id"
+						name="destiny_id"
 						required
-						placeholder="Destiny fridge Address..."
+						placeholder="Destiny fridge Id..."
 					/>
 					
 				</div>
@@ -430,6 +445,16 @@ function mealDistribution() {
 		<div>`;
 }
 
+function generateCities() {
+	var cities = ["CABA", "La Plata", "Rosario", "Córdoba", "Mendoza", "Salta", "Mar del Plata", "San Juan", "Santa Fe"];
+    var options = '<option name ="city" selected value="" disabled hidden>City of the fridge</option>';
+    
+    for (var i = 0; i < cities.length; i++) {
+        options += `<option value="${cities[i]}" class="desplegables">${cities[i]}</option>`;
+    }
+    
+    return options;
+}
 function fridgeAdministration() {
 	return `
 		<div class="d-flex flex-column" style="gap: 40px;">
@@ -440,7 +465,12 @@ function fridgeAdministration() {
 
 			 <form method="POST" action="/contribution/fridge_admin" class="form">
 				<input type="text" id="fridgeName" name="fridgeName" required placeholder="Name of the fridge..." />
-				<input type="text" id="address" name="address" required placeholder="Address of the fridge..." />
+				<div class="d-flex justify-content-between w-100 gap">
+				<input  style="width: 50%" type="text" id="address" name="address" required placeholder="Address of the fridge..." />
+				<select name="city" required value="" style="width: 50%">
+                        ${generateCities()}
+                </select>
+				</div>
 				<div class="d-flex justify-content-between w-100 gap">
 					<input
 						type="number"
@@ -494,7 +524,7 @@ function personRegistration() {
 				<input
 					type="text"
 					id="personName"
-					name="name"
+					name="personName"
 					required
 					placeholder="Full name..."
 				/>

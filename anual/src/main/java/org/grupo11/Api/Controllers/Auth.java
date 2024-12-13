@@ -278,7 +278,6 @@ public class Auth {
             return;
         }
 
-        System.out.println("NAME:" + name);
         if (!FieldValidator.isString(name)) {
             sendFormError.accept("Invalid name");
             return;
@@ -433,5 +432,62 @@ public class Auth {
             // this means it did not exist, create it
             DB.create(new Credentials(email, null, type, ownerId, provider));
         }
+    }
+
+    public static void handleChangePassword(Context ctx) {
+        BiConsumer<String, HttpStatus> sendFormError = (msg, status) -> {
+            ctx.status(status).redirect("/register/changePassword?error=" + msg);
+        };
+
+        String mail = ctx.formParam("mail");
+        String pw = ctx.formParam("oldPassword");
+
+        if (!FieldValidator.isEmail(mail)) {
+            sendFormError.accept("Invalid email", HttpStatus.BAD_REQUEST);
+            return;
+        }
+        if (!FieldValidator.isString(pw)) {
+            sendFormError.accept("Invalid password", HttpStatus.BAD_REQUEST);
+            return;
+        }
+
+        try (Session session = DB.getSessionFactory().openSession()) {
+            String hashedPassword = Crypto.sha256Hash(pw.getBytes());
+            String hql = "SELECT c " +
+                    "FROM Credentials c " +
+                    "WHERE c.password = :password AND c.mail = :mail";
+
+            org.hibernate.query.Query<Credentials> query = session.createQuery(hql, Credentials.class);
+            query.setParameter("mail", mail);
+            query.setParameter("password", hashedPassword);
+
+            Credentials credentials = query.getSingleResult();
+
+            if (credentials == null) {
+                sendFormError.accept("Invalid credentials", HttpStatus.UNAUTHORIZED);
+                return;
+            }
+
+            String newPw = ctx.formParam("password");
+
+            if (!FieldValidator.acceptablePassword(newPw)) {
+                sendFormError.accept(
+                        "Invalid password format.<br> It must include uppercase, lowercase, digit and special character",
+                        HttpStatus.BAD_REQUEST);
+                return;
+            }
+
+            String hashedNewPassword = Crypto.sha256Hash(newPw.getBytes());
+            credentials.setPassword(hashedNewPassword);
+            DB.update(credentials);
+
+            ctx.redirect("/register/login");
+
+        } catch (Exception e) {
+            Logger.error("Unexpected error while authenticating user", e);
+            sendFormError.accept("Invalid credentials", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+            return;
+        }
+
     }
 }

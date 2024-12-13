@@ -55,7 +55,7 @@ public class ContributionsController {
 
         String type = ctx.formParam("type");
         String expirationDate = ctx.formParam("expirationDate");
-        String fridge_address = ctx.formParam("fridge_address");
+        String fridge_id = ctx.formParam("fridge_id");
         String calories = ctx.formParam("calories");
         String weight = ctx.formParam("weight");
 
@@ -69,7 +69,7 @@ public class ContributionsController {
             sendFormError.accept("invalid type");
             return;
         }
-        if (!FieldValidator.isString(fridge_address)) {
+        if (!FieldValidator.isInt(fridge_id)) {
             sendFormError.accept("invalid fridge_address");
             return;
         }
@@ -108,9 +108,9 @@ public class ContributionsController {
         try (Session session = DB.getSessionFactory().openSession()) {
             String hql = "SELECT f " +
                     "FROM Fridge f " +
-                    "WHERE f.address = :fridge_address";
+                    "WHERE f.id = :fridge_id";
             org.hibernate.query.Query<Fridge> query = session.createQuery(hql, Fridge.class);
-            query.setParameter("fridge_address", fridge_address);
+            query.setParameter("fridge_id", fridge_id);
             Fridge fridge = query.uniqueResult();
 
             if (fridge == null) {
@@ -127,7 +127,7 @@ public class ContributionsController {
             }
             Meal meal = new Meal(type, DateUtils.parseDateYMDString(expirationDate), DateUtils.now(), fridge, "",
                     Integer.parseInt(calories), Integer.parseInt(weight));
-            MealDonation mealDonation = new MealDonation(meal, DateUtils.now());
+            MealDonation mealDonation = new MealDonation(meal, DateUtils.now(), fridge);
             mealDonation.setContributor(contributor);
             List<FridgeOpenLogEntry> entries = ContributorsManager.getInstance().addContributionToContributor(
                     contributor,
@@ -160,8 +160,8 @@ public class ContributionsController {
         }
 
         String reason = ctx.formParam("reason");
-        String origin_address = ctx.formParam("origin_address");
-        String destiny_address = ctx.formParam("destiny_address");
+        String origin_id = ctx.formParam("origin_id");
+        String destiny_id = ctx.formParam("destiny_id");
 
         try (Session session = DB.getSessionFactory().openSession()) {
 
@@ -169,25 +169,25 @@ public class ContributionsController {
                 ctx.redirect("/dash/home?error=invalid reason");
                 return;
             }
-            if (!FieldValidator.isString(origin_address)) {
-                ctx.redirect("/dash/home?error=invalid origin_address");
+            if (!FieldValidator.isInt(origin_id)) {
+                ctx.redirect("/dash/home?error=invalid origin_id");
                 return;
             }
-            if (!FieldValidator.isString(destiny_address)) {
-                ctx.redirect("/dash/home?error=invalid destiny_address");
+            if (!FieldValidator.isInt(destiny_id)) {
+                ctx.redirect("/dash/home?error=invalid destiny_id");
                 return;
             }
 
             String origin_hql = "SELECT f " +
                     "FROM Fridge f " +
-                    "WHERE f.address = :origin_address";
+                    "WHERE f.id = :origin_id";
             org.hibernate.query.Query<Fridge> origin_query = session.createQuery(origin_hql, Fridge.class);
-            origin_query.setParameter("origin_address", origin_address);
+            origin_query.setParameter("origin_id", origin_id);
             String destiny_hql = "SELECT f " +
                     "FROM Fridge f " +
-                    "WHERE f.address = :destiny_address";
+                    "WHERE f.id = :destiny_id";
             org.hibernate.query.Query<Fridge> destiny_query = session.createQuery(destiny_hql, Fridge.class);
-            destiny_query.setParameter("destiny_address", destiny_address);
+            destiny_query.setParameter("destiny_id", destiny_id);
 
             Fridge origin_fridge = origin_query.getSingleResult();
             Fridge destiny_fridge = destiny_query.getSingleResult();
@@ -210,15 +210,15 @@ public class ContributionsController {
 
             int i = 0;
             int max = 0;
-            for (i = 0; i < 10; i++) { // primero se valida que todas las comidas estén . se podría hacer con
-                                       // transacciones pero notiempo
-                String meal_type = ctx.formParam("meal_" + i);
-                if (meal_type != null) {
-                    Meal meal = origin_fridge.getMealByType(meal_type);
+            for (i = 0; i < 10; i++) { 
+
+                String meal_id = ctx.formParam("meal_" + i);
+                if (meal_id != null) {
+                    Meal meal = origin_fridge.getMealByID(Long.parseLong(meal_id));
                     max++;
                     if (meal == null) {
                         ;
-                        ctx.redirect("/dash/home?error=The meal " + meal_type + " does not exist in the origin fridge");
+                        ctx.redirect("/dash/home?error=The meal " + meal_id + " does not exist in the origin fridge");
                         return;
                     }
                 }
@@ -249,11 +249,10 @@ public class ContributionsController {
             DB.create(entries.get(0));
             DB.create(entries.get(1));
             for (i = 0; i < max; i++) {
-                String meal_type = ctx.formParam("meal_" + i);
-                if (meal_type != null) {
-                    Meal meal = origin_fridge.getMealByType(meal_type);
-                    System.out.println("adad: " + meal_type + " - " + meal.getType());
-
+                String meal_id = ctx.formParam("meal_" + i);
+                if (meal_id != null) {
+                    Meal meal = origin_fridge.getMealByID(Long.parseLong(meal_id));
+                    System.out.println("adad: " + meal_id + " - " + meal.getId());
                     FridgeNotification notification_ori = origin_fridge.removeMeal(meal);
                     FridgeNotification notification_des = destiny_fridge.addMeal(meal);
                     DB.create(notification_ori);
@@ -284,17 +283,17 @@ public class ContributionsController {
             ctx.redirect("/register/login");
             return;
         }
-
+        Logger.info(ctx.body());
         String name = ctx.formParam("fridgeName");
         String address = ctx.formParam("address");
         String capacity = ctx.formParam("capacity");
-
+        String city = ctx.formParam("city");
         if (!FieldValidator.isString(name)) {
             ctx.redirect("/dash/home?error=Enter a valid name");
             return;
         }
-        if (!FieldValidator.isString(address)) {
-            ctx.redirect("/dash/home?error=Enter a valid address");
+        if (!FieldValidator.isValidAddress(address)) {
+            ctx.redirect("/dash/home?error=Enter a valid address (it must be like 'Street 1234')");
             return;
         }
         if (!FieldValidator.isInt(capacity)) {
@@ -305,9 +304,14 @@ public class ContributionsController {
             ctx.redirect("/dash/home?error=Enter a valid capacity amount");
             return;
         }
+        if (!FieldValidator.isString(city)) {
+            ctx.redirect("/dash/home?error=Enter a valid city");
+            return;
+        }
+        
 
+        address = address + ", "+city+", Argentina ";//this is done so the map always work with real addresses in argentina 
         try (Session session = DB.getSessionFactory().openSession()) {
-            
             String hql = "SELECT f " +
                     "FROM Fridge f " +
                     "WHERE f.address = :address";
@@ -419,7 +423,7 @@ public class ContributionsController {
         String children_count = ctx.formParam("children_count");
 
         if (!FieldValidator.isString(name)) {
-            ctx.redirect("Enter a valid name");
+            ctx.redirect("/dash/home?error=Enter a valid name");
             return;
         }
         if (!FieldValidator.isDate(birth)) {

@@ -5,10 +5,12 @@ import java.util.List;
 
 import org.grupo11.Services.Meal;
 import org.grupo11.Services.Contributor.Contributor;
+import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgeOpenLogEntry;
 import org.grupo11.Utils.DateUtils;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 
@@ -17,6 +19,8 @@ import jakarta.persistence.PrimaryKeyJoinColumn;
 public class MealDonation extends Contribution {
     @OneToOne
     private Meal meal;
+    @ManyToOne
+    private Fridge fridge = null;
 
     public MealDonation() {
     }
@@ -24,6 +28,16 @@ public class MealDonation extends Contribution {
     public MealDonation(Meal meal, long date) {
         super(date);
         this.meal = meal;
+    }
+
+    public MealDonation(Meal meal, long date, Fridge fridge) {
+        super(date);
+        this.meal = meal;
+        this.fridge = fridge;
+    }
+
+    public Fridge getFridge() {
+        return this.fridge;
     }
 
     @Override
@@ -52,7 +66,6 @@ public class MealDonation extends Contribution {
     @Override
     public void setContributor(Contributor contributor) {
         super.setContributor(contributor);
-        // meal.setContributor(contributor); las bidireccionalidades son re de trolo
     }
 
     public Meal getMeal() {

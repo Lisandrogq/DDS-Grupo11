@@ -217,12 +217,12 @@ public class RenderController {
                     donation.put("emoji", "🍕");
                     donation.put("type", "Meal Donation");
 
-                    if (mealDonation.getMeal().getFridge() != null) {
+                    if (mealDonation.getFridge() != null) {
                         Logger.info("No esta null");
                         donation.put("desc",
                                 "On " + formattedContributionDate + " you have donated "
                                         + mealDonation.getMeal().getType() + " to "
-                                        + mealDonation.getMeal().getFridge().getName());
+                                        + mealDonation.getFridge().getName());
                         // donation.put("fridge", mealDonation.getMeal().getFridge().toMap());
                     } else {
                         Logger.info("Esta null");
@@ -243,7 +243,6 @@ public class RenderController {
                                         + " meals from "
                                         + mealDistribution.getOriginFridge().getName() + " to "
                                         + mealDistribution.getDestinyFridge().getName());
-                        // donation.put("fridge", donatedFridge);
                     } else {
                         donation.put("desc",
                                 "On " + formattedContributionDate + " you have moved " + mealDistribution.getQuantity()
@@ -257,7 +256,6 @@ public class RenderController {
                     donation.put("type", "Fridge administration");
                     donation.put("desc", "You are administrating " + fridgeAdmin.getFridge().getName() + " since "
                             + formattedContributionDate);
-                    // donation.put("fridge", fridgeAdmin.getFridge().toMap());
 
                 } else if (contribution instanceof MoneyDonation) {
 
@@ -266,7 +264,6 @@ public class RenderController {
                     donation.put("type", "Money Donation");
                     donation.put("desc", "On " + formattedContributionDate + " you have donated "
                             + moneyDonation.getAmount() + "$");
-                    // donation.put("fridge", donatedFridge);
 
                 } else if (contribution instanceof PersonRegistration) {
 
@@ -276,7 +273,6 @@ public class RenderController {
                     if (personRegistration.getPerson() != null) {
                         donation.put("desc", "On " + formattedContributionDate + " you have registered "
                                 + personRegistration.getPerson().getName());
-                        // donation.put("fridge", donatedFridge);
                     } else {
                         donation.put("desc", "On " + formattedContributionDate + " you have registered a person");
                     }
@@ -372,14 +368,15 @@ public class RenderController {
             session.close();
 
         } catch (Exception e) {
-
             return null;
         }
 
         List<Map<String, Object>> visits = new ArrayList<>();
         try (Session session = DB.getSessionFactory().openSession()) {
-            String hql = "FROM TechnicianVisit v ";
+            String hql = "FROM TechnicianVisit v WHERE v.technician = :technician";
             Query<TechnicianVisit> query = session.createQuery(hql, TechnicianVisit.class);
+            query.setParameter("technician", technician);
+            
             List<TechnicianVisit> results = query.getResultList();
             for (TechnicianVisit visit : results) {
                 visits.add(visit.toMap());
@@ -434,8 +431,8 @@ public class RenderController {
             for (Report report : results) {
                 Map<String, Object> map = new HashMap<>();
                 map.put("reportId", Long.toString(report.getId()));
-                map.put("fromDate", Long.toString(report.getLastCreatedAt()));
-                map.put("toDate", Long.toString(report.getCreatedAt()));
+                map.put("fromDate", Long.toString(report.getFromDate()));
+                map.put("toDate", Long.toString(report.getToDate()));
                 reports.add(map);
             }
             session.close();

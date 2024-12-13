@@ -120,7 +120,7 @@ public class Fridge {
         fridgeMap.put("lat", getLatAsString());
         fridgeMap.put("lon", getLonAsString());
         fridgeMap.put("temp", Double.toString(getTempManager().getLastTemp()));
-        fridgeMap.put("reserved", 0);// q pija es esto??
+        fridgeMap.put("reserved", 0);
         fridgeMap.put("state", getIsActive() ? "Active" : "Inactive");
         fridgeMap.put("meals", Integer.toString(getMeals().size()));
         fridgeMap.put("food_status_desc", "located at " + getAddress());
@@ -271,9 +271,9 @@ public class Fridge {
 
     }
 
-    public Meal getMealByType(String type) {
+    public Meal getMealByID(Long id) {
         for (Meal meal : meals) {
-            if (meal.getType().equals(type)) {
+            if (meal.getId().equals(id)) {
                 return meal;
             }
         }

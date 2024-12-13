@@ -71,8 +71,4 @@ public class Controller {
         }
 
     }
-
-    public static void fridges(String consumerTag, Delivery message) throws IOException {
-        System.out.println("pija de goma");
-    }
 }

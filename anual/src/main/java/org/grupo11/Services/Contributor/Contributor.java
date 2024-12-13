@@ -78,7 +78,6 @@ public class Contributor {
         // collection of role:
         // org.grupo11.Services.Contributor.Contributor.possibleContributions: could not
         // initialize proxy - no Session"
-        // asiq ahora se hace de manera villera
         if (this instanceof Individual) {
             System.out.println("individiual");
             return contributionType == ContributionType.MEAL_DONATION
