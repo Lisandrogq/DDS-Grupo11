@@ -83,6 +83,7 @@ public class FridgeReportRow {
             mealDistributionsQuery.setParameter("fridgeId", fridge.getId());
             mealDistributionsQuery.setParameter("toDate", toDate);
             List<MealDistribution> mealDistributions = mealDistributionsQuery.getResultList();
+            Logger.info("Meal distributions: " + mealDistributions.size());
 
             // Para las de origen se sacan
             

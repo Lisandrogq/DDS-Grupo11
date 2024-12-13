@@ -36,14 +36,17 @@ public class Reporter {
         updateLastReport();
         
         while (lastReport <= ( DateUtils.now() - intervalMillis() )) {
+            Logger.info("Entro al while");
             long fromDate = lastReport;
             long toDate = lastReport + intervalMillis();
             genReport(fromDate, toDate);
         }
 
-        Runnable task = () -> this.genReport(lastReport, DateUtils.now());
-        long initialDelay = Math.max(0, intervalMillis() - (DateUtils.now() - lastReport));
-        scheduler.scheduleAtFixedRate(task, initialDelay, genReportsEvery, genReportsEveryUnit);
+        Runnable task = () -> this.genReport(lastReport, lastReport + intervalMillis());
+        long initialDelay = intervalMillis() - (DateUtils.now() - lastReport);
+        Logger.info("Initial delay: " + initialDelay);
+        initialDelay = (initialDelay < 0) ? 0 : initialDelay;
+        scheduler.scheduleAtFixedRate(task, initialDelay, intervalMillis(), TimeUnit.MILLISECONDS);
     }
 
     public void updateLastReport() {
@@ -51,8 +54,11 @@ public class Reporter {
             
             String hql = "SELECT MAX(r.toDate) FROM Report r";
             Long lastReportDate = session.createQuery(hql, Long.class).uniqueResult();
+
+            Logger.info("Last report date: " + lastReportDate);
     
             lastReport = (lastReportDate != null) ? lastReportDate : getFirstDataDate();
+            Logger.info("Last report: " + lastReport);
         } catch (Exception e) {
             Logger.error("Could not update last report", e);
             lastReport = getFirstDataDate();
@@ -64,9 +70,11 @@ public class Reporter {
 
             String incidentHql = "SELECT MIN(i.detectedAt) FROM Incident i";
             Long firstIncidentDate = session.createQuery(incidentHql, Long.class).uniqueResult();
+            Logger.info("First incident date: " + firstIncidentDate);
     
-            String contributionHql = "SELECT MIN(c.date) FROM Contribution c";
-            Long firstContributionDate = session.createQuery(contributionHql, Long.class).uniqueResult();
+            String mealDonationHql = "SELECT MIN(md.date) FROM MealDonation md";
+            Long firstContributionDate = session.createQuery(mealDonationHql, Long.class).uniqueResult();
+            Logger.info("First contribution date: " + firstContributionDate);
     
             long now = DateUtils.now();
             long earliestIncident = (firstIncidentDate != null) ? firstIncidentDate : now;
@@ -167,7 +175,6 @@ public class Reporter {
         } catch (Exception e) {
             Logger.error("Could not delete reports", e);
         }
-        setupReporter();
     }
 
     public void regenerateReports() {

@@ -65,7 +65,10 @@
                             <p>A history list of all the reports. This list is updated every ${reportsFrequency.frequency} ${reportsFrequency.unit}.</p>
                         </div>
                         <div class="d-flex flex-row align-items-center" style="gap: 30px">
-                            <button type="button" class="btn btn-primary" id="create-report-btn">Update reports</button>
+                            <button class="btn btn-primary" type="button" id="create-report-btn">
+                                <span class="spinner-border spinner-border-sm d-none" id="loading-spinner-create" aria-hidden="true"></span>
+                                <span id="button-text-create">Update reports</span>
+                            </button>
                             <button
                                 type="button"
                                 class="btn btn-primary"
@@ -89,6 +92,7 @@
                                 data-report-id="${report.reportId}"
                                 data-from-date="${report.fromDate}"
                                 data-to-date="${report.toDate}"
+                                data-report-number="${reports?size - report?index}"
                             >
                                 <h4>${Reportsemoji}</h4>
                                 <div>
@@ -122,8 +126,8 @@
                                     </div>
                                     <div class="d-flex flex-row justify-content-end">
                                         <button class="btn btn-primary" type="button" id="submit-button">
-                                            <span class="spinner-border spinner-border-sm d-none" id="loading-spinner" aria-hidden="true"></span>
-                                            <span id="button-text">Submit</span>
+                                            <span class="spinner-border spinner-border-sm d-none" id="loading-spinner-csv" aria-hidden="true"></span>
+                                            <span id="button-text-csv">Submit</span>
                                         </button>
                                     </div>
                                 </div>

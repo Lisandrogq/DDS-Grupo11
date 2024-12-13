@@ -285,6 +285,11 @@ createReportBtn.onclick = () => {
     console.log("Create report button clicked");
     const url = "/admin/report/create";
 
+    const spinner = document.getElementById("loading-spinner-create");
+    const buttonText = document.getElementById("button-text-create");
+    spinner.classList.remove("d-none");
+    buttonText.textContent = "Loading...";
+
     fetch(url, {
         method: "POST",
         headers: {
@@ -295,13 +300,11 @@ createReportBtn.onclick = () => {
         if (!response.ok) {
             console.error('Error:', response);
             alertaError("An error occurred. Please try again.");
-            throw new Error('Network response was not ok');
         }
-        return response.text(); // Leer el mensaje como texto
     })
     .then(message => {
         console.log("Server response:", message);
-        alertaSuccess(message || "Reports updated successfully");
+        window.location.reload();
     })
     .catch(error => {
         alertaError("An error occurred. Please try again.");
@@ -319,7 +322,7 @@ newFrequencyBtn.onclick = () => {
     openModal( DOMPurify.sanitize( `
             <div class="d-flex flex-column" style="gap: 20px;">
                 <h5 class="accent-100 mb-2">New Frequency</h5>
-                <form action="/admin/report/updateFrequency" method="POST">
+                <form action="/admin/report/updateFrequency" method="POST" id="frequency-form">
                     <div class="form-group">
                         <label for="frequency">Report frequency</label>
                         <input type="number" id="frequency" name="frequency" class="form-control" value="${actualFrequency}" required>
@@ -334,11 +337,26 @@ newFrequencyBtn.onclick = () => {
                         </select>
                     </div>
                     <div align="right">
-                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button class="btn btn-primary" type="button" id="save-frequency-button">
+                            <span class="spinner-border spinner-border-sm d-none" id="loading-spinner-freq" aria-hidden="true"></span>
+                            <span id="button-text-freq">Save</span>
+                        </button>
                     </div>
                 </form>
             </div>
     ` ) , () => { });
+    const saveFrequencyButton = document.getElementById("save-frequency-button");
+    saveFrequencyButton.onclick = () => {
+        const form = document.getElementById("frequency-form");
+        if (form.checkValidity()) {
+            const spinner = document.getElementById("loading-spinner-freq");
+            const buttonText = document.getElementById("button-text-freq");
+            spinner.classList.remove("d-none");
+            buttonText.textContent = "Loading...";
+            form.submit();
+        }
+    };
+
 }
 
 /**
@@ -349,8 +367,8 @@ document.getElementById("submit-button").addEventListener("click", () => {
 
     const form = document.getElementById("CSVform");
     if (form.checkValidity()) {
-        const spinner = document.getElementById("loading-spinner");
-        const buttonText = document.getElementById("button-text");
+        const spinner = document.getElementById("loading-spinner-csv");
+        const buttonText = document.getElementById("button-text-csv");
         spinner.classList.remove("d-none");
         buttonText.textContent = "Loading...";
         form.submit();
