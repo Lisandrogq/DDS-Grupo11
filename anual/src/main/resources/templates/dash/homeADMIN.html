@@ -65,7 +65,7 @@
                             <p>A history list of all the reports. This list is updated every ${reportsFrequency.frequency} ${reportsFrequency.unit}.</p>
                         </div>
                         <div>
-                            <button type="button" class="btn btn-primary" id="create-report-btn">Create report</button>
+                            <button type="button" class="btn btn-primary" id="create-report-btn">Update reports</button>
                             <button
                                 type="button"
                                 class="btn btn-primary"
@@ -73,7 +73,7 @@
                                 actual-frequency="${reportsFrequency.frequency}"
                                 actual-unit="${reportsFrequency.unit}"
                             >
-                                Update generation frequency
+                                Change generation frequency
                             </button>
                         </div>
                     </div>
@@ -81,7 +81,7 @@
                         class="my-card d-flex flex-column"
                         style="gap: 30px; height: 350px"
                     >
-                        <#list reports as report> 
+                        <#list reports?sort_by("reportId")?reverse as report>
                             <div
                                 class="d-flex align-items-center my-card-item"
                                 style="gap: 30px"
@@ -92,7 +92,7 @@
                             >
                                 <h4>${Reportsemoji}</h4>
                                 <div>
-                                    <h6>Report ${report.reportId}</h6>
+                                    <h6>Report ${reports?size - report?index}</h6>
                                     <p id="report-description"></p>
                                 </div>
                             </div>

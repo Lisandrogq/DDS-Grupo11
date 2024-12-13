@@ -65,8 +65,8 @@ public class AdminController {
 
     public static void handleCreateReport(Context ctx) {
         Reporter reporter = Reporter.getInstance();
-        reporter.genReport();
-        ctx.status(200).result("Report created successfully");
+        reporter.regenerateReports();
+        ctx.status(200).result("Reports updated successfully");
     }
 
     public static void handleUpdateReportFrequency(Context ctx) {

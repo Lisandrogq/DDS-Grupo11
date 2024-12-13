@@ -158,8 +158,12 @@ public class Reporter {
 
     public void cleanReports() {
         try (Session session = DB.getSessionFactory().openSession()) {
+            session.beginTransaction();
+
             String hql = "DELETE FROM Report";
             session.createQuery(hql).executeUpdate();
+            
+            session.getTransaction().commit();
         } catch (Exception e) {
             Logger.error("Could not delete reports", e);
         }

@@ -151,6 +151,9 @@ function showReportInfo(data) {
         </tr>
     `).join('');
     console.log("Contributor total:", contributorTotal);
+
+    const formatedCreatedAt = formatDate(createdAt);
+    const formatedLastCreatedAt = formatDate(lastCreatedAt);
 	
 	return DOMPurify.sanitize( `
         <div class="d-flex flex-column" style="gap: 40px;">
@@ -168,11 +171,11 @@ function showReportInfo(data) {
             <div class="columns">
                 <div class="column">
                     <p>From</p>
-                    <b>${formatDate(lastCreatedAt)}</b>
+                    <b>${formatedLastCreatedAt}</b>
                 </div>
                 <div class="column">
                     <p>To</p>
-                    <b>${formatDate(createdAt)}</b>
+                    <b>${formatedCreatedAt}</b>
                 </div>
             </div>
 
@@ -293,7 +296,7 @@ createReportBtn.onclick = () => {
     })
     .then(message => {
         console.log("Server response:", message);
-        alertaSuccess(message || "Report created successfully");
+        alertaSuccess(message || "Reports updated successfully");
     })
     .catch(error => {
         alertaError("An error occurred. Please try again.");
