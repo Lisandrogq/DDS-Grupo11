@@ -9,6 +9,7 @@ import java.util.Map;
 import org.grupo11.DB;
 import org.grupo11.Logger;
 import org.grupo11.Api.ApiResponse;
+import org.grupo11.Services.Credentials;
 import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributions.FridgeAdmin;
 import org.grupo11.Services.Contributions.MealDistribution;
@@ -17,7 +18,6 @@ import org.grupo11.Services.Contributions.MoneyDonation;
 import org.grupo11.Services.Contributions.PersonRegistration;
 import org.grupo11.Services.Contributions.RewardContribution;
 import org.grupo11.Services.Fridge.Fridge;
-import org.grupo11.Services.Fridge.FridgeNotifications;
 import org.grupo11.Services.Fridge.Subscription;
 import org.grupo11.Services.Reporter.Report;
 import org.grupo11.Services.Reporter.Reporter;
@@ -28,11 +28,13 @@ import org.grupo11.Utils.GetNearestTech;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.grupo11.Api.Middlewares;
+import org.grupo11.Enums.AuthProvider;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Contributor.Individual;
 import org.grupo11.Services.Contributor.LegalEntity.LegalEntity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.HashMap;
 
@@ -71,6 +73,8 @@ public class RenderController {
             Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
             if (contributor != null) {
                 model = getContributorModel(contributor, ctx);
+                List<Map<String, Object>> providers = getProvidersModel(ctx);
+                model.put("providers", providers);
                 renderDashboard(ctx, model, contributor.isIndividual() ? "IND" : "LE");
                 return;
             }
@@ -78,6 +82,8 @@ public class RenderController {
             Technician technician = Middlewares.technicianIsAuthenticated(ctx);
             if (technician != null) {
                 model = getTechnicianModel(technician, ctx);
+                List<Map<String, Object>> providers = getProvidersModel(ctx);
+                model.put("providers", providers);
                 renderDashboard(ctx, model, "TECH");
                 return;
             }
@@ -97,6 +103,37 @@ public class RenderController {
         }
         String page = "templates/dash/home" + pageSuffix;
         ctx.render(page + ".html", model);
+    }
+
+    public static List<Map<String, Object>> getProvidersModel(Context ctx) {
+        Credentials credentials = Middlewares.authenticated(ctx);
+        try (Session session = DB.getSessionFactory().openSession()) {
+            String hql = "Select c.provider FROM Credentials c WHERE c.ownerId = :ownerId";
+            Query<AuthProvider> query = session.createQuery(hql, AuthProvider.class);
+            query.setParameter("ownerId", credentials.getOwnerId());
+
+            List<AuthProvider> connectedProviders = query.getResultList();
+            List<AuthProvider> allProviders = Arrays.asList(AuthProvider.values());
+
+            List<Map<String, Object>> providers = new ArrayList<>();
+            for (AuthProvider authProvider : allProviders) {
+                if (authProvider.equals(AuthProvider.FridgeBridge))
+                    continue;
+
+                Map<String, Object> provider = new HashMap<>();
+                provider.put("provider", authProvider.toString());
+                provider.put("connected", connectedProviders.contains(authProvider));
+                provider.put("img", "/public/assets/brands/" + authProvider.toString().toLowerCase() + ".png");
+                providers.add(provider);
+            }
+
+            return providers;
+
+        } catch (Exception e) {
+            Logger.error("Could not serve contributor recognitions {}", e);
+            ctx.status(500).json(new ApiResponse(500));
+            return null;
+        }
     }
 
     public static Map<String, Object> getContributorModel(Contributor contributor, Context ctx) {
@@ -356,7 +393,7 @@ public class RenderController {
             List<Fridge> results = query.getResultList();
             Logger.info("Fridges results.size(): " + results.size());
             for (Fridge fridge : results) {
-                HashMap<String,Object> map = GetNearestTech.getNearestTechnician(fridge.getLat(), fridge.getLon());
+                HashMap<String, Object> map = GetNearestTech.getNearestTechnician(fridge.getLat(), fridge.getLon());
                 Technician nearest_technician = (Technician) map.get("technician");
                 int distance = ((Double) map.get("distance")).intValue();
                 if (fridge.getActiveIncidents().size() > 0 && nearest_technician.getId().equals(technician.getId())) {

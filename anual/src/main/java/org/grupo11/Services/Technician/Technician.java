@@ -3,7 +3,6 @@ package org.grupo11.Services.Technician;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.grupo11.Enums.Provinces;
 import org.grupo11.Services.Credentials;
 import org.grupo11.Services.Contact.Contact;
 import org.grupo11.Utils.Crypto;
@@ -11,7 +10,6 @@ import org.grupo11.Utils.Crypto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -31,8 +29,8 @@ public class Technician {
     private List<TechnicianVisit> visits;
     @OneToOne
     private Contact contact;
-    @OneToOne
-    private Credentials credentials;
+    @OneToMany(mappedBy = "ownerId")
+    private List<Credentials> credentials = new ArrayList<>();
 
     public Technician() {
     }
@@ -51,9 +49,6 @@ public class Technician {
         this.visits = new ArrayList<>();
     }
 
-
-
-
     public Long getId() {
         return id;
     }
@@ -66,11 +61,11 @@ public class Technician {
         return this.name;
     }
 
-    public void setCredentials(Credentials credentials) {
-        this.credentials = credentials;
+    public void addCredentials(Credentials credentials) {
+        this.credentials.add(credentials);
     }
 
-    public Credentials getCredentials() {
+    public List<Credentials> getCredentials() {
         return credentials;
     }
 
