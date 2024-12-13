@@ -411,7 +411,6 @@ public class Auth {
         query.setParameter("email", email);
         query.setParameter("provider", provider);
 
-        Logger.error("EMAIL {} PROVIDER {}", email, provider.toString());
         if (query.getResultCount() > 0) {
             throw new Exception("Email already registered");
         }

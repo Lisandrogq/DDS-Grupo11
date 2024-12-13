@@ -3,7 +3,6 @@ package org.grupo11.Enums;
 import java.util.List;
 
 import org.grupo11.DB;
-import org.grupo11.Logger;
 import org.grupo11.Services.Credentials;
 import org.grupo11.Utils.Crypto;
 import org.grupo11.Utils.GithubAPI;
@@ -11,9 +10,7 @@ import org.grupo11.Utils.OAuth.GoogleOAuth;
 import org.grupo11.Utils.OAuth.OAuthValidateResponse;
 import org.hibernate.Session;
 
-// Define your AuthProvider enum
 public enum AuthProvider {
-    // Enum constants, each implementing the authenticate method
     FridgeBridge {
         @Override
         public Credentials authenticate(String... args) {
@@ -38,7 +35,6 @@ public enum AuthProvider {
             return null;
         }
     },
-
     Google {
         @Override
         public Credentials authenticate(String... args) {
@@ -64,7 +60,6 @@ public enum AuthProvider {
             return GoogleOAuth.validate(token);
         }
     },
-
     Github {
         @Override
         public Credentials authenticate(String... args) {
@@ -111,5 +106,4 @@ public enum AuthProvider {
     public abstract Credentials authenticate(String... args);
 
     public abstract OAuthValidateResponse validateToken(String token);
-
 }
