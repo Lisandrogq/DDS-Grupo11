@@ -210,8 +210,8 @@ public class ContributionsController {
 
             int i = 0;
             int max = 0;
-            for (i = 0; i < 10; i++) { // primero se valida que todas las comidas estén . se podría hacer con
-                                       // transacciones pero notiempo
+            for (i = 0; i < 10; i++) { 
+
                 String meal_id = ctx.formParam("meal_" + i);
                 if (meal_id != null) {
                     Meal meal = origin_fridge.getMealByID(Long.parseLong(meal_id));

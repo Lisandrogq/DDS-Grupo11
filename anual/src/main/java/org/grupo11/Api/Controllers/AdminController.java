@@ -66,6 +66,7 @@ public class AdminController {
     public static void handleCreateReport(Context ctx) {
         Reporter reporter = Reporter.getInstance();
         reporter.regenerateReports();
+        ctx.redirect("/dash/home");
         ctx.status(200).result("Reports updated successfully");
     }
 

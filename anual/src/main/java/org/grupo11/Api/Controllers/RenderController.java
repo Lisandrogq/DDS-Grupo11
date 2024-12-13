@@ -206,7 +206,6 @@ public class RenderController {
                                         + " meals from "
                                         + mealDistribution.getOriginFridge().getName() + " to "
                                         + mealDistribution.getDestinyFridge().getName());
-                        // donation.put("fridge", donatedFridge);
                     } else {
                         donation.put("desc",
                                 "On " + formattedContributionDate + " you have moved " + mealDistribution.getQuantity()
@@ -220,7 +219,6 @@ public class RenderController {
                     donation.put("type", "Fridge administration");
                     donation.put("desc", "You are administrating " + fridgeAdmin.getFridge().getName() + " since "
                             + formattedContributionDate);
-                    // donation.put("fridge", fridgeAdmin.getFridge().toMap());
 
                 } else if (contribution instanceof MoneyDonation) {
 
@@ -229,7 +227,6 @@ public class RenderController {
                     donation.put("type", "Money Donation");
                     donation.put("desc", "On " + formattedContributionDate + " you have donated "
                             + moneyDonation.getAmount() + "$");
-                    // donation.put("fridge", donatedFridge);
 
                 } else if (contribution instanceof PersonRegistration) {
 
@@ -239,7 +236,6 @@ public class RenderController {
                     if (personRegistration.getPerson() != null) {
                         donation.put("desc", "On " + formattedContributionDate + " you have registered "
                                 + personRegistration.getPerson().getName());
-                        // donation.put("fridge", donatedFridge);
                     } else {
                         donation.put("desc", "On " + formattedContributionDate + " you have registered a person");
                     }

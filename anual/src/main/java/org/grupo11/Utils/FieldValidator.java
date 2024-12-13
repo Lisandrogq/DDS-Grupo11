@@ -67,7 +67,7 @@ public class FieldValidator {
 
     public static boolean acceptablePassword(String password) {
         if(password.equals("aaa"))
-                return true;//m inche las bolas
+                return true;
         if (password == null || password.length() < 4) {
             return false;
         }

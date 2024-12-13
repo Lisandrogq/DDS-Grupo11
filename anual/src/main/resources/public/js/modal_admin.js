@@ -54,6 +54,7 @@ reports.forEach((report) => {
 
     const fromDate = report.getAttribute("data-from-date");
     const toDate = report.getAttribute("data-to-date");
+    const reportNumber = report.getAttribute("data-report-number");
 
     const reportDescription = "From " + formatDate(fromDate) + " to " + formatDate(toDate);
     const intervalDataElement = report.querySelector("#report-description");
@@ -62,11 +63,11 @@ reports.forEach((report) => {
     }
 
     report.onclick = () => {
-        showReportModal(id);
+        showReportModal(id, reportNumber);
     };
 });
 
-function showReportModal(id) {
+function showReportModal(id, reportNumber) {
     if (!id) {
         console.error("No ID provided");
         alert("No ID provided");
@@ -92,6 +93,10 @@ function showReportModal(id) {
     .then(data => {
         console.log("Fridge info retrieved successfully");
         openModal(showReportInfo(data), () => {
+            const title = "Report " + reportNumber;
+            const titleElement = document.querySelector("#TitleReport");
+            titleElement.textContent = title;
+
             const downloadButton = document.querySelector("#download-pdf");
             downloadButton.onclick = downloadPDF;
         } );
@@ -103,7 +108,7 @@ function showReportModal(id) {
 }
 
 function showReportInfo(data) {
-	const { id, lastCreatedAt, createdAt, fridgeReportRows, contributorReportRows } = data;
+	const { id, fromDate, toDate, fridgeReportRows, contributorReportRows } = data;
 	console.log("Report info:", data);
 
 	const fridgeRecent = fridgeReportRows
@@ -152,14 +157,14 @@ function showReportInfo(data) {
     `).join('');
     console.log("Contributor total:", contributorTotal);
 
-    const formatedCreatedAt = formatDate(createdAt);
-    const formatedLastCreatedAt = formatDate(lastCreatedAt);
+    const formatedFromDate = formatDate(fromDate);
+    const formatedToDate = formatDate(toDate);
 	
 	return DOMPurify.sanitize( `
         <div class="d-flex flex-column" style="gap: 40px;">
 
             <div class="d-flex justify-content-between align-items-center">
-                <h5 class="accent-100 mb-2">Report ${id}</h5>
+                <h5 class="accent-100 mb-2" id="TitleReport">Report ${id}</h5>
                 <button
                     class="btn btn-primary"
                     id="download-pdf"
@@ -171,11 +176,11 @@ function showReportInfo(data) {
             <div class="columns">
                 <div class="column">
                     <p>From</p>
-                    <b>${formatedLastCreatedAt}</b>
+                    <b id="fromDate">${formatedFromDate}</b>
                 </div>
                 <div class="column">
                     <p>To</p>
-                    <b>${formatedCreatedAt}</b>
+                    <b id="toDate">${formatedToDate}</b>
                 </div>
             </div>
 
