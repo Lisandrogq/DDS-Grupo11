@@ -90,7 +90,7 @@ metrics-down: ## Remove prometheus and grafana containers
 metrics-clean: metrics-down metrics-rm-volumes ## Stop prometheus and grafana containers and remove volumes 
 
 metrics-clean-all: metrics-clean ## Remove prometheus and grafana images 
-	docker rmi quay.io/prometheus/node-exporter grafana/grafana prom/prometheus
+	docker rmi grafana/grafana prom/prometheus
 
 __DEPLOY__:
 deploy: ## Deploys fridgebridge to given host
