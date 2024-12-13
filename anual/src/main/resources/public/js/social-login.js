@@ -15,12 +15,13 @@ const handleOAuthLogin = async (provider, token) => {
 	});
 
 	if (response.redirected) {
-		const allowedDomains = ["https://fridgebridge.simplecharity.com"];
+		const redirectedUrl = response.url;
+		const allowedOrigins = ["https://fridgebridge.simplecharity.com"];
 
 		const url = new URL(redirectedUrl);
-		const domain = url.hostname;
+		const origin = url.origin;
 
-		if (allowedDomains.includes(domain)) {
+		if (allowedOrigins.includes(origin)) {
 			window.location.href = redirectedUrl;
 		} else {
 			alert("Redirecting to an untrusted site is not allowed.");
