@@ -76,10 +76,21 @@ docs-remove-widdershins: ## Removes widdernshins from the system
 	rm -rf $(WIDDERSHINS_PATH)
 
 __METRICS__:
-# Prometheus and graphana
-start_metrics: ## Run prometheus and grafana metrics with docker-compose 
+start-metrics: ## Run prometheus and grafana metrics with docker-compose 
 	@echo "Running metrics..."
-	@docker compose -f ./metrics/metrics.docker-compose.yaml up
+	docker compose -f ./metrics/metrics.docker-compose.yaml up
+
+metrics-rm-volumes: ## Remove prometheus and grafana volumes 
+	docker volume rm fridge-bridge_prometheus_data
+	docker volume rm fridge-bridge_grafana_data
+
+metrics-down: ## Remove prometheus and grafana containers 
+	docker compose down -f ./metrics/metrics.docker-compose.yaml up
+
+metrics-clean: metrics-down metrics-rm-volumes ## Stop prometheus and grafana containers and remove volumes 
+
+metrics-clean-all: metrics-clean ## Remove prometheus and grafana images 
+	docker rmi grafana/grafana prom/prometheus
 
 __DEPLOY__:
 deploy: ## Deploys fridgebridge to given host
@@ -107,3 +118,7 @@ run_snyk: snyk_monitor snyk_test
 
 gen_jwt_ecdsa_keys:
 	@./scripts/gen-jwt-ecdsa.sh
+
+create_admin_user:
+	./scripts/insert-admin-user.sh $(PWD)/infra/scripts/deploy-conf.json $(OWNER_ID) $(MAIL) $(PASSWORD_HASH)
+
