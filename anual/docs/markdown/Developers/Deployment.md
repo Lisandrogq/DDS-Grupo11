@@ -38,7 +38,11 @@ Next, change the [json deploy configuration](https://vscode.dev/github/Lisandrog
   "jwt_pub_key": "",
   "jwt_priv_key": "",
   "sendgrid_api_key": "",
-  "company_mail": ""
+  "company_mail": "",
+  "google_oauth_client_id": "",
+  "google_oauth_secret": "",
+  "github_oauth_client_id": "",
+  "github_oauth_secret": ""
 }
 ```
 
