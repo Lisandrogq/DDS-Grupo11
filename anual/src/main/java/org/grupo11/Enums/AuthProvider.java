@@ -68,7 +68,25 @@ public enum AuthProvider {
     Github {
         @Override
         public Credentials authenticate(String... args) {
-            return null;
+            try {
+                String code = args[0];
+                String token = GithubAPI.getTokenFromCode(code);
+                if (token == null)
+                    return null;
+                List<GithubAPI.GithubEmailResponseItem> emails = GithubAPI.getEmails(token);
+                String email = GithubAPI.getPrimaryEmail(emails);
+                if (email == null)
+                    return null;
+
+                Session session = DB.getSessionFactory().openSession();
+                String hql = "SELECT c FROM Credentials c WHERE c.mail = :mail AND c.provider = Github";
+                org.hibernate.query.Query<Credentials> query = session.createQuery(hql, Credentials.class);
+                query.setParameter("mail", email);
+                Credentials credentials = query.getSingleResult();
+                return credentials;
+            } catch (Exception e) {
+                return null;
+            }
         }
 
         @Override

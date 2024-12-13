@@ -1,11 +1,9 @@
-const googleBtn = document.querySelector("#google-connect-btn");
-const githubBtn = document.querySelector("#github-connect-btn");
+const googleBtn = document.querySelector("#google-login-btn");
+const githubBtn = document.querySelector("#github-login-btn");
 
-const handleResponse = async (googleUser) => {
-	const token = googleUser.credential;
-
+const handleOAuthLogin = async (provider, token) => {
 	const formData = new FormData();
-	formData.append("provider", "Google");
+	formData.append("provider", provider);
 	formData.append("token", token);
 
 	const response = await fetch("/user/login/", {
@@ -22,19 +20,26 @@ const handleResponse = async (googleUser) => {
 };
 
 const startApp = () => {
+	// google listener
 	window.onGoogleLibraryLoad = () => {
 		google.accounts.id.initialize({
 			client_id: "933613917422-bb9a9ptfqof8saqbc5ub1gr5mtpoohh2.apps.googleusercontent.com",
-			callback: handleResponse,
+			callback: (googleUser) => handleOAuthLogin("Google", googleUser.credential),
 		});
 		const parent = document.querySelector("#google-btn-wrapper");
 		google.accounts.id.renderButton(parent, {
 			type: "icon",
 		});
 		const googleLoginWrapperButton = parent.querySelector("div[role=button]");
-		window.handleGoogleConnection = () => {
-			googleLoginWrapperButton.click();
-		};
+		googleBtn.onclick = () => googleLoginWrapperButton.click();
+	};
+
+	// github listener
+	githubBtn.onclick = () => {
+		const githubAuthUrl = `https://github.com/login/oauth/authorize?scope=user:email&client_id=Ov23lio6HofL2ZF56U32&redirect_uri=${encodeURIComponent(
+			"https://fridgebridge.simplecharity.com/user/login/github"
+		)}`;
+		window.location.href = githubAuthUrl;
 	};
 };
 

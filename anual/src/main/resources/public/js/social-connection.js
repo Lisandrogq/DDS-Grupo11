@@ -12,7 +12,7 @@ const handleProviderConnection = (provider) => {
 
 const handleGithubConnection = () => {
 	const githubAuthUrl = `https://github.com/login/oauth/authorize?scope=user:email&client_id=Ov23lio6HofL2ZF56U32&redirect_uri=${encodeURIComponent(
-		"http://localhost:8000/user/provider/github"
+		"https://fridgebridge.simplecharity.com/user/provider/github"
 	)}`;
 	window.location.href = githubAuthUrl;
 };

@@ -110,6 +110,32 @@ public class Auth {
         }
     }
 
+    public static void handleUserLoginWithGithub(Context ctx) {
+        try {
+            Credentials credentials;
+            String code = ctx.queryParam("code");
+            if (!FieldValidator.isString(code)) {
+                ctx.redirect("/register/login?error=Invalid token");
+                return;
+            }
+            credentials = AuthProvider.Github.authenticate(code);
+            if (credentials == null) {
+                ctx.redirect("/register/login?error=Invalid Credentials");
+                return;
+            }
+
+            Map<String, String> payload = new HashMap<>();
+            payload.put("mail", credentials.getMail());
+            payload.put("owner_id", credentials.getOwnerId().toString());
+            payload.put("type", credentials.getUserType().toString());
+            String jwtToken = JWTService.generate(payload, 3600);
+            ctx.res().addCookie(HttpUtils.createHttpOnlyCookie("access-token", jwtToken, 3600));
+            ctx.redirect("/dash/home");
+        } catch (Exception e) {
+            ctx.redirect("/register/login?error=Internal error");
+        }
+    }
+
     public static void handleIndividualSignup(Context ctx) {
         String mail = ctx.formParam("mail");
         String type = ctx.formParam("type");
