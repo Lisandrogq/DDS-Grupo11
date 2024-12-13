@@ -118,3 +118,7 @@ run_snyk: snyk_monitor snyk_test
 
 gen_jwt_ecdsa_keys:
 	@./scripts/gen-jwt-ecdsa.sh
+
+create_admin_user:
+	./scripts/insert-admin-user.sh $(PWD)/infra/scripts/deploy-conf.json $(OWNER_ID) $(MAIL) $(PASSWORD_HASH)
+
