@@ -2,14 +2,24 @@ const googleBtn = document.querySelector("#google-connect-btn");
 const githubBtn = document.querySelector("#github-connect-btn");
 
 const handleProviderConnection = (provider) => {
-	if (provider == "Google") {
-		window.handleGoogleConnection();
-	}
+	const method = {
+		Google: window.handleGoogleConnection,
+		Github: handleGithubConnection,
+	};
+
+	method[provider]();
+};
+
+const handleGithubConnection = () => {
+	const githubAuthUrl = `https://github.com/login/oauth/authorize?scope=user:email&client_id=Ov23lio6HofL2ZF56U32&redirect_uri=${encodeURIComponent(
+		"http://localhost:8000/user/provider/github"
+	)}`;
+	window.location.href = githubAuthUrl;
 };
 
 const handleGoogleResponse = async (googleUser) => {
 	const token = googleUser.credential;
-	const req = await fetch("/user/provider/", {
+	const req = await fetch("/user/provider/google", {
 		method: "POST",
 		headers: {
 			Accept: "application/json",

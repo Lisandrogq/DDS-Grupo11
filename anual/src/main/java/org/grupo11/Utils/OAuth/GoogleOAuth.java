@@ -26,9 +26,8 @@ public class GoogleOAuth {
             if (idToken != null) {
                 Payload payload = idToken.getPayload();
                 String email = payload.getEmail();
-                boolean emailVerified = Boolean.valueOf(payload.getEmailVerified());
                 String name = (String) payload.get("name");
-                return new OAuthValidateResponse(email, emailVerified, name);
+                return new OAuthValidateResponse(email, name);
             } else {
                 return null;
             }

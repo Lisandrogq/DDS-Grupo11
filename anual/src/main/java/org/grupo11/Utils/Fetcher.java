@@ -18,6 +18,14 @@ public class Fetcher {
         return client.newCall(request).execute();
     }
 
+    public static Response getWithAuthorization(String url, String token) throws IOException {
+        Request request = new Request.Builder()
+                .url(url)
+                .header("Authorization", token)
+                .build();
+        return client.newCall(request).execute();
+    }
+
     public static Response post(String url, String body) throws IOException {
         RequestBody requestBody = RequestBody.create(body, MediaType.parse("application/json"));
         Request request = new Request.Builder()

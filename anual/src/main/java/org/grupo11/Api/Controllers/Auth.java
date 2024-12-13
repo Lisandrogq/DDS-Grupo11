@@ -36,23 +36,14 @@ enum Type {
     Contributor, Technician
 }
 
-class AuthProviderRequest {
-    private String provider;
+class AddGoogleAuthProviderReqBody {
     private String token;
 
-    public AuthProviderRequest() {
-    }
-
-    public String getProvider() {
-        return this.provider;
+    public AddGoogleAuthProviderReqBody() {
     }
 
     public String getToken() {
         return this.token;
-    }
-
-    public void setProvider(String provider) {
-        this.provider = provider;
     }
 
     public void setToken(String token) {
@@ -312,62 +303,85 @@ public class Auth {
         }
     }
 
-    public static void handleNewAuthProvider(Context ctx) {
+    public static void handleAddGoogleProvider(Context ctx) {
         Credentials credentials = Middlewares.authenticated(ctx);
         if (credentials == null) {
             ctx.status(401).json(new ApiResponse(401));
             return;
         }
 
-        AuthProviderRequest body = ctx.bodyAsClass(AuthProviderRequest.class);
+        AddGoogleAuthProviderReqBody body = ctx.bodyAsClass(AddGoogleAuthProviderReqBody.class);
         if (body == null) {
             ctx.status(400).json(new ApiResponse(400, "Invalid bod."));
             return;
         }
-        String provider = body.getProvider();
         String tokenId = body.getToken();
-
-        if (!FieldValidator.isValidEnumValue(AuthProvider.class, provider)) {
-            ctx.status(400).json(new ApiResponse(400, "Invalid provider, possible values: google, github.", null));
-            return;
-        }
         if (!FieldValidator.isString(tokenId)) {
             ctx.status(400).json(new ApiResponse(400, "Invalid token_id.", null));
             return;
         }
 
-        AuthProvider authProvider = Enum.valueOf(AuthProvider.class, provider);
-
-        // Verify it isn't already created
-        OAuthValidateResponse validationRes = authProvider.validateToken(tokenId);
+        OAuthValidateResponse validationRes = AuthProvider.Google.validateToken(tokenId);
         if (validationRes == null) {
             ctx.status(401).json(new ApiResponse(401, "Token validation invalid."));
             return;
         }
 
         try (Session session = DB.getSessionFactory().openSession()) {
-            String hql = "SELECT c " +
-                    "FROM Credentials c " +
-                    "WHERE c.ownerId = :ownerId AND c.provider = :provider";
-            org.hibernate.query.Query<Credentials> query = session.createQuery(hql, Credentials.class);
-            query.setParameter("ownerId", credentials.getOwnerId());
-            query.setParameter("provider", authProvider);
-
-            try {
-                // update if already exists
-                Credentials c = query.getSingleResult();
-                c.setMail(validationRes.getEmail());
-                DB.update(c);
-            } catch (Exception e) {
-                // this means it did not exist, create it
-                DB.create(new Credentials(validationRes.getEmail(), null, credentials.getUserType(),
-                        credentials.getOwnerId(), authProvider));
-            }
-
+            Auth.addOAuthCredential(credentials.getMail(), credentials.getOwnerId(), credentials.getUserType(),
+                    AuthProvider.Google);
+            ctx.redirect("/dash/home");
             ctx.status(200).json(new ApiResponse(200));
         } catch (Exception e) {
-            Logger.error("Unexpected error while authenticating user", e);
             ctx.status(500).json(new ApiResponse(500));
+        }
+    }
+
+    public static void handleAddGithubProvider(Context ctx) {
+        Credentials credentials = Middlewares.authenticated(ctx);
+        if (credentials == null) {
+            ctx.redirect("/register/login");
+            return;
+        }
+
+        String code = ctx.queryParam("code");
+        if (!FieldValidator.isString(code)) {
+            ctx.redirect("/dash/home?error=Invalid code");
+            return;
+        }
+
+        OAuthValidateResponse validationRes = AuthProvider.Github.validateToken(code);
+        if (validationRes == null) {
+            ctx.redirect("/dash/home?error=Invalid code");
+            return;
+        }
+
+        try (Session session = DB.getSessionFactory().openSession()) {
+            Auth.addOAuthCredential(credentials.getMail(), credentials.getOwnerId(), credentials.getUserType(),
+                    AuthProvider.Github);
+            ctx.redirect("/dash/home");
+        } catch (Exception e) {
+            ctx.redirect("/dash/home?error=Could not connect github account");
+        }
+    }
+
+    static void addOAuthCredential(String email, Long ownerId, UserTypes type, AuthProvider provider) throws Exception {
+        Session session = DB.getSessionFactory().openSession();
+        String hql = "SELECT c " +
+                "FROM Credentials c " +
+                "WHERE c.ownerId = :ownerId AND c.provider = :provider";
+        org.hibernate.query.Query<Credentials> query = session.createQuery(hql, Credentials.class);
+        query.setParameter("ownerId", ownerId);
+        query.setParameter("provider", provider);
+
+        try {
+            // update if already exists
+            Credentials c = query.getSingleResult();
+            c.setMail(email);
+            DB.update(c);
+        } catch (Exception e) {
+            // this means it did not exist, create it
+            DB.create(new Credentials(email, null, type, ownerId, provider));
         }
     }
 }

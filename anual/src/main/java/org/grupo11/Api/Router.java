@@ -34,7 +34,8 @@ public class Router {
         api.post("/user/login", Auth::handleUserLogin);
         api.post("/user/individual", Auth::handleIndividualSignup);
         api.post("/user/legal-entity", Auth::handleLegalEntitySignup);
-        api.post("/user/provider/", Auth::handleNewAuthProvider);
+        api.post("/user/provider/google", Auth::handleAddGoogleProvider);
+        api.get("/user/provider/github", Auth::handleAddGithubProvider);
     }
 
     static void contributionRoutes(Javalin api) {
