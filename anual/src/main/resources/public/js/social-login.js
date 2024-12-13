@@ -15,7 +15,16 @@ const handleOAuthLogin = async (provider, token) => {
 	});
 
 	if (response.redirected) {
-		window.location.href = response.url;
+		const allowedDomains = ["https://fridgebridge.simplecharity.com"];
+
+		const url = new URL(redirectedUrl);
+		const domain = url.hostname;
+
+		if (allowedDomains.includes(domain)) {
+			window.location.href = redirectedUrl;
+		} else {
+			alert("Redirecting to an untrusted site is not allowed.");
+		}
 	}
 };
 
