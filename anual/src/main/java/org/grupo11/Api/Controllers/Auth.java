@@ -10,7 +10,7 @@ import org.grupo11.Logger;
 import org.grupo11.Api.ApiResponse;
 import org.grupo11.Api.HttpUtils;
 import org.grupo11.Api.Middlewares;
-import org.grupo11.Enums.AuthProviders;
+import org.grupo11.Enums.AuthProvider;
 import org.grupo11.Enums.DocumentType;
 import org.grupo11.Enums.UserTypes;
 import org.grupo11.Services.Credentials;
@@ -36,6 +36,21 @@ enum Type {
     Contributor, Technician
 }
 
+class AddGoogleAuthProviderReqBody {
+    private String token;
+
+    public AddGoogleAuthProviderReqBody() {
+    }
+
+    public String getToken() {
+        return this.token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+}
+
 public class Auth {
     public static void handleUserLogOut(Context ctx) {
         ctx.res().addCookie(HttpUtils.createHttpOnlyCookie("access-token", "", 3600));
@@ -46,54 +61,82 @@ public class Auth {
             ctx.status(status).redirect("/register/login?error=" + msg);
         };
         try {
-            String mail = ctx.formParam("mail");
-            String pw = ctx.formParam("password");
+            String provider = ctx.formParam("provider");
+            Credentials credentials;
 
-            if (!FieldValidator.isEmail(mail)) {
-                sendFormError.accept("Invalid email", HttpStatus.BAD_REQUEST);
-                return;
-            }
-            if (!FieldValidator.isString(pw)) {
-                sendFormError.accept("Invalid password", HttpStatus.BAD_REQUEST);
-                return;
-            }
+            // if null, we default to mails pw authentication
+            if (provider == null || provider == "FridgeBridge") {
+                String mail = ctx.formParam("mail");
+                String pw = ctx.formParam("password");
 
-            try (Session session = DB.getSessionFactory().openSession()) {
-                String hashedPassword = Crypto.sha256Hash(pw.getBytes());
-                String hql = "SELECT c " +
-                        "FROM Credentials c " +
-                        "WHERE c.password = :password AND c.mail = :mail";
-
-                org.hibernate.query.Query<Credentials> query = session.createQuery(hql, Credentials.class);
-                query.setParameter("mail", mail);
-                query.setParameter("password", hashedPassword);
-
-                Credentials credentials = query.getSingleResult();
-
-                if (credentials == null) {
-                    sendFormError.accept("Invalid credentials", HttpStatus.UNAUTHORIZED);
+                if (!FieldValidator.isEmail(mail)) {
+                    sendFormError.accept("Invalid email", HttpStatus.BAD_REQUEST);
                     return;
                 }
+                if (!FieldValidator.isString(pw)) {
+                    sendFormError.accept("Invalid password", HttpStatus.BAD_REQUEST);
+                    return;
+                }
+                credentials = AuthProvider.FridgeBridge.authenticate(mail, pw);
 
-                Map<String, String> payload = new HashMap<>();
-                payload.put("mail", credentials.getMail());
-                payload.put("owner_id", credentials.getOwnerId().toString());
-                payload.put("type", credentials.getUserType().toString());
-
-                String jwtToken = JWTService.generate(payload, 3600);
-                ctx.res().addCookie(HttpUtils.createHttpOnlyCookie("access-token", jwtToken, 3600));
-                ctx.redirect("/dash/home");
-            } catch (Exception e) {
-                Logger.error("Unexpected error while authenticating user", e);
-                sendFormError.accept("Invalid credentials", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+            } else {
+                String token = ctx.formParam("token");
+                if (!FieldValidator.isString(token)) {
+                    sendFormError.accept("Invalid token.", HttpStatus.BAD_REQUEST);
+                    return;
+                }
+                if (!FieldValidator.isValidEnumValue(AuthProvider.class, provider)) {
+                    sendFormError.accept("Invalid provider, possible values are: FridgeBridge, Google, Github.",
+                            HttpStatus.BAD_REQUEST);
+                    return;
+                }
+                credentials = Enum.valueOf(AuthProvider.class, provider).authenticate(token);
             }
+
+            if (credentials == null) {
+                sendFormError.accept("Invalid credentials.", HttpStatus.UNAUTHORIZED);
+                return;
+            }
+
+            Map<String, String> payload = new HashMap<>();
+            payload.put("mail", credentials.getMail());
+            payload.put("owner_id", credentials.getOwnerId().toString());
+            payload.put("type", credentials.getUserType().toString());
+            String jwtToken = JWTService.generate(payload, 3600);
+            ctx.res().addCookie(HttpUtils.createHttpOnlyCookie("access-token", jwtToken, 3600));
+            ctx.redirect("/dash/home");
         } catch (Exception e) {
-            sendFormError.accept("Invalid credentials", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+            sendFormError.accept("Internal error.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public static void handleUserLoginWithGithub(Context ctx) {
+        try {
+            Credentials credentials;
+            String code = ctx.queryParam("code");
+            if (!FieldValidator.isString(code)) {
+                ctx.redirect("/register/login?error=Invalid token");
+                return;
+            }
+            credentials = AuthProvider.Github.authenticate(code);
+            if (credentials == null) {
+                ctx.redirect("/register/login?error=Invalid Credentials");
+                return;
+            }
+
+            Map<String, String> payload = new HashMap<>();
+            payload.put("mail", credentials.getMail());
+            payload.put("owner_id", credentials.getOwnerId().toString());
+            payload.put("type", credentials.getUserType().toString());
+            String jwtToken = JWTService.generate(payload, 3600);
+            ctx.res().addCookie(HttpUtils.createHttpOnlyCookie("access-token", jwtToken, 3600));
+            ctx.redirect("/dash/home");
+        } catch (Exception e) {
+            ctx.redirect("/register/login?error=Internal error");
         }
     }
 
     public static void handleIndividualSignup(Context ctx) {
-        System.out.println(ctx.body());
         String mail = ctx.formParam("mail");
         String type = ctx.formParam("type");
         String pw = ctx.formParam("password");
@@ -181,9 +224,9 @@ public class Auth {
                         Integer.parseInt(document),
                         DocumentType.DNI);
                 Credentials credentials = new Credentials(mail, hashedPassword, UserTypes.Individual,
-                        individual.getId());
+                        individual.getId(), AuthProvider.FridgeBridge);
                 individual.addContact(contact);
-                individual.setCredentials(credentials);
+                individual.addCredentials(credentials);
                 DB.create(contact);
                 DB.create(credentials);
                 DB.create(individual);
@@ -192,8 +235,8 @@ public class Auth {
                         "", address, contact);
 
                 Credentials credentials = new Credentials(mail, hashedPassword, UserTypes.Technician,
-                        technician.getId());
-                technician.setCredentials(credentials);
+                        technician.getId(), AuthProvider.FridgeBridge);
+                technician.addCredentials(credentials);
                 DB.create(contact);
                 DB.create(credentials);
                 DB.create(technician);
@@ -268,9 +311,10 @@ public class Auth {
             LegalEntity legalEntity = new LegalEntity(name, "", Enum.valueOf(LegalEntityType.class, type),
                     Enum.valueOf(LegalEntityCategory.class, category));
             Contact contact = new EmailContact(mail);
-            Credentials credentials = new Credentials(mail, hashedPassword, UserTypes.LegalEntity, legalEntity.getId());
+            Credentials credentials = new Credentials(mail, hashedPassword, UserTypes.LegalEntity, legalEntity.getId(),
+                    AuthProvider.FridgeBridge);
             legalEntity.addContact(contact);
-            legalEntity.setCredentials(credentials);
+            legalEntity.addCredentials(credentials);
 
             DB.create(contact);
             DB.create(credentials);
@@ -284,112 +328,108 @@ public class Auth {
         }
     }
 
-    public static void handleNewAuthProvider(Context ctx) {
+    public static void handleAddGoogleProvider(Context ctx) {
         Credentials credentials = Middlewares.authenticated(ctx);
         if (credentials == null) {
             ctx.status(401).json(new ApiResponse(401));
             return;
         }
 
-        String provider = ctx.formParam("provider");
-        String tokenId = ctx.formParam("token_id");
-
-        if (!FieldValidator.isValidEnumValue(AuthProviders.class, provider)) {
-            ctx.status(400).json(new ApiResponse(400, "Invalid provider, possible values: google, github.", null));
+        AddGoogleAuthProviderReqBody body = ctx.bodyAsClass(AddGoogleAuthProviderReqBody.class);
+        if (body == null) {
+            ctx.status(400).json(new ApiResponse(400, "Invalid bod."));
             return;
         }
+        String tokenId = body.getToken();
         if (!FieldValidator.isString(tokenId)) {
             ctx.status(400).json(new ApiResponse(400, "Invalid token_id.", null));
             return;
         }
 
-        AuthProviders authProvider = Enum.valueOf(AuthProviders.class, provider);
-
-        // Verify it isn't already created
-        if (credentials.getProvidersByValue(AuthProviders.Google) != null) {
-            ctx.status(400).json(new ApiResponse(400, "Provider already added.", null));
-        }
-
-        OAuthValidateResponse validationRes = authProvider.validateToken(tokenId);
+        OAuthValidateResponse validationRes = AuthProvider.Google.validateToken(tokenId);
         if (validationRes == null) {
             ctx.status(401).json(new ApiResponse(401, "Token validation invalid."));
             return;
         }
-        if (credentials.getMail() != validationRes.getEmail()) {
-            ctx.status(401).json(new ApiResponse(401, "Mail must be the same."));
-            return;
-        }
 
         try (Session session = DB.getSessionFactory().openSession()) {
-            String hql = "SELECT c " +
-                    "FROM Credentials c " +
-                    "WHERE c.mail = :mail";
-            org.hibernate.query.Query<Credentials> query = session.createQuery(hql, Credentials.class);
-            query.setParameter("mail", validationRes.getEmail());
-
-            if (query.uniqueResult() == null) {
-                ctx.status(400).json(new ApiResponse(400, "Mail isn't registered."));
+            try {
+                Auth.addOAuthCredential(validationRes.getEmail(), credentials.getOwnerId(), credentials.getUserType(),
+                        AuthProvider.Google);
+            } catch (Exception e) {
+                ctx.status(401).json(new ApiResponse(401, e.getMessage()));
                 return;
             }
-
-            credentials.addProvider(authProvider);
-            DB.update(credentials);
+            ctx.redirect("/dash/home");
+            ctx.status(200).json(new ApiResponse(200));
         } catch (Exception e) {
-            Logger.error("Unexpected error while authenticating user", e);
             ctx.status(500).json(new ApiResponse(500));
         }
     }
 
-    public static void handleProviderLogin(Context ctx) {
-        String provider = ctx.formParam("provider");
-        String tokenId = ctx.formParam("token_id");
-
-        if (!FieldValidator.isValidEnumValue(AuthProviders.class, provider)) {
-            ctx.status(400).json(new ApiResponse(400, "Invalid provider, possible values: google, github.", null));
-            return;
-        }
-        if (!FieldValidator.isString(tokenId)) {
-            ctx.status(400).json(new ApiResponse(400, "Invalid token_id.", null));
+    public static void handleAddGithubProvider(Context ctx) {
+        Credentials credentials = Middlewares.authenticated(ctx);
+        if (credentials == null) {
+            ctx.redirect("/register/login");
             return;
         }
 
-        AuthProviders authProvider = Enum.valueOf(AuthProviders.class, provider);
+        String code = ctx.queryParam("code");
+        if (!FieldValidator.isString(code)) {
+            ctx.redirect("/dash/home?error=Invalid code");
+            return;
+        }
 
-        OAuthValidateResponse validationRes = authProvider.validateToken(tokenId);
+        OAuthValidateResponse validationRes = AuthProvider.Github.validateToken(code);
         if (validationRes == null) {
-            ctx.status(401).json(new ApiResponse(401, "Token validation invalid."));
+            ctx.redirect("/dash/home?error=Invalid code");
             return;
         }
 
         try (Session session = DB.getSessionFactory().openSession()) {
-            String hql = "SELECT c " +
-                    "FROM Credentials c " +
-                    "WHERE c.mail = :mail";
-            org.hibernate.query.Query<Credentials> query = session.createQuery(hql, Credentials.class);
-            query.setParameter("mail", validationRes.getEmail());
-
-            if (query.uniqueResult() == null) {
-                ctx.status(400).json(new ApiResponse(400, "Mail isn't registered."));
+            try {
+                Auth.addOAuthCredential(validationRes.getEmail(), credentials.getOwnerId(), credentials.getUserType(),
+                        AuthProvider.Github);
+            } catch (Exception e) {
+                ctx.redirect("/dash/home?error=" + e.getMessage());
                 return;
             }
-
-            Credentials credentials = query.getSingleResult();
-            if (credentials.getProvidersByValue(authProvider) == null) {
-                credentials.addProvider(authProvider);
-                DB.update(credentials);
-            }
-
-            Map<String, String> payload = new HashMap<>();
-            payload.put("mail", credentials.getMail());
-            payload.put("owner_id", credentials.getOwnerId().toString());
-            payload.put("type", credentials.getUserType().toString());
-
-            String jwtToken = JWTService.generate(payload, 3600);
-            ctx.res().addCookie(HttpUtils.createHttpOnlyCookie("access-token", jwtToken, 3600));
             ctx.redirect("/dash/home");
         } catch (Exception e) {
-            Logger.error("Unexpected error while authenticating user", e);
-            ctx.status(500).redirect("/register/login?error=Unexpected error");
+            ctx.redirect("/dash/home?error=Could not connect github account");
+        }
+    }
+
+    static void addOAuthCredential(String email, Long ownerId, UserTypes type, AuthProvider provider) throws Exception {
+        Session session = DB.getSessionFactory().openSession();
+
+        // check the email isn't already registered on another account
+        String hql = "SELECT c " +
+                "FROM Credentials c " +
+                "WHERE c.mail = :email AND c.provider = :provider";
+        org.hibernate.query.Query<Credentials> query = session.createQuery(hql, Credentials.class);
+        query.setParameter("email", email);
+        query.setParameter("provider", provider);
+
+        if (query.getResultCount() > 0) {
+            throw new Exception("Email already registered");
+        }
+
+        hql = "SELECT c " +
+                "FROM Credentials c " +
+                "WHERE c.ownerId = :ownerId AND c.provider = :provider";
+        query = session.createQuery(hql, Credentials.class);
+        query.setParameter("ownerId", ownerId);
+        query.setParameter("provider", provider);
+
+        try {
+            // update if already exists
+            Credentials c = query.getSingleResult();
+            c.setMail(email);
+            DB.update(c);
+        } catch (Exception e) {
+            // this means it did not exist, create it
+            DB.create(new Credentials(email, null, type, ownerId, provider));
         }
     }
 
@@ -397,7 +437,7 @@ public class Auth {
         BiConsumer<String, HttpStatus> sendFormError = (msg, status) -> {
             ctx.status(status).redirect("/register/changePassword?error=" + msg);
         };
-        
+
         String mail = ctx.formParam("mail");
         String pw = ctx.formParam("oldPassword");
 
@@ -426,12 +466,13 @@ public class Auth {
                 sendFormError.accept("Invalid credentials", HttpStatus.UNAUTHORIZED);
                 return;
             }
-            
+
             String newPw = ctx.formParam("password");
 
             if (!FieldValidator.acceptablePassword(newPw)) {
                 sendFormError.accept(
-                        "Invalid password format.<br> It must include uppercase, lowercase, digit and special character", HttpStatus.BAD_REQUEST);
+                        "Invalid password format.<br> It must include uppercase, lowercase, digit and special character",
+                        HttpStatus.BAD_REQUEST);
                 return;
             }
 

@@ -1,7 +1,5 @@
 package org.grupo11.Utils.OAuth;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 import org.grupo11.Config.Env;
@@ -28,9 +26,8 @@ public class GoogleOAuth {
             if (idToken != null) {
                 Payload payload = idToken.getPayload();
                 String email = payload.getEmail();
-                boolean emailVerified = Boolean.valueOf(payload.getEmailVerified());
                 String name = (String) payload.get("name");
-                return new OAuthValidateResponse(email, emailVerified, name);
+                return new OAuthValidateResponse(email, name);
             } else {
                 return null;
             }

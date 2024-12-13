@@ -44,7 +44,6 @@ public class HttpUtils {
             if (type == null) {
                 return null;
             }
-
             credentials.setMail(mail);
             credentials.setOwnerId(ownerId);
             credentials.setUserType(type);

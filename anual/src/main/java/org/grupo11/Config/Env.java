@@ -68,4 +68,12 @@ public class Env {
     public static String getGoogleOAuthClientId() {
         return properties.getProperty("GOOGLE_OAUTH_CLIENT_ID");
     }
+
+    public static String getGithubOAuthClientId() {
+        return properties.getProperty("GITHUB_OAUTH_CLIENT_ID");
+    }
+
+    public static String getGithubOAuthSecret() {
+        return properties.getProperty("GITHUB_OAUTH_SECRET");
+    }
 }
