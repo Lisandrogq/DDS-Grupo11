@@ -15,31 +15,70 @@
 	<!-- Make sure you put this AFTER Leaflet's CSS -->
 	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
 		integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
+	<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
 <body>
 	<div class="fullscreen overflow-auto" style="max-height: 100vh">
 		<div class="d-flex flex-column w-100" style="max-width: 1280px; margin: auto; gap: 30px; padding: 50px">
 			<#if error??>
-				<div class="error-container">
-					<p style="color: red">${error}</p>
+				<div class="alert alert-danger alert-dismissible fade show" id="error-alert" role="alert"
+					style="position: absolute; top: 0; left: 0; right: 0; z-index: 1000; margin: auto; margin-top: 10px; width: 50%;">
+					<strong>Oh snap!</strong> ${error}
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
 				</div>
 			</#if>
 			<div class="d-flex flex-row justify-content-between align-items-center w-100" style="margin-bottom: 20px">
 				<div class="d-flex flex-column gap-3">
 					<h4>Hello ${user.name} 👋</h4>
-					<p>Thanks for beeing our technician</p>
+					<p>Thanks for being our technician</p>
 				</div>
 				<div class="d-flex flex-row align-items-center" style="gap: 30px">
-					<div class="position-relative alerts-container">
+					<div class="position-relative hover-modal-container">
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6"
 							style="height: 30px; color: var(--gray)">
 							<path fill-rule="evenodd"
 								d="M5.25 9a6.75 6.75 0 0 1 13.5 0v.75c0 2.123.8 4.057 2.118 5.52a.75.75 0 0 1-.297 1.206c-1.544.57-3.16.99-4.831 1.243a3.75 3.75 0 1 1-7.48 0 24.585 24.585 0 0 1-4.831-1.244.75.75 0 0 1-.298-1.205A8.217 8.217 0 0 0 5.25 9.75V9Zm4.502 8.9a2.25 2.25 0 1 0 4.496 0 25.057 25.057 0 0 1-4.496 0Z"
 								clip-rule="evenodd" />
 						</svg>
+						<div class="my-card d-flex flex-column hover-modal">
+							<#list alerts as alert>
+								<div class="d-flex flex-row align-items-center" style="gap: 30px; padding: 10px;">
+									<h4>🚨</h4>
+									<div>
+										<h6>Incident alert</h6>
+										<p>${alert}</p>
+									</div>
+								</div>
+							</#list>
+						</div>
 					</div>
-					<button onclick="deleteCookieAndRefresh()" type="button" class="btn btn-light" id="logout-btn"  user-type="IND" >Log Out</button>
+					<button onclick="deleteCookieAndRefresh()" type="button" class="btn btn-light" id="logout-btn"
+						user-type="IND">Log Out</button>
+
+					<div class="position-relative hover-modal-container">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6" style="height: 30px; color: var(--gray)">
+							<path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
+						</svg>
+						<div class="my-card d-flex flex-column hover-modal">
+							<div id="google-btn-wrapper" style="display: none;"></div>
+							<#list providers as provider> 
+								<div id="provider-connect-${provider.provider}" class="d-flex flex-row align-items-center social-login-item" style="gap: 30px" onclick="handleProviderConnection('${provider.provider}')">
+									<img src="${provider.img}" height="48" width="48" alt="${provider.provider} logo" />
+									<div>
+										<#if provider.connected>
+											<p>Your ${provider.provider} account is connected. Update it if needed.</p>
+										<#else>
+											<p>Connect your ${provider.provider} account.</p>
+										</#if>
+									</div>
+								</div>
+							</#list>
+						</div>
+					</div>
 				</div>
 			</div>
 
@@ -71,11 +110,15 @@
 							<#list fridges as fridge>
 								<div class="d-flex align-items-center my-card-item" style="gap: 30px" id="fridge"
 									data-fridge-name=${fridge.name} data-fridge-id=${fridge.id}
+									data-fridge-lat=${fridge.lat} data-fridge-lon=${fridge.lon}
 									data-fridge-temp=${fridge.temp} data-fridge-reserved=${fridge.reserved}
-									data-fridge-state=${fridge.state} data-fridge-meals=${fridge.meals}>
+									data-fridge-state=${fridge.state} data-fridge-capacity="${fridge.capacity}"
+									data-fridge-meals=${fridge.meals}>
 									<h4>🧊</h4>
 									<div class="w-100">
-										<h6>${fridge.name} fridge</h6>
+										<h6>${fridge.name} fridge 
+											<p  style="display: inline; margin-left: 5px;" >(ID: ${fridge.id})</p>
+										</h6> 
 										<div class="d-flex w-100 justify-content-between">
 											<p>${fridge.food_status_desc}</p>
 											<#if fridge.meal_urgency=="0 Active Incidents">
@@ -107,5 +150,9 @@
 
 <script src="/public/js/forms.js"></script>
 <script src="/public/js/modal_tech.js"></script>
+<script src="/public/js/error.js"></script>
+<script src="/public/js/social-connection.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
 </html>

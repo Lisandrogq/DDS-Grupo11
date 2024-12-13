@@ -3,7 +3,6 @@ package org.grupo11.Services.Technician;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.grupo11.Enums.Provinces;
 import org.grupo11.Services.Credentials;
 import org.grupo11.Services.Contact.Contact;
 import org.grupo11.Utils.Crypto;
@@ -11,7 +10,6 @@ import org.grupo11.Utils.Crypto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -26,19 +24,19 @@ public class Technician {
     private TechnicianType type;
     private int DNI;
     private String cuil;
-    @Enumerated(EnumType.STRING)
-    private Provinces areasOfWork;
+    private String address;
     @OneToMany
     private List<TechnicianVisit> visits;
     @OneToOne
     private Contact contact;
-    @OneToOne
-    private Credentials credentials;
+    @OneToMany(mappedBy = "ownerId")
+    private List<Credentials> credentials = new ArrayList<>();
+
     public Technician() {
     }
 
     public Technician(String name, String surname, TechnicianType type, int DNI, String cuil,
-            Provinces areasOfWork,
+            String address,
             Contact contact) {
         this.id = Crypto.genId();
         this.name = name;
@@ -46,7 +44,7 @@ public class Technician {
         this.type = type;
         this.DNI = DNI;
         this.cuil = cuil;
-        this.areasOfWork = areasOfWork;
+        this.address = address;
         this.contact = contact;
         this.visits = new ArrayList<>();
     }
@@ -54,16 +52,20 @@ public class Technician {
     public Long getId() {
         return id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
+
     public String getName() {
         return this.name;
     }
-    public void setCredentials(Credentials credentials) {
-        this.credentials = credentials;
+
+    public void addCredentials(Credentials credentials) {
+        this.credentials.add(credentials);
     }
-    public Credentials getCredentials() {
+
+    public List<Credentials> getCredentials() {
         return credentials;
     }
 
@@ -103,12 +105,12 @@ public class Technician {
         this.cuil = cuil;
     }
 
-    public Provinces getAreasOfWork() {
-        return this.areasOfWork;
+    public String getAddress() {
+        return this.address;
     }
 
-    public void setAreasOfWork(Provinces areasOfWork) {
-        this.areasOfWork = areasOfWork;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public List<TechnicianVisit> getVisits() {

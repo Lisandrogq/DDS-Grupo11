@@ -5,6 +5,7 @@ import org.grupo11.Api.Controllers.FridgeController;
 import org.grupo11.Api.Controllers.PublicAPI;
 import org.grupo11.Api.Controllers.RenderController;
 import org.grupo11.Api.Controllers.RewardsController;
+import org.grupo11.Api.Controllers.AdminController;
 import org.grupo11.Api.Controllers.Auth;
 
 import io.javalin.Javalin;
@@ -17,6 +18,7 @@ public class Router {
         fridgeRoutes(api);
         publicApi(api);
         rewardRoutes(api);
+        adminRoutes(api);
     }
 
     static void clientRoutes(Javalin api) {
@@ -30,8 +32,12 @@ public class Router {
     static void userRoutes(Javalin api) {
         api.get("/user/logout", Auth::handleUserLogOut);
         api.post("/user/login", Auth::handleUserLogin);
+        api.get("/user/login/github/", Auth::handleUserLoginWithGithub);
+        api.post("/user/change_password", Auth::handleChangePassword);
         api.post("/user/individual", Auth::handleIndividualSignup);
         api.post("/user/legal-entity", Auth::handleLegalEntitySignup);
+        api.post("/user/provider/google", Auth::handleAddGoogleProvider);
+        api.get("/user/provider/github", Auth::handleAddGithubProvider);
     }
 
     static void contributionRoutes(Javalin api) {
@@ -44,6 +50,7 @@ public class Router {
     }
 
     static void publicApi(Javalin api) {
+        api.get("/api/contributors", PublicAPI::renderFilterContributors);
         api.get("/api/contributors/recognitions", PublicAPI::handleContributorRecognitions);
     }
 
@@ -57,5 +64,13 @@ public class Router {
 
     static void rewardRoutes(Javalin api) {
         api.post("/rewards", RewardsController::handleUpdateRewards);
+    }
+
+    static void adminRoutes(Javalin api) {
+        api.post("/admin/importData", AdminController::handleImportData);
+        api.get("/admin/report", AdminController::getReportData);
+        api.post("/admin/report/create", AdminController::handleCreateReport);
+        api.post("/admin/report/updateFrequency", AdminController::handleUpdateReportFrequency);
+        api.post("/admin/signAdmin", AdminController::handleAdminSignup);
     }
 }

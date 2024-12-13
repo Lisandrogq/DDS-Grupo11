@@ -5,16 +5,26 @@ import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgesManager;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@PrimaryKeyJoinColumn(name = "id")
+@Table(
+    name = "FridgeAdmin",
+    uniqueConstraints = @UniqueConstraint(columnNames = {"business_id", "fridge_id"})
+)
 public class FridgeAdmin extends Contribution {
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "business_id", nullable = false)
     private LegalEntity business;
+
     @OneToOne
-    public Fridge fridge;
+    @JoinColumn(name = "fridge_id", nullable = false)
+    private Fridge fridge;
 
     public FridgeAdmin() {
     }

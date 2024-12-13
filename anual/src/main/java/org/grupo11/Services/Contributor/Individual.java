@@ -10,7 +10,7 @@ import org.grupo11.Services.Contributions.ContributionType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Individual extends Contributor {
@@ -19,9 +19,9 @@ public class Individual extends Contributor {
     private DocumentType documentType;
     private String name;
     private String surname;
-    private String birth;
-    @OneToOne
-    private Credentials credentials;
+    private Long birth;
+    @OneToMany(mappedBy = "ownerId")
+    private List<Credentials> credentials = new ArrayList<>();
 
     public Individual() {
         super();
@@ -33,7 +33,7 @@ public class Individual extends Contributor {
         this.setPossibleContributions(possibleContributions);
     }
 
-    public Individual(String name, String surname, String address, String birth, int document,
+    public Individual(String name, String surname, String address, Long birth, int document,
             DocumentType documentType) {
         super(name, address, new ArrayList<>());
         List<ContributionType> possibleContributions = new ArrayList<ContributionType>();
@@ -64,11 +64,11 @@ public class Individual extends Contributor {
         this.surname = surname;
     }
 
-    public String getBirth() {
+    public Long getBirth() {
         return this.birth;
     }
 
-    public void setBirth(String birth) {
+    public void setBirth(Long birth) {
         this.birth = birth;
     }
 
@@ -88,10 +88,11 @@ public class Individual extends Contributor {
         this.documentType = documentType;
     }
 
-    public void setCredentials(Credentials credentials) {
-        this.credentials = credentials;
+    public void addCredentials(Credentials credentials) {
+        this.credentials.add(credentials);
     }
-    public Credentials getCredentials() {
+
+    public List<Credentials> getCredentials() {
         return credentials;
     }
 }

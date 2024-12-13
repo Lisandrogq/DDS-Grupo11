@@ -6,13 +6,13 @@ public class IndividualDTO {
     public String name;
     public String surname;
     public String address;
-    public String birth;
+    public Long birth;
     public int document;
     public DocumentType documentType;
     public double points;
     public int mealDonations;
 
-    public IndividualDTO(String name, String surname, String address, String birth, int document,
+    public IndividualDTO(String name, String surname, String address, Long birth, int document,
             DocumentType documentType, double points, int mealDonations) {
         this.name = name;
         this.surname = surname;

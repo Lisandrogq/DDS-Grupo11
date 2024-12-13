@@ -25,14 +25,4 @@ public abstract class ActivityRegistry {
         this.id = id;
     }
 
-    /*
-     * public PersonInNeed getOwner() { //// DEBERÍA SER DE TIPO 'ROL' PERO TODAVIA
-     * NO ESTA IMPLEMENTADO
-     * return this.owner;
-     * }
-     * public void setOwner(PersonInNeed owner) {
-     * this.owner = owner;
-     * }
-     */
-
 }

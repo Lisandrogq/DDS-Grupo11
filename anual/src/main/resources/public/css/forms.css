@@ -59,3 +59,25 @@ option:hover {
 .gap {
 	gap: 10px;
 }
+
+.provider-btn {
+	background-color: #f8faff;
+	transition: all 0.2s;
+	cursor: pointer;
+	border-radius: 8px;
+	text-align: center;
+}
+
+.provider-btn:hover {
+	background-color: #f0f4ff;
+}
+
+.provider-btn-github {
+	background-color: #24292f;
+	color: white;
+}
+
+.provider-btn-github:hover {
+	background-color: #343a42;
+	color: white;
+}

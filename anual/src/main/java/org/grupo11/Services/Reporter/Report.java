@@ -1,51 +1,59 @@
 package org.grupo11.Services.Reporter;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.grupo11.Utils.DateUtils;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
 @Entity
 public class Report {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    private long createdAt;
+    private long fromDate;
+    private long toDate;
     @OneToMany
-    private List<FailureReportRow> failuresPerFridge;
+    private List<FridgeReportRow> fridgeReportRows = new ArrayList<>();
     @OneToMany
-    private List<MealsPerFridgeReportRow> mealsPerFridgeReport;
-    @OneToMany
-    private List<MealPerContributorReportRow> mealsPerContributor;
+    private List<MealsPerContributorReportRow> contributorReportRows = new ArrayList<>();
 
     public Report() {
     }
 
-    public Report(long createdAt, List<FailureReportRow> failuresPerFridge,
-            List<MealsPerFridgeReportRow> mealsPerFridgeReport,
-            List<MealPerContributorReportRow> mealsPerContributor) {
-        this.createdAt = createdAt;
-        this.failuresPerFridge = failuresPerFridge;
-        this.mealsPerFridgeReport = mealsPerFridgeReport;
-        this.mealsPerContributor = mealsPerContributor;
+    public Report(long fromDate, long toDate,
+                List<FridgeReportRow> fridgeReportRows,
+                List<MealsPerContributorReportRow> contributorReportRows) {
+        this.fromDate = fromDate;
+        this.toDate = toDate;
+        this.fridgeReportRows = fridgeReportRows;
+        this.contributorReportRows = contributorReportRows;
     }
 
-    public long getCreatedAt() {
-        return this.createdAt;
+    public long getId() {
+        return id;
     }
 
-    public List<FailureReportRow> getFailuresPerFridge() {
-        return this.failuresPerFridge;
+    public long getFromDate() {
+        return fromDate;
     }
 
-    public List<MealsPerFridgeReportRow> getMealsPerFridgeReport() {
-        return this.mealsPerFridgeReport;
+    public long getToDate() {
+        return toDate;
     }
 
-    public List<MealPerContributorReportRow> getMealsPerContributor() {
-        return this.mealsPerContributor;
+    public List<FridgeReportRow> getFridgeReportRows() {
+        return fridgeReportRows;
     }
 
+    public List<MealsPerContributorReportRow> getContributorReportRows() {
+        return contributorReportRows;
+    }
 }

@@ -13,6 +13,7 @@
 		<link rel="stylesheet" href="/public/css/base.css" />
 		<link rel="stylesheet" href="/public/css/forms.css" />
 		<script src="/public/js/forms.js"></script>
+		<script src="https://accounts.google.com/gsi/client" async defer></script>
 	</head>
 
 	<body class="fullscreen d-flex align-items-center">
@@ -40,6 +41,9 @@
 					placeholder="Your password..."
 					class="w-100 inputs"
 				/>
+
+				<a href="/register/changePassword" class="btn-text w-100">Change password</a>
+
                 <#if error??>
                     <div style="color: red">${error}</div>
                 </#if>
@@ -47,7 +51,23 @@
 					<a href="/register/signup" class="btn-text w-100">Sign up</a>
 					<button type="submit" class="btn-primary w-100">Log in</button>
 				</div>
+				<div class="d-flex flex-row w-100" style="gap: 10px;">
+					<div id="google-login-btn" class="d-flex flex-row align-items-center provider-btn w-100"" style="gap: 30px">
+						<div id="google-btn-wrapper" style="display: none;"></div>
+						<img src="/public/assets/brands/google.png" height="48" width ="48" />
+						<div>
+							<p>Login with Google</p>
+						</div>
+					</div>
+					<div id="github-login-btn" class="d-flex flex-row align-items-center provider-btn provider-btn-github w-100" style="gap: 30px">
+						<img src="/public/assets/brands/github-white.png" height="40" width ="40" style="margin-left: 5px;" />
+						<div>
+							<p>Login with Github</p>
+						</div>
+					</div>
+				</div>
 			</form>
 		</div>
 	</body>
+	<script src="/public/js/social-login.js"></script>
 </html>

@@ -31,8 +31,8 @@ public class ContributionsTest {
     public void setUp() {
         List<ContributionType> permisos = new ArrayList<ContributionType>();
         permisos.add(ContributionType.MEAL_DONATION);
-        contributor1 = new Individual("name","surname","address","birth",1231,DocumentType.DNI);
-        contributor2 = new Individual("name2","surname2","address","birth",1231,DocumentType.DNI);
+        contributor1 = new Individual("name","surname","address",null,1231,DocumentType.DNI);
+        contributor2 = new Individual("name2","surname2","address",null,1231,DocumentType.DNI);
         fridge = new Fridge(-74.006, 40.7128, "Caballito", "Fridge A", 100, 2020, null, null, null);
         meal = new Meal("fidios", 0, 0, fridge, "nuevo", 123, 33);
         contributorRegistry = new ContributorRegistry(0, contributor1, new ArrayList<FridgeSolicitude>());

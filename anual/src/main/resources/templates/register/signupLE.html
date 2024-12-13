@@ -32,7 +32,7 @@
                 />
                 <input
                     type="text"
-                    id="name"
+                    id="personName"
                     name="name"
                     required
                     placeholder="Organization name..."
@@ -41,7 +41,7 @@
 
                 <div class="d-flex w-100" style="gap: 10px">
                     <select required name="org-type" value="Organization Type" class="w-100">
-                        <option selected disabled hidden>Organization Type</option>
+                        <option selected value="" disabled hidden>Organization Type</option>
                         <option value="Governmental">Governmental</option>
                         <option value="NGO">NGO</option>
                         <option value="Company">Company</option>
@@ -49,7 +49,7 @@
                     </select>
 
                     <select required name="org-category" value="Organization Category" class="w-100">
-                        <option selected disabled hidden>Organization Category</option>
+                        <option selected value="" disabled hidden>Organization Category</option>
                         <option value="HealthCare">Health Care</option>
                         <option value="Education">Education</option>
                         <option value="Finance">Finance</option>
@@ -69,17 +69,18 @@
                 />
                 <input
                     type="password"
-                    id="contrasenaConfirmada"
+                    id="confirmedPassword"
                     required
                     placeholder="Your password again..."
                     class="inputs"
                 />
 
+                <div id="error-message" style="color: red; display: none;"></div>
                 <#if error??>
                     <div style="color: red">${error}</div>
                 </#if>
                 <div class="form-btns-container">
-                    <button type="submit" class="btn-text w-100" onclick="validar()">Accept</button>
+                    <button type="button" class="btn-text w-100" onclick="validar()">Accept</button>
                 </div>
             </form>
         </div>

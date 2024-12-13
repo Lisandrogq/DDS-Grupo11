@@ -1,8 +1,8 @@
 package org.grupo11.app;
 
+import org.grupo11.Utils.DataImporter;
 import org.grupo11.Utils.PasswordValidator;
 import org.grupo11.DB;
-import org.grupo11.DataImporter;
 import org.grupo11.Logger;
 import org.grupo11.Metrics;
 import org.grupo11.Api.Api;
@@ -12,6 +12,7 @@ import org.grupo11.Services.Contributions.ContributionsManager;
 import org.grupo11.Services.Contributor.ContributorsManager;
 import org.grupo11.Services.Fridge.FridgesManager;
 import org.grupo11.Services.PersonInNeed.PersonInNeedManager;
+import org.grupo11.Services.Reporter.Reporter;
 import org.grupo11.Services.Rewards.RewardSystem;
 import org.grupo11.Services.Technician.TechnicianManager;
 
@@ -25,16 +26,10 @@ public class App {
     private RewardSystem rewardSystem;
 
     public static void main(String[] args) {
-        // contributorsManager = ContributorsManager.getInstance();
-        // contributionsManager = ContributionsManager.getInstance();
-        // fridgesManager = FridgesManager.getInstance();
-        // personsInNeedManager = PersonInNeedManager.getInstance();
-        // technicianManager = TechnicianManager.getInstance();
-        // cardsManager = RegistryManager.getInstance();
-        // rewardSystem = RewardSystem.getInstance();
         try {
             DB.getSessionFactory();
             Rabbit.getInstance().connect();
+            Reporter.getInstance().setupReporter();
             Api api = new Api(8000);
             api.start();
         } catch (Exception e) {
@@ -83,9 +78,5 @@ public class App {
             return;
         }
         System.out.println("Password is valid");
-    }
-
-    public void bulkContributionsImport(String cvsFileName) {
-        new DataImporter(contributionsManager, contributorsManager).loadContributors(cvsFileName);
     }
 }

@@ -1,14 +1,13 @@
-
 function validar() {
-	let mail = document.getElementById("mail").value;
-	let contrasena = document.getElementById("contrasena").value;
-	let contrasenaConfirmada = document.getElementById("contrasenaConfirmada").value;
+    const password = document.getElementById('password').value;
+    const confirmedPassword = document.getElementById('confirmedPassword').value;
+    const errorMessage = document.getElementById('error-message');
 
-	if (mail == "" || contrasena == "") alert("Completar todos los campos");
-
-	if (mail == "admin" || contrasena == "admin" || contrasena == "1234")
-		alert("La contraseña ingresada no está permitida");
-
-	if (contrasena != contrasenaConfirmada) alert("Las contraseñas no coinciden");
+    if (password !== confirmedPassword) {
+        errorMessage.textContent = "Passwords do not match. Please try again.";
+        errorMessage.style.display = "block";
+    } else {
+        errorMessage.style.display = "none";
+        document.querySelector('form').submit();
+    }
 }
-

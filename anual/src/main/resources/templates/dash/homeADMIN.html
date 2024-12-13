@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>FridgeBridge - Admin</title>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+            crossorigin="anonymous"
+        />
+        <link rel="stylesheet" href="/public/css/home.css" />
+        <link rel="stylesheet" href="/public/css/forms.css" />
+        <link rel="stylesheet" href="/public/css/base.css" />
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+            integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+            crossorigin=""
+        />
+        <!-- Make sure you put this AFTER Leaflet's CSS -->
+        <script
+            src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""
+        ></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js">
+        </script>
+    </head>
+
+    <body>
+        <div class="fullscreen overflow-auto" style="max-height: 100vh">
+			<div
+				class="d-flex flex-column w-100"
+				style="max-width: 1280px; margin: auto; gap: 30px; padding: 50px"
+                id="contenedorDeAlertas"
+			>
+				<#if error??>
+                    <div class="alert alert-danger alert-dismissible fade show" id="error-alert" role="alert" style="position: absolute; top: 0; left: 0; right: 0; z-index: 1000; margin: auto; margin-top: 10px; width: 50%;">
+                        <strong>Oh snap!</strong> ${error}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+				</#if>
+				<div
+					class="d-flex flex-row justify-content-between align-items-center w-100"
+					style="margin-bottom: 20px"
+				>
+					<div class="d-flex flex-column gap-3">
+						<h4>Hello Admin 👋</h4>
+						<p>We hope you have a nice day!</p>
+					</div>
+					<div class="d-flex flex-row align-items-center" style="gap: 30px">
+					    <button onclick="deleteCookieAndRefresh()" type="button" class="btn btn-light" id="logout-btn">Log Out</button>
+					</div>
+				</div>
+
+                <div class="d-flex flex-column flex-grow-1" style="min-width: 300px">
+                    <div class="d-flex align-items-center justify-content-between" style="gap: 30px">
+                        <div class="mb-3">
+                            <h4>Reports</h4>
+                            <p>A history list of all the reports. This list is updated every ${reportsFrequency.frequency} ${reportsFrequency.unit}.</p>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary" id="create-report-btn">Update reports</button>
+                            <button
+                                type="button"
+                                class="btn btn-primary"
+                                id="new-frequency-btn"
+                                actual-frequency="${reportsFrequency.frequency}"
+                                actual-unit="${reportsFrequency.unit}"
+                            >
+                                Change generation frequency
+                            </button>
+                        </div>
+                    </div>
+                    <div
+                        class="my-card d-flex flex-column"
+                        style="gap: 30px; height: 350px"
+                    >
+                        <#list reports?sort_by("reportId")?reverse as report>
+                            <div
+                                class="d-flex align-items-center my-card-item"
+                                style="gap: 30px"
+                                id="report"
+                                data-report-id="${report.reportId}"
+                                data-from-date="${report.fromDate}"
+                                data-to-date="${report.toDate}"
+                            >
+                                <h4>${Reportsemoji}</h4>
+                                <div>
+                                    <h6>Report ${reports?size - report?index}</h6>
+                                    <p id="report-description"></p>
+                                </div>
+                            </div>
+                        </#list>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column w-100" style="gap: 100px">
+                    <div class="d-flex flex-row w-100 flex-wrap" style="gap: 50px">
+                        <div class="d-flex flex-column flex-grow-1" style="min-width: 300px">
+                            <div class="mb-3">
+                                <h4>Import data</h4>
+                                <p>Upload a CSV file to import data</p>
+                            </div>
+                            <form action="/admin/importData" method="post" enctype="multipart/form-data">
+                                <div class="my-card d-flex flex-column" style="gap: 30px">
+                                    <div class="form-group">
+                                        <label for="file">Select a file</label>
+                                        <input
+                                            type="file"
+                                            name="CSVfile"
+                                            class="form-control-file"
+                                            id="CSVfile"
+                                            required
+                                            accept=".csv"
+                                        />
+                                    </div>
+                                    <div class="d-flex flex-row justify-content-end">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sign new admins -->
+                <div class="d-flex flex-column w-100" style="gap: 100px">
+                    <div class="d-flex flex-row w-100 flex-wrap" style="gap: 50px">
+                        <div class="d-flex flex-column flex-grow-1" style="min-width: 300px">
+                            <div class="mb-3">
+                                <h4>Sign new admins</h4>
+                                <p>Fill the form to sign a new admin</p>
+                            </div>
+                            <form action="/admin/signAdmin" method="post">
+                                <div class="my-card d-flex flex-column" style="gap: 30px">
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            class="form-control"
+                                            id="email"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="form-group
+                                        <label for="password">Password</label>
+                                        <input
+                                            type="password"
+                                            name="password"
+                                            class="form-control"
+                                            id="password"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="d-flex flex-row justify-content-end">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>              
+
+            </div>
+        </div>
+    </body>
+
+    <div class="modal" id="modal">
+		<div
+			class="my-card d-flex flex-column justify-content-center overflow-auto"
+			style="width: 650px; max-height: 100%"
+		>
+			<p class="small accent-100 align-self-end btn" id="modal-close">X</p>
+			<div class="my-modal-content" id="modal-content"></div>
+		</div>
+	</div>
+
+    <script src="/public/js/modal_admin.js"></script>
+    <script src="/public/js/error.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</html>

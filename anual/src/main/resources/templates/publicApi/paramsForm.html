@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Get recommended contributors</title>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+            crossorigin="anonymous"
+        />
+        <link rel="stylesheet" href="/public/css/base.css" />
+        <link rel="stylesheet" href="/public/css/forms.css" />
+    </head>
+
+    <body class="fullscreen d-flex align-items-center">
+        <div class="form-container">
+
+            <form method="GET" action="/api/contributors/recognitions" class="form">
+
+                <div class="form-header">
+                    <h5 class="accent-100 mb-2">Recommended contributors</h5>
+                    <p>Get a list of contributors that meet the following criteria:</p>
+                </div>
+
+                <input
+                    id="min_meals"
+                    type="number"
+                    name="min_meals"
+                    placeholder="Minimum number of meals..."
+                    class="inputs"
+                    required
+                />
+
+                <input
+                    id="min_points"
+                    type="number"
+                    name="min_points"
+                    placeholder="Minimum number of points..."
+                    class="inputs"
+                    required
+                />
+
+                <input
+                    id="size"
+                    type="number"
+                    name="size"
+                    placeholder="Quantity of contributors... (10 by default)"
+                    class="inputs"
+                />
+
+                <button type="submit" class="btn btn-primary btn-block mt-3">
+                    Get contributors
+                </button>
+                
+            </form>
+        </div>
+    </body>
+</html>

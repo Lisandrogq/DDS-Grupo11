@@ -22,9 +22,9 @@ public class Subscription {
     @Enumerated(EnumType.STRING)
     private FridgeNotifications type;
     private int threshold=0;
-    private List<String> notifications;
+    @ManyToOne
+    private Fridge fridge;
     public Subscription() {
-        this.notifications = new ArrayList<>();
     }
 
     public Subscription(Contributor contributor, FridgeNotifications fridgeNotificationsPreferences,int threshold) {
@@ -32,15 +32,13 @@ public class Subscription {
         this.type = fridgeNotificationsPreferences;
         this.threshold = threshold;
     }
-    public List<String> getNotifications() {
-        return notifications;
+    public Fridge getFridge() {
+        return fridge;
     }
-    public void setNotifications(List<String> notifications) {
-        this.notifications = notifications;
+    public void setFridge(Fridge fridge) {
+        this.fridge = fridge;
     }
-    public void addNotification(String notification){
-        notifications.add(notification);
-    }
+
     public Contributor getContributor() {
         return this.contributor;
     }

@@ -4,7 +4,6 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Inicio</title>
-        <link rel="stylesheet" href="forms.css" />
         <link
             rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
@@ -20,14 +19,14 @@
             <div class="w-100 fullscreen-h d-flex justify-content-center hero-bg">
                 <section class="hero-section h-100 d-flex flex-column" style="padding-bottom: 20px">
                     <nav style="margin-bottom: 20px">
-                        <div class="d-flex w-100 align-items-center justify-content-between">
+                        <div class="d-flex w-100 align-items-center justify-content-between cta-container" style="padding: 20px">
                             <div class="d-flex align-items-center" style="gap: 20px">
                                 <img src="/public/assets/logo.png" alt="" height="60" width="60" />
-                                <h5 class="accent-100 normal">FridgeBridge</h5>
+                                <h5 class="normal" style="color: aliceblue;">FridgeBridge</h5>
                             </div>
-                            <div class="d-flex align-items-center" style="gap: 40px">
-                                <a href="#about-us" class="nav-link">About us</a>
-                                <a href="#campaign" class="nav-link">Campaign</a>
+                            <div class="d-flex align-items-center justify-content-between" style="gap: 10px">
+                                <a href="/api/contributors" class="nav-link">Recommended contributors</a>
+                                <a href="/docs/" class="nav-link">Documentation</a>
                                 <a href="#contact" class="nav-link">Concat us</a>
                             </div>
                         </div>
@@ -36,7 +35,7 @@
                         class="d-flex w-100 h-100 justify-content-center align-items-center"
                         style="flex: 1"
                     >
-                        <div class="h-100 w-100 d-flex flex-column justify-content-center">
+                        <div class="h-100 w-100 d-flex flex-column justify-content-center" style="padding: 20px">
                             <div style="margin-bottom: 20px">
                                 <h1 class="font-128">
                                     <span class="text-contrast-100">Fighting</span>
@@ -55,7 +54,7 @@
                             Through collaborative efforts and innovative solutions, Fridge Bridge ensures no food goes to waste, 
                             and no one goes hungry. Join us in making a difference!
                             </h5>
-                            <div class="d-flex align-items-center" style="gap: 80px">
+                            <div class="d-flex align-items-center" style="gap: 40px">
                                 <a href="/register/login" class="btn-primary hero-btn-left"
                                     >Log in</a
                                 >
@@ -105,7 +104,7 @@
                     <h1 class="font-100 accent-100">
                         Support the <span class="accent-100">Community</span>
                     </h1>
-                    <div class="header-line"></div>
+                    <div class="header-line" style="width: auto;"></div>
                     <h5 class="normal text-200" style="margin-bottom: 60px">
                         Your contribution can transform lives. Whether you're a business willing 
                         to donate meals, an individual ready to lend a hand, a legal entity ready to partner with us
@@ -129,13 +128,13 @@
                     <div class="section-space"></div>
                     <div
                         class="bg-accent-200 rounded-x2"
-                        style="padding-inline: 60px; padding-block: 100px"
+                        style="padding: 40px; margin-bottom: 20px"
+                        id="about-us"
                     >
-                        <h1 class="text-contrast-100" style="margin-bottom: 50px">
-                            Who we <span class="accent-100">are</span> and what we
-                            <span class="accent-100">do</span>
+                        <h1 class="font-128" style="margin-bottom: 20px; padding: 20px;">
+                            <span class="accent-100">Who we are and what we do</span>
                         </h1>
-                        <div class="header-line"></div>
+                        <div class="header-line" style="width: auto;"></div>
 
                         <div class="d-flex" style="gap: 40px; flex-wrap: wrap">
                             <h5 class="normal">
@@ -158,20 +157,18 @@
 
             <div
                 class="d-flex justify-content-center bg-accent-100 w-100"
-                style="min-height: 400px"
             >
                 <section class="d-flex align-items-center justify-content-between">
                     <div
                         class="d-flex w-100 justify-content-between align-items-center cta-container"
                         style="gap: 40px"
                     >
-                        <h1 class="font-100 text-contrast-100 cta-header">
+                        <h1 class="font-100 text-contrast-100 cta-header" style="padding: 30px;">
                             Don’t forget You can <br />
                             <span class="bg-accent-200 rounded" style="padding: 10px"
                                 >save <span class="accent-100">lives</span></span
                             >
                         </h1>
-                        <a href="/register/signup" class="btn-primary cta-btn">Save a life</a>
                     </div>
                 </section>
             </div>
@@ -179,7 +176,7 @@
             <div class="d-flex justify-content-center bg-accent-200 w-100">
                 <section class="d-flex flex-column" style="margin-top: 100px">
                     <div
-                        class="d-flex align-items-center justify-content-between"
+                        class="d-flex align-items-center justify-content-between cta-container"
                         style="gap: 60px"
                     >
                         <div style="flex: 1">

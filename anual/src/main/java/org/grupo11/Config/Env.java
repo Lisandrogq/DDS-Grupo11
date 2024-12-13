@@ -57,7 +57,23 @@ public class Env {
         return properties.getProperty("RABBIT_PASSWORD");
     }
 
-    public static String getJWTSecret() {
-        return properties.getProperty("JWT_SECRET");
+    public static String getJWTPublicKey() {
+        return properties.getProperty("JWT_PUB_KEY");
+    }
+
+    public static String getJWTPrivateKey() {
+        return properties.getProperty("JWT_PRIV_KEY");
+    }
+
+    public static String getGoogleOAuthClientId() {
+        return properties.getProperty("GOOGLE_OAUTH_CLIENT_ID");
+    }
+
+    public static String getGithubOAuthClientId() {
+        return properties.getProperty("GITHUB_OAUTH_CLIENT_ID");
+    }
+
+    public static String getGithubOAuthSecret() {
+        return properties.getProperty("GITHUB_OAUTH_SECRET");
     }
 }

@@ -43,6 +43,10 @@ public class Reward {
         return this.id;
     }
 
+    public String getIdAsString() {
+        return Integer.toString(this.id);
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -75,6 +79,11 @@ public class Reward {
         return this.neededPoints;
     }
 
+    public String getNeededPointsAsString() {
+        int intPoints = (int) this.neededPoints;
+        return Integer.toString(intPoints);
+    }
+
     public void setNeededPoints(float neededPoints) {
         this.neededPoints = neededPoints;
     }
@@ -89,6 +98,10 @@ public class Reward {
 
     public int getQuantity() {
         return this.quantity;
+    }
+
+    public String getQuantityAsString() {
+        return Integer.toString(this.quantity);
     }
 
     public void setQuantity(int quantity) {
@@ -107,13 +120,13 @@ public class Reward {
         Map<String, Object> reward_map = new HashMap<>();
         String emoji = getCategory() == RewardCategory.TECH ? "💻"
                 : (getCategory() == RewardCategory.COOKING ? "🍴" : "🏡");
-        reward_map.put("id", getId());
+        reward_map.put("id", getIdAsString());
         reward_map.put("name", getName());
         reward_map.put("emoji", emoji);
         reward_map.put("category", getCategory().toString());
         reward_map.put("description", getDescription());
-        reward_map.put("neededPoints", getNeededPoints());
-        reward_map.put("quantity", getQuantity());
+        reward_map.put("neededPoints", getNeededPointsAsString());
+        reward_map.put("quantity", getQuantityAsString());
         if (getImageUrl() != null) reward_map.put("imageUrl", getImageUrl());
             else reward_map.put("imageUrl", "https://images.emojiterra.com/google/android-12l/512px/1f381.png");
         return reward_map;

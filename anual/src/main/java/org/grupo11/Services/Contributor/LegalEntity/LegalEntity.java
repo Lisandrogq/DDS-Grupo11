@@ -12,32 +12,27 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class LegalEntity extends Contributor {
-    
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
     private LegalEntityType type;
     @Column(name = "category")
     @Enumerated(EnumType.STRING)
     private LegalEntityCategory category;
-    @OneToOne
-    private Credentials credentials;
+    @OneToMany(mappedBy = "ownerId")
+    private List<Credentials> credentials = new ArrayList<>();
     String orgName;
 
     public LegalEntity() {
         this.id = Crypto.genId();
     }
 
-
-
     public LegalEntity(String businessName, String address, LegalEntityType type, LegalEntityCategory category) {
-        super(businessName, address,new ArrayList<>());
-        List<ContributionType> possibleContributions =  new ArrayList<ContributionType>();
+        super(businessName, address, new ArrayList<>());
+        List<ContributionType> possibleContributions = new ArrayList<ContributionType>();
         possibleContributions.add(ContributionType.MONEY_DONATION);
         possibleContributions.add(ContributionType.FRIDGE_ADMINISTRATION);
         possibleContributions.add(ContributionType.REWARD);
@@ -72,7 +67,7 @@ public class LegalEntity extends Contributor {
         return id;
     }
 
-    public void setCredentials(Credentials credentials) {
-        this.credentials = credentials;
+    public void addCredentials(Credentials credentials) {
+        this.credentials.add(credentials);
     }
 }

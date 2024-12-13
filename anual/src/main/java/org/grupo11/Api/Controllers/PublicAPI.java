@@ -19,6 +19,10 @@ import jakarta.persistence.Tuple;
 
 public class PublicAPI {
 
+    public static void renderFilterContributors(Context ctx) {
+        ctx.render("templates/publicApi/paramsForm.html");
+    }
+
     public static void handleContributorRecognitions(Context ctx) {
         String minPointsParam = ctx.queryParam("min_points");
         String minMealsParam = ctx.queryParam("min_meals");
