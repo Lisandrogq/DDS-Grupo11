@@ -342,6 +342,23 @@ newFrequencyBtn.onclick = () => {
 }
 
 /**
+ * ===================================== Buttons ===================================================
+ */
+
+document.getElementById("submit-button").addEventListener("click", () => {
+
+    const form = document.getElementById("CSVform");
+    if (form.checkValidity()) {
+        const spinner = document.getElementById("loading-spinner");
+        const buttonText = document.getElementById("button-text");
+        spinner.classList.remove("d-none");
+        buttonText.textContent = "Loading...";
+        form.submit();
+    }
+
+});
+
+/**
  * ===================================== Extra ===================================================
  */
 
