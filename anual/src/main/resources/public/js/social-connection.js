@@ -26,7 +26,6 @@ const handleGoogleResponse = async (googleUser) => {
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify({
-			provider: "Google",
 			token,
 		}),
 	});

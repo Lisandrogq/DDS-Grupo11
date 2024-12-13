@@ -16,6 +16,7 @@
 	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
 		integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
+	<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
 <body>
@@ -61,6 +62,27 @@
 					</div>
 					<button class="btn-primary" id="contribute-btn" user-type="LE">Contribute</button>
 					<button onclick="deleteCookieAndRefresh()" type="button" class="btn btn-light" id="logout-btn">Log Out</button>
+
+					<div class="position-relative hover-modal-container">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6" style="height: 30px; color: var(--gray)">
+							<path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
+						</svg>
+						<div class="my-card d-flex flex-column hover-modal">
+							<div id="google-btn-wrapper" style="display: none;"></div>
+							<#list providers as provider> 
+								<div id="provider-connect-${provider.provider}" class="d-flex flex-row align-items-center social-login-item" style="gap: 30px" onclick="handleProviderConnection('${provider.provider}')">
+									<img src="${provider.img}" height="48" width="48" alt="${provider.provider} logo" />
+									<div>
+										<#if provider.connected>
+											<p>Your ${provider.provider} account is connected. Update it if needed.</p>
+										<#else>
+											<p>Connect your ${provider.provider} account.</p>
+										</#if>
+									</div>
+								</div>
+							</#list>
+						</div>
+					</div>
 				</div>
 			</div>
 
@@ -189,6 +211,7 @@
 <script src="/public/js/forms.js"></script>
 <script src="/public/js/modal.js"></script>
 <script src="/public/js/error.js"></script>
+<script src="/public/js/social-connection.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 

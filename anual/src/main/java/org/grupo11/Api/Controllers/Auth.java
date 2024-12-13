@@ -354,8 +354,13 @@ public class Auth {
         }
 
         try (Session session = DB.getSessionFactory().openSession()) {
-            Auth.addOAuthCredential(credentials.getMail(), credentials.getOwnerId(), credentials.getUserType(),
-                    AuthProvider.Google);
+            try {
+                Auth.addOAuthCredential(validationRes.getEmail(), credentials.getOwnerId(), credentials.getUserType(),
+                        AuthProvider.Google);
+            } catch (Exception e) {
+                ctx.status(401).json(new ApiResponse(401, e.getMessage()));
+                return;
+            }
             ctx.redirect("/dash/home");
             ctx.status(200).json(new ApiResponse(200));
         } catch (Exception e) {
@@ -383,8 +388,13 @@ public class Auth {
         }
 
         try (Session session = DB.getSessionFactory().openSession()) {
-            Auth.addOAuthCredential(credentials.getMail(), credentials.getOwnerId(), credentials.getUserType(),
-                    AuthProvider.Github);
+            try {
+                Auth.addOAuthCredential(validationRes.getEmail(), credentials.getOwnerId(), credentials.getUserType(),
+                        AuthProvider.Github);
+            } catch (Exception e) {
+                ctx.redirect("/dash/home?error=" + e.getMessage());
+                return;
+            }
             ctx.redirect("/dash/home");
         } catch (Exception e) {
             ctx.redirect("/dash/home?error=Could not connect github account");
@@ -393,10 +403,24 @@ public class Auth {
 
     static void addOAuthCredential(String email, Long ownerId, UserTypes type, AuthProvider provider) throws Exception {
         Session session = DB.getSessionFactory().openSession();
+
+        // check the email isn't already registered on another account
         String hql = "SELECT c " +
                 "FROM Credentials c " +
-                "WHERE c.ownerId = :ownerId AND c.provider = :provider";
+                "WHERE c.mail = :email AND c.provider = :provider";
         org.hibernate.query.Query<Credentials> query = session.createQuery(hql, Credentials.class);
+        query.setParameter("email", email);
+        query.setParameter("provider", provider);
+
+        Logger.error("EMAIL {} PROVIDER {}", email, provider.toString());
+        if (query.getResultCount() > 0) {
+            throw new Exception("Email already registered");
+        }
+
+        hql = "SELECT c " +
+                "FROM Credentials c " +
+                "WHERE c.ownerId = :ownerId AND c.provider = :provider";
+        query = session.createQuery(hql, Credentials.class);
         query.setParameter("ownerId", ownerId);
         query.setParameter("provider", provider);
 
