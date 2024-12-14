@@ -22,7 +22,7 @@ const handleOAuthLogin = async (provider, token) => {
 		const origin = url.origin;
 
 		if (allowedOrigins.includes(origin)) {
-			window.location.href = redirectedUrl;
+			window.location.href = encodeURI(redirectedUrl);
 		} else {
 			alert("Redirecting to an untrusted site is not allowed.");
 		}
