@@ -32,6 +32,7 @@ public class Router {
     static void userRoutes(Javalin api) {
         api.get("/user/logout", Auth::handleUserLogOut);
         api.post("/user/login", Auth::handleUserLogin);
+        api.post("/user/token/", Auth::handleJWTTokenIssue);
         api.get("/user/login/github/", Auth::handleUserLoginWithGithub);
         api.post("/user/change_password", Auth::handleChangePassword);
         api.post("/user/individual", Auth::handleIndividualSignup);

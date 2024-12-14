@@ -51,9 +51,53 @@ class AddGoogleAuthProviderReqBody {
     }
 }
 
+class MailPasswordLoginReqBody {
+    public String mail;
+    public String password;
+
+    public MailPasswordLoginReqBody() {
+    }
+}
+
 public class Auth {
     public static void handleUserLogOut(Context ctx) {
         ctx.res().addCookie(HttpUtils.createHttpOnlyCookie("access-token", "", 3600));
+    }
+
+    public static void handleJWTTokenIssue(Context ctx) {
+        try {
+            MailPasswordLoginReqBody body = ctx.bodyAsClass(MailPasswordLoginReqBody.class);
+            if (body == null) {
+                ctx.status(400).json(new ApiResponse(400, "Invalid body."));
+                return;
+            }
+
+            if (!FieldValidator.isEmail(body.mail)) {
+                ctx.status(400).json(new ApiResponse(400, "Missing required parameter: mail", null));
+                return;
+            }
+            if (!FieldValidator.isString(body.password)) {
+                ctx.status(400).json(new ApiResponse(400, "Missing required parameter: password", null));
+                return;
+            }
+            Credentials credentials = AuthProvider.FridgeBridge.authenticate(body.mail, body.password);
+
+            if (credentials == null) {
+                ctx.status(401).json(new ApiResponse(401));
+                return;
+            }
+
+            Map<String, String> payload = new HashMap<>();
+            payload.put("mail", credentials.getMail());
+            payload.put("owner_id", credentials.getOwnerId().toString());
+            payload.put("type", credentials.getUserType().toString());
+            String jwtToken = JWTService.generate(payload, 3600);
+            Map<String, String> responseData = new HashMap<>();
+            responseData.put("access-token", jwtToken);
+            ctx.status(200).json(new ApiResponse(200, responseData));
+        } catch (Exception e) {
+            ctx.status(500).json(new ApiResponse(500));
+        }
     }
 
     public static void handleUserLogin(Context ctx) {
@@ -337,7 +381,7 @@ public class Auth {
 
         AddGoogleAuthProviderReqBody body = ctx.bodyAsClass(AddGoogleAuthProviderReqBody.class);
         if (body == null) {
-            ctx.status(400).json(new ApiResponse(400, "Invalid bod."));
+            ctx.status(400).json(new ApiResponse(400, "Invalid body."));
             return;
         }
         String tokenId = body.getToken();

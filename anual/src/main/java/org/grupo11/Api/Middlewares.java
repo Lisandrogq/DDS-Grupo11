@@ -74,4 +74,26 @@ public class Middlewares {
             return null;
         }
     }
+
+    public static Credentials authenticatedFromHeader(Context ctx) {
+        String authorization = ctx.header("Authorization");
+        if (authorization == null || authorization.isEmpty()) {
+            return null;
+        }
+        String[] split = authorization.split(" ");
+        String type = split[0];
+        if (type.compareTo("Bearer") != 0) {
+            return null;
+        }
+
+        String token = split[1];
+        try {
+            DecodedJWT decoded = JWTService.validate(token);
+            Credentials credentials = HttpUtils.getCredentialsFromAccessToken(decoded);
+            return credentials;
+        } catch (Exception e) {
+            Logger.error("An error during jwt decode.", e);
+            return null;
+        }
+    }
 }
