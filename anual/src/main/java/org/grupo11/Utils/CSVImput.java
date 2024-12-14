@@ -63,7 +63,7 @@ public class CSVImput {
             // ContributionDate (dd/MM/yyyy)
             if (fields.get(5).length() != 10) {
                 throw new Exception("Invalid date");}
-            long contributionDate = DateUtils.parseDateString(fields.get(5));
+            long contributionDate = DateUtils.parseDateString(fields.get(5).replace("/", "-"));
             Logger.info("Parsed date: " + contributionDate);
 
             // ContributionType
