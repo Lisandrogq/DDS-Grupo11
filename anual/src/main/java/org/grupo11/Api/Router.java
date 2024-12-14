@@ -61,6 +61,8 @@ public class Router {
         api.post("/fridge/subscribe", FridgeController::handleSubscription);
         api.post("/fridge/unsubscribe", FridgeController::handleUnsubscription);
         api.get("/fridge/info", FridgeController::getFridgeInfo);
+        api.post("/fridge/sensor/temperature", FridgeController::handleSensorTemperatureUpdate);
+        api.post("/fridge/sensor/movement", FridgeController::handleSensorMovementUpdate);
     }
 
     static void rewardRoutes(Javalin api) {

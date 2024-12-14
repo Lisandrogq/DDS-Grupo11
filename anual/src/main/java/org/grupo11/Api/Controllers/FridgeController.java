@@ -1,28 +1,34 @@
 package org.grupo11.Api.Controllers;
 
-import org.grupo11.DB;
-import org.grupo11.Logger;
-import org.grupo11.Api.Middlewares;
-import org.grupo11.Services.Contributor.Contributor;
-import org.grupo11.Utils.DateUtils;
 import java.util.List;
 import java.util.Map;
 
+import org.grupo11.DB;
+import org.grupo11.Logger;
+import org.grupo11.Api.ApiResponse;
+import org.grupo11.Api.Middlewares;
 import org.grupo11.Api.JsonData.FridgeInfo.FridgeFullInfo;
-import org.grupo11.Services.Technician.Technician;
-import org.grupo11.Services.Technician.TechnicianVisit;
-import org.grupo11.Utils.FieldValidator;
-import org.hibernate.Session;
-import org.hibernate.query.Query;
-import org.grupo11.Services.Fridge.Incident.Alert;
-import org.grupo11.Services.Fridge.Incident.Failure;
-import org.grupo11.Services.Fridge.Incident.Incident;
-import org.grupo11.Services.Fridge.Incident.Urgency;
+import org.grupo11.Broker.Rabbit;
+import org.grupo11.DTOS.FridgeMovementDTO;
+import org.grupo11.DTOS.FridgeTempDTO;
+import org.grupo11.Services.Credentials;
 import org.grupo11.Services.Meal;
+import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgeNotification;
 import org.grupo11.Services.Fridge.FridgeNotifications;
 import org.grupo11.Services.Fridge.Subscription;
+import org.grupo11.Services.Fridge.Incident.Alert;
+import org.grupo11.Services.Fridge.Incident.Failure;
+import org.grupo11.Services.Fridge.Incident.Incident;
+import org.grupo11.Services.Fridge.Incident.Urgency;
+import org.grupo11.Services.Technician.Technician;
+import org.grupo11.Services.Technician.TechnicianVisit;
+import org.grupo11.Utils.DateUtils;
+import org.grupo11.Utils.FieldValidator;
+import org.grupo11.Utils.JSON;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import io.javalin.http.Context;
 
@@ -352,6 +358,47 @@ public class FridgeController {
         } catch (NumberFormatException e) {
             ctx.status(400).result("Invalid 'id' query parameter");
         }
+    }
 
+    public static void handleSensorTemperatureUpdate(Context ctx) {
+        Credentials credentials = Middlewares.authenticatedFromHeader(ctx);
+        if (credentials == null) {
+            ctx.status(401).json(new ApiResponse(401));
+            return;
+        }
+
+        // todo validate that the fridge owner is in fact the one with the credentials
+
+        try {
+            FridgeTempDTO body = ctx.bodyAsClass(FridgeTempDTO.class);
+            if (body == null) {
+                ctx.status(400).json(new ApiResponse(400, "Invalid body."));
+                return;
+            }
+            Rabbit.getInstance().send("temp_update", "", JSON.stringify(body));
+            ctx.status(200).json(new ApiResponse(200));
+        } catch (Exception e) {
+            ctx.status(500).json(new ApiResponse(500));
+        }
+    }
+
+    public static void handleSensorMovementUpdate(Context ctx) {
+        Credentials credentials = Middlewares.authenticatedFromHeader(ctx);
+        if (credentials == null) {
+            ctx.status(401).json(new ApiResponse(401));
+            return;
+        }
+        // todo validate that the fridge owner is in fact the one with the credentials
+        try {
+            FridgeMovementDTO body = ctx.bodyAsClass(FridgeMovementDTO.class);
+            if (body == null) {
+                ctx.status(400).json(new ApiResponse(400, "Invalid body."));
+                return;
+            }
+            Rabbit.getInstance().send("movement_update", "", JSON.stringify(body));
+            ctx.status(200).json(new ApiResponse(200));
+        } catch (Exception e) {
+            ctx.status(500).json(new ApiResponse(500));
+        }
     }
 }

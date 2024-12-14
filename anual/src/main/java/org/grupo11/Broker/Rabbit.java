@@ -28,8 +28,8 @@ public class Rabbit {
         try {
             Connection connection = factory.newConnection();
             channel = connection.createChannel();
-            channel.queueDeclare("system_alerts", false, false, false, null);
             channel.queueDeclare("temp_update", true, false, false, null);
+            channel.queueDeclare("movement_update", true, false, false, null);
             setup_consumers(channel);
             Logger.info("Connection to rabbit successful");
         } catch (Throwable e) {
@@ -40,10 +40,11 @@ public class Rabbit {
 
     public void setup_consumers(Channel channel) {
         try {
-            channel.basicConsume("system_alerts", true, (tag, message) -> Controller.handleTempUpdate(tag, message),
+            channel.basicConsume("temp_update", true, (tag, message) -> Controller.handleTempUpdate(tag, message),
                     consumerTag -> {
                     });
-            channel.basicConsume("temp_update", true, (tag, message) -> Controller.handleMovementDetected(tag, message),
+            channel.basicConsume("movement_update", true,
+                    (tag, message) -> Controller.handleMovementDetected(tag, message),
                     consumerTag -> {
                     });
         } catch (Exception e) {
