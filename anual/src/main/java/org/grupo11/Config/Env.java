@@ -21,6 +21,10 @@ public class Env {
         }
     }
 
+    public static String getEnvironment() {
+        return properties.getProperty("ENVIRONMENT");
+    }
+
     public static String getSendGridApiKey() {
         return properties.getProperty("SENDGRID_API_KEY");
     }

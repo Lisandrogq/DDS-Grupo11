@@ -24,10 +24,9 @@ public class Api {
             cfg.fileRenderer(new JavalinFreemarker());
             cfg.staticFiles.add(staticFiles -> {
                 staticFiles.hostedPath = "/public";
-                staticFiles.directory = "/public";
-                staticFiles.location = Location.CLASSPATH;
+                staticFiles.directory = "src/main/resources/public";
+                staticFiles.location = Location.EXTERNAL;
             });
-
         };
         api = Javalin.create(config);
         setupMiddlewares();
