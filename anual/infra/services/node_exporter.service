@@ -1,0 +1,15 @@
+[Unit]
+Description=PrometheusServer
+After=network.target
+
+[Service]
+Type=simple
+User={{ user }}
+WorkingDirectory=/home/{{ user }}/bin/node_exporter/
+ExecStart=/home/{{ user }}/bin/node_exporter/node_exporter --collector.systemd
+Restart=always
+RestartSec=1
+StartLimitBurst=100
+
+[Install]
+WantedBy=multi-user.target

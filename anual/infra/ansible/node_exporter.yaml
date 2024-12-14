@@ -1,0 +1,37 @@
+- name: Install and setup node_exporter
+  hosts: all
+  vars:
+    user: "{{ user }}"
+
+  tasks:
+    - name: Download node_exporter tar file
+      command: wget https://github.com/prometheus/node_exporter/releases/download/v1.8.2/node_exporter-1.8.2.linux-amd64.tar.gz
+
+    - name: Extract node_exporter
+      command: tar -xvf node_exporter-1.8.2.linux-amd64.tar.gz -C /home/{{ user }}/bin/
+
+    - name: Rename node_exporter folder
+      command: mv /home/{{ user }}/bin/node_exporter-1.8.2.linux-amd64/ /home/{{ user }}/bin/node_exporter
+
+    - name: Delete downloaded tar file
+      shell: rm -rf node_exporter-1.8.2.linux-amd64.tar.gz
+
+    - name: Copy node_exporter service
+      template:
+        src: ../services/node_exporter.service
+        dest: /home/{{ user }}/services/node_exporter.service
+
+    - name: node_exporter service create soft link
+      ansible.builtin.file:
+        src: /home/{{ user }}/services/node_exporter.service
+        dest: /etc/systemd/system/node_exporter.service
+        state: link
+        force: yes
+      become: true
+
+    - name: node_exporter service enable
+      ansible.builtin.systemd_service:
+        name: node_exporter
+        state: started
+        enabled: true
+      become: true
