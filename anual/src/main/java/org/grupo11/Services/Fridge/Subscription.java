@@ -1,8 +1,5 @@
 package org.grupo11.Services.Fridge;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.grupo11.Services.Contributor.Contributor;
 
 import jakarta.persistence.Entity;
@@ -21,20 +18,23 @@ public class Subscription {
     private Contributor contributor;
     @Enumerated(EnumType.STRING)
     private FridgeNotifications type;
-    private int threshold=0;
+    private int threshold = 0;
     @ManyToOne
     private Fridge fridge;
+
     public Subscription() {
     }
 
-    public Subscription(Contributor contributor, FridgeNotifications fridgeNotificationsPreferences,int threshold) {
+    public Subscription(Contributor contributor, FridgeNotifications fridgeNotificationsPreferences, int threshold) {
         this.contributor = contributor;
         this.type = fridgeNotificationsPreferences;
         this.threshold = threshold;
     }
+
     public Fridge getFridge() {
         return fridge;
     }
+
     public void setFridge(Fridge fridge) {
         this.fridge = fridge;
     }
@@ -55,11 +55,11 @@ public class Subscription {
         this.type = type;
     }
 
-    public int getThreshold(){
+    public int getThreshold() {
         return this.threshold;
     }
 
-    public void setThreshold(int threshold){
+    public void setThreshold(int threshold) {
         this.threshold = threshold;
     }
 

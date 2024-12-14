@@ -1,14 +1,18 @@
 package org.grupo11.Services.Fridge.Sensor;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class MovementSensor {
     @Id
-    @GeneratedValue
     private int id;
+    @ManyToOne
+    private MovementSensorManager manager;
+
+    public MovementSensor() {
+    }
 
     private boolean data;
 
@@ -20,7 +24,8 @@ public class MovementSensor {
         this.id = id;
     }
 
-    public MovementSensor() {
+    public void setManager(MovementSensorManager manager) {
+        this.manager = manager;
     }
 
     public boolean getData() {

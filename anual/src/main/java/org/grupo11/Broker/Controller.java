@@ -33,11 +33,13 @@ public class Controller {
             if (sensor == null) {
                 sensor = new TemperatureSensor();
                 sensor.setId(dto.sensor_id);
-                sensorManager.addSensor(sensor);
+                sensor.setManager(sensorManager);
                 DB.create(sensor);
+                sensorManager.addSensor(sensor);
             }
             sensor.setData(dto.temp);
             sensorManager.checkSensors();
+            DB.update(sensor);
             DB.update(sensorManager);
         } catch (Exception e) {
             Logger.error("Err while handling a temp update ", e);
@@ -57,11 +59,13 @@ public class Controller {
             if (sensor == null) {
                 sensor = new MovementSensor();
                 sensor.setId(dto.sensor_id);
-                sensorManager.addSensor(sensor);
+                sensor.setManager(sensorManager);
                 DB.create(sensor);
+                sensorManager.addSensor(sensor);
             }
             sensor.setData(dto.is_moving);
             sensorManager.checkSensors();
+            DB.update(sensor);
             DB.update(sensorManager);
         } catch (Exception e) {
             Logger.error("Err while handling a movement update ", e);

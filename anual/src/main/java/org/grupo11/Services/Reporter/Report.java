@@ -1,11 +1,7 @@
 package org.grupo11.Services.Reporter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import org.grupo11.Utils.DateUtils;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,8 +25,8 @@ public class Report {
     }
 
     public Report(long fromDate, long toDate,
-                List<FridgeReportRow> fridgeReportRows,
-                List<MealsPerContributorReportRow> contributorReportRows) {
+            List<FridgeReportRow> fridgeReportRows,
+            List<MealsPerContributorReportRow> contributorReportRows) {
         this.fromDate = fromDate;
         this.toDate = toDate;
         this.fridgeReportRows = fridgeReportRows;

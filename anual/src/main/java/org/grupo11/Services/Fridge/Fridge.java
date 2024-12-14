@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import org.grupo11.DB;
+import org.grupo11.Logger;
 import org.grupo11.Enums.Provinces;
 import org.grupo11.Services.Meal;
 import org.grupo11.Services.Contributor.Contributor;
@@ -132,7 +133,7 @@ public class Fridge {
             this.lat = coordinates[0];
             this.lon = coordinates[1];
         } catch (Exception e) {
-            Logger.getLogger("Fridge").severe("Error setting lat and lon for fridge: " + this.name);
+            Logger.error("Error setting lat and lon for fridge: " + this.name);
         }
     }
 
@@ -340,7 +341,7 @@ public class Fridge {
     }
 
     public Map<String, Object> addIncident(Incident incident) {
-        FridgeNotification notification = new FridgeNotification(FridgeNotifications.Malfunction, 0,
+        FridgeNotification notification = new FridgeNotification(this, FridgeNotifications.Malfunction, 0,
                 this.name + " fridge is malfunctioning");
         Technician selectedTechnician = TechnicianManager.getInstance().sendHelpMsgByDistance(this);
         this.incidents.add(incident);
@@ -349,6 +350,23 @@ public class Fridge {
         return_map.put("fridge_notification", notification);
         return_map.put("selected_technician", selectedTechnician);
         return return_map;
+    }
+
+    public void addIncidentAndStoreOnDB(Incident incident) {
+        this.incidents.add(incident);
+        FridgeNotification notification = new FridgeNotification(this, FridgeNotifications.Malfunction, 0,
+                this.name + " fridge is malfunctioning");
+        this.evaluateSendNotification(notification);
+        Technician technician = TechnicianManager.getInstance().sendHelpMsgByDistance(this);
+        if (technician != null)
+            DB.update(technician);
+        DB.create(incident);
+        DB.create(notification);
+        DB.update(this);
+    }
+
+    public void addNotificationSent(FridgeNotification notification) {
+        this.notificationsSent.add(notification);
     }
 
     public List<Subscription> getNotificationSubscription() {
@@ -386,6 +404,7 @@ public class Fridge {
             boolean full_condition = fridgeNotification.getType() == FridgeNotifications.NearFullInventory
                     && subscription.getThreshold() <= fridgeNotification.getAmmount();
             boolean malfunction_condition = fridgeNotification.getType() == FridgeNotifications.Malfunction;
+
             if (low_condition || full_condition || malfunction_condition) {
                 if (subscription.getType() == fridgeNotification.getType()) {
                     subscription.getContributor().getContacts().forEach(value -> {

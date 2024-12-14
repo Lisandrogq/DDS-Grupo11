@@ -1,5 +1,7 @@
 package org.grupo11.Services.Fridge.Incident;
 
+import org.grupo11.Services.Fridge.Fridge;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -13,8 +15,8 @@ public class Alert extends Incident {
         super();
     }
 
-    public Alert(AlertType type, long detectedAt) {
-        super(detectedAt);
+    public Alert(AlertType type, long detectedAt, Fridge fridge) {
+        super(detectedAt, fridge);
         this.type = type;
     }
 

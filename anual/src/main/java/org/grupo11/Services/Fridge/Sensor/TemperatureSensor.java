@@ -1,14 +1,12 @@
 package org.grupo11.Services.Fridge.Sensor;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
 @Entity
 public class TemperatureSensor {
     @Id
-    @GeneratedValue
     private int id;
     private double data;
     @ManyToOne
@@ -20,6 +18,10 @@ public class TemperatureSensor {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setManager(TemperatureSensorManager manager) {
+        this.manager = manager;
     }
 
     public TemperatureSensor() {
