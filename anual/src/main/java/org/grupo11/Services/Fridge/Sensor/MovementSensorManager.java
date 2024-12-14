@@ -8,8 +8,6 @@ import org.grupo11.Services.Fridge.FridgeNotification;
 import org.grupo11.Services.Fridge.FridgeNotifications;
 import org.grupo11.Services.Fridge.Incident.Alert;
 import org.grupo11.Services.Fridge.Incident.AlertType;
-import org.grupo11.Services.Technician.Technician;
-import org.grupo11.Services.Technician.TechnicianManager;
 import org.grupo11.Utils.DateUtils;
 
 import jakarta.persistence.Entity;
@@ -25,10 +23,12 @@ public class MovementSensorManager extends SensorManager {
         super(fridge, 7);
         this.isMoving = false;
     }
+
     public MovementSensorManager() {
         super();
         this.isMoving = false;
     }
+
     public Boolean isIsMoving() {
         return this.isMoving;
     }
@@ -44,14 +44,13 @@ public class MovementSensorManager extends SensorManager {
     @Override
     public void fireAlert() {
         fridge.addIncident(new Alert(AlertType.FRAUDALERT, DateUtils.getCurrentTimeInMs()));
-        // send a message to the subscribers
         fridge.evaluateSendNotification(
                 new FridgeNotification(FridgeNotifications.Malfunction, 0,
                         "The fridge is moving, meals should be redistributed in brevity."));
     }
 
-    public Sensor getSensorById(int id) {
-        for (Sensor sensor : sensors) {
+    public MovementSensor getSensorById(int id) {
+        for (MovementSensor sensor : sensors) {
             if (sensor.getId() == id) {
                 return sensor;
             }

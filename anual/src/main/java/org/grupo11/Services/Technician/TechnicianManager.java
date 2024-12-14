@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.checkerframework.checker.units.qual.t;
 import org.grupo11.DB;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Utils.GetNearestTech;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+
 public class TechnicianManager {
     private List<Technician> technicians;
     private static TechnicianManager instance = null;
@@ -21,7 +21,6 @@ public class TechnicianManager {
     public static synchronized TechnicianManager getInstance() {
         if (instance == null)
             instance = new TechnicianManager();
-        // inicializacion/update de lista
         Session session = DB.getSessionFactory().openSession();
         String hql = "SELECT t " +
                 "FROM Technician t ";
@@ -55,11 +54,11 @@ public class TechnicianManager {
         return null;
     }
 
-    public Technician selectTechnician(Fridge fridge) {
-        HashMap<String,Object> map = GetNearestTech.getNearestTechnician(fridge.getLat(),fridge.getLon());
-        Technician technician =  (Technician)map.get("technician");
-        Double Ddistance = (Double) map.get("distance");
-        int distance = Ddistance.intValue();
+    public Technician sendHelpMsgByDistance(Fridge fridge) {
+        HashMap<String, Object> map = GetNearestTech.getNearestTechnician(fridge.getLat(), fridge.getLon());
+        Technician technician = (Technician) map.get("technician");
+        int distance = ((Double) map.get("distance")).intValue();
+
         if (technician == null) {
             return null;
         } else {
