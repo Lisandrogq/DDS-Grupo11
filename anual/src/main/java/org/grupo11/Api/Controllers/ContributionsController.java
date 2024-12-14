@@ -210,7 +210,7 @@ public class ContributionsController {
 
             int i = 0;
             int max = 0;
-            for (i = 0; i < 10; i++) { 
+            for (i = 0; i < 10; i++) {
 
                 String meal_id = ctx.formParam("meal_" + i);
                 if (meal_id != null) {
@@ -308,9 +308,9 @@ public class ContributionsController {
             ctx.redirect("/dash/home?error=Enter a valid city");
             return;
         }
-        
 
-        address = address + ", "+city+", Argentina ";//this is done so the map always work with real addresses in argentina 
+        address = address + ", " + city + ", Argentina ";// this is done so the map always work with real addresses in
+                                                         // argentina
         try (Session session = DB.getSessionFactory().openSession()) {
             String hql = "SELECT f " +
                     "FROM Fridge f " +
@@ -335,6 +335,7 @@ public class ContributionsController {
             }
 
             fridge = new Fridge(address, name, Integer.parseInt(capacity), 0, new ArrayList<>(), null, null);
+            DB.create(fridge);
             TemperatureSensorManager tManager = new TemperatureSensorManager(fridge, -1, 60);
             MovementSensorManager mManager = new MovementSensorManager(fridge);
             fridge.setIsActive(true);
@@ -353,7 +354,9 @@ public class ContributionsController {
                 ctx.redirect("/dash/home?error=Somenthing went wrong");
                 return;
             }
-            DB.create(fridge);
+            DB.create(tManager);
+            DB.create(mManager);
+            DB.update(fridge);
             DB.create(fridgeAdmin);
             DB.update(contributor);
 

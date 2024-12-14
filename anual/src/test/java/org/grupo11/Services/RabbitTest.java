@@ -16,7 +16,6 @@ import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgeSolicitude;
 import org.grupo11.Services.Fridge.FridgesManager;
-import org.grupo11.Services.Fridge.Sensor.Sensor;
 import org.grupo11.Services.Fridge.Sensor.TemperatureSensor;
 import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
 

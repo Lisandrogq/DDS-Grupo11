@@ -11,16 +11,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Transient;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class SensorManager {
     @Id
     @GeneratedValue
     private int id;
-    @ManyToOne
+    @OneToOne
     protected Fridge fridge;
     @Transient
     protected ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
