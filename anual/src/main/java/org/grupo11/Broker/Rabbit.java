@@ -30,7 +30,6 @@ public class Rabbit {
             channel = connection.createChannel();
             channel.queueDeclare("system_alerts", false, false, false, null);
             channel.queueDeclare("temp_update", true, false, false, null);
-            channel.queueDeclare("open_detection", true, false, false, null);
             setup_consumers(channel);
             Logger.info("Connection to rabbit successful");
         } catch (Throwable e) {
@@ -45,10 +44,6 @@ public class Rabbit {
                     consumerTag -> {
                     });
             channel.basicConsume("temp_update", true, (tag, message) -> Controller.handleMovementDetected(tag, message),
-                    consumerTag -> {
-                    });
-            channel.basicConsume("open_detection", true,
-                    (tag, message) -> Controller.handle_opening_request(tag, message),
                     consumerTag -> {
                     });
         } catch (Exception e) {

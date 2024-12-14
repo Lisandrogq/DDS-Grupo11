@@ -2,17 +2,18 @@ package org.grupo11.Broker;
 
 import java.io.IOException;
 
-import org.grupo11.DTOS.AlertDTO;
+import org.grupo11.DB;
+import org.grupo11.Logger;
+import org.grupo11.DTOS.FridgeMovementDTO;
 import org.grupo11.DTOS.FridgeTempDTO;
-import org.grupo11.DTOS.OpeningDTO;
-import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgesManager;
-import org.grupo11.Services.Fridge.Incident.Alert;
+import org.grupo11.Services.Fridge.Sensor.MovementSensor;
+import org.grupo11.Services.Fridge.Sensor.MovementSensorManager;
 import org.grupo11.Services.Fridge.Sensor.TemperatureSensor;
+import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
 import org.grupo11.Utils.JSON;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Delivery;
 
 public class Controller {
@@ -21,48 +22,49 @@ public class Controller {
 
     public static void handleTempUpdate(String consumerTag, Delivery message) throws IOException {
         try {
-            System.out.println("handle_temp_update");
+            Logger.info("Handling temperature update msg");
             String json = new String(message.getBody(), "UTF-8");
-            System.out.println(json);
-
             FridgeTempDTO dto = JSON.parse(json, new TypeReference<FridgeTempDTO>() {
             });
-            // todo query fridge from db
-            Fridge fridge = FridgesManager.getInstance().getById(dto.fridge_id);
-            TemperatureSensor sensor = (TemperatureSensor) fridge.getTempManager().getSensorById(dto.sensor_id);
+            TemperatureSensorManager sensorManager = FridgesManager.getInstance()
+                    .queryTemperatureManagerFromFridgeId(dto.fridge_id);
+            TemperatureSensor sensor = sensorManager.getSensorById(dto.sensor_id);
+            // if sensor does not exist, create it
+            if (sensor == null) {
+                sensor = new TemperatureSensor();
+                sensor.setId(dto.sensor_id);
+                sensorManager.addSensor(sensor);
+                DB.create(sensor);
+            }
             sensor.setData(dto.temp);
+            sensorManager.checkSensors();
+            DB.update(sensorManager);
         } catch (Exception e) {
-            System.err.println("Err while handling a temp update: " + e);
+            Logger.error("Err while handling a temp update ", e);
         }
     }
 
     public static void handleMovementDetected(String consumerTag, Delivery message) throws IOException {
         try {
+            Logger.info("Handling movement update msg");
             String json = new String(message.getBody(), "UTF-8");
-            AlertDTO dto = new ObjectMapper().readValue(json, AlertDTO.class);
-            Fridge fridge = FridgesManager.getInstance().getById(dto.fridge_id);
-            Alert alert = new Alert(dto.type, dto.detectedAt);
-            fridge.addIncident(alert);
-        } catch (Exception e) {
-            System.err.println("Err while handling an alert: " + e);
-        }
-    }
-
-    public static void handle_opening_request(String consumerTag, Delivery message) throws IOException {
-        try {
-            System.out.println("handle_opening_request");
-            String json = new String(message.getBody(), "UTF-8");
-            System.out.println(json);
-
-            OpeningDTO dto = JSON.parse(json, new TypeReference<OpeningDTO>() {
+            FridgeMovementDTO dto = JSON.parse(json, new TypeReference<FridgeMovementDTO>() {
             });
-            Fridge fridge = FridgesManager.getInstance().getById(dto.fridge_id);
-            boolean response = fridge.hasPermission(dto.registry_id);
-            // todo: return response to fridge
-
+            MovementSensorManager sensorManager = FridgesManager.getInstance()
+                    .queryMovementManagerFromFridgeId(dto.fridge_id);
+            MovementSensor sensor = sensorManager.getSensorById(dto.sensor_id);
+            // if sensor does not exist, create it
+            if (sensor == null) {
+                sensor = new MovementSensor();
+                sensor.setId(dto.sensor_id);
+                sensorManager.addSensor(sensor);
+                DB.create(sensor);
+            }
+            sensor.setData(dto.is_moving);
+            sensorManager.checkSensors();
+            DB.update(sensorManager);
         } catch (Exception e) {
-            System.err.println("Err while handling an alert: " + e);
+            Logger.error("Err while handling a movement update ", e);
         }
-
     }
 }

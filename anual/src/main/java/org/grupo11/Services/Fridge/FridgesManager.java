@@ -3,6 +3,12 @@ package org.grupo11.Services.Fridge;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.grupo11.DB;
+import org.grupo11.Services.Fridge.Sensor.MovementSensorManager;
+import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
+
 public class FridgesManager {
     private List<Fridge> fridges;
     private FridgeAllocator fridgeAllocator;
@@ -39,6 +45,52 @@ public class FridgesManager {
             }
         }
         return null;
+    }
+
+    public Fridge queryById(int id) {
+        try {
+            Session session = DB.getSessionFactory().openSession();
+            String hql = "SELECT f " +
+                    "FROM Fridge f WHERE f.id = :id";
+            Query<Fridge> query = session.createQuery(hql, Fridge.class);
+            query.setParameter("id", id);
+            Fridge fridge = query.getSingleResult();
+            return fridge;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public TemperatureSensorManager queryTemperatureManagerFromFridgeId(int fridgeId) {
+        try {
+            Session session = DB.getSessionFactory().openSession();
+            String hql = "SELECT f " +
+                    "FROM Fridge f WHERE f.id = :id";
+            Query<Fridge> query = session.createQuery(hql, Fridge.class);
+            query.setParameter("id", fridgeId);
+            Fridge fridge = query.getSingleResult();
+            TemperatureSensorManager sensorManager = fridge.getTempManager();
+            sensorManager.getSensors(); // load sensors to memory too
+            return sensorManager;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public MovementSensorManager queryMovementManagerFromFridgeId(int fridgeId) {
+        try {
+            Session session = DB.getSessionFactory().openSession();
+            String hql = "SELECT f " +
+                    "FROM Fridge f WHERE f.id = :id";
+            Query<Fridge> query = session.createQuery(hql, Fridge.class);
+            query.setParameter("id", fridgeId);
+            Fridge fridge = query.getSingleResult();
+            MovementSensorManager sensorManager = fridge.getMovManager();
+            sensorManager.getSensors(); // load sensors to memory too
+            return sensorManager;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public String getFridgesMap() {

@@ -16,6 +16,10 @@ public class MovementSensor {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public MovementSensor() {
     }
 
@@ -26,5 +30,4 @@ public class MovementSensor {
     public void setData(boolean data) {
         this.data = data;
     }
-
 }
