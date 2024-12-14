@@ -6,17 +6,20 @@ import java.util.Map;
 import org.grupo11.DB;
 import org.grupo11.Logger;
 import org.grupo11.Api.ApiResponse;
+import org.grupo11.Api.HttpUtils;
 import org.grupo11.Api.Middlewares;
 import org.grupo11.Api.JsonData.FridgeInfo.FridgeFullInfo;
 import org.grupo11.Broker.Rabbit;
 import org.grupo11.DTOS.FridgeMovementDTO;
 import org.grupo11.DTOS.FridgeTempDTO;
-import org.grupo11.Services.Credentials;
 import org.grupo11.Services.Meal;
 import org.grupo11.Services.Contributor.Contributor;
+import org.grupo11.Services.Contributor.Individual;
+import org.grupo11.Services.Contributor.LegalEntity.LegalEntity;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgeNotification;
 import org.grupo11.Services.Fridge.FridgeNotifications;
+import org.grupo11.Services.Fridge.FridgesManager;
 import org.grupo11.Services.Fridge.Subscription;
 import org.grupo11.Services.Fridge.Incident.Alert;
 import org.grupo11.Services.Fridge.Incident.Failure;
@@ -29,6 +32,8 @@ import org.grupo11.Utils.FieldValidator;
 import org.grupo11.Utils.JSON;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+
+import com.auth0.jwt.interfaces.DecodedJWT;
 
 import io.javalin.http.Context;
 
@@ -361,13 +366,17 @@ public class FridgeController {
     }
 
     public static void handleSensorTemperatureUpdate(Context ctx) {
-        Credentials credentials = Middlewares.authenticatedFromHeader(ctx);
-        if (credentials == null) {
+        DecodedJWT token = Middlewares.authenticatedFromHeader(ctx);
+        if (token == null) {
             ctx.status(401).json(new ApiResponse(401));
             return;
         }
-
-        // todo validate that the fridge owner is in fact the one with the credentials
+        Contributor contributor = HttpUtils.getContributorFromAccessToken(token);
+        if (contributor instanceof Individual) {
+            ctx.status(401).json(new ApiResponse(401, "Only legal entities can administrate fridges"));
+            return;
+        }
+        LegalEntity legalEntity = (LegalEntity) contributor;
 
         try {
             FridgeTempDTO body = ctx.bodyAsClass(FridgeTempDTO.class);
@@ -375,6 +384,12 @@ public class FridgeController {
                 ctx.status(400).json(new ApiResponse(400, "Invalid body."));
                 return;
             }
+            boolean isOwner = FridgesManager.getInstance().isFridgeOwnerByFridgeId(legalEntity, body.fridge_id);
+            if (!isOwner) {
+                ctx.status(401).json(new ApiResponse(401, "You are not the administrator of this fridge"));
+                return;
+            }
+
             Rabbit.getInstance().send("temp_update", "", JSON.stringify(body));
             ctx.status(200).json(new ApiResponse(200));
         } catch (Exception e) {
@@ -383,18 +398,30 @@ public class FridgeController {
     }
 
     public static void handleSensorMovementUpdate(Context ctx) {
-        Credentials credentials = Middlewares.authenticatedFromHeader(ctx);
-        if (credentials == null) {
+        DecodedJWT token = Middlewares.authenticatedFromHeader(ctx);
+        if (token == null) {
             ctx.status(401).json(new ApiResponse(401));
             return;
         }
-        // todo validate that the fridge owner is in fact the one with the credentials
+        Contributor contributor = HttpUtils.getContributorFromAccessToken(token);
+        if (contributor instanceof Individual) {
+            ctx.status(401).json(new ApiResponse(401, "Only legal entities can administrate fridges"));
+            return;
+        }
+        LegalEntity legalEntity = (LegalEntity) contributor;
+
         try {
             FridgeMovementDTO body = ctx.bodyAsClass(FridgeMovementDTO.class);
             if (body == null) {
                 ctx.status(400).json(new ApiResponse(400, "Invalid body."));
                 return;
             }
+            boolean isOwner = FridgesManager.getInstance().isFridgeOwnerByFridgeId(legalEntity, body.fridge_id);
+            if (!isOwner) {
+                ctx.status(401).json(new ApiResponse(401, "You are not the administrator of this fridge"));
+                return;
+            }
+
             Rabbit.getInstance().send("movement_update", "", JSON.stringify(body));
             ctx.status(200).json(new ApiResponse(200));
         } catch (Exception e) {

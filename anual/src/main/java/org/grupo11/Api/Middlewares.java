@@ -75,7 +75,7 @@ public class Middlewares {
         }
     }
 
-    public static Credentials authenticatedFromHeader(Context ctx) {
+    public static DecodedJWT authenticatedFromHeader(Context ctx) {
         String authorization = ctx.header("Authorization");
         if (authorization == null || authorization.isEmpty()) {
             return null;
@@ -89,8 +89,7 @@ public class Middlewares {
         String token = split[1];
         try {
             DecodedJWT decoded = JWTService.validate(token);
-            Credentials credentials = HttpUtils.getCredentialsFromAccessToken(decoded);
-            return credentials;
+            return decoded;
         } catch (Exception e) {
             Logger.error("An error during jwt decode.", e);
             return null;

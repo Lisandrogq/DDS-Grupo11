@@ -13,7 +13,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 public class JWTService {
-    public static DecodedJWT validate(String token) {
+    public static DecodedJWT validate(String token) throws Exception {
         DecodedJWT decodedJWT;
         try {
             ECPublicKey publicKey = Crypto.loadPublicKey(Env.getJWTPublicKey());
@@ -24,11 +24,11 @@ public class JWTService {
             decodedJWT = verifier.verify(token);
             return decodedJWT;
         } catch (Exception exception) {
-            throw new Error("Invalid jwt");
+            throw new Exception("Invalid jwt");
         }
     }
 
-    public static String generate(Map<String, ?> payload, long expirationTimeInSeconds) {
+    public static String generate(Map<String, ?> payload, long expirationTimeInSeconds) throws Exception {
         try {
             ECPrivateKey privateKey = Crypto.loadPrivateKey(Env.getJWTPrivateKey());
             Algorithm algorithm = Algorithm.ECDSA256(privateKey);
@@ -41,7 +41,7 @@ public class JWTService {
                     .sign(algorithm);
             return token;
         } catch (Exception exception) {
-            throw new Error("Could not generate jwt");
+            throw new Exception("Could not generate jwt");
         }
     }
 }

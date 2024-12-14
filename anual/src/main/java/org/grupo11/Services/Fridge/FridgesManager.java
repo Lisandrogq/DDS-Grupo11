@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.grupo11.DB;
+import org.grupo11.Logger;
+import org.grupo11.Services.Contributions.FridgeAdmin;
+import org.grupo11.Services.Contributor.LegalEntity.LegalEntity;
 import org.grupo11.Services.Fridge.Sensor.MovementSensorManager;
 import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
 import org.hibernate.Session;
@@ -90,6 +93,23 @@ public class FridgesManager {
             return sensorManager;
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    public boolean isFridgeOwnerByFridgeId(LegalEntity legalEntity, int fridgeId) {
+        try {
+            Session session = DB.getSessionFactory().openSession();
+            String hql = "SELECT f " +
+                    "FROM FridgeAdmin f WHERE f.business = :business AND f.fridge.id = :fridgeId";
+            Query<FridgeAdmin> query = session.createQuery(hql, FridgeAdmin.class);
+            query.setParameter("business", legalEntity);
+            query.setParameter("fridgeId", fridgeId);
+            if (query.getResultCount() > 0)
+                return true;
+            return false;
+        } catch (Exception e) {
+            Logger.error("Exception ", e);
+            return false;
         }
     }
 
