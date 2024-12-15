@@ -32,7 +32,7 @@ const handleGoogleResponse = async (googleUser) => {
 	const res = await req.json();
 
 	if (res?.status == 200) {
-		alert("Provider added successfully!");
+		alertaSuccess("Google login provider added successfully");
 	} else {
 		alert(`Could not add login provider: ${res?.message}`);
 	}
