@@ -44,7 +44,6 @@ public class ContributorsManager {
     }
 
     public List<FridgeOpenLogEntry> addContributionToContributor(Contributor contributor, Contribution contribution) {
-
         if (contribution.validate(contributor)) {
             contribution.setContributor(contributor);
             contributor.addContribution(contribution);

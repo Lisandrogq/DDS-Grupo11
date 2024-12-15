@@ -19,7 +19,8 @@ public class FridgeOpenLogEntry {
     public FridgeOpenLogEntry() {
     }
 
-    public FridgeOpenLogEntry(long openedAt, ActivityRegistry activityRegistry) {
+    public FridgeOpenLogEntry(Fridge fridge, long openedAt, ActivityRegistry activityRegistry) {
         this.openedAt = openedAt;
+        this.fridge = fridge;
     }
 }

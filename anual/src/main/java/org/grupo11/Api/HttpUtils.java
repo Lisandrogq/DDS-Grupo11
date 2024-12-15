@@ -80,6 +80,7 @@ public class HttpUtils {
             } else {
                 Contributor contributor = contributors.get(0);
                 Hibernate.initialize(contributor.getContributions());
+                Hibernate.initialize(contributor.getContributorRegistry().getPermissions());
                 return contributor;
             }
         } catch (Exception e) {

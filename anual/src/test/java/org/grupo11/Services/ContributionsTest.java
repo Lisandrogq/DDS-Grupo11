@@ -9,7 +9,6 @@ import org.grupo11.Services.Contributor.ContributorsManager;
 import org.grupo11.Services.Contributor.Individual;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgeOpenLogEntry;
-import org.grupo11.Services.Fridge.FridgeSolicitude;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -34,7 +33,7 @@ public class ContributionsTest {
         contributor2 = new Individual("name2", "surname2", "address", null, 1231, DocumentType.DNI);
         fridge = new Fridge(-74.006, 40.7128, "Caballito", "Fridge A", 100, 2020, null, null, null);
         meal = new Meal("fidios", 0, 0, fridge, "nuevo", 123, 33);
-        contributorRegistry = new ContributorRegistry(0, contributor1, new ArrayList<FridgeSolicitude>());
+        contributorRegistry = new ContributorRegistry(contributor1);
         contributor1.setContributorRegistry(contributorRegistry);
 
     }

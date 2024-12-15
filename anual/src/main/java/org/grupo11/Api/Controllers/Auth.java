@@ -14,6 +14,7 @@ import org.grupo11.Enums.AuthProvider;
 import org.grupo11.Enums.DocumentType;
 import org.grupo11.Enums.UserTypes;
 import org.grupo11.Services.Credentials;
+import org.grupo11.Services.ActivityRegistry.ContributorRegistry;
 import org.grupo11.Services.Contact.Contact;
 import org.grupo11.Services.Contact.EmailContact;
 import org.grupo11.Services.Contributor.Individual;
@@ -271,9 +272,13 @@ public class Auth {
                         individual.getId(), AuthProvider.FridgeBridge);
                 individual.addContact(contact);
                 individual.addCredentials(credentials);
+                ContributorRegistry registry = new ContributorRegistry(individual);
                 DB.create(contact);
                 DB.create(credentials);
                 DB.create(individual);
+                DB.create(registry);
+                individual.setContributorRegistry(registry);
+                DB.update(individual);
             } else {
                 Technician technician = new Technician(name, "", TechnicianType.ELECTRICIAN, Integer.parseInt(document),
                         "", address, contact);
@@ -359,10 +364,14 @@ public class Auth {
                     AuthProvider.FridgeBridge);
             legalEntity.addContact(contact);
             legalEntity.addCredentials(credentials);
+            ContributorRegistry registry = new ContributorRegistry(legalEntity);
 
             DB.create(contact);
             DB.create(credentials);
             DB.create(legalEntity);
+            DB.create(registry);
+            legalEntity.setContributorRegistry(registry);
+            DB.update(legalEntity);
 
             contact.SendNotification("Registered as new user", "You have registered in fridge bridge services!");
             ctx.redirect("/register/login");

@@ -1,5 +1,6 @@
 package org.grupo11.Services.ActivityRegistry;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.grupo11.Services.Fridge.FridgeSolicitude;
@@ -7,6 +8,7 @@ import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Utils.DateUtils;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -15,15 +17,15 @@ import jakarta.persistence.OneToOne;
 public class ContributorRegistry extends ActivityRegistry {
     @OneToOne
     private Contributor owner;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<FridgeSolicitude> permissions;
 
     public ContributorRegistry() {
     }
 
-    public ContributorRegistry(int id, Contributor owner, List<FridgeSolicitude> permissions) {
+    public ContributorRegistry(Contributor owner) {
         this.owner = owner;
-        this.permissions = permissions;
+        this.permissions = new ArrayList<>();
     }
 
     public FridgeSolicitude registerPermission(Fridge fridge) {

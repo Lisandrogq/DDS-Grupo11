@@ -37,16 +37,16 @@ public class MealDistribution extends Contribution {
 
     @Override
     public boolean validate(Contributor contributor) {
-        return (super.validate(contributor) && (true || //// TODO: implement open solicitudes with db and front
-                this.originFridge.hasPermission(contributor.getContributorRegistry().getId())
+        return (super.validate(contributor)
+                && (this.originFridge.hasPermission(contributor.getContributorRegistry().getId())
                         && this.destinyFridge.hasPermission(contributor.getContributorRegistry().getId())));
     }
 
     @Override
     public List<FridgeOpenLogEntry> afterContribution() {
-        FridgeOpenLogEntry originEntry = new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(),
+        FridgeOpenLogEntry originEntry = new FridgeOpenLogEntry(this.originFridge, DateUtils.getCurrentTimeInMs(),
                 this.contributor.getContributorRegistry());
-        FridgeOpenLogEntry destinyEntry = new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(),
+        FridgeOpenLogEntry destinyEntry = new FridgeOpenLogEntry(this.destinyFridge, DateUtils.getCurrentTimeInMs(),
                 this.contributor.getContributorRegistry());
         this.originFridge.addOpenEntry(originEntry);
         this.destinyFridge.addOpenEntry(destinyEntry);
@@ -94,6 +94,6 @@ public class MealDistribution extends Contribution {
 
     @Override
     public double getRewardPoints() {
-        return 1*quantity;
+        return 1 * quantity;
     }
 }

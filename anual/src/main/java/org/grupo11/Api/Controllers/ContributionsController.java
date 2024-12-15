@@ -27,6 +27,7 @@ import org.grupo11.Services.Contributor.LegalEntity.LegalEntity;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgeNotification;
 import org.grupo11.Services.Fridge.FridgeOpenLogEntry;
+import org.grupo11.Services.Fridge.FridgeSolicitude;
 import org.grupo11.Services.Fridge.Sensor.MovementSensorManager;
 import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
 import org.grupo11.Services.PersonInNeed.PersonInNeed;
@@ -127,6 +128,14 @@ public class ContributionsController {
             Meal meal = new Meal(type, DateUtils.parseDateYMDString(expirationDate), DateUtils.now(), fridge, "",
                     Integer.parseInt(calories), Integer.parseInt(weight));
             MealDonation mealDonation = new MealDonation(meal, DateUtils.now(), fridge);
+
+            if (!fridge.hasSolicitude(contributor.getContributorRegistry().getId())) {
+                FridgeSolicitude fridgeSolicitude = new FridgeSolicitude(contributor.getContributorRegistry(),
+                        DateUtils.now(), fridge);
+                contributor.getContributorRegistry().registerPermission(fridge);
+                DB.create(fridgeSolicitude);
+            }
+
             mealDonation.setContributor(contributor);
             List<FridgeOpenLogEntry> entries = ContributorsManager.getInstance().addContributionToContributor(
                     contributor,
@@ -207,10 +216,22 @@ public class ContributionsController {
                 return;
             }
 
+            if (!origin_fridge.hasSolicitude(contributor.getContributorRegistry().getId())) {
+                FridgeSolicitude fridgeSolicitude = new FridgeSolicitude(contributor.getContributorRegistry(),
+                        DateUtils.now(), origin_fridge);
+                contributor.getContributorRegistry().registerPermission(origin_fridge);
+                DB.create(fridgeSolicitude);
+            }
+            if (!destiny_fridge.hasSolicitude(contributor.getContributorRegistry().getId())) {
+                FridgeSolicitude fridgeSolicitude = new FridgeSolicitude(contributor.getContributorRegistry(),
+                        DateUtils.now(), destiny_fridge);
+                contributor.getContributorRegistry().registerPermission(destiny_fridge);
+                DB.create(fridgeSolicitude);
+            }
+
             int i = 0;
             int max = 0;
             for (i = 0; i < 10; i++) {
-
                 String meal_id = ctx.formParam("meal_" + i);
                 if (meal_id != null) {
                     Meal meal = origin_fridge.getMealByID(Long.parseLong(meal_id));

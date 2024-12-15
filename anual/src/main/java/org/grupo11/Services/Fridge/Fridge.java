@@ -49,7 +49,7 @@ public class Fridge {
     private TemperatureSensorManager tempManager;
     @OneToOne
     private MovementSensorManager movManager;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<FridgeSolicitude> openSolicitudes;
     @OneToMany
     private List<FridgeOpenLogEntry> openedHistory;
@@ -309,6 +309,17 @@ public class Fridge {
             if (solicitude.getIssuedBy().getId() == registryId && !solicitude.hasBeenUsed()) {
                 if (solicitude.isValid()) {
                     solicitude.markAsUsed();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean hasSolicitude(int registryId) {
+        for (FridgeSolicitude solicitude : openSolicitudes) {
+            if (solicitude.getIssuedBy().getId() == registryId && !solicitude.hasBeenUsed()) {
+                if (solicitude.isValid()) {
                     return true;
                 }
             }
