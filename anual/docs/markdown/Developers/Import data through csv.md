@@ -1,25 +1,25 @@
-### Instrucciones para importar colaboradores y contribuciones mediante CSV
+#### Instructions for Importing Contributors and Contributions via CSV
 
-Este documento proporciona las instrucciones necesarias para importar datos de colaboradores y sus contribuciones en un archivo CSV al sistema de la ONG. A continuación, se describen los pasos para realizar la importación, así como los requisitos y formato del archivo CSV.
+This document provides the necessary instructions for importing contributor data and their contributions from a CSV file into the NGO system. The following sections outline the steps to perform the import, as well as the requirements and format of the CSV file.
 
-#### Requisitos del Archivo CSV
+#### CSV File Requirements
 
-El archivo CSV debe tener el siguiente formato y cumplir con las especificaciones a continuación:
+The CSV file must have the following format and meet the specifications below:
 
-| Campo                 | Formato  | Longitud Máx | Observación                                                                                       |
-| --------------------- | -------- | ------------ | ------------------------------------------------------------------------------------------------- |
-| Tipo Doc              | Texto    | 3            | Valores: LC (Libreta cívica), LE (Libreta de enrolamiento), DNI (Documento nacional de identidad) |
-| Documento             | Numérico | 10           | Número de documento del colaborador                                                               |
-| Nombre                | Texto    | 50           | Nombre del colaborador                                                                            |
-| Apellido              | Texto    | 50           | Apellido del colaborador                                                                          |
-| Mail                  | Texto    | 50           | Formato: usuario@dominio                                                                          |
-| Fecha de colaboración | Fecha    | 10           | Formato: dd/MM/yyyy                                                                               |
-| Forma de colaboración | Texto    | 22           | Valores: DINERO, DONACION_VIANDAS, REDISTRIBUCION_VIANDAS, ENTREGA_TARJETAS                       |
-| Cantidad              | Numérico | 7            | Cantidad de la contribución                                                                       |
+| Field             | Format  | Max Length | Notes                                                                                 |
+| ----------------- | ------- | ---------- | ------------------------------------------------------------------------------------- |
+| Doc Type          | Text    | 3          | Values: LC (Civic Booklet), LE (Enrollment Booklet), DNI (National Identity Document) |
+| Document          | Numeric | 10         | Contributor's document number                                                         |
+| First Name        | Text    | 50         | Contributor's first name                                                              |
+| Last Name         | Text    | 50         | Contributor's last name                                                               |
+| Email             | Text    | 50         | Format: user@domain                                                                   |
+| Contribution Date | Date    | 10         | Format: dd/MM/yyyy                                                                    |
+| Contribution Type | Text    | 22         | Values: MONEY, FOOD_DONATION, FOOD_REDISTRIBUTION, CARD_DELIVERY                      |
+| Amount            | Numeric | 7          | Contribution amount                                                                   |
 
-#### Formato del Archivo CSV
+#### CSV File Format
 
-El archivo CSV debe seguir el siguiente formato de ejemplo:
+The CSV file must follow this sample format:
 
 ```csv
 Tipo Doc,Documento,Nombre,Apellido,Mail,Fecha de colaboración,Forma de colaboración,Cantidad
@@ -30,21 +30,21 @@ LC,334455,Jill,Stark,jillstark@example.com,20/06/2023,ENTREGA_TARJETAS,0
 LE,556677,Bob,Brown,bobbrown@example.com,18/06/2023,DINERO,200
 ```
 
-#### Instrucciones para la Importación
+#### Import Instructions
 
-1. **Preparar el Archivo CSV**:
+1. **Prepare the CSV File:**
 
-   - Asegúrese de que el archivo CSV esté correctamente formateado según las especificaciones anteriores.
-   - Verifique que todos los campos estén completos y que los datos sean válidos.
+- Ensure the CSV file is correctly formatted according to the specifications above.
+- Verify that all fields are complete and that the data is valid.
 
-2. **Ubicar el Archivo CSV**:
+2. **Log in as admin:**
 
-   - Coloque el archivo CSV en el directorio de recursos del proyecto.
+- Log in with an admin account at [fridgebridge](https://fridgebridge.simplcharity.com/register/login)
 
-3. **Importar los Datos**:
-   - Inicie la console interactiva de java: `./run.sh`
-   - Cargue los datos: `app.bulkContributionsImport(<YOUR_FILE_NAME>);`
+3. **Import the Data:**
 
-#### Notificación a Nuevos Colaboradores
+- Upload the `csv` file under the `Import Data` module.
 
-Una vez procesado el archivo, se enviará un correo electrónico a aquellos colaboradores que no tenían usuario en el sistema previamente. El correo electrónico agradecerá el aporte realizado y brindará credenciales de acceso para que el colaborador pueda ingresar al sistema, confirmar sus datos y completar la información faltante.
+#### Notification to New Contributors
+
+Once the file is processed, an email will be sent to contributors who did not previously have a user account in the system. The email will thank them for their contribution and provide login credentials so they can access the system, confirm their data, and complete any missing information.

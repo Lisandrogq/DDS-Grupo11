@@ -28,11 +28,11 @@ These are the FridgeBridge API endpoints to interact with our services.
 
 Base URLs:
 
-* <a href="https://fridgebridge.simplecharity.com/">http://fridgebridge.simplecharity.com</a>
+* <a href="https://fridgebridge.simplecharity.com">https://fridgebridge.simplecharity.com</a>
 
 ## `GET /api/contributors/recognitions`
 
-*Returns a list of employees who meet the minimum score, meal donation count.*
+*Returns a list of contributors who meet the minimum score, meal donation count.*
 
 <h3 id="get__api_contributors_recognitions-parameters">Parameters</h3>
 
@@ -48,7 +48,7 @@ Base URLs:
 <TabItem value="shell" label="shell">
 
 ```shell
-curl -X GET http://localhost:8000/api/contributors/recognitions?min_points=0&min_meals=0 \
+curl -X GET https://fridgebridge.simplecharity.com/api/contributors/recognitions?min_points=0&min_meals=0 \
   -H 'Accept: application/json'
 
 ```
@@ -57,8 +57,8 @@ curl -X GET http://localhost:8000/api/contributors/recognitions?min_points=0&min
 <TabItem value="http" label="http">
 
 ```http
-GET http://localhost:8000/api/contributors/recognitions?min_points=0&min_meals=0 HTTP/1.1
-Host: localhost:8000
+GET https://fridgebridge.simplecharity.com/api/contributors/recognitions?min_points=0&min_meals=0 HTTP/1.1
+Host: fridgebridge.simplecharity.com
 Accept: application/json
 
 ```
@@ -72,7 +72,7 @@ const headers = {
   'Accept':'application/json'
 };
 
-fetch('http://localhost:8000/api/contributors/recognitions?min_points=0&min_meals=0',
+fetch('https://fridgebridge.simplecharity.com/api/contributors/recognitions?min_points=0&min_meals=0',
 {
   method: 'GET',
 
@@ -96,7 +96,7 @@ headers = {
   'Accept' => 'application/json'
 }
 
-result = RestClient.get 'http://localhost:8000/api/contributors/recognitions',
+result = RestClient.get 'https://fridgebridge.simplecharity.com/api/contributors/recognitions',
   params: {
   'min_points' => 'integer',
 'min_meals' => 'integer'
@@ -115,7 +115,7 @@ headers = {
   'Accept': 'application/json'
 }
 
-r = requests.get('http://localhost:8000/api/contributors/recognitions', params={
+r = requests.get('https://fridgebridge.simplecharity.com/api/contributors/recognitions', params={
   'min_points': '0',  'min_meals': '0'
 }, headers = headers)
 
@@ -141,7 +141,7 @@ $client = new \GuzzleHttp\Client();
 $request_body = array();
 
 try {
-    $response = $client->request('GET','http://localhost:8000/api/contributors/recognitions', array(
+    $response = $client->request('GET','https://fridgebridge.simplecharity.com/api/contributors/recognitions', array(
         'headers' => $headers,
         'json' => $request_body,
        )
@@ -161,7 +161,7 @@ try {
 <TabItem value="java" label="java">
 
 ```java
-URL obj = new URL("http://localhost:8000/api/contributors/recognitions?min_points=0&min_meals=0");
+URL obj = new URL("https://fridgebridge.simplecharity.com/api/contributors/recognitions?min_points=0&min_meals=0");
 HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 con.setRequestMethod("GET");
 int responseCode = con.getResponseCode();
@@ -195,7 +195,7 @@ func main() {
     }
 
     data := bytes.NewBuffer([]byte{jsonReq})
-    req, err := http.NewRequest("GET", "http://localhost:8000/api/contributors/recognitions", data)
+    req, err := http.NewRequest("GET", "https://fridgebridge.simplecharity.com/api/contributors/recognitions", data)
     req.Header = headers
 
     client := &http.Client{}
@@ -212,7 +212,7 @@ func main() {
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|List of employees who meet the specified criteria.|[ContributorRecognitionResponse](#schemacontributorrecognitionresponse)|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|List of contributors who meet the specified criteria.|[ContributorRecognitionResponse](#schemacontributorrecognitionresponse)|
 |400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Missing required parameter or Invalid input.|[ApiResponse](#schemaapiresponse)|
 |500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|Internal Server Error.|[ApiResponse](#schemaapiresponse)|
 
@@ -237,15 +237,6 @@ func main() {
         "documentType": "DNI",
         "points": 120,
         "mealDonations": 5
-      }
-    ],
-    "legalEntities": [
-      {
-        "id": "1",
-        "type": "Company",
-        "category": "Education",
-        "points": 21,
-        "mealDonations": 3
       }
     ]
   }
@@ -330,15 +321,6 @@ func main() {
         "points": 0,
         "mealDonations": 0
       }
-    ],
-    "legalEntities": [
-      {
-        "id": "string",
-        "type": "Governmental",
-        "category": "HealthCare",
-        "points": 0,
-        "mealDonations": 0
-      }
     ]
   }
 }
@@ -353,7 +335,6 @@ func main() {
 |message|string|true|none|Default status message or custom message.|
 |data|object|true|none|A map of individuals and legal entities that fulfill the constraints.|
 |» individuals|[[Individual](#schemaindividual)]|true|none|A list of individuals.|
-|» legalEntities|[[LegalEntity](#schemalegalentity)]|true|none|A list of legal entities.|
 
 <h3 id="tocS_Individual">Individual</h3>
 <!-- backwards compatibility -->
@@ -398,50 +379,4 @@ func main() {
 |documentType|LC|
 |documentType|LE|
 |documentType|DNI|
-
-<h3 id="tocS_LegalEntity">LegalEntity</h3>
-<!-- backwards compatibility -->
-<a id="schemalegalentity"></a>
-<a id="schema_LegalEntity"></a>
-<a id="tocSlegalentity"></a>
-<a id="tocslegalentity"></a>
-
-```json
-{
-  "id": "string",
-  "type": "Governmental",
-  "category": "HealthCare",
-  "points": 0,
-  "mealDonations": 0
-}
-
-```
-
-#### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|string|true|none|Unique identifier for the legal entity.|
-|type|string|true|none|Type of the legal entity.|
-|category|string|true|none|Category of the legal entity.|
-|points|integer|true|none|Total points earned by the legal entity.|
-|mealDonations|integer|false|none|Number of meal donations made by the legal entity.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|Governmental|
-|type|NGO|
-|type|Company|
-|type|Institution|
-|category|HealthCare|
-|category|Education|
-|category|Finance|
-|category|Technology|
-|category|Agriculture|
-|category|Hospitality|
-|category|Transportation|
-|category|Manufacturing|
-|category|Retail|
 

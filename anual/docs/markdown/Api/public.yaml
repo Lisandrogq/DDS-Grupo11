@@ -6,13 +6,12 @@ info:
     These are the FridgeBridge API endpoints to interact with our services.
 
 servers:
-  # TODO(marcos): we should update this with prod url once we have a domain
-  - url: http://localhost:8000
+  - url: https://fridgebridge.simplecharity.com
 
 paths:
   /api/contributors/recognitions:
     get:
-      summary: Returns a list of employees who meet the minimum score, meal donation count.
+      summary: Returns a list of contributors who meet the minimum score, meal donation count.
       parameters:
         - in: query
           name: min_points
@@ -34,7 +33,7 @@ paths:
           description: Maximum number of contributors to include in the query.
       responses:
         "200":
-          description: List of employees who meet the specified criteria.
+          description: List of contributors who meet the specified criteria.
           content:
             application/json:
               schema:
@@ -53,12 +52,7 @@ paths:
                       documentType: "DNI"
                       points: 120
                       mealDonations: 5
-                  legalEntities:
-                    - id: "1"
-                      type: "Company"
-                      category: "Education"
-                      points: 21
-                      mealDonations: 3
+
         "400":
           description: Missing required parameter or Invalid input.
           content:
@@ -116,18 +110,13 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/Individual"
-            legalEntities:
-              description: A list of legal entities.
-              type: array
-              items:
-                $ref: "#/components/schemas/LegalEntity"
           required:
             - individuals
-            - legalEntities
       required:
         - status
         - message
         - data
+
     Individual:
       type: object
       properties:
@@ -171,42 +160,4 @@ components:
         - birth
         - document
         - documentType
-        - points
-    LegalEntity:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the legal entity.
-        type:
-          type: string
-          description: Type of the legal entity.
-          enum:
-            - Governmental
-            - NGO
-            - Company
-            - Institution
-        category:
-          type: string
-          description: Category of the legal entity.
-          enum:
-            - HealthCare
-            - Education
-            - Finance
-            - Technology
-            - Agriculture
-            - Hospitality
-            - Transportation
-            - Manufacturing
-            - Retail
-        points:
-          type: integer
-          description: Total points earned by the legal entity.
-        mealDonations:
-          type: integer
-          description: Number of meal donations made by the legal entity.
-      required:
-        - id
-        - type
-        - category
         - points
