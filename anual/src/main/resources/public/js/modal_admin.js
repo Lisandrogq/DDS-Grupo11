@@ -6,7 +6,7 @@ const setupModalClosers = () => {
 };
 
 const setModalContent = (children) => {
-	modalContent.innerHTML = DOMPurify.sanitize(children);;
+	modalContent.innerHTML = DOMPurify.sanitize(children);
 	setupModalClosers();
 };
 
@@ -30,7 +30,10 @@ function agregarInput() {
 		let div = document.createElement("div");
 		div.classList.add("input");
 		div.innerHTML = DOMPurify.sanitize(
-			' <input type="text" id="meal" name="meal_' + count + '" required placeholder="Type of meal to distribute..."class="col-12 inputs">');
+			' <input type="text" id="meal" name="meal_' +
+				count +
+				'" required placeholder="Type of meal to distribute..."class="col-12 inputs">'
+		);
 		document.getElementById("input-placeholder").appendChild(div);
 		count++;
 	}
@@ -50,61 +53,61 @@ function eliminarInput() {
 
 const reports = document.querySelectorAll("#report");
 reports.forEach((report) => {
-    const id = report.getAttribute("data-report-id");
+	const id = report.getAttribute("data-report-id");
 
-    const fromDate = report.getAttribute("data-from-date");
-    const toDate = report.getAttribute("data-to-date");
-    const reportNumber = report.getAttribute("data-report-number");
+	const fromDate = report.getAttribute("data-from-date");
+	const toDate = report.getAttribute("data-to-date");
+	const reportNumber = report.getAttribute("data-report-number");
 
-    const reportDescription = "From " + formatDate(fromDate) + " to " + formatDate(toDate);
-    const intervalDataElement = report.querySelector("#report-description");
-    if (intervalDataElement) {
-        intervalDataElement.textContent = reportDescription;
-    }
+	const reportDescription = "From " + formatDate(fromDate) + " to " + formatDate(toDate);
+	const intervalDataElement = report.querySelector("#report-description");
+	if (intervalDataElement) {
+		intervalDataElement.textContent = reportDescription;
+	}
 
-    report.onclick = () => {
-        showReportModal(id, reportNumber);
-    };
+	report.onclick = () => {
+		showReportModal(id, reportNumber);
+	};
 });
 
 function showReportModal(id, reportNumber) {
-    if (!id) {
-        console.error("No ID provided");
-        alert("No ID provided");
-        return;
-    }
+	if (!id) {
+		console.error("No ID provided");
+		alert("No ID provided");
+		return;
+	}
 
-    const url = `/admin/report?id=${encodeURIComponent(id)}`;
-    console.log(url);
+	const url = `/admin/report?id=${encodeURIComponent(id)}`;
+	console.log(url);
 
-    fetch(url, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    })
-    .then(response => {
-        if (!response.ok) {
-            console.error('Error:', response);
-            alertaError("An error occurred. Please try again.");
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Fridge info retrieved successfully");
-        openModal(showReportInfo(data), () => {
-            const title = "Report " + reportNumber;
-            const titleElement = document.querySelector("#TitleReport");
-            titleElement.textContent = title;
+	fetch(url, {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+		},
+	})
+		.then((response) => {
+			if (!response.ok) {
+				console.error("Error:", response);
+				alertaError("An error occurred. Please try again.");
+			}
+			return response.json();
+		})
+		.then((data) => {
+			console.log("Fridge info retrieved successfully");
+			openModal(showReportInfo(data), () => {
+				const title = "Report " + reportNumber;
+				const titleElement = document.querySelector("#TitleReport");
+				titleElement.textContent = title;
 
-            const downloadButton = document.querySelector("#download-pdf");
-            downloadButton.onclick = downloadPDF;
-        } );
-    })
-    .catch(error => {
-        alertaError("An error occurred. Please try again.");
-        console.error('Error:', error);
-    });
+				const downloadButton = document.querySelector("#download-pdf");
+				downloadButton.onclick = downloadPDF;
+			});
+		})
+		.catch((error) => {
+			alertaError("An error occurred. Please try again.");
+			console.error("Error:", error);
+		});
 }
 
 function showReportInfo(data) {
@@ -112,55 +115,67 @@ function showReportInfo(data) {
 	console.log("Report info:", data);
 
 	const fridgeRecent = fridgeReportRows
-    .sort((a, b) => a.fridgeId - b.fridgeId)
-    .map(fridge => `
+		.sort((a, b) => a.fridgeId - b.fridgeId)
+		.map(
+			(fridge) => `
         <tr>
             <td>${fridge.fridgeId}</td>
             <td>${fridge.addedMeals}</td>
             <td>${fridge.removedMeals}</td>
             <td>${fridge.failures}</td>
         </tr>
-    `).join('');
+    `
+		)
+		.join("");
 	console.log("Frige recent:", fridgeRecent);
 
-    const fridgeTotal = fridgeReportRows
-    .sort((a, b) => a.fridgeId - b.fridgeId)
-    .map(fridge => `
+	const fridgeTotal = fridgeReportRows
+		.sort((a, b) => a.fridgeId - b.fridgeId)
+		.map(
+			(fridge) => `
         <tr>
             <td>${fridge.fridgeId}</td>
             <td>${fridge.totalAddedMeals}</td>
             <td>${fridge.totalRemovedMeals}</td>
             <td>${fridge.totalFailures}</td>
         </tr>
-    `).join('');
-    console.log("Frige total:", fridgeTotal);
+    `
+		)
+		.join("");
+	console.log("Frige total:", fridgeTotal);
 
-    const contributorRecent = contributorReportRows
-    .sort((a, b) => a.contributorId - b.contributorId)
-    .map(contributor => `
+	const contributorRecent = contributorReportRows
+		.sort((a, b) => a.contributorId - b.contributorId)
+		.map(
+			(contributor) => `
         <tr>
             <td>${contributor.contributorId}</td>
             <td>${contributor.contributorName}</td>
             <td>${contributor.donatedMeals}</td>
         </tr>
-    `).join('');
-    console.log("Contributor recent:", contributorRecent);
+    `
+		)
+		.join("");
+	console.log("Contributor recent:", contributorRecent);
 
-    const contributorTotal = contributorReportRows
-    .sort((a, b) => a.contributorId - b.contributorId)
-    .map(contributor => `
+	const contributorTotal = contributorReportRows
+		.sort((a, b) => a.contributorId - b.contributorId)
+		.map(
+			(contributor) => `
         <tr>
             <td>${contributor.contributorId}</td>
             <td>${contributor.contributorName}</td>
             <td>${contributor.totalDonatedMeals}</td>
         </tr>
-    `).join('');
-    console.log("Contributor total:", contributorTotal);
+    `
+		)
+		.join("");
+	console.log("Contributor total:", contributorTotal);
 
-    const formatedFromDate = formatDate(fromDate);
-    const formatedToDate = formatDate(toDate);
-	
-	return DOMPurify.sanitize( `
+	const formatedFromDate = formatDate(fromDate);
+	const formatedToDate = formatDate(toDate);
+
+	return DOMPurify.sanitize(`
         <div class="d-flex flex-column" style="gap: 40px;">
 
             <div class="d-flex justify-content-between align-items-center">
@@ -259,20 +274,19 @@ function showReportInfo(data) {
             </div>
 
         </div>
-    ` ) ;
+    `);
 }
 
 function downloadPDF() {
+	const downloadButton = document.querySelector("#download-pdf");
+	downloadButton.style.display = "none";
+	const closeButton = document.querySelector("#modal-close");
+	closeButton.style.display = "none";
 
-    const downloadButton = document.querySelector("#download-pdf");
-    downloadButton.style.display = "none";
-    const closeButton = document.querySelector("#modal-close");
-    closeButton.style.display = "none";
+	window.print();
 
-    window.print();
-
-    downloadButton.style.display = "";
-    closeButton.style.display = "";
+	downloadButton.style.display = "";
+	closeButton.style.display = "";
 }
 
 /**
@@ -282,44 +296,45 @@ function downloadPDF() {
 const createReportBtn = document.querySelector("#create-report-btn");
 
 createReportBtn.onclick = () => {
-    console.log("Create report button clicked");
-    const url = "/admin/report/create";
+	console.log("Create report button clicked");
+	const url = "/admin/report/create";
 
-    const spinner = document.getElementById("loading-spinner-create");
-    const buttonText = document.getElementById("button-text-create");
-    spinner.classList.remove("d-none");
-    buttonText.textContent = "Loading...";
+	const spinner = document.getElementById("loading-spinner-create");
+	const buttonText = document.getElementById("button-text-create");
+	spinner.classList.remove("d-none");
+	buttonText.textContent = "Loading...";
 
-    fetch(url, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    })
-    .then(response => {
-        if (!response.ok) {
-            console.error('Error:', response);
-            alertaError("An error occurred. Please try again.");
-        }
-    })
-    .then(message => {
-        console.log("Server response:", message);
-        window.location.reload();
-    })
-    .catch(error => {
-        alertaError("An error occurred. Please try again.");
-        console.error('Error:', error);
-    });
+	fetch(url, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+	})
+		.then((response) => {
+			if (!response.ok) {
+				console.error("Error:", response);
+				alertaError("An error occurred. Please try again.");
+			}
+		})
+		.then((message) => {
+			console.log("Server response:", message);
+			window.location.reload();
+		})
+		.catch((error) => {
+			alertaError("An error occurred. Please try again.");
+			console.error("Error:", error);
+		});
 };
 
 const newFrequencyBtn = document.querySelector("#new-frequency-btn");
 
 newFrequencyBtn.onclick = () => {
-    const actualFrequency = newFrequencyBtn.getAttribute("actual-frequency");
-    const actualUnit = newFrequencyBtn.getAttribute("actual-unit");
-    console.log("Actual frequency:", actualFrequency);
-    console.log("Actual unit:", actualUnit);
-    openModal( DOMPurify.sanitize( `
+	const actualFrequency = newFrequencyBtn.getAttribute("actual-frequency");
+	const actualUnit = newFrequencyBtn.getAttribute("actual-unit");
+	console.log("Actual frequency:", actualFrequency);
+	console.log("Actual unit:", actualUnit);
+	openModal(
+		DOMPurify.sanitize(`
             <div class="d-flex flex-column" style="gap: 20px;">
                 <h5 class="accent-100 mb-2">New Frequency</h5>
                 <form action="/admin/report/updateFrequency" method="POST" id="frequency-form">
@@ -330,10 +345,18 @@ newFrequencyBtn.onclick = () => {
                     <div class="form-group">
                         <label for="unit">Unit</label>
                         <select id="unit" name="unit" class="form-control" required>
-                            <option value="MINUTES" ${actualUnit === "MINUTES" ? "selected" : ""}>Minutes</option>
-                            <option value="HOURS" ${actualUnit === "HOURS" ? "selected" : ""}>Hours</option>
-                            <option value="DAYS" ${actualUnit === "DAYS" ? "selected" : ""}>Days</option>
-                            <option value="WEEKS" ${actualUnit === "WEEKS" ? "selected" : ""}>Weeks</option>
+                            <option value="MINUTES" ${
+								actualUnit === "MINUTES" ? "selected" : ""
+							}>Minutes</option>
+                            <option value="HOURS" ${
+								actualUnit === "HOURS" ? "selected" : ""
+							}>Hours</option>
+                            <option value="DAYS" ${
+								actualUnit === "DAYS" ? "selected" : ""
+							}>Days</option>
+                            <option value="WEEKS" ${
+								actualUnit === "WEEKS" ? "selected" : ""
+							}>Weeks</option>
                         </select>
                     </div>
                     <div align="right">
@@ -344,45 +367,51 @@ newFrequencyBtn.onclick = () => {
                     </div>
                 </form>
             </div>
-    ` ) , () => { });
-    const saveFrequencyButton = document.getElementById("save-frequency-button");
-    saveFrequencyButton.onclick = () => {
-        const form = document.getElementById("frequency-form");
-        if (form.checkValidity()) {
-            const spinner = document.getElementById("loading-spinner-freq");
-            const buttonText = document.getElementById("button-text-freq");
-            spinner.classList.remove("d-none");
-            buttonText.textContent = "Loading...";
-            form.submit();
-        }
-    };
-
-}
+    `),
+		() => {}
+	);
+	const saveFrequencyButton = document.getElementById("save-frequency-button");
+	saveFrequencyButton.onclick = () => {
+		const form = document.getElementById("frequency-form");
+		if (form.checkValidity()) {
+			const spinner = document.getElementById("loading-spinner-freq");
+			const buttonText = document.getElementById("button-text-freq");
+			spinner.classList.remove("d-none");
+			buttonText.textContent = "Loading...";
+			form.submit();
+		}
+	};
+};
 
 /**
  * ===================================== Buttons ===================================================
  */
 
 document.getElementById("submit-button").addEventListener("click", () => {
-
-    const form = document.getElementById("CSVform");
-    if (form.checkValidity()) {
-        const spinner = document.getElementById("loading-spinner-csv");
-        const buttonText = document.getElementById("button-text-csv");
-        spinner.classList.remove("d-none");
-        buttonText.textContent = "Loading...";
-        form.submit();
-    }
-
+	const form = document.getElementById("CSVform");
+	if (form.checkValidity()) {
+		const spinner = document.getElementById("loading-spinner-csv");
+		const buttonText = document.getElementById("button-text-csv");
+		spinner.classList.remove("d-none");
+		buttonText.textContent = "Loading...";
+		form.submit();
+	}
 });
 
 /**
  * ===================================== Extra ===================================================
  */
 
-function formatDate (milliseconds) {
-    const date = new Date(Number(milliseconds)).toLocaleString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit" });
-    return date;
+function formatDate(milliseconds) {
+	const date = new Date(Number(milliseconds)).toLocaleString("es-ES", {
+		day: "2-digit",
+		month: "2-digit",
+		year: "numeric",
+		hour: "2-digit",
+		minute: "2-digit",
+		second: "2-digit",
+	});
+	return date;
 }
 
 function alertaSuccess(mensaje) {
@@ -391,13 +420,16 @@ function alertaSuccess(mensaje) {
 	alertaSuccess.classList.add("alert", "alert-success", "alert-dismissible", "fade", "show");
 	alertaSuccess.setAttribute("role", "alert");
 	alertaSuccess.setAttribute("id", "success-alert");
-	alertaSuccess.setAttribute("style", "position: absolute; top: 0; left: 0; right: 0; z-index: 1000; margin: auto; margin-top: 10px; width: 50%;");
-	alertaSuccess.innerHTML = DOMPurify.sanitize( `
+	alertaSuccess.setAttribute(
+		"style",
+		"position: absolute; top: 0; left: 0; right: 0; z-index: 1000; margin: auto; margin-top: 10px; width: 50%;"
+	);
+	alertaSuccess.innerHTML = DOMPurify.sanitize(`
 	${mensaje}
 	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 	  <span aria-hidden="true">&times;</span>
 	</button>
-  	` ) ;
+  	`);
 	contenedorAlertas.appendChild(alertaSuccess);
 }
 
@@ -407,22 +439,24 @@ function alertaError(mensaje) {
 	alertaError.classList.add("alert", "alert-danger", "alert-dismissible", "fade", "show");
 	alertaError.setAttribute("role", "alert");
 	alertaError.setAttribute("id", "error-alert");
-	alertaError.setAttribute("style", "position: absolute; top: 0; left: 0; right: 0; z-index: 1000; margin: auto; margin-top: 10px; width: 50%;");
-	alertaError.innerHTML = DOMPurify.sanitize( `
+	alertaError.setAttribute(
+		"style",
+		"position: absolute; top: 0; left: 0; right: 0; z-index: 1000; margin: auto; margin-top: 10px; width: 50%;"
+	);
+	alertaError.innerHTML = DOMPurify.sanitize(`
 	<strong>Oh snap!</strong> ${mensaje}
 	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 	  <span aria-hidden="true">&times;</span>
 	</button>
-  	` ) ;
+  	`);
 	contenedorAlertas.appendChild(alertaError);
 }
 
 async function deleteCookieAndRefresh() {
-    // Delete the 'access-token' cookie by setting its expiration date to a past date
+	// Delete the 'access-token' cookie by setting its expiration date to a past date
 	document.cookie = "access-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 	await fetch("/user/logout", {
 		method: "GET",
-
-	})
+	});
 	window.location.reload();
 }

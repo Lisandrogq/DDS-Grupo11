@@ -35,7 +35,10 @@ function agregarInput() {
 		let div = document.createElement("div");
 		div.classList.add("input");
 		div.innerHTML = DOMPurify.sanitize(
-			' <input type="text" id="meal" name="meal_' + count + '" required placeholder="ID of meal to distribute..."class="col-12 inputs">');
+			' <input type="text" id="meal" name="meal_' +
+				count +
+				'" required placeholder="ID of meal to distribute..."class="col-12 inputs">'
+		);
 		document.getElementById("input-placeholder").appendChild(div);
 		count++;
 	}
@@ -61,7 +64,8 @@ function setup_map(lat, lon) {
 /**
  * ===================================== Fridge Modal Logic =====================================
  */
-const fridgeModal = (name, meals, temp, capacity, state, lat, lon) => DOMPurify.sanitize( `
+const fridgeModal = (name, meals, temp, capacity, state, lat, lon) =>
+	DOMPurify.sanitize(`
 <div
 	id="has_map"
 	class="d-flex flex-column"
@@ -87,7 +91,7 @@ const fridgeModal = (name, meals, temp, capacity, state, lat, lon) => DOMPurify.
 		<button id="fridge-view-info" class="btn-primary w-100">View info</button>
 	</div>
 </div>
-` ) ;
+`);
 
 const setupFridgeListeners = () => {
 	const fridges = document.querySelectorAll("#fridge");
@@ -121,7 +125,7 @@ setupFridgeListeners();
  */
 
 function addVisit(fridge_id) {
-	return DOMPurify.sanitize( `
+	return DOMPurify.sanitize(`
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
 				<h5 class="accent-100 mb-2">Add Visit</h5>
@@ -169,7 +173,7 @@ function addVisit(fridge_id) {
 				</div>
 			</form>
 		</div>
-	` ) ;
+	`);
 }
 
 /**
@@ -192,20 +196,20 @@ function showFridgeInfo(id) {
 			"Content-Type": "application/json",
 		},
 	})
-		.then(response => {
+		.then((response) => {
 			if (!response.ok) {
-				console.error('Error:', response);
+				console.error("Error:", response);
 				throw new Error("Failed to retrieve fridge info. Please try again.");
 			}
 			return response.json();
 		})
-		.then(data => {
+		.then((data) => {
 			console.log("Fridge info retrieved successfully:", data);
 			setModalContent(updateFridgeModal(data));
 			setAddVisitShortcut(id);
 		})
-		.catch(error => {
-			console.error('Error:', error);
+		.catch((error) => {
+			console.error("Error:", error);
 			alert("An error occurred. Please try again.");
 		});
 }
@@ -214,7 +218,9 @@ function updateFridgeModal(data) {
 	const { fridgeId, meals, failures } = data;
 	console.log("Fridge info:", data);
 
-	const mealRows = meals.map(meal => `
+	const mealRows = meals
+		.map(
+			(meal) => `
         <tr>
             <td>${meal.id}</td>
             <td>${meal.type}</td>
@@ -222,10 +228,14 @@ function updateFridgeModal(data) {
             <td>${meal.weight} g</td>
             <td>${meal.calories} cal</td>
         </tr>
-    `).join('');
+    `
+		)
+		.join("");
 	console.log(mealRows);
 
-	const failureRows = failures.map(failure => `
+	const failureRows = failures
+		.map(
+			(failure) => `
         <tr>
 			<td
 				id="failureRow"
@@ -236,10 +246,12 @@ function updateFridgeModal(data) {
             <td>${new Date(failure.detectedAt).toLocaleDateString()}</td>
             <td>${failure.hasBeenFixed}</td>
         </tr>
-    `).join('');
+    `
+		)
+		.join("");
 	console.log(failureRows);
-	
-	return DOMPurify.sanitize( `
+
+	return DOMPurify.sanitize(`
         <div class="d-flex flex-column" style="gap: 40px;">
             <div>
                 <h5 class="accent-100 mb-2">Fridge reports</h5>
@@ -271,12 +283,12 @@ function updateFridgeModal(data) {
                 </table>
             </div>
         </div>
-    ` ) ;
+    `);
 }
 
 function setAddVisitShortcut(id) {
 	const failuresRow = document.querySelectorAll("#failureRow");
-	failuresRow.forEach(failureRow => {
+	failuresRow.forEach((failureRow) => {
 		failureRow.onclick = () => {
 			const failureId = failureRow.getAttribute("data-failure-id");
 			setModalContent(addVisit(id));
@@ -288,11 +300,10 @@ function setAddVisitShortcut(id) {
 }
 
 async function deleteCookieAndRefresh() {
-    // Delete the 'access-token' cookie by setting its expiration date to a past date
+	// Delete the 'access-token' cookie by setting its expiration date to a past date
 	document.cookie = "access-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 	await fetch("/user/logout", {
 		method: "GET",
-
-	})
+	});
 	window.location.reload();
 }
