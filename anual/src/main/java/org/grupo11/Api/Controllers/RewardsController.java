@@ -6,14 +6,12 @@ import org.grupo11.Api.ApiResponse;
 import org.grupo11.Api.Middlewares;
 import org.grupo11.Api.JsonData.ExchangeRewards.RedeemRequest;
 import org.grupo11.Services.Contributor.Contributor;
-import org.grupo11.Services.Rewards.Reward;
 import org.grupo11.Utils.FieldValidator;
 import org.hibernate.Session;
 
 import io.javalin.http.Context;
 
 public class RewardsController {
-
     public static void handleUpdateRewards(Context ctx) {
         Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
         if (contributor == null) {
@@ -79,6 +77,5 @@ public class RewardsController {
             Logger.error("An error occurred while redeeming rewards.", e);
             ctx.status(500).json(new ApiResponse(500, "Error: " + e.getMessage()));
         }
-
     }
 }
