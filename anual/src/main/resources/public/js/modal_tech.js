@@ -188,7 +188,6 @@ function showFridgeInfo(id) {
 	}
 
 	const url = `/fridge/info?id=${encodeURIComponent(id)}`;
-	console.log(url);
 
 	fetch(url, {
 		method: "GET",
@@ -204,7 +203,6 @@ function showFridgeInfo(id) {
 			return response.json();
 		})
 		.then((data) => {
-			console.log("Fridge info retrieved successfully:", data);
 			setModalContent(updateFridgeModal(data));
 			setAddVisitShortcut(id);
 		})
@@ -216,7 +214,6 @@ function showFridgeInfo(id) {
 
 function updateFridgeModal(data) {
 	const { fridgeId, meals, failures } = data;
-	console.log("Fridge info:", data);
 
 	const mealRows = meals
 		.map(
@@ -231,7 +228,6 @@ function updateFridgeModal(data) {
     `
 		)
 		.join("");
-	console.log(mealRows);
 
 	const failureRows = failures
 		.map(
@@ -249,7 +245,6 @@ function updateFridgeModal(data) {
     `
 		)
 		.join("");
-	console.log(failureRows);
 
 	return DOMPurify.sanitize(`
         <div class="d-flex flex-column" style="gap: 40px;">

@@ -78,7 +78,6 @@ function showReportModal(id, reportNumber) {
 	}
 
 	const url = `/admin/report?id=${encodeURIComponent(id)}`;
-	console.log(url);
 
 	fetch(url, {
 		method: "GET",
@@ -94,7 +93,6 @@ function showReportModal(id, reportNumber) {
 			return response.json();
 		})
 		.then((data) => {
-			console.log("Fridge info retrieved successfully");
 			openModal(showReportInfo(data), () => {
 				const title = "Report " + reportNumber;
 				const titleElement = document.querySelector("#TitleReport");
@@ -112,7 +110,6 @@ function showReportModal(id, reportNumber) {
 
 function showReportInfo(data) {
 	const { id, fromDate, toDate, fridgeReportRows, contributorReportRows } = data;
-	console.log("Report info:", data);
 
 	const fridgeRecent = fridgeReportRows
 		.sort((a, b) => a.fridgeId - b.fridgeId)
@@ -127,7 +124,6 @@ function showReportInfo(data) {
     `
 		)
 		.join("");
-	console.log("Frige recent:", fridgeRecent);
 
 	const fridgeTotal = fridgeReportRows
 		.sort((a, b) => a.fridgeId - b.fridgeId)
@@ -142,7 +138,6 @@ function showReportInfo(data) {
     `
 		)
 		.join("");
-	console.log("Frige total:", fridgeTotal);
 
 	const contributorRecent = contributorReportRows
 		.sort((a, b) => a.contributorId - b.contributorId)
@@ -156,7 +151,6 @@ function showReportInfo(data) {
     `
 		)
 		.join("");
-	console.log("Contributor recent:", contributorRecent);
 
 	const contributorTotal = contributorReportRows
 		.sort((a, b) => a.contributorId - b.contributorId)
@@ -170,7 +164,6 @@ function showReportInfo(data) {
     `
 		)
 		.join("");
-	console.log("Contributor total:", contributorTotal);
 
 	const formatedFromDate = formatDate(fromDate);
 	const formatedToDate = formatDate(toDate);
@@ -296,7 +289,6 @@ function downloadPDF() {
 const createReportBtn = document.querySelector("#create-report-btn");
 
 createReportBtn.onclick = () => {
-	console.log("Create report button clicked");
 	const url = "/admin/report/create";
 
 	const spinner = document.getElementById("loading-spinner-create");
@@ -317,7 +309,6 @@ createReportBtn.onclick = () => {
 			}
 		})
 		.then((message) => {
-			console.log("Server response:", message);
 			window.location.reload();
 		})
 		.catch((error) => {
@@ -331,8 +322,6 @@ const newFrequencyBtn = document.querySelector("#new-frequency-btn");
 newFrequencyBtn.onclick = () => {
 	const actualFrequency = newFrequencyBtn.getAttribute("actual-frequency");
 	const actualUnit = newFrequencyBtn.getAttribute("actual-unit");
-	console.log("Actual frequency:", actualFrequency);
-	console.log("Actual unit:", actualUnit);
 	openModal(
 		DOMPurify.sanitize(`
             <div class="d-flex flex-column" style="gap: 20px;">
