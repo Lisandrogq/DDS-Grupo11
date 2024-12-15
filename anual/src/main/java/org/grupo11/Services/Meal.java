@@ -12,7 +12,6 @@ public class Meal {
     @Id
     @GeneratedValue
     private Long id;
-
     private String type;
     private long expirationDate;
     private long donationDate;

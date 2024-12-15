@@ -15,6 +15,8 @@ public class FridgeOpenLogEntry {
     public long openedAt;
     @ManyToOne
     private Fridge fridge;
+    @ManyToOne
+    private ActivityRegistry activityRegistry;
 
     public FridgeOpenLogEntry() {
     }
@@ -22,5 +24,6 @@ public class FridgeOpenLogEntry {
     public FridgeOpenLogEntry(Fridge fridge, long openedAt, ActivityRegistry activityRegistry) {
         this.openedAt = openedAt;
         this.fridge = fridge;
+        this.activityRegistry = activityRegistry;
     }
 }

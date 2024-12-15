@@ -14,12 +14,20 @@ import java.util.Base64;
 import org.apache.commons.codec.DecoderException;
 
 public class Crypto {
-    public static int getRandomId(int length) {
+    public static Long getRandomId(int length) {
         String nanoTime = String.valueOf(System.nanoTime());
         if (nanoTime.length() < length) {
             nanoTime = String.format("%-" + length + "s", nanoTime).replace(' ', '0');
         }
-        return Integer.valueOf(nanoTime.substring(0, length));
+        return Long.valueOf(nanoTime.substring(0, length));
+    }
+
+    public static String getRandomIdAsString(int length) {
+        String nanoTime = String.valueOf(System.nanoTime());
+        if (nanoTime.length() < length) {
+            nanoTime = String.format("%-" + length + "s", nanoTime).replace(' ', '0');
+        }
+        return nanoTime.substring(0, length);
     }
 
     public static Long genId() {

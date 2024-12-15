@@ -15,6 +15,7 @@ import org.grupo11.Logger;
 import org.grupo11.Api.ApiResponse;
 import org.grupo11.Api.Middlewares;
 import org.grupo11.Services.Meal;
+import org.grupo11.Services.ActivityRegistry.PINRegistry;
 import org.grupo11.Services.Contributions.FridgeAdmin;
 import org.grupo11.Services.Contributions.MealDistribution;
 import org.grupo11.Services.Contributions.MealDonation;
@@ -462,6 +463,9 @@ public class ContributionsController {
         try {
             PersonInNeed PIN = new PersonInNeed(name, DateUtils.parseDateYMDString(birth), DateUtils.now(), "",
                     Integer.parseInt(dni), Integer.parseInt(children_count), null);
+            PINRegistry registry = new PINRegistry(PIN, contributor);
+            PIN.setCard(registry);
+
             PersonRegistration personRegistration = new PersonRegistration(PIN, DateUtils.now(), contributor);
             personRegistration.setContributor(contributor);
             List<FridgeOpenLogEntry> entries = ContributorsManager.getInstance().addContributionToContributor(
