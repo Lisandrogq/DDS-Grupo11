@@ -101,8 +101,7 @@ public class RabbitTest {
         List<ContributionType> permisos = new ArrayList<ContributionType>();
         permisos.add(ContributionType.MEAL_DONATION);
         Contributor contributor1 = new Contributor("aa", "null", permisos);
-        ContributorRegistry contributorRegistry = new ContributorRegistry(0, contributor1,
-                new ArrayList<FridgeSolicitude>());
+        ContributorRegistry contributorRegistry = new ContributorRegistry(contributor1);
         contributor1.setContributorRegistry(contributorRegistry);
 
         FridgeSolicitude solicitude = contributor1.getContributorRegistry().registerPermission(fridge);

@@ -6,20 +6,23 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 
 @Entity
 public class CardUsage {
     @Id
     @GeneratedValue
     private Long id;
-    @OneToOne
+    @ManyToOne
     private Fridge fridge;
     private long usedAt;
     @ManyToOne
     private PINRegistry pinRegistry;
 
-    public CardUsage(Fridge fridge, long usedAt) {
+    public CardUsage() {
+    }
+
+    public CardUsage(PINRegistry registry, Fridge fridge, long usedAt) {
+        this.pinRegistry = registry;
         this.fridge = fridge;
         this.usedAt = usedAt;
     }

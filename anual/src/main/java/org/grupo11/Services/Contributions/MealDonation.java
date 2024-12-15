@@ -43,15 +43,13 @@ public class MealDonation extends Contribution {
     @Override
     public boolean validate(Contributor contributor) {
         return (super.validate(contributor)
-                && (true || this.meal.getFridge().hasPermission(contributor.getContributorRegistry().getId())));
-        // TODO: implement open solicitudes with db and front
+                && (this.meal.getFridge().hasPermission(contributor.getContributorRegistry().getId())));
     }
 
     @Override
     public List<FridgeOpenLogEntry> afterContribution() {
-        FridgeOpenLogEntry entry = new FridgeOpenLogEntry(DateUtils.getCurrentTimeInMs(),
+        FridgeOpenLogEntry entry = new FridgeOpenLogEntry(this.fridge, DateUtils.getCurrentTimeInMs(),
                 this.contributor.getContributorRegistry());
-
         this.meal.getFridge()
                 .addOpenEntry(entry);
         List<FridgeOpenLogEntry> entries = new ArrayList<FridgeOpenLogEntry>();

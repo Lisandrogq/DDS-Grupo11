@@ -42,7 +42,7 @@ public class Contributor {
     private List<Contribution> contributions = new ArrayList<>();
     @OneToMany
     private List<Reward> rewards = new ArrayList<>();
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private ContributorRegistry contributorRegistry;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Subscription> fridgeSubscriptions = new ArrayList<>();

@@ -2,6 +2,7 @@ package org.grupo11.Services.PersonInNeed;
 
 import org.grupo11.Services.ActivityRegistry.PINRegistry;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -18,7 +19,7 @@ public class PersonInNeed {
     private int DNI;
     private String name;
     private int childCount;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private PINRegistry PINRegistry;
 
     public PersonInNeed() {

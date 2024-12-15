@@ -3,6 +3,11 @@ package org.grupo11.Services.ActivityRegistry;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.grupo11.DB;
+import org.hibernate.Hibernate;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
+
 public class RegistryManager {
     private List<ActivityRegistry> registers;
     private static RegistryManager instance = null;
@@ -41,5 +46,19 @@ public class RegistryManager {
             }
         }
         return null;
+    }
+
+    public PINRegistry queryPinRegistryByNumberAndSecurityCode(String number, String securityCode) {
+        try (Session session = DB.getSessionFactory().openSession()) {
+            String hql = "SELECT p from PINRegistry p WHERE p.number = :number AND p.securityCode = :securityCode";
+            Query<PINRegistry> query = session.createQuery(hql, PINRegistry.class);
+            query.setParameter("number", number);
+            query.setParameter("securityCode", securityCode);
+            PINRegistry registry = query.getSingleResult();
+            Hibernate.initialize(registry.getUsages());
+            return registry;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

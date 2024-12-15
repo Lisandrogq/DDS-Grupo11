@@ -10,6 +10,7 @@ import org.grupo11.Api.HttpUtils;
 import org.grupo11.Api.Middlewares;
 import org.grupo11.Api.JsonData.FridgeInfo.FridgeFullInfo;
 import org.grupo11.Broker.Rabbit;
+import org.grupo11.DTOS.FridgeIdDTO;
 import org.grupo11.DTOS.FridgeMovementDTO;
 import org.grupo11.DTOS.FridgeTempDTO;
 import org.grupo11.Services.Meal;
@@ -19,6 +20,7 @@ import org.grupo11.Services.Contributor.LegalEntity.LegalEntity;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgeNotification;
 import org.grupo11.Services.Fridge.FridgeNotifications;
+import org.grupo11.Services.Fridge.FridgeSolicitude;
 import org.grupo11.Services.Fridge.FridgesManager;
 import org.grupo11.Services.Fridge.Subscription;
 import org.grupo11.Services.Fridge.Incident.Alert;
@@ -38,7 +40,6 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import io.javalin.http.Context;
 
 public class FridgeController {
-
     public static void handleAddVisit(Context ctx) {
         Technician technician = Middlewares.technicianIsAuthenticated(ctx);
         if (technician == null) {
@@ -69,7 +70,6 @@ public class FridgeController {
         }
 
         try (Session session = DB.getSessionFactory().openSession()) {
-
             String hql = "SELECT f " +
                     "FROM Fridge f " +
                     "WHERE f.id = :fridge_id";
@@ -102,6 +102,36 @@ public class FridgeController {
             Logger.error("Exception ", e);
             ctx.redirect("/dash/home?error=" + e.getMessage());
             return;
+        }
+    }
+
+    public static void handleAddOpenSolicitude(Context ctx) {
+        DecodedJWT token = Middlewares.authenticatedFromHeader(ctx);
+        if (token == null) {
+            ctx.status(401).json(new ApiResponse(401));
+            return;
+        }
+        Contributor contributor = HttpUtils.getContributorFromAccessToken(token);
+
+        try {
+            FridgeIdDTO body = ctx.bodyAsClass(FridgeIdDTO.class);
+            if (body == null) {
+                ctx.status(400).json(new ApiResponse(400, "Invalid body."));
+                return;
+            }
+            Fridge fridge = DB.find(Fridge.class, body.fridge_id);
+            if (fridge == null) {
+                ctx.status(400).json(new ApiResponse(400, "Fridge does not exist."));
+                return;
+            }
+            FridgeSolicitude fridgeSolicitude = contributor.getContributorRegistry().registerPermission(fridge);
+            DB.create(fridgeSolicitude);
+            DB.update(contributor);
+            DB.update(fridge);
+            ctx.status(200).json(new ApiResponse(200));
+        } catch (Exception e) {
+            Logger.error("Exception while handling open solicitude ", e);
+            ctx.status(500).json(new ApiResponse(500, "Fridge does not exist."));
         }
 
     }
@@ -169,7 +199,6 @@ public class FridgeController {
     }
 
     public static void handleSubscription(Context ctx) {
-
         Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
         if (contributor == null) {
             ctx.redirect("/register/login");

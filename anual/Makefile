@@ -132,13 +132,18 @@ gen_jwt_ecdsa_keys:
 create_admin_user:
 	./scripts/insert-admin-user.sh $(PWD)/infra/scripts/deploy-conf.json $(OWNER_ID) $(MAIL) $(PASSWORD_HASH)
 
-
 __API_CALLS__:
-get_jwt_token:
-	./scripts/get-access-token.sh $(ORIGIN) $(MAIL) $(PASSWORD)
+api_get_jwt_token:
+	./scripts/api-calls/get-access-token.sh $(ORIGIN) $(MAIL) $(PASSWORD)
 
-sensor_send_movement:
-	./scripts/sensor-send-movement.sh $(ORIGIN) $(FRIDGE_ID) $(SENSOR_ID) $(IS_MOVING) $(ACCESS_TOKEN)
+api_sensor_send_movement:
+	./scripts/api-calls/sensor-send-movement.sh $(ORIGIN) $(FRIDGE_ID) $(SENSOR_ID) $(IS_MOVING) $(ACCESS_TOKEN)
 
-sensor_send_temperature:
-	./scripts/sensor-send-temperature.sh $(ORIGIN) $(FRIDGE_ID) $(SENSOR_ID) $(TEMP) $(ACCESS_TOKEN)
+api_sensor_send_temperature:
+	./scripts/api-calls/sensor-send-temperature.sh $(ORIGIN) $(FRIDGE_ID) $(SENSOR_ID) $(TEMP) $(ACCESS_TOKEN)
+
+api_pin_withdraw_meal:
+	./scripts/api-calls/pin-withdraw-meal.sh $(ORIGIN) $(CARD_NUMBER) $(SECURITY_CODE) $(FRIDGE_ID) $(MEALS_ID)
+
+api_pin_get_usages:
+	./scripts/api-calls/pin-get-usages.sh $(ORIGIN) $(CARD_NUMBER) $(SECURITY_CODE)
