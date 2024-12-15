@@ -311,7 +311,6 @@ public class Fridge {
                     solicitude.markAsUsed();
                     return true;
                 }
-                ;
             }
         }
         return false;

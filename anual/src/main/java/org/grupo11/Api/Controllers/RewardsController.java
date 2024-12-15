@@ -15,21 +15,18 @@ import io.javalin.http.Context;
 public class RewardsController {
 
     public static void handleUpdateRewards(Context ctx) {
-        // Obtengo el contributor
         Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
         if (contributor == null) {
             ctx.redirect("/register/login");
             return;
         }
 
-        // Obtengo los datos del request
         RedeemRequest redeemRequest = ctx.bodyAsClass(RedeemRequest.class);
         if (redeemRequest == null) {
             ctx.status(400).json(new ApiResponse(400, "Invalid request data."));
             return;
         }
 
-        // Valido los datos
         if (redeemRequest.getUserPoints() < 0) {
             ctx.status(400).json(new ApiResponse(400, "Invalid user points."));
             return;
@@ -45,14 +42,13 @@ public class RewardsController {
             }
         }
 
-        // Transacción
         org.hibernate.Transaction transaction = null;
         try (Session session = DB.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
 
-            // Actualizo puntos del usuario
+            // Update user points
             String userHQL = "UPDATE Contributor c SET c.points = :points WHERE c.id = :id";
-            org.hibernate.query.Query<Contributor> userQuery = session.createQuery(userHQL);
+            org.hibernate.query.MutationQuery userQuery = session.createMutationQuery(userHQL);
             userQuery.setParameter("points", redeemRequest.getUserPoints());
             userQuery.setParameter("id", contributor.getId());
             int userUpdateResult = userQuery.executeUpdate();
@@ -61,10 +57,10 @@ public class RewardsController {
                 return;
             }
 
-            // Actualizo cantidades de las recompensas
+            // Update reward amount
             for (RedeemRequest.RewardData reward : redeemRequest.getRewardsData()) {
                 String rewardHQL = "UPDATE Reward r SET r.quantity = :quantity WHERE r.id = :id";
-                org.hibernate.query.Query<Reward> rewardQuery = session.createQuery(rewardHQL);
+                org.hibernate.query.MutationQuery rewardQuery = session.createMutationQuery(rewardHQL);
                 rewardQuery.setParameter("quantity", reward.getQuantity());
                 rewardQuery.setParameter("id", reward.getRewardId());
                 int rewardUpdateResult = rewardQuery.executeUpdate();

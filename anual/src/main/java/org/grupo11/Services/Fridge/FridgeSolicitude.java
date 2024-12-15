@@ -14,7 +14,6 @@ public class FridgeSolicitude {
     @Id
     @GeneratedValue
     private Long id;
-
     @ManyToOne
     private ContributorRegistry issuedBy;
     private long issuedAt;
@@ -36,9 +35,7 @@ public class FridgeSolicitude {
     // issuing of the permission
     public boolean isValid() {
         long timeDifference = DateUtils.getCurrentTimeInMs() - issuedAt;
-        long threeHoursInMillis = Constants.COLLAB_PERMISSION_EXPIRATION_HS * 60 * 60 * 1000; // 3 hours * 60
-                                                                                              // minutes/hour * 60
-        // seconds/minute * 1000
+        long threeHoursInMillis = Constants.COLLAB_PERMISSION_EXPIRATION_HS * 60 * 60 * 1000;
 
         return timeDifference <= threeHoursInMillis;
     }

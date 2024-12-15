@@ -3,7 +3,6 @@ package org.grupo11.Services.Rewards;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.ObjectUtils.Null;
 import org.grupo11.Services.Contributor.Contributor;
 
 import jakarta.persistence.Entity;
@@ -127,8 +126,10 @@ public class Reward {
         reward_map.put("description", getDescription());
         reward_map.put("neededPoints", getNeededPointsAsString());
         reward_map.put("quantity", getQuantityAsString());
-        if (getImageUrl() != null) reward_map.put("imageUrl", getImageUrl());
-            else reward_map.put("imageUrl", "https://images.emojiterra.com/google/android-12l/512px/1f381.png");
+        if (getImageUrl() != null)
+            reward_map.put("imageUrl", getImageUrl());
+        else
+            reward_map.put("imageUrl", "https://images.emojiterra.com/google/android-12l/512px/1f381.png");
         return reward_map;
     }
 }

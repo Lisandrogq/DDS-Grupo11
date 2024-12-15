@@ -24,5 +24,4 @@ public abstract class ActivityRegistry {
     public void setId(int id) {
         this.id = id;
     }
-
 }

@@ -4,11 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.grupo11.Services.Fridge.Fridge;
-import org.grupo11.Services.Fridge.FridgeNotification;
-import org.grupo11.Services.Fridge.FridgeNotifications;
 import org.grupo11.Services.Fridge.Incident.Alert;
 import org.grupo11.Services.Fridge.Incident.AlertType;
-import org.grupo11.Services.Technician.TechnicianManager;
 import org.grupo11.Utils.DateUtils;
 
 import jakarta.persistence.Entity;

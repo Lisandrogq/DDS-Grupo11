@@ -34,8 +34,7 @@ public class Reporter {
 
     public void setupReporter() {
         updateLastReport();
-        
-        while (lastReport <= ( DateUtils.now() - intervalMillis() )) {
+        while (lastReport <= (DateUtils.now() - intervalMillis())) {
             Logger.info("Entro al while");
             long fromDate = lastReport;
             long toDate = lastReport + intervalMillis();
@@ -51,12 +50,10 @@ public class Reporter {
 
     public void updateLastReport() {
         try (Session session = DB.getSessionFactory().openSession()) {
-            
             String hql = "SELECT MAX(r.toDate) FROM Report r";
             Long lastReportDate = session.createQuery(hql, Long.class).uniqueResult();
-
             Logger.info("Last report date: " + lastReportDate);
-    
+
             lastReport = (lastReportDate != null) ? lastReportDate : getFirstDataDate();
             Logger.info("Last report: " + lastReport);
         } catch (Exception e) {
@@ -67,19 +64,18 @@ public class Reporter {
 
     public long getFirstDataDate() {
         try (Session session = DB.getSessionFactory().openSession()) {
-
             String incidentHql = "SELECT MIN(i.detectedAt) FROM Incident i";
             Long firstIncidentDate = session.createQuery(incidentHql, Long.class).uniqueResult();
             Logger.info("First incident date: " + firstIncidentDate);
-    
+
             String mealDonationHql = "SELECT MIN(md.date) FROM MealDonation md";
             Long firstContributionDate = session.createQuery(mealDonationHql, Long.class).uniqueResult();
             Logger.info("First contribution date: " + firstContributionDate);
-    
+
             long now = DateUtils.now();
             long earliestIncident = (firstIncidentDate != null) ? firstIncidentDate : now;
             long earliestContribution = (firstContributionDate != null) ? firstContributionDate : now;
-    
+
             return Math.min(earliestIncident, earliestContribution);
         } catch (Exception e) {
             Logger.error("Could not get first data date", e);
@@ -88,11 +84,10 @@ public class Reporter {
     }
 
     public void genReport(long fromDate, long toDate) {
-
-        Logger.info("Generating report from " + DateUtils.epochToDate(fromDate) + " to " + DateUtils.epochToDate(toDate));
+        Logger.info(
+                "Generating report from " + DateUtils.epochToDate(fromDate) + " to " + DateUtils.epochToDate(toDate));
 
         try (Session session = DB.getSessionFactory().openSession()) {
-            
             String hql = "FROM Fridge";
             List<Fridge> fridges = session.createQuery(hql, Fridge.class).getResultList();
             List<FridgeReportRow> fridgeReportRows = new ArrayList<FridgeReportRow>(); // 1
@@ -115,14 +110,12 @@ public class Reporter {
             DB.create(report);
             this.reports.add(report);
             lastReport = toDate;
-
         } catch (Exception e) {
             Logger.error("Could not create report", e);
         }
     }
 
     public void newReportInterval(int frequency, String unit) {
-
         if (frequency <= 0) {
             throw new IllegalArgumentException("Frequency must be greater than 0.");
         }
@@ -157,7 +150,6 @@ public class Reporter {
 
             cleanReports();
             setupReporter();
-
         } catch (Exception e) {
             Logger.error("Could not change report interval", e);
             return;
@@ -167,10 +159,8 @@ public class Reporter {
     public void cleanReports() {
         try (Session session = DB.getSessionFactory().openSession()) {
             session.beginTransaction();
-
             String hql = "DELETE FROM Report";
-            session.createQuery(hql).executeUpdate();
-            
+            session.createQuery(hql, Report.class).executeUpdate();
             session.getTransaction().commit();
         } catch (Exception e) {
             Logger.error("Could not delete reports", e);
@@ -193,4 +183,3 @@ public class Reporter {
         return genReportsEveryUnit.toString();
     }
 }
-

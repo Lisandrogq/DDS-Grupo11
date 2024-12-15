@@ -21,7 +21,6 @@ public class PasswordValidator {
 
     // This function reads a file with the 100000 worst passwords and checks if the
     // password is in the file
-
     public static boolean IsKnownPassword(String pw) {
         InputStream inputStream = ClassLoader.getSystemResourceAsStream("rockyou.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));

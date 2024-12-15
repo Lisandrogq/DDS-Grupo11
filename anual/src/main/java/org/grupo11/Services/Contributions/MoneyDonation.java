@@ -7,7 +7,7 @@ import jakarta.persistence.PrimaryKeyJoinColumn;
 @PrimaryKeyJoinColumn(name = "id")
 public class MoneyDonation extends Contribution {
     private int amount;
-    private double rewardCoef = 1.0;
+    private double rewardCoef = 0.5;
     private String message;
 
     public MoneyDonation() {
@@ -37,7 +37,7 @@ public class MoneyDonation extends Contribution {
 
     @Override
     public double getRewardPoints() {
-        return amount * 0.5;
+        return amount * rewardCoef;
     }
 
 }

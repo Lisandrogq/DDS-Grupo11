@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.FridgeOpenLogEntry;
-import org.grupo11.Utils.Crypto;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,7 +31,6 @@ public abstract class Contribution {
     }
 
     public boolean validate(Contributor contributor) {
-        System.out.println(this.getContributionType());
         return contributor.canContributeIn(this.getContributionType());
     };
 

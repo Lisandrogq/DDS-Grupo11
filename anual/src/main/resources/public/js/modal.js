@@ -36,7 +36,9 @@ function agregarInput() {
 		let div = document.createElement("div");
 		div.classList.add("input");
 		div.innerHTML =
-			' <input type="number" id="meal" name="meal_' + count + '" required placeholder="ID of meal to distribute..."class="col-12 inputs">';
+			' <input type="number" id="meal" name="meal_' +
+			count +
+			'" required placeholder="ID of meal to distribute..."class="col-12 inputs">';
 		document.getElementById("input-placeholder").appendChild(div);
 		count++;
 	}
@@ -62,7 +64,8 @@ function setup_map(lat, lon) {
 /**
  * ===================================== Fridge Modal Logic =====================================
  */
-const fridgeModal = (id,name, meals, temp, capacity, state, lat, lon) => DOMPurify.sanitize( `
+const fridgeModal = (id, name, meals, temp, capacity, state, lat, lon) =>
+	DOMPurify.sanitize(`
 <div
 	id="has_map"
 	class="d-flex flex-column"
@@ -99,7 +102,7 @@ const fridgeModal = (id,name, meals, temp, capacity, state, lat, lon) => DOMPuri
 </div>
 `);
 
-function handleSubscribe(id) { 
+function handleSubscribe(id) {
 	return DOMPurify.sanitize(`
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
@@ -152,22 +155,21 @@ function handleSubscribe(id) {
 }
 
 function handleUnsubscribe(id) {
-
 	fetch(`/fridge/unsubscribe?fridgeId=${encodeURIComponent(id)}`, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
 		},
 	})
-		.then(response => {
+		.then((response) => {
 			if (response.ok) {
 				window.location.reload();
 			} else {
 				alertaError("Failed to unsubscribe. Please try again.");
 			}
 		})
-		.catch(error => {
-			console.error('Error:', error);
+		.catch((error) => {
+			console.error("Error:", error);
 			alertaError("An error occurred. Please try again.");
 		});
 }
@@ -199,8 +201,7 @@ const setupFridgeListeners = () => {
 		const userType = fridge.getAttribute("data-user-type");
 
 		fridge.onclick = () => {
-			openModal(fridgeModal(id,name, meals, temp, capacity, state, lat, lon), () => {
-				
+			openModal(fridgeModal(id, name, meals, temp, capacity, state, lat, lon), () => {
 				const subscribeBtn = document.querySelector("#subscribeBtn");
 				subscribeBtn.onclick = () => {
 					setModalContent(handleSubscribe(id));
@@ -225,7 +226,7 @@ const setupFridgeListeners = () => {
 						const fridgeAddressInput = document.querySelector("#fridge_id");
 						fridgeAddressInput.value = id;
 						fridgeAddressInput.textContent = id;
-					}
+					};
 				} else {
 					mealDonationShortcut.style.display = "none";
 				}
@@ -260,7 +261,9 @@ const modalMapper = {
 
 // base button component
 const contributionFormBtn = (text, modalDataAttr) =>
-	DOMPurify.sanitize(`<button class="btn-primary" style="flex: 1;" id="contribution-form-btn" data-attr=${modalDataAttr}>${text}</button>`);
+	DOMPurify.sanitize(
+		`<button class="btn-primary" style="flex: 1;" id="contribution-form-btn" data-attr=${modalDataAttr}>${text}</button>`
+	);
 
 const contributeModalIND = DOMPurify.sanitize(`<div class="d-flex flex-column" style="gap: 40px">
 		<div>
@@ -293,7 +296,7 @@ const setupListenersContributionsListeners = () => {
 	btns.forEach((btn) => {
 		const modalDataAttr = btn.getAttribute("data-attr");
 		btn.onclick = () => {
-			setModalContent(modalMapper[modalDataAttr])
+			setModalContent(modalMapper[modalDataAttr]);
 			if (modalDataAttr === "meal-distribution") {
 				document.querySelector("#btnCrearInput").onclick = agregarInput;
 				document.querySelector("#btnEliminarInput").onclick = eliminarInput;
@@ -304,20 +307,18 @@ const setupListenersContributionsListeners = () => {
 
 const contributeBtn = document.querySelector("#contribute-btn");
 contributeBtn.onclick = () => {
-	if (document.getElementById('contribute-btn').getAttribute("user-type") == "IND")
+	if (document.getElementById("contribute-btn").getAttribute("user-type") == "IND")
 		openModal(contributeModalIND);
-	else
-		openModal(contributeModalLE);
+	else openModal(contributeModalLE);
 	setupListenersContributionsListeners();
 };
 
 async function deleteCookieAndRefresh() {
-    // Delete the 'access-token' cookie by setting its expiration date to a past date
+	// Delete the 'access-token' cookie by setting its expiration date to a past date
 	document.cookie = "access-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 	await fetch("/user/logout", {
 		method: "GET",
-
-	})
+	});
 	window.location.reload();
 }
 
@@ -325,8 +326,6 @@ async function deleteCookieAndRefresh() {
  * ===================================== CONTRIBUTION MODALS =====================================
  */
 function mealDonation() {
-	
-
 	return `
 		<div class="d-flex flex-column" style="gap: 40px;">
 			<div>
@@ -446,14 +445,25 @@ function mealDistribution() {
 }
 
 function generateCities() {
-	var cities = ["CABA", "La Plata", "Rosario", "Córdoba", "Mendoza", "Salta", "Mar del Plata", "San Juan", "Santa Fe"];
-    var options = '<option name ="city" selected value="" disabled hidden>City of the fridge</option>';
-    
-    for (var i = 0; i < cities.length; i++) {
-        options += `<option value="${cities[i]}" class="desplegables">${cities[i]}</option>`;
-    }
-    
-    return options;
+	var cities = [
+		"CABA",
+		"La Plata",
+		"Rosario",
+		"Córdoba",
+		"Mendoza",
+		"Salta",
+		"Mar del Plata",
+		"San Juan",
+		"Santa Fe",
+	];
+	var options =
+		'<option name ="city" selected value="" disabled hidden>City of the fridge</option>';
+
+	for (var i = 0; i < cities.length; i++) {
+		options += `<option value="${cities[i]}" class="desplegables">${cities[i]}</option>`;
+	}
+
+	return options;
 }
 function fridgeAdministration() {
 	return `
@@ -655,7 +665,6 @@ function showFridgeInfo(id) {
 	}
 
 	const url = `/fridge/info?id=${encodeURIComponent(id)}`;
-	console.log(url);
 
 	fetch(url, {
 		method: "GET",
@@ -663,28 +672,28 @@ function showFridgeInfo(id) {
 			"Content-Type": "application/json",
 		},
 	})
-		.then(response => {
+		.then((response) => {
 			if (!response.ok) {
-				console.error('Error:', response);
+				console.error("Error:", response);
 				throw new Error("Failed to retrieve fridge info. Please try again.");
 			}
 			return response.json();
 		})
-		.then(data => {
-			console.log("Fridge info retrieved successfully:", data);
+		.then((data) => {
 			setModalContent(updateFridgeModal(data));
 		})
-		.catch(error => {
-			console.error('Error:', error);
+		.catch((error) => {
+			console.error("Error:", error);
 			alertaError("An error occurred. Please try again.");
 		});
 }
 
 function updateFridgeModal(data) {
 	const { fridgeId, meals, failures } = data;
-	console.log("Fridge info:", data);
 
-	const mealRows = meals.map(meal => `
+	const mealRows = meals
+		.map(
+			(meal) => `
         <tr>
             <td>${meal.id}</td>
             <td>${meal.type}</td>
@@ -692,19 +701,23 @@ function updateFridgeModal(data) {
             <td>${meal.weight} g</td>
             <td>${meal.calories} cal</td>
         </tr>
-    `).join('');
-	console.log(mealRows);
+    `
+		)
+		.join("");
 
-	const failureRows = failures.map(failure => `
+	const failureRows = failures
+		.map(
+			(failure) => `
         <tr>
 			<td>${failure.id}</td>
             <td>${failure.description}</td>
             <td>${new Date(failure.detectedAt).toLocaleDateString()}</td>
             <td>${failure.hasBeenFixed}</td>
         </tr>
-    `).join('');
-	console.log(failureRows);
-	
+    `
+		)
+		.join("");
+
 	return DOMPurify.sanitize(`
         <div class="d-flex flex-column" style="gap: 40px;">
             <div>
@@ -799,18 +812,15 @@ function failureAlert(fridge_id) {
  * ===================================== REWARDS MODAL LOGIC =====================================
  */
 
-// Puntos de usuario
 const userPoints = document.querySelector("#user-points");
 let originalPoints = parseInt(userPoints.getAttribute("data-user-points"));
 let dataUserPoints = parseInt(userPoints.getAttribute("data-user-points"));
 
-// Botones de cancelar y confirmar
 const cancelBtn = document.getElementById("cancel-reward-btn");
 cancelBtn.style.display = "none";
 const confirmBtn = document.getElementById("confirm-reward-btn");
 confirmBtn.style.display = "none";
 
-// Botones de reclamar recompensas
 const redeemRewardBtns = document.querySelectorAll("#redeem-reward-btn");
 let originalQuantities = {};
 let quantities = {};
@@ -843,7 +853,6 @@ redeemRewardBtns.forEach((button) => {
 
 			cancelBtn.style.display = "inline-block";
 			confirmBtn.style.display = "inline-block";
-
 		} else if (quantities[rewardId] <= 0) {
 			alertaError("There are no more rewards available");
 		} else {
@@ -864,23 +873,24 @@ cancelBtn.onclick = () => {
 		const rewardId = button.getAttribute("data-reward-id");
 		const descriptionElement = button.closest(".d-flex").querySelector("p");
 		const originalQuantity = originalQuantities[rewardId];
-		
+
 		button.setAttribute("data-reward-quantity", originalQuantity);
 		quantities[rewardId] = originalQuantity;
 
 		if (descriptionElement) {
-			const newDescription = descriptionElement.textContent.replace(/\d+ remaining/, `${originalQuantity} remaining`);
+			const newDescription = descriptionElement.textContent.replace(
+				/\d+ remaining/,
+				`${originalQuantity} remaining`
+			);
 			descriptionElement.textContent = newDescription;
 		}
 	});
 };
 
 confirmBtn.onclick = () => {
-
-	// Actualizar BD
 	const data = {
 		userPoints: dataUserPoints,
-		rewards: []
+		rewards: [],
 	};
 
 	redeemRewardBtns.forEach((button) => {
@@ -891,8 +901,6 @@ confirmBtn.onclick = () => {
 		}
 	});
 
-	console.log(data);
-
 	fetch("/rewards", {
 		method: "POST",
 		headers: {
@@ -900,26 +908,23 @@ confirmBtn.onclick = () => {
 		},
 		body: JSON.stringify(data),
 	})
-		.then(response => {
+		.then((response) => {
 			if (response.ok) {
-				alertaSuccess("Reward redeemed successfully! It will arrive at your address in 3 business days.");
-				console.log("Antes del cambio:", originalPoints);
-				console.log("Antes del cambio:", originalQuantities);
+				alertaSuccess(
+					"Reward redeemed successfully! It will arrive at your address in 3 business days."
+				);
 				originalPoints = dataUserPoints;
 				originalQuantities = { ...quantities };
-				console.log("Tras el cambio:", originalPoints);
-				console.log("Tras el cambio:", originalQuantities);
 				cancelBtn.style.display = "none";
 				confirmBtn.style.display = "none";
 			} else {
 				alertaError("Failed to redeem the reward. Please try again.");
 			}
 		})
-		.catch(error => {
-			console.error('Error:', error);
+		.catch((error) => {
+			console.error("Error:", error);
 			alertaError("An error occurred. Please try again.");
 		});
-
 };
 
 function alertaSuccess(mensaje) {
@@ -928,7 +933,10 @@ function alertaSuccess(mensaje) {
 	alertaSuccess.classList.add("alert", "alert-success", "alert-dismissible", "fade", "show");
 	alertaSuccess.setAttribute("role", "alert");
 	alertaSuccess.setAttribute("id", "success-alert");
-	alertaSuccess.setAttribute("style", "position: absolute; top: 0; left: 0; right: 0; z-index: 1000; margin: auto; margin-top: 10px; width: 50%;");
+	alertaSuccess.setAttribute(
+		"style",
+		"position: absolute; top: 0; left: 0; right: 0; z-index: 1000; margin: auto; margin-top: 10px; width: 50%;"
+	);
 	alertaSuccess.innerHTML = `
 	${mensaje}
 	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -945,7 +953,10 @@ function alertaError(mensaje) {
 	alertaError.classList.add("alert", "alert-danger", "alert-dismissible", "fade", "show");
 	alertaError.setAttribute("role", "alert");
 	alertaError.setAttribute("id", "error-alert");
-	alertaError.setAttribute("style", "position: absolute; top: 0; left: 0; right: 0; z-index: 1000; margin: auto; margin-top: 10px; width: 50%;");
+	alertaError.setAttribute(
+		"style",
+		"position: absolute; top: 0; left: 0; right: 0; z-index: 1000; margin: auto; margin-top: 10px; width: 50%;"
+	);
 	alertaError.innerHTML = `
 	<strong>Oh snap!</strong> ${mensaje}
 	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -957,7 +968,6 @@ function alertaError(mensaje) {
 }
 
 function cerrarAlertas() {
-	// Que se cierren luego de 3 segundos. Puede haber muchas
 	const alertasSuccess = document.querySelectorAll("#success-alert");
 	const alertasError = document.querySelectorAll("#error-alert");
 

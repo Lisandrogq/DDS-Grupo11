@@ -61,9 +61,10 @@ public class FridgeReportRow {
             int totalRemovedMealscounter = 0;
 
             // Checking for meal donations
-            
+
             String mealDonationsHql = "SELECT md FROM MealDonation md WHERE md.fridge.id = :fridgeId AND md.date < :toDate";
-            org.hibernate.query.Query<MealDonation> mealDonationsQuery = session.createQuery(mealDonationsHql, MealDonation.class);
+            org.hibernate.query.Query<MealDonation> mealDonationsQuery = session.createQuery(mealDonationsHql,
+                    MealDonation.class);
             mealDonationsQuery.setParameter("fridgeId", fridge.getId());
             mealDonationsQuery.setParameter("toDate", toDate);
             List<MealDonation> mealDonations = mealDonationsQuery.getResultList();
@@ -74,48 +75,41 @@ public class FridgeReportRow {
                     .filter(mealDonation -> mealDonation.getDate() >= fromDate)
                     .collect(Collectors.toList())
                     .size();
-            
+
             // Checking for meal distributions
 
             String mealDistributionHql = "SELECT md FROM MealDistribution md " +
                     "WHERE (md.originFridge.id = :fridgeId OR md.destinyFridge.id = :fridgeId) AND md.date < :toDate";
-            org.hibernate.query.Query<MealDistribution> mealDistributionsQuery = session.createQuery(mealDistributionHql, MealDistribution.class);
+            org.hibernate.query.Query<MealDistribution> mealDistributionsQuery = session
+                    .createQuery(mealDistributionHql, MealDistribution.class);
             mealDistributionsQuery.setParameter("fridgeId", fridge.getId());
             mealDistributionsQuery.setParameter("toDate", toDate);
             List<MealDistribution> mealDistributions = mealDistributionsQuery.getResultList();
             Logger.info("Meal distributions: " + mealDistributions.size());
 
-            // Para las de origen se sacan
-            
+            // Remove from origin
             List<MealDistribution> mdOrigin = mealDistributions.stream()
                     .filter(mealDistribution -> mealDistribution.getOriginFridge().getId() == fridge.getId())
                     .collect(Collectors.toList());
-
             totalRemovedMealscounter = mdOrigin.size();
-
             removedMealscounter = mdOrigin.stream()
                     .filter(mealDistribution -> mealDistribution.getDate() >= fromDate)
                     .collect(Collectors.toList())
                     .size();
-            
-            // Para las de destino se agregan
 
+            // Add for destiny
             List<MealDistribution> mdDestiny = mealDistributions.stream()
                     .filter(mealDistribution -> mealDistribution.getDestinyFridge().getId() == fridge.getId())
                     .collect(Collectors.toList());
-
             totalAddedMealscounter += mdDestiny.size();
-
             addedMealscounter += mdDestiny.stream()
                     .filter(mealDistribution -> mealDistribution.getDate() >= fromDate)
                     .collect(Collectors.toList())
                     .size();
-
             addedMeals = addedMealscounter;
             removedMeals = removedMealscounter;
             totalAddedMeals = totalAddedMealscounter;
             totalRemovedMeals = totalRemovedMealscounter;
-
         } catch (Exception e) {
             Logger.error("Could not get last report", e);
         }

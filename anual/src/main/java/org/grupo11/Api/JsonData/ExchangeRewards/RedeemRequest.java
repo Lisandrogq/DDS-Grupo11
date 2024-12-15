@@ -22,6 +22,7 @@ public class RedeemRequest {
     public void setRewards(List<RewardData> rewardsData) {
         this.rewards = rewardsData;
     }
+
     public static class RewardData {
         private String rewardId;
         private int quantity;

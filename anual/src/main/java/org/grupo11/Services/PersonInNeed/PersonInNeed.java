@@ -24,7 +24,8 @@ public class PersonInNeed {
     public PersonInNeed() {
     }
 
-    public PersonInNeed(String name,long birth, long createdAt, String address, int DNI, int childCount, PINRegistry PINRegistry) {
+    public PersonInNeed(String name, long birth, long createdAt, String address, int DNI, int childCount,
+            PINRegistry PINRegistry) {
         this.name = name;
         this.birth = birth;
         this.createdAt = createdAt;
@@ -61,9 +62,11 @@ public class PersonInNeed {
     public int getDNI() {
         return this.DNI;
     }
+
     public String getName() {
         return this.name;
     }
+
     public void setDNI(int identification) {
         this.DNI = identification;
     }
