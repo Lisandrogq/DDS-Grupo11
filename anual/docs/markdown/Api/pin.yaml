@@ -1,0 +1,151 @@
+openapi: 3.0.3
+info:
+  title: Person In Need API
+  description: API for handling meal withdrawals and checking card usages.
+  version: 1.0.0
+
+servers:
+  - url: https://fridgebridge.simplecharity.com
+    description: Production Server
+
+paths:
+  /pin/withdraw:
+    post:
+      summary: Withdraw a meal from the fridge
+      description: Withdraws specified meals if the card and fridge are valid and there are enough usages left.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WithdrawMealDTO"
+      responses:
+        "200":
+          description: Successful meal withdrawal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+              example:
+                status: 200
+                message: "Meals successfully withdrawn"
+                data: null
+        "400":
+          description: Bad request due to invalid card, fridge, or meal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+              example:
+                status: 400
+                message: "The given card does not exist"
+                data: null
+
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+              example:
+                status: 500
+                message: "Internal server error"
+                data: null
+
+  /pin/usages:
+    post:
+      summary: Get card usage details
+      description: Retrieves usage details for the given card.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WithdrawMealDTO"
+      responses:
+        "200":
+          description: Successful retrieval of usage details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+              example:
+                status: 200
+                message: "Usages retrieved successfully"
+                data:
+                  usages: 5
+                  usages_today: 2
+                  usage_left_today: 3
+        "400":
+          description: Invalid card details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+              example:
+                status: 400
+                message: "The given card does not exist"
+                data: null
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+              example:
+                status: 500
+                message: "Internal server error"
+                data: null
+
+components:
+  schemas:
+    ApiResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: The HTTP status code of the response
+          example: 200
+        message:
+          type: string
+          description: A message describing the outcome of the request
+          example: "OK"
+        data:
+          type: object
+          nullable: true
+          description: Additional data (if applicable)
+
+    WithdrawMealDTO:
+      type: object
+      properties:
+        fridge_id:
+          type: integer
+          description: The ID of the fridge from which to withdraw meals
+          example: 1
+        card:
+          $ref: "#/components/schemas/CardDTO"
+        meals:
+          type: array
+          description: A list of meals to withdraw
+          items:
+            $ref: "#/components/schemas/MealDTO"
+
+    CardDTO:
+      type: object
+      properties:
+        number:
+          type: string
+          description: The card number
+          example: "1234567890"
+        security_code:
+          type: string
+          description: The card's security code
+          example: "1234"
+
+    MealDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the meal to withdraw
+          example: 42
