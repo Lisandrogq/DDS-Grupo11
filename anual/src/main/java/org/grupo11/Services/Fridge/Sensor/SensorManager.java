@@ -1,6 +1,5 @@
 package org.grupo11.Services.Fridge.Sensor;
 
-
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -12,22 +11,20 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Transient;
+
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class SensorManager {
-/*     @OneToMany
-    protected List<Sensor> sensors; */
-    @ManyToOne
-    protected Fridge fridge;
-    @Transient
-    protected ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     @Id
     @GeneratedValue
     private int id;
+    @OneToOne
+    protected Fridge fridge;
+    @Transient
+    protected ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
     public int getId() {
         return id;
     }
@@ -54,7 +51,6 @@ public abstract class SensorManager {
     public void setFridge(Fridge fridge) {
         this.fridge = fridge;
     }
-
 
     public abstract void checkSensors();
 

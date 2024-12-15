@@ -1,22 +1,30 @@
 package org.grupo11.Services.Fridge.Sensor;
 
-
-
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-@Entity
-public class TemperatureSensor extends Sensor{
-    @Id
-    @GeneratedValue
-    private int id;
+import jakarta.persistence.ManyToOne;
 
+@Entity
+public class TemperatureSensor {
+    @Id
+    private int id;
     private double data;
+    @ManyToOne
+    private TemperatureSensorManager manager;
+
     public int getId() {
         return id;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setManager(TemperatureSensorManager manager) {
+        this.manager = manager;
+    }
+
     public TemperatureSensor() {
-        //sensor_id = Crypto.getRandomId(6);
     }
 
     public double getData() {

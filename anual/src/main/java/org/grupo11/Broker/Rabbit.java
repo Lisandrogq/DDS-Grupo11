@@ -28,34 +28,27 @@ public class Rabbit {
         try {
             Connection connection = factory.newConnection();
             channel = connection.createChannel();
-            channel.queueDeclare("System Alerts", false, false, false, null);
-            channel.queueDeclare("Temp Updates", true, false, false, null);
-            channel.queueDeclare("Opening Checks", true, false, false, null);
-
+            channel.queueDeclare("temp_update", true, false, false, null);
+            channel.queueDeclare("movement_update", true, false, false, null);
             setup_consumers(channel);
             Logger.info("Connection to rabbit successful");
         } catch (Throwable e) {
-            Logger.error("Could not connect to rabbit {}", e);
+            Logger.error("Could not connect to rabbit", e);
             throw new Exception(e);
         }
     }
 
     public void setup_consumers(Channel channel) {
         try {
-            channel.basicConsume("Temp Updates", true, (tag, message) -> Controller.handle_temp_update(tag, message),
+            channel.basicConsume("temp_update", true, (tag, message) -> Controller.handleTempUpdate(tag, message),
                     consumerTag -> {
                     });
-
-            channel.basicConsume("System Alerts", true, (tag, message) -> Controller.handle_alert(tag, message),
+            channel.basicConsume("movement_update", true,
+                    (tag, message) -> Controller.handleMovementDetected(tag, message),
                     consumerTag -> {
                     });
-            channel.basicConsume("Opening Checks", true,
-                    (tag, message) -> Controller.handle_opening_request(tag, message),
-                    consumerTag -> {
-                    });
-
         } catch (Exception e) {
-            System.err.println("could not connect consume queues");
+            Logger.error("could not consume queues", e);
         }
     }
 
@@ -63,7 +56,7 @@ public class Rabbit {
         try {
             channel.basicPublish(exchange, queue, null, message.getBytes());
         } catch (Exception e) {
-            System.err.println("could not send message");
+            Logger.error("Error while sending rabbit msg", e);
         }
     }
 }

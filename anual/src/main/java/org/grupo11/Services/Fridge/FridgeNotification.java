@@ -28,6 +28,13 @@ public class FridgeNotification {
         this.type = type;
     }
 
+    public FridgeNotification(Fridge fridge, FridgeNotifications type, int ammount, String message) {
+        this.fridge = fridge;
+        this.ammount = ammount;
+        this.message = message;
+        this.type = type;
+    }
+
     public int getAmmount() {
         return this.ammount;
     }

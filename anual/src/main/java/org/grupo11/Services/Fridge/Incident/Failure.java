@@ -2,7 +2,6 @@ package org.grupo11.Services.Fridge.Incident;
 
 import java.util.List;
 
-import org.grupo11.Enums.UserTypes;
 import org.grupo11.Services.Contributor.Contributor;
 import org.grupo11.Services.Fridge.Fridge;
 
@@ -11,7 +10,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 
 @Entity
 public class Failure extends Incident {
@@ -20,8 +18,9 @@ public class Failure extends Incident {
     private String description;
     @ElementCollection
     private List<String> pictureUrls;
-   @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     Urgency urgency;
+
     public Failure() {
     }
 
@@ -37,9 +36,11 @@ public class Failure extends Incident {
     public Urgency getUrgency() {
         return urgency;
     }
+
     public void setUrgency(Urgency urgency) {
         this.urgency = urgency;
     }
+
     public Contributor getReportedBy() {
         return this.reportedBy;
     }

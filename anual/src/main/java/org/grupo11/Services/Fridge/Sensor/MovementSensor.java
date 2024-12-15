@@ -1,23 +1,31 @@
 package org.grupo11.Services.Fridge.Sensor;
 
-
-
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 @Entity
-public class MovementSensor extends Sensor{
+public class MovementSensor {
     @Id
-    @GeneratedValue
     private int id;
+    @ManyToOne
+    private MovementSensorManager manager;
+
+    public MovementSensor() {
+    }
 
     private boolean data;
+
     public int getId() {
         return id;
     }
-    public MovementSensor() {
-        //sensor_id = Crypto.getRandomId(6);
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setManager(MovementSensorManager manager) {
+        this.manager = manager;
     }
 
     public boolean getData() {
@@ -27,6 +35,4 @@ public class MovementSensor extends Sensor{
     public void setData(boolean data) {
         this.data = data;
     }
-
-
 }

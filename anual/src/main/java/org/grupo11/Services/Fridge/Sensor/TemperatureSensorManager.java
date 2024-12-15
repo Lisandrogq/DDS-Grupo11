@@ -3,25 +3,19 @@ package org.grupo11.Services.Fridge.Sensor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.grupo11.Broker.Rabbit;
 import org.grupo11.Services.Fridge.Fridge;
 import org.grupo11.Services.Fridge.FridgeNotification;
 import org.grupo11.Services.Fridge.FridgeNotifications;
 import org.grupo11.Services.Fridge.Incident.Alert;
 import org.grupo11.Services.Fridge.Incident.AlertType;
-import org.grupo11.Services.Technician.Technician;
 import org.grupo11.Services.Technician.TechnicianManager;
-import org.grupo11.Services.Technician.TechnicianType;
 import org.grupo11.Utils.DateUtils;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
 @Entity
-public class TemperatureSensorManager extends SensorManager{
-
+public class TemperatureSensorManager extends SensorManager {
     @OneToMany
     protected List<TemperatureSensor> sensors = new ArrayList<>();
     private double minTemp;
@@ -33,9 +27,11 @@ public class TemperatureSensorManager extends SensorManager{
         this.minTemp = minTemp;
         this.maxTemp = maxTemp;
     }
+
     public TemperatureSensorManager() {
         super();
     }
+
     public double getMinTemp() {
         return this.minTemp;
     }
@@ -88,30 +84,18 @@ public class TemperatureSensorManager extends SensorManager{
 
     @Override
     public void fireAlert() {
-        fridge.addIncident(new Alert(AlertType.TEMPERATUREALERT, DateUtils.getCurrentTimeInMs()));
-        // send a message to all the technicians so one responds
-        Technician selected = TechnicianManager.getInstance().selectTechnician(fridge);
-
-        // send a message to the subscribers
-        fridge.evaluateSendNotification(
-                new FridgeNotification(FridgeNotifications.Malfunction, 0,
-                        "The fridge temperature is failing, meals should be redistributed in brevity."));
-
-        org.grupo11.Broker.Rabbit rabbit = Rabbit.getInstance();
-        // rabbit.send("System alerts", "",
-        // "{ \"op\": \"set_temp\" \"data\": { \"fridge_id\": " + fridge.getId() + ",
-        // \"sensor_id\": "
-        // + sensor.getId() + ", \"temp\": 321432 } }");
+        fridge.addIncidentAndStoreOnDB(new Alert(AlertType.TEMPERATUREALERT, DateUtils.getCurrentTimeInMs(), fridge));
     }
 
-    public Sensor getSensorById(int id) {
-        for (Sensor sensor : sensors) {
+    public TemperatureSensor getSensorById(int id) {
+        for (TemperatureSensor sensor : sensors) {
             if (sensor.getId() == id) {
                 return sensor;
             }
         }
         return null;
     }
+
     public List<TemperatureSensor> getSensors() {
         return this.sensors;
     }
@@ -120,7 +104,6 @@ public class TemperatureSensorManager extends SensorManager{
         this.sensors = sensors;
     }
 
-   
     public void addSensor(TemperatureSensor sensor) {
         sensors.add(sensor);
     }
@@ -128,7 +111,6 @@ public class TemperatureSensorManager extends SensorManager{
     public void removeSensor(TemperatureSensor sensor) {
         sensors.remove(sensor);
     }
-
 
     @Override
     public void checkSensors() {

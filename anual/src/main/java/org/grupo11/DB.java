@@ -30,7 +30,6 @@ import org.grupo11.Services.Fridge.Incident.Alert;
 import org.grupo11.Services.Fridge.Incident.Failure;
 import org.grupo11.Services.Fridge.Incident.Incident;
 import org.grupo11.Services.Fridge.Sensor.MovementSensorManager;
-import org.grupo11.Services.Fridge.Sensor.Sensor;
 import org.grupo11.Services.Fridge.Sensor.SensorManager;
 import org.grupo11.Services.Fridge.Sensor.TemperatureSensor;
 import org.grupo11.Services.Fridge.Sensor.MovementSensor;
@@ -82,7 +81,6 @@ public class DB {
                     // sensorManagers
                     .addAnnotatedClass(MovementSensor.class)
                     .addAnnotatedClass(TemperatureSensor.class)
-                    .addAnnotatedClass(Sensor.class)
                     .addAnnotatedClass(TemperatureSensorManager.class)
                     .addAnnotatedClass(MovementSensorManager.class)
                     .addAnnotatedClass(SensorManager.class)

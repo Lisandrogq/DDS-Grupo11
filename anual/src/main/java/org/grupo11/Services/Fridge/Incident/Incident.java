@@ -42,6 +42,13 @@ public abstract class Incident {
         this.detectedAt = detectedAt;
     }
 
+    public Incident(long detectedAt, Fridge fridge) {
+        this.visits = new ArrayList<>();
+        this.hasBeenFixed = false;
+        this.detectedAt = detectedAt;
+        this.fridge = fridge;
+    }
+
     public List<TechnicianVisit> getVisits() {
         return this.visits;
     }

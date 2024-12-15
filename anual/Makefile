@@ -2,6 +2,16 @@
 
 SHELL := /bin/bash
 OS := $(shell uname -s)
+ENVIRONMENT ?= dev
+
+ifeq ($(ENVIRONMENT),prod)
+	ORIGIN = https://fridgebridge.simplecharity.com
+endif
+
+ifeq ($(ENVIRONMENT),dev)
+	ORIGIN = http://localhost:8000
+endif
+
 
 help:
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -122,3 +132,13 @@ gen_jwt_ecdsa_keys:
 create_admin_user:
 	./scripts/insert-admin-user.sh $(PWD)/infra/scripts/deploy-conf.json $(OWNER_ID) $(MAIL) $(PASSWORD_HASH)
 
+
+__API_CALLS__:
+get_jwt_token:
+	./scripts/get-access-token.sh $(ORIGIN) $(MAIL) $(PASSWORD)
+
+sensor_send_movement:
+	./scripts/sensor-send-movement.sh $(ORIGIN) $(FRIDGE_ID) $(SENSOR_ID) $(IS_MOVING) $(ACCESS_TOKEN)
+
+sensor_send_temperature:
+	./scripts/sensor-send-temperature.sh $(ORIGIN) $(FRIDGE_ID) $(SENSOR_ID) $(TEMP) $(ACCESS_TOKEN)
