@@ -48,7 +48,7 @@ public class RewardsController {
 
             // Update user points
             String userHQL = "UPDATE Contributor c SET c.points = :points WHERE c.id = :id";
-            org.hibernate.query.Query<Contributor> userQuery = session.createQuery(userHQL, Contributor.class);
+            org.hibernate.query.MutationQuery userQuery = session.createMutationQuery(userHQL);
             userQuery.setParameter("points", redeemRequest.getUserPoints());
             userQuery.setParameter("id", contributor.getId());
             int userUpdateResult = userQuery.executeUpdate();
@@ -60,7 +60,7 @@ public class RewardsController {
             // Update reward amount
             for (RedeemRequest.RewardData reward : redeemRequest.getRewardsData()) {
                 String rewardHQL = "UPDATE Reward r SET r.quantity = :quantity WHERE r.id = :id";
-                org.hibernate.query.Query<Reward> rewardQuery = session.createQuery(rewardHQL, Reward.class);
+                org.hibernate.query.MutationQuery rewardQuery = session.createMutationQuery(rewardHQL);
                 rewardQuery.setParameter("quantity", reward.getQuantity());
                 rewardQuery.setParameter("id", reward.getRewardId());
                 int rewardUpdateResult = rewardQuery.executeUpdate();
