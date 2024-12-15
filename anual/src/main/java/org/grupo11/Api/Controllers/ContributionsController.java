@@ -42,7 +42,6 @@ import io.javalin.http.UploadedFile;
 public class ContributionsController {
 
     public static void handleMealContribution(Context ctx) {
-        System.out.println(ctx.body());
         Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
         if (contributor == null) {
             ctx.redirect("/register/login");
@@ -252,7 +251,6 @@ public class ContributionsController {
                 String meal_id = ctx.formParam("meal_" + i);
                 if (meal_id != null) {
                     Meal meal = origin_fridge.getMealByID(Long.parseLong(meal_id));
-                    System.out.println("adad: " + meal_id + " - " + meal.getId());
                     FridgeNotification notification_ori = origin_fridge.removeMeal(meal);
                     FridgeNotification notification_des = destiny_fridge.addMeal(meal);
                     DB.create(notification_ori);
@@ -283,7 +281,6 @@ public class ContributionsController {
             ctx.redirect("/register/login");
             return;
         }
-        Logger.info(ctx.body());
         String name = ctx.formParam("fridgeName");
         String address = ctx.formParam("address");
         String capacity = ctx.formParam("capacity");
@@ -413,7 +410,6 @@ public class ContributionsController {
     }
 
     public static void handlePersonRegistrationContribution(Context ctx) {
-        System.out.println(ctx.body());
         Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
         if (contributor == null) {
             ctx.redirect("/register/login");
@@ -443,7 +439,6 @@ public class ContributionsController {
         }
 
         try {
-            Logger.info(birth);
             PersonInNeed PIN = new PersonInNeed(name, DateUtils.parseDateYMDString(birth), DateUtils.now(), "",
                     Integer.parseInt(dni), Integer.parseInt(children_count), null);
             PersonRegistration personRegistration = new PersonRegistration(PIN, DateUtils.now(), contributor);

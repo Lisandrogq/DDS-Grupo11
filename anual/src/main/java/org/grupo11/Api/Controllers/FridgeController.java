@@ -40,7 +40,6 @@ import io.javalin.http.Context;
 public class FridgeController {
 
     public static void handleAddVisit(Context ctx) {
-        System.out.println(ctx.body());
         Technician technician = Middlewares.technicianIsAuthenticated(ctx);
         if (technician == null) {
             ctx.redirect("/register/login");
@@ -108,8 +107,6 @@ public class FridgeController {
     }
 
     public static void handleSubmitFailure(Context ctx) {
-        System.out.println(ctx.body());
-
         Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
         if (contributor == null) {
             ctx.redirect("/register/login");

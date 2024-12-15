@@ -138,16 +138,11 @@ public class AdminController {
             }
 
             try (Session session = DB.getSessionFactory().openSession()) {
-
-                Logger.info("Arranca");
-
                 for (CSVImput csvImput : csvImputs) {
-
                     // Transaction
                     Transaction transaction = session.beginTransaction();
 
                     Logger.info("Processing CSV input: " + csvImput.toString());
-
                     String hql = "SELECT i FROM Credentials c JOIN Individual i on ownerId = i.id WHERE (c.mail = :mail AND c.provider = :provider)";
 
                     List<Individual> individuals = session.createQuery(hql, Individual.class)
@@ -178,8 +173,6 @@ public class AdminController {
                                 "You have been registered as a contributor to the community. " +
                                         "You can log in with your email and document number as password. Please change your password before continuing.");
                     }
-
-                    Logger.info("Llega al switch");
 
                     switch (csvImput.getContributionType()) {
 

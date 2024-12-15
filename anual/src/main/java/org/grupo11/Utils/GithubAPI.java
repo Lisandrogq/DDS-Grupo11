@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import org.grupo11.Logger;
 import org.grupo11.Config.Env;
 
 public class GithubAPI {
@@ -36,12 +35,10 @@ public class GithubAPI {
         try {
             String response = Fetcher.post("https://github.com/login/oauth/access_token", JSON.stringify(body))
                     .body().string();
-            Logger.info("RESPONSE {}", response);
             String token = extractAccessToken(response);
             return token;
 
         } catch (Exception e) {
-            Logger.error("ERROR IN GET TOKEN", e);
             return null;
         }
     }
