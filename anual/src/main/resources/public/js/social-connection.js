@@ -34,7 +34,7 @@ const handleGoogleResponse = async (googleUser) => {
 	if (res?.status == 200) {
 		alertaSuccess("Google login provider added successfully");
 	} else {
-		alert(`Could not add login provider: ${res?.message}`);
+		alertaError("Could not add login provider:" + res?.message);
 	}
 };
 
