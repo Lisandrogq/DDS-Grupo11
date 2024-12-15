@@ -1,7 +1,9 @@
 package org.grupo11.Api.Controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.grupo11.DB;
 import org.grupo11.Logger;
@@ -53,8 +55,8 @@ public class PublicAPI {
             ctx.status(400).json(new ApiResponse(400, "Invalid input: min_meals must be an integer.", null));
             return;
         }
- 
-        try { 
+
+        try {
             if (sizeParam == null || sizeParam.isEmpty()) {
                 size = DEFAULT_SIZE;
             } else {
@@ -85,12 +87,12 @@ public class PublicAPI {
         try (Session session = DB.getSessionFactory().openSession()) {
 
             String hql = "SELECT i, COUNT(md) " +
-                         "FROM Individual i " +
-                         "JOIN MealDonation md ON i.id = md.contributor.id " +
-                         "WHERE i.points >= :minPoints " +
-                         "GROUP BY i " +
-                         "HAVING COUNT(md) >= :minMeals " +
-                         "ORDER BY i.points DESC";
+                    "FROM Individual i " +
+                    "JOIN MealDonation md ON i.id = md.contributor.id " +
+                    "WHERE i.points >= :minPoints " +
+                    "GROUP BY i " +
+                    "HAVING COUNT(md) >= :minMeals " +
+                    "ORDER BY i.points DESC";
 
             Query<Object[]> query = session.createQuery(hql, Object[].class);
             query.setParameter("minPoints", minPoints);
@@ -104,11 +106,11 @@ public class PublicAPI {
                 Long mealsDonated = (Long) result[1];
 
                 IndividualDTO individualDTO = new IndividualDTO(
+                        individual.getId(),
                         individual.getName(), individual.getSurname(),
                         individual.getAddress(), individual.getBirth(),
                         individual.getDocument(), individual.getDocumentType(),
-                        Math.floor(individual.getPoints()), mealsDonated.intValue()
-                );
+                        Math.floor(individual.getPoints()), mealsDonated.intValue());
                 individuals.add(individualDTO);
             }
 
@@ -118,7 +120,10 @@ public class PublicAPI {
             return;
         }
 
-        ctx.json(new ApiResponse(200, individuals));
+        Map<String, Object> response = new HashMap<>();
+        response.put("individuals", individuals);
+
+        ctx.json(new ApiResponse(200, response));
         Logger.info("Contributors recognitions served");
 
     }
