@@ -554,12 +554,7 @@ public class ContributionsController {
             DB.create(reward);
             DB.create(rewardContribution);
             DB.update(contributor);
-            // Pausar para dar tiempo a que se actualice la base de datos
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
             ctx.redirect("/dash/home");
         } catch (Exception e) {
             Logger.error("Exception ", e);

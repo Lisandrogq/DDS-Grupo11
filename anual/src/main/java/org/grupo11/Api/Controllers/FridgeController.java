@@ -41,7 +41,6 @@ public class FridgeController {
 
     public static void handleAddVisit(Context ctx) {
         System.out.println(ctx.body());
-        // Obtengo el Technician
         Technician technician = Middlewares.technicianIsAuthenticated(ctx);
         if (technician == null) {
             ctx.redirect("/register/login");

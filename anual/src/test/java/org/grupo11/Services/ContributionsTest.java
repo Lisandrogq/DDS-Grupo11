@@ -16,7 +16,6 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.junit.Before;
 
 public class ContributionsTest {
@@ -31,8 +30,8 @@ public class ContributionsTest {
     public void setUp() {
         List<ContributionType> permisos = new ArrayList<ContributionType>();
         permisos.add(ContributionType.MEAL_DONATION);
-        contributor1 = new Individual("name","surname","address",null,1231,DocumentType.DNI);
-        contributor2 = new Individual("name2","surname2","address",null,1231,DocumentType.DNI);
+        contributor1 = new Individual("name", "surname", "address", null, 1231, DocumentType.DNI);
+        contributor2 = new Individual("name2", "surname2", "address", null, 1231, DocumentType.DNI);
         fridge = new Fridge(-74.006, 40.7128, "Caballito", "Fridge A", 100, 2020, null, null, null);
         meal = new Meal("fidios", 0, 0, fridge, "nuevo", 123, 33);
         contributorRegistry = new ContributorRegistry(0, contributor1, new ArrayList<FridgeSolicitude>());
@@ -44,28 +43,28 @@ public class ContributionsTest {
     public void MealsCanBeAddedByContributors() throws InterruptedException {
         contributor1.getContributorRegistry().registerPermission(fridge);
         MealDonation contribution = new MealDonation(meal, 0);
-        List<FridgeOpenLogEntry> result = ContributorsManager.getInstance().addContributionToContributor(contributor1, contribution);
-        assertTrue("Contributor should be able to contribute if it has permission and register de opening", result!=null);
+        List<FridgeOpenLogEntry> result = ContributorsManager.getInstance().addContributionToContributor(contributor1,
+                contribution);
+        assertTrue("Contributor should be able to contribute if it has permission and register de opening",
+                result != null);
     }
 
     @Test
     public void MealsCantBeAddedByContributorsWithOutRegister() throws InterruptedException {
-       // contributor1.getContributorRegistry().registerPermission(fridge);
-
         MealDonation contribution = new MealDonation(meal, 0);
-        List<FridgeOpenLogEntry> result = ContributorsManager.getInstance().addContributionToContributor(contributor1, contribution);
-        assertFalse("Contribution should not be allowed without previous register", result==null);
+        List<FridgeOpenLogEntry> result = ContributorsManager.getInstance().addContributionToContributor(contributor1,
+                contribution);
+        assertFalse("Contribution should not be allowed without previous register", result == null);
     }
 
     @Test
     public void MealsOnlyCanBeAddedByContributorsWithPermission() throws InterruptedException {
-        contributor1.setPossibleContributions(new ArrayList<ContributionType>()); //removing all permissions
+        contributor1.setPossibleContributions(new ArrayList<ContributionType>()); // removing all permissions
         contributor1.getContributorRegistry().registerPermission(fridge);
         MealDonation contribution = new MealDonation(meal, 0);
-        List<FridgeOpenLogEntry> result = ContributorsManager.getInstance().addContributionToContributor(contributor1, contribution);
-        assertFalse("Contribution should not be allowed without permission",result==null);
+        List<FridgeOpenLogEntry> result = ContributorsManager.getInstance().addContributionToContributor(contributor1,
+                contribution);
+        assertFalse("Contribution should not be allowed without permission", result == null);
     }
-
-
 
 }

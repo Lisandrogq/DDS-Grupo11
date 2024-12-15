@@ -223,7 +223,6 @@ public class RenderController {
                                 "On " + formattedContributionDate + " you have donated "
                                         + mealDonation.getMeal().getType() + " to "
                                         + mealDonation.getFridge().getName());
-                        // donation.put("fridge", mealDonation.getMeal().getFridge().toMap());
                     } else {
                         Logger.info("Esta null");
                         donation.put("desc",
@@ -283,7 +282,6 @@ public class RenderController {
                     donation.put("type", "Reward Contribution");
                     donation.put("desc", "On " + formattedContributionDate + " you have offered "
                             + rewardContribution.getReward().getName() + " as a reward");
-                    // donation.put("fridge", donatedFridge);
                 }
                 donations.add(donation);
             }
@@ -376,7 +374,7 @@ public class RenderController {
             String hql = "FROM TechnicianVisit v WHERE v.technician = :technician";
             Query<TechnicianVisit> query = session.createQuery(hql, TechnicianVisit.class);
             query.setParameter("technician", technician);
-            
+
             List<TechnicianVisit> results = query.getResultList();
             for (TechnicianVisit visit : results) {
                 visits.add(visit.toMap());

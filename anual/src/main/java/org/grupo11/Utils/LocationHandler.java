@@ -19,7 +19,6 @@ public class LocationHandler {
 
         String query = String.format("%s?q=%s&format=json", NOMINATIM_API_URL,
                 java.net.URLEncoder.encode(address, "UTF-8"));
-        
         URI uri = new URI(query);
         URL url = uri.toURL();
 
@@ -40,7 +39,6 @@ public class LocationHandler {
         }
         reader.close();
 
-        // Buscar latitud y longitud con expresiones regulares
         String response = responseBuilder.toString();
         Pattern latPattern = Pattern.compile("\"lat\":\"(.*?)\"");
         Pattern lonPattern = Pattern.compile("\"lon\":\"(.*?)\"");
@@ -51,7 +49,7 @@ public class LocationHandler {
         if (latMatcher.find() && lonMatcher.find()) {
             double lat = Double.parseDouble(latMatcher.group(1));
             double lon = Double.parseDouble(lonMatcher.group(1));
-            return new double[]{lat, lon};
+            return new double[] { lat, lon };
         } else {
             throw new Exception("Failed to get coordinates. No matches found.");
         }

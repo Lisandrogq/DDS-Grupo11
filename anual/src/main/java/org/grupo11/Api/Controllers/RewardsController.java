@@ -15,21 +15,18 @@ import io.javalin.http.Context;
 public class RewardsController {
 
     public static void handleUpdateRewards(Context ctx) {
-        // Obtengo el contributor
         Contributor contributor = Middlewares.contributorIsAuthenticated(ctx);
         if (contributor == null) {
             ctx.redirect("/register/login");
             return;
         }
 
-        // Obtengo los datos del request
         RedeemRequest redeemRequest = ctx.bodyAsClass(RedeemRequest.class);
         if (redeemRequest == null) {
             ctx.status(400).json(new ApiResponse(400, "Invalid request data."));
             return;
         }
 
-        // Valido los datos
         if (redeemRequest.getUserPoints() < 0) {
             ctx.status(400).json(new ApiResponse(400, "Invalid user points."));
             return;
