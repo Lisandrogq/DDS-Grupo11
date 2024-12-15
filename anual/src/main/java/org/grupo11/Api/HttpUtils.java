@@ -27,6 +27,7 @@ public class HttpUtils {
         return cookie;
     }
 
+    @SuppressWarnings("unchecked")
     public static Credentials getCredentialsFromAccessToken(DecodedJWT token) {
         String payload = new String(java.util.Base64.getDecoder().decode(token.getPayload()));
         ObjectMapper objectMapper = new ObjectMapper();

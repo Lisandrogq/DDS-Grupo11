@@ -3,7 +3,6 @@ package org.grupo11.Services.Rewards;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.grupo11.DB;
 import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributor.Contributor;
 

@@ -94,7 +94,6 @@ public class FridgeFullInfo {
             return calories;
         }
 
-
     }
 
     public static class IncidentsData {
@@ -143,8 +142,10 @@ public class FridgeFullInfo {
         }
 
         public void setHasBeenFixed(boolean hasBeenFixed) {
-            if(hasBeenFixed) this.hasBeenFixed = "Yes";
-            else this.hasBeenFixed = "No";
+            if (hasBeenFixed)
+                this.hasBeenFixed = "Yes";
+            else
+                this.hasBeenFixed = "No";
         }
 
         public String getHasBeenFixed() {

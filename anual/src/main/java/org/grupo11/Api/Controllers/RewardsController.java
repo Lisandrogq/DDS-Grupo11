@@ -45,14 +45,13 @@ public class RewardsController {
             }
         }
 
-        // Transacción
         org.hibernate.Transaction transaction = null;
         try (Session session = DB.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
 
-            // Actualizo puntos del usuario
+            // Update user points
             String userHQL = "UPDATE Contributor c SET c.points = :points WHERE c.id = :id";
-            org.hibernate.query.Query<Contributor> userQuery = session.createQuery(userHQL);
+            org.hibernate.query.Query<Contributor> userQuery = session.createQuery(userHQL, Contributor.class);
             userQuery.setParameter("points", redeemRequest.getUserPoints());
             userQuery.setParameter("id", contributor.getId());
             int userUpdateResult = userQuery.executeUpdate();
@@ -61,10 +60,10 @@ public class RewardsController {
                 return;
             }
 
-            // Actualizo cantidades de las recompensas
+            // Update reward amount
             for (RedeemRequest.RewardData reward : redeemRequest.getRewardsData()) {
                 String rewardHQL = "UPDATE Reward r SET r.quantity = :quantity WHERE r.id = :id";
-                org.hibernate.query.Query<Reward> rewardQuery = session.createQuery(rewardHQL);
+                org.hibernate.query.Query<Reward> rewardQuery = session.createQuery(rewardHQL, Reward.class);
                 rewardQuery.setParameter("quantity", reward.getQuantity());
                 rewardQuery.setParameter("id", reward.getRewardId());
                 int rewardUpdateResult = rewardQuery.executeUpdate();

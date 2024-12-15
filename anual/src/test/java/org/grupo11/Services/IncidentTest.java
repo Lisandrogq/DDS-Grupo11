@@ -14,7 +14,6 @@ import org.grupo11.Services.Fridge.Sensor.MovementSensorManager;
 import org.grupo11.Services.Fridge.Sensor.TemperatureSensor;
 import org.grupo11.Services.Fridge.Sensor.TemperatureSensorManager;
 import org.grupo11.Services.Technician.Technician;
-import org.grupo11.Services.Technician.TechnicianManager;
 import org.grupo11.Services.Technician.TechnicianType;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -46,7 +45,7 @@ public class IncidentTest {
                 "", tech_contact1);
         technician2 = new Technician("pepe", "gomez", TechnicianType.ELECTRICIAN, 123123, "null",
                 "", tech_contact2);
-        //TechnicianManager.getInstance().add(technician1);
+        // TechnicianManager.getInstance().add(technician1);
         List<Meal> meals = new ArrayList<Meal>();
         fridge = new Fridge(-74.006, 40.7128, "Caballito", "Fridge A", 100, 2020, meals, null, null);
         tempManager = new TemperatureSensorManager(fridge, 2, 24);
@@ -56,8 +55,8 @@ public class IncidentTest {
         fridge.setMovManager(movManager);
         tempManager.addSensor(sensor1);
 
-        contributor1.subscribeToFridge(fridge,FridgeNotifications.Malfunction,0);
-        contributor2.subscribeToFridge(fridge,FridgeNotifications.LowInventory,10);
+        contributor1.subscribeToFridge(fridge, FridgeNotifications.Malfunction, 0);
+        contributor2.subscribeToFridge(fridge, FridgeNotifications.LowInventory, 10);
     }
 
     @Test
@@ -92,7 +91,6 @@ public class IncidentTest {
         fridge.getTempManager().setMaxTemp(34);
         sensor1.setData(35.0);
         tempManager.checkSensors();
-        EmailContact contact1 = (EmailContact) technician1.getContact();
         assertEquals("alert should be generated", fridge.getIncidents().size(), 1.0, 0.1);
     }
 

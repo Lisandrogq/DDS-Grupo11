@@ -151,10 +151,10 @@ public class AdminController {
                     String hql = "SELECT i FROM Credentials c JOIN Individual i on ownerId = i.id WHERE (c.mail = :mail AND c.provider = :provider)";
 
                     List<Individual> individuals = session.createQuery(hql, Individual.class)
-                        .setParameter("mail", csvImput.getMail())
-                        .setParameter("provider", AuthProvider.FridgeBridge)
-                        .getResultList();
-                    
+                            .setParameter("mail", csvImput.getMail())
+                            .setParameter("provider", AuthProvider.FridgeBridge)
+                            .getResultList();
+
                     Individual individual = individuals.size() > 0 ? individuals.get(0) : null;
 
                     if (individuals.size() > 1) {

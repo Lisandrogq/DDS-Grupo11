@@ -1,6 +1,5 @@
 package org.grupo11.app;
 
-import org.grupo11.Utils.DataImporter;
 import org.grupo11.Utils.PasswordValidator;
 import org.grupo11.DB;
 import org.grupo11.Logger;

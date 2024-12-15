@@ -14,7 +14,6 @@ public class FridgeSolicitude {
     @Id
     @GeneratedValue
     private Long id;
-
     @ManyToOne
     private ContributorRegistry issuedBy;
     private long issuedAt;

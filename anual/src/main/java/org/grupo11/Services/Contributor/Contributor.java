@@ -3,7 +3,6 @@ package org.grupo11.Services.Contributor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.grupo11.Logger;
 import org.grupo11.Services.ActivityRegistry.ContributorRegistry;
 import org.grupo11.Services.Contact.Contact;
 import org.grupo11.Services.Contributions.Contribution;
@@ -72,34 +71,20 @@ public class Contributor {
     }
 
     public boolean canContributeIn(ContributionType contributionType) {
-        // return possibleContributions.contains(contribution); tratando de conservar
-        // las possibleContributions me salia esto :p
-        // "org.hibernate.LazyInitializationException: failed to lazily initialize a
-        // collection of role:
-        // org.grupo11.Services.Contributor.Contributor.possibleContributions: could not
-        // initialize proxy - no Session"
         if (this instanceof Individual) {
-            System.out.println("individiual");
             return contributionType == ContributionType.MEAL_DONATION
                     || contributionType == ContributionType.MEAL_DISTRIBUTION
                     || contributionType == ContributionType.MONEY_DONATION
                     || contributionType == ContributionType.PERSON_REGISTRATION
-                    /*
-                     * TODO: REMOVE THE FOLLOWING ContributionTypes AFTER IMPLEMENTING LEGAL ENTITY
-                     * FRONTEND
-                     */
                     || contributionType == ContributionType.FRIDGE_ADMINISTRATION
                     || contributionType == ContributionType.REWARD;
         }
         if (this instanceof LegalEntity) {
-            System.out.println("LegalEntity");
-
             return contributionType == ContributionType.FRIDGE_ADMINISTRATION
                     || contributionType == ContributionType.REWARD
                     || contributionType == ContributionType.MONEY_DONATION;
         }
-        System.out.println("none");
-        
+
         return false;
     }
 

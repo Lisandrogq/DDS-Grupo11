@@ -94,9 +94,6 @@ public class FridgeController {
                 incident.markAsFixed();
                 if (fridge.getActiveIncidents().size() == 0)
                     fridge.setIsActive(true);
-                // aca no se esta teniendo en cuenta si los incidentes que quedan fueron
-                // marcados para desactivar el fridge :p pero la consigna no
-                // lo pedia asi q no pasa nada
             }
             DB.create(visit);
             DB.update(incident);
@@ -269,9 +266,9 @@ public class FridgeController {
                 return;
             }
 
-            fridge.getSubscriptions(contributor).forEach(subscription -> session.delete(subscription));
+            fridge.getSubscriptions(contributor).forEach(subscription -> session.remove(subscription));
             fridge.removeSubscriber(contributor);
-            session.update(fridge);
+            session.merge(fridge);
 
             session.getTransaction().commit();
 
@@ -293,25 +290,19 @@ public class FridgeController {
 
         try {
             int fridgeId = Integer.parseInt(fridgeIdParam);
-            org.hibernate.Transaction transaction = null;
 
             try (Session session = DB.getSessionFactory().openSession()) {
-
-                // Existe fridge?
                 Fridge fridge = session.get(Fridge.class, fridgeId);
-
                 if (fridge == null) {
                     ctx.status(404).result("Fridge not found");
                     return;
                 }
 
-                // Fridge info y ID
                 FridgeFullInfo fridgeFullInfo = new FridgeFullInfo();
                 fridgeFullInfo.setFridgeId(fridgeId);
 
-                // Meals
                 String mealsHQL = "FROM Meal m WHERE m.fridge.id = :fridgeId";
-                org.hibernate.query.Query<Meal> mealsQuery = session.createQuery(mealsHQL);
+                org.hibernate.query.Query<Meal> mealsQuery = session.createQuery(mealsHQL, Meal.class);
                 mealsQuery.setParameter("fridgeId", fridgeId);
                 List<Meal> meals = mealsQuery.getResultList();
 
@@ -328,9 +319,8 @@ public class FridgeController {
                 }
                 fridgeFullInfo.setMeals(mealsData);
 
-                // Incidents
                 String incidentsHQL = "FROM Incident i WHERE i.fridge.id = :fridgeId";
-                org.hibernate.query.Query<Incident> incidentsQuery = session.createQuery(incidentsHQL);
+                org.hibernate.query.Query<Incident> incidentsQuery = session.createQuery(incidentsHQL, Incident.class);
                 incidentsQuery.setParameter("fridgeId", fridgeId);
                 List<Incident> incidents = incidentsQuery.getResultList();
 
