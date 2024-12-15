@@ -1,0 +1,86 @@
+openapi: 3.0.0
+info:
+  title: Authentication API
+  version: 1.0.0
+  description: API for user authentication and JWT token issuance.
+
+servers:
+  - url: https://fridgebridge.simplecharity.com
+    description: Production server
+
+paths:
+  /auth/token:
+    post:
+      summary: Issue JWT Token
+      description: Issues a JWT access token for authenticated users.
+      requestBody:
+        description: Login payload with email and password
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MailPasswordLoginReqBody"
+      responses:
+        "200":
+          description: JWT token issued successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseWithToken"
+        "400":
+          description: Invalid request body or missing parameters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+        "401":
+          description: Unauthorized access.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+
+components:
+  schemas:
+    MailPasswordLoginReqBody:
+      type: object
+      required:
+        - mail
+        - password
+      properties:
+        mail:
+          type: string
+          format: email
+          example: "user@example.com"
+        password:
+          type: string
+          example: "securepassword123"
+
+    ApiResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: "Success"
+
+    ApiResponseWithToken:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 200
+        data:
+          type: object
+          properties:
+            access-token:
+              type: string
+              example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYWlsIjoidXNlckBleGFtcGxlLmNvbSIsIm93bmVyX2lkIjoiMTIzNCIsInR5cGUiOiJsZWdhbCIsImV4cCI6MTYzMDYyMzAwMH0.abcdefg12345"
