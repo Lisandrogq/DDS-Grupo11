@@ -27,6 +27,7 @@ public class Router {
         api.get("/", ctx -> {
             ctx.render("templates/landing.html");
         });
+        api.get("/favicon.ico", RenderController::favicon);
         api.get("/register/{filename}", RenderController::renderRegisterPages);
         api.get("/dash/home", RenderController::renderDashboardPage);
     }

@@ -9,6 +9,7 @@ import java.util.Map;
 import org.grupo11.DB;
 import org.grupo11.Logger;
 import org.grupo11.Api.ApiResponse;
+import org.grupo11.Api.HttpStatus;
 import org.grupo11.Services.Credentials;
 import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributions.FridgeAdmin;
@@ -41,6 +42,15 @@ import java.util.HashMap;
 import io.javalin.http.Context;
 
 public class RenderController {
+    public static void favicon(Context ctx) {
+        try {
+            Path faviconPath = Paths.get("src/main/resources/public/assets/favicon.ico");
+            ctx.contentType("image/x-icon");
+            ctx.result(Files.newInputStream(faviconPath));
+        } catch (Exception e) {
+            ctx.status(404).result(HttpStatus.fromCode(404).getMessage());
+        }
+    }
 
     public static void renderRegisterPages(Context ctx) {
         try {
