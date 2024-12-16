@@ -9,6 +9,7 @@ import java.util.Map;
 import org.grupo11.DB;
 import org.grupo11.Logger;
 import org.grupo11.Api.ApiResponse;
+import org.grupo11.Api.HttpStatus;
 import org.grupo11.Services.Credentials;
 import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributions.FridgeAdmin;
@@ -47,7 +48,7 @@ public class RenderController {
             ctx.contentType("image/x-icon");
             ctx.result(Files.newInputStream(faviconPath));
         } catch (Exception e) {
-            ctx.status(500).result("Error serving favicon");
+            ctx.status(404).result(HttpStatus.fromCode(404).getMessage());
         }
     }
 
