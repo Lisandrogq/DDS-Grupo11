@@ -24,9 +24,7 @@ public class Router {
     }
 
     static void clientRoutes(Javalin api) {
-        api.get("/", ctx -> {
-            ctx.render("templates/landing.html");
-        });
+        api.get("/", RenderController::landing);
         api.get("/favicon.ico", RenderController::favicon);
         api.get("/register/{filename}", RenderController::renderRegisterPages);
         api.get("/dash/home", RenderController::renderDashboardPage);

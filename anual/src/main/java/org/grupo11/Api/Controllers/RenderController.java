@@ -11,6 +11,7 @@ import org.grupo11.Logger;
 import org.grupo11.Api.ApiResponse;
 import org.grupo11.Api.HttpStatus;
 import org.grupo11.Services.Credentials;
+import org.grupo11.Services.Meal;
 import org.grupo11.Services.Contributions.Contribution;
 import org.grupo11.Services.Contributions.FridgeAdmin;
 import org.grupo11.Services.Contributions.MealDistribution;
@@ -42,6 +43,15 @@ import java.util.HashMap;
 import io.javalin.http.Context;
 
 public class RenderController {
+    public static void landing(Context ctx) {
+        Map<String, Object> model = new HashMap<>();
+        Session session = DB.getSessionFactory().openSession();
+        model.put("meals_donated", DB.getEntityCount(session, Meal.class));
+        model.put("num_fridges", DB.getEntityCount(session, Fridge.class));
+        model.put("num_contributors", DB.getEntityCount(session, Contributor.class));
+        ctx.render("templates/landing.html", model);
+    }
+
     public static void favicon(Context ctx) {
         try {
             Path faviconPath = Paths.get("src/main/resources/public/assets/favicon.ico");
