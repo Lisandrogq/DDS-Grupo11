@@ -41,6 +41,15 @@ import java.util.HashMap;
 import io.javalin.http.Context;
 
 public class RenderController {
+    public static void favicon(Context ctx) {
+        try {
+            Path faviconPath = Paths.get("src/main/resources/public/assets/favicon.ico");
+            ctx.contentType("image/x-icon");
+            ctx.result(Files.newInputStream(faviconPath));
+        } catch (Exception e) {
+            ctx.status(500).result("Error serving favicon");
+        }
+    }
 
     public static void renderRegisterPages(Context ctx) {
         try {
