@@ -36,19 +36,28 @@ public class Api {
 
     void setupMiddlewares() {
         api.before(ctx -> {
+            if (ctx.path().startsWith("/public")) {
+                return;
+            }
+
             Metrics.getInstance().getOpenConnectionsGauge().inc();
         });
-
         api.after(ctx -> {
+            if (ctx.path().startsWith("/public")) {
+                return;
+            }
+
             Metrics metrics = Metrics.getInstance();
             metrics.getOpenConnectionsGauge().dec();
+            metrics.getRequestsServedCounter().inc();
             if (ctx.statusCode() >= 400) {
                 metrics.getRequestsFailedCounter().inc();
-            } else {
-                metrics.getRequestsServedCounter().inc();
             }
         });
-
+        api.exception(Exception.class, (e, ctx) -> {
+            Logger.error("An exception occurred while processing the request: ", e);
+            ctx.status(500).result("Internal Server Error");
+        });
     }
 
     public void start() {

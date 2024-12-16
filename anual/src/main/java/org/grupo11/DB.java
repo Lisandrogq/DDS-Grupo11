@@ -45,6 +45,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 
 public class DB {
     private static final SessionFactory sessionFactory = buildSessionFactory();
@@ -129,6 +130,12 @@ public class DB {
 
     public static void delete(Object object) {
         executeInTransaction(session -> session.remove(object));
+    }
+
+    public static long getEntityCount(Session session, Class<?> entityClass) {
+        String hql = "SELECT COUNT(e) FROM " + entityClass.getSimpleName() + " e";
+        Query<Long> query = session.createQuery(hql, Long.class);
+        return query.uniqueResult();
     }
 
     public static <T> T find(Class<T> clazz, Object id) {
